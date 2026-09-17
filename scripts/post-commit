@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+python3 "$(git rev-parse --show-toplevel)/scripts/bump_version.py"
