@@ -1,83 +1,83 @@
 {
   ".storage/lovelace.1_accueil": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_courses": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_eclairage": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_energie": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_flight_radar": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_ma_maison": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_meteo_belgique": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_mon_confort": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_pollution": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_reseau_infra": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_securite": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.1_streaming": {
-    "last_change": "ajoute le footer de versionning avec credit auteur",
-    "last_update": "2026-09-17T12:36:06.838061+02:00",
-    "version": "0.2.0"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.3.0"
   },
   ".storage/lovelace.1_taches": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.boite_a_outils": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.dashboard_transversal": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute le footer de versionning (avec dependances) sur les 16 dashboards",
+    "last_update": "2026-09-17T14:07:56.142488+02:00",
+    "version": "0.1.0"
   },
   "automations.yaml": {
     "last_change": "initialisation du versionning par fichier",
