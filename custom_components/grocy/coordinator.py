@@ -1,0 +1,122 @@
+"""Data update coordinator for Grocy."""
+
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
+from grocy import Grocy
+from grocy.data_models.battery import Battery
+from grocy.data_models.chore import Chore
+from grocy.data_models.product import Product, ShoppingListProduct
+from grocy.data_models.task import Task
+
+from .const import (
+    CONF_API_KEY,
+    CONF_PORT,
+    CONF_URL,
+    CONF_VERIFY_SSL,
+    DOMAIN,
+    SCAN_INTERVAL,
+)
+from .grocy_data import GrocyData
+from .helpers import MealPlanItemWrapper, RecipeWrapper, extract_base_url_and_path
+
+_LOGGER = logging.getLogger(__name__)
+
+
+@dataclass
+class GrocyCoordinatorData:
+    batteries: list[Battery] | None = None
+    chores: list[Chore] | None = None
+    expired_products: list[Product] | None = None
+    expiring_products: list[Product] | None = None
+    meal_plan: list[MealPlanItemWrapper] | None = None
+    missing_products: list[Product] | None = None
+    overdue_batteries: list[Battery] | None = None
+    overdue_chores: list[Chore] | None = None
+    overdue_products: list[Product] | None = None
+    overdue_tasks: list[Task] | None = None
+    recipes: list[RecipeWrapper] | None = None
+    shopping_list: list[ShoppingListProduct] | None = None
+    stock: list[Product] | None = None
+    tasks: list[Task] | None = None
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
+    def __getitem__(self, key: str):
+        return getattr(self, key)
+
+
+class GrocyDataUpdateCoordinator(DataUpdateCoordinator[GrocyCoordinatorData]):
+    """Grocy data update coordinator."""
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        config_entry: ConfigEntry,
+    ) -> None:
+        """Initialize Grocy data update coordinator."""
+        super().__init__(
+            hass,
+            _LOGGER,
+            config_entry=config_entry,
+            name=DOMAIN,
+            update_interval=SCAN_INTERVAL,
+        )
+
+        url = self.config_entry.data[CONF_URL]
+        api_key = self.config_entry.data[CONF_API_KEY]
+        port = self.config_entry.data[CONF_PORT]
+        verify_ssl = self.config_entry.data[CONF_VERIFY_SSL]
+
+        (base_url, path) = extract_base_url_and_path(url)
+
+        self.grocy_api = Grocy(
+            base_url, api_key, path=path, port=port, verify_ssl=verify_ssl
+        )
+        self.grocy_data = GrocyData(hass, self.grocy_api, url)
+
+        self.available_entities: list[str] = []
+        self.entities: list[Entity] = []
+
+    async def _async_update_data(self) -> GrocyCoordinatorData:
+        """Fetch data."""
+        data = GrocyCoordinatorData()
+        errors: dict[str, Exception] = {}
+        successful_updates = 0
+
+        for entity in self.entities:
+            if not entity.enabled:
+                _LOGGER.debug("Entity %s is disabled", entity.entity_id)
+                continue
+
+            # Skip calendar entity - it doesn't use coordinator data
+            if (
+                not hasattr(entity, "entity_description")
+                or entity.entity_description.key == "calendar"
+            ):
+                continue
+
+            key = entity.entity_description.key
+            try:
+                data[key] = await self.grocy_data.async_update_data(key)
+                successful_updates += 1
+            except Exception as error:  # pylint: disable=broad-except
+                _LOGGER.error("Failed to update %s: %s", key, error)
+                errors[key] = error
+                previous = getattr(self, "data", None)
+                if previous is not None:
+                    data[key] = previous[key]
+
+        # Only raise UpdateFailed if every entity update failed
+        if errors and successful_updates == 0:
+            raise UpdateFailed(f"All updates failed. Errors: {errors}")
+
+        return data

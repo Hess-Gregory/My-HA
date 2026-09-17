@@ -1,0 +1,73 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Wprowadź lokalizację do śledzenia.",
+        "data": {
+          "radius": "Promień w metrach",
+          "latitude": "Szerokość geograficzna",
+          "longitude": "Długość geograficzna",
+          "scan_interval": "Interwał aktualizacji w sekundach"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "credentials_incomplete": "Podaj zarówno nazwę użytkownika, jak i hasło, albo zostaw oba pola puste.",
+      "invalid_auth": "Nieprawidłowa nazwa użytkownika lub hasło Flightradar24.",
+      "login_failed": "Nie udało się zalogować do Flightradar24. Sprawdź dane logowania i spróbuj ponownie."
+    },
+    "step": {
+      "init": {
+        "description": "Edytuj parametry śledzonej lokalizacji.",
+        "data": {
+          "radius": "Promień w metrach",
+          "latitude": "Szerokość geograficzna",
+          "longitude": "Długość geograficzna",
+          "scan_interval": "Interwał aktualizacji w sekundach",
+          "min_altitude": "Minimalna wysokość w stopach",
+          "max_altitude": "Maksymalna wysokość w stopach",
+          "enable_tracker": "Włącz device_tracker dla dodatkowych śledzonych lotów",
+          "auto_cleanup": "Włącz automatyczne czyszczenie śledzonych wylądowanych lotów",
+          "tracker_name_style": "Styl nazywania śledzenia na mapie",
+          "username": "Nazwa użytkownika (Opcjonalnie)",
+          "password": "Hasło (Opcjonalnie)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "in_area": { "name": "Loty w strefie" },
+      "entered": { "name": "Weszły do strefy" },
+      "exited": { "name": "Opuściły strefę" },
+      "additional_tracked": { "name": "Dodatkowo śledzone" },
+      "airport_arrivals": { "name": "Przyloty" },
+      "airport_departures": { "name": "Odloty" },
+      "airport_arrivals_on_time": { "name": "Przyloty o czasie" },
+      "airport_arrivals_delayed": { "name": "Przyloty opóźnione" },
+      "airport_arrivals_delay_average": { "name": "Średnie opóźnienie przylotów" },
+      "airport_arrivals_delay_index": { "name": "Indeks opóźnień przylotów" },
+      "airport_arrivals_canceled": { "name": "Przyloty odwołane" },
+      "airport_departures_on_time": { "name": "Odloty o czasie" },
+      "airport_departures_delayed": { "name": "Odloty opóźnione" },
+      "airport_departures_delay_average": { "name": "Średnie opóźnienie odlotów" },
+      "airport_departures_delay_index": { "name": "Indeks opóźnień odlotów" },
+      "airport_departures_canceled": { "name": "Odloty odwołane" }
+    },
+    "button": {
+      "clear_tracked": { "name": "Wyczyść listę śledzenia" },
+      "tracked_clear": { "name": "Wyczyść dodatkowo śledzone" }
+    },
+    "switch": {
+      "scanning": { "name": "Pobieranie danych API" },
+      "most_tracked": { "name": "Najczęściej śledzone" }
+    },
+    "text": {
+      "add_track": { "name": "Dodaj do śledzenia" },
+      "remove_track": { "name": "Usuń ze śledzenia" },
+      "airport_track": { "name": "Śledzenie lotniska" }
+    }
+  }
+}

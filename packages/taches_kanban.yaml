@@ -1,0 +1,835 @@
+###############################################################################
+# TODOIST — KANBAN FAMILIAL
+###############################################################################
+
+rest:
+  # ===========================================================================
+  # GRÉGORY
+  # ===========================================================================
+
+  - resource: "https://api.todoist.com/api/v1/projects/6hJq6cQ4hX7Q8jQF/full"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Gregory Projet"
+        unique_id: kanban_gregory_projet
+        value_template: "{{ value_json.project.name }}"
+        json_attributes:
+          - project
+          - sections
+
+  - resource: "https://api.todoist.com/api/v1/tasks?project_id=6hJq6cQ4hX7Q8jQF&limit=200"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Gregory"
+        unique_id: kanban_gregory
+        value_template: "{{ value_json.results | length }}"
+        json_attributes:
+          - results
+          - next_cursor
+
+  # ===========================================================================
+  # MATTEO
+  # ===========================================================================
+
+  - resource: "https://api.todoist.com/api/v1/projects/6hJq6gmCgJCC38R4/full"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Matteo Projet"
+        unique_id: kanban_matteo_projet
+        value_template: "{{ value_json.project.name }}"
+        json_attributes:
+          - project
+          - sections
+
+  - resource: "https://api.todoist.com/api/v1/tasks?project_id=6hJq6gmCgJCC38R4&limit=200"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Matteo"
+        unique_id: kanban_matteo
+        value_template: "{{ value_json.results | length }}"
+        json_attributes:
+          - results
+          - next_cursor
+
+  # ===========================================================================
+  # SANDRINE
+  # ===========================================================================
+
+  - resource: "https://api.todoist.com/api/v1/projects/6hJq6fXqpFc5ppCC/full"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Sandrine Projet"
+        unique_id: kanban_sandrine_projet
+        value_template: "{{ value_json.project.name }}"
+        json_attributes:
+          - project
+          - sections
+
+  - resource: "https://api.todoist.com/api/v1/tasks?project_id=6hJq6fXqpFc5ppCC&limit=200"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Sandrine"
+        unique_id: kanban_sandrine
+        value_template: "{{ value_json.results | length }}"
+        json_attributes:
+          - results
+          - next_cursor
+
+  # ===========================================================================
+  # FAMILLE
+  # ===========================================================================
+
+  - resource: "https://api.todoist.com/api/v1/projects/6hW4vXG7V9GffH67/full"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Famille Projet"
+        unique_id: kanban_famille_projet
+        value_template: "{{ value_json.project.name }}"
+        json_attributes:
+          - project
+          - sections
+
+  - resource: "https://api.todoist.com/api/v1/tasks?project_id=6hW4vXG7V9GffH67&limit=200"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Kanban Famille"
+        unique_id: kanban_famille
+        value_template: "{{ value_json.results | length }}"
+        json_attributes:
+          - results
+          - next_cursor
+
+###############################################################################
+# AGRÉGATION DU KANBAN
+###############################################################################
+
+template:
+  - sensor:
+      - name: "Kanban Familial"
+        unique_id: kanban_familial
+
+        state: >
+          {{
+            (
+              state_attr('sensor.kanban_gregory', 'results')
+              | default([], true)
+              | length
+            )
+            +
+            (
+              state_attr('sensor.kanban_matteo', 'results')
+              | default([], true)
+              | length
+            )
+            +
+            (
+              state_attr('sensor.kanban_sandrine', 'results')
+              | default([], true)
+              | length
+            )
+            +
+            (
+              state_attr('sensor.kanban_famille', 'results')
+              | default([], true)
+              | length
+            )
+          }}
+
+        attributes:
+          tasks: >
+            {{
+              (
+                state_attr('sensor.kanban_gregory', 'results')
+                | default([], true)
+              )
+              +
+              (
+                state_attr('sensor.kanban_matteo', 'results')
+                | default([], true)
+              )
+              +
+              (
+                state_attr('sensor.kanban_sandrine', 'results')
+                | default([], true)
+              )
+              +
+              (
+                state_attr('sensor.kanban_famille', 'results')
+                | default([], true)
+              )
+            }}
+
+          sections_gregory: >
+            {{
+              state_attr(
+                'sensor.kanban_gregory_projet',
+                'sections'
+              ) | default([], true)
+            }}
+
+          sections_matteo: >
+            {{
+              state_attr(
+                'sensor.kanban_matteo_projet',
+                'sections'
+              ) | default([], true)
+            }}
+
+          sections_sandrine: >
+            {{
+              state_attr(
+                'sensor.kanban_sandrine_projet',
+                'sections'
+              ) | default([], true)
+            }}
+
+          sections_famille: >
+            {{
+              state_attr(
+                'sensor.kanban_famille_projet',
+                'sections'
+              ) | default([], true)
+            }}
+
+###############################################################################
+# REST COMMAND TODOIST — API V1
+###############################################################################
+
+rest_command:
+  # ===========================================================================
+  # CRÉER UNE TÂCHE
+  # ===========================================================================
+
+  todoist_create_task:
+    method: POST
+    url: "https://api.todoist.com/api/v1/tasks"
+    headers:
+      Authorization: !secret todoist_api_token
+      Content-Type: "application/json"
+    content_type: "application/json"
+    payload: "{{ payload }}"
+
+  # ===========================================================================
+  # MODIFIER UNE TÂCHE
+  # ===========================================================================
+
+  todoist_update_task:
+    method: POST
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}"
+    headers:
+      Authorization: !secret todoist_api_token
+      Content-Type: "application/json"
+    content_type: "application/json"
+    payload: "{{ payload }}"
+
+  # ===========================================================================
+  # SUPPRIMER UNE TÂCHE
+  # ===========================================================================
+
+  todoist_delete_task:
+    method: DELETE
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}"
+    headers:
+      Authorization: !secret todoist_api_token
+
+  # ===========================================================================
+  # DÉPLACER UNE TÂCHE
+  # ===========================================================================
+
+  todoist_move_task:
+    method: POST
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}/move"
+    headers:
+      Authorization: !secret todoist_api_token
+      Content-Type: "application/json"
+    content_type: "application/json"
+    payload: "{{ payload }}"
+
+  # ===========================================================================
+  # TERMINER UNE TÂCHE
+  # ===========================================================================
+
+  todoist_close_task:
+    method: POST
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}/close"
+    headers:
+      Authorization: !secret todoist_api_token
+
+  # ===========================================================================
+  # ROUVRIR UNE TÂCHE
+  # ===========================================================================
+
+  todoist_reopen_task:
+    method: POST
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}/reopen"
+    headers:
+      Authorization: !secret todoist_api_token
+
+###############################################################################
+# SCRIPTS KANBAN
+###############################################################################
+
+script:
+  # ===========================================================================
+  # AJOUTER UNE TÂCHE
+  # ===========================================================================
+
+  kanban_todoist_add_task:
+    alias: "Kanban - Ajouter une tâche"
+    description: "Ajoute une tâche Todoist avec les paramètres disponibles"
+    mode: queued
+
+    fields:
+      project_id:
+        description: "ID du projet Todoist"
+        required: true
+
+      section_id:
+        description: "ID de la section Todoist"
+        required: false
+
+      parent_id:
+        description: "ID de la tâche parente"
+        required: false
+
+      content:
+        description: "Contenu de la tâche"
+        required: true
+
+      description:
+        description: "Description de la tâche"
+        required: false
+
+      labels:
+        description: "Liste des labels Todoist"
+        required: false
+
+      priority:
+        description: "Priorité Todoist de 1 à 4"
+        required: false
+
+      assignee_id:
+        description: "ID de la personne responsable"
+        required: false
+
+      due_string:
+        description: "Échéance Todoist"
+        required: false
+
+      due_date:
+        description: "Date d'échéance YYYY-MM-DD"
+        required: false
+
+      due_datetime:
+        description: "Date et heure d'échéance"
+        required: false
+
+      due_lang:
+        description: "Langue de l'échéance"
+        required: false
+
+      deadline_date:
+        description: "Deadline YYYY-MM-DD"
+        required: false
+
+      duration:
+        description: "Durée numérique"
+        required: false
+
+      duration_unit:
+        description: "minute ou day"
+        required: false
+
+    sequence:
+      - variables:
+          task_payload: >-
+            {{
+              {
+                "content": content,
+                "project_id": project_id
+              }
+              | combine(
+                  {
+                    "section_id": section_id
+                  }
+                  if section_id is defined
+                  and section_id not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "parent_id": parent_id
+                  }
+                  if parent_id is defined
+                  and parent_id not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "description": description
+                  }
+                  if description is defined
+                  and description not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "labels": labels
+                  }
+                  if labels is defined
+                  and labels not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "priority": priority | int
+                  }
+                  if priority is defined
+                  and priority not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "assignee_id": assignee_id | int
+                  }
+                  if assignee_id is defined
+                  and assignee_id not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "due_string": due_string
+                  }
+                  if due_string is defined
+                  and due_string not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "due_date": due_date
+                  }
+                  if due_date is defined
+                  and due_date not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "due_datetime": due_datetime
+                  }
+                  if due_datetime is defined
+                  and due_datetime not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "due_lang": due_lang
+                  }
+                  if due_lang is defined
+                  and due_lang not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "deadline_date": deadline_date
+                  }
+                  if deadline_date is defined
+                  and deadline_date not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "duration": duration | int
+                  }
+                  if duration is defined
+                  and duration not in [none, ""]
+                  else {}
+                )
+              | combine(
+                  {
+                    "duration_unit": duration_unit
+                  }
+                  if duration_unit is defined
+                  and duration_unit not in [none, ""]
+                  else {}
+                )
+              | tojson
+            }}
+
+      - action: rest_command.todoist_create_task
+        data:
+          payload: "{{ task_payload }}"
+
+      - delay:
+          milliseconds: 800
+
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.kanban_gregory
+            - sensor.kanban_matteo
+            - sensor.kanban_sandrine
+            - sensor.kanban_famille
+
+  # ===========================================================================
+  # MODIFIER UNE TÂCHE
+  # ===========================================================================
+
+  kanban_todoist_update_task:
+    alias: "Kanban - Modifier une tâche"
+    description: "Modifie les paramètres d'une tâche Todoist"
+    mode: queued
+
+    fields:
+      task_id:
+        description: "ID de la tâche Todoist"
+        required: true
+
+      content:
+        description: "Nom de la tâche"
+        required: true
+
+      description:
+        description: "Description de la tâche"
+        required: false
+
+      labels:
+        description: "Liste des labels Todoist"
+        required: false
+
+      priority:
+        description: "Priorité Todoist de 1 à 4"
+        required: false
+
+      assignee_id:
+        description: "ID de la personne responsable"
+        required: false
+
+      due_string:
+        description: "Échéance Todoist avancée ou récurrente"
+        required: false
+
+      due_date:
+        description: "Date d'échéance YYYY-MM-DD"
+        required: false
+
+      due_datetime:
+        description: "Date et heure d'échéance"
+        required: false
+
+      due_lang:
+        description: "Langue de l'échéance"
+        required: false
+
+      deadline_date:
+        description: "Deadline YYYY-MM-DD"
+        required: false
+
+      duration:
+        description: "Durée numérique"
+        required: false
+
+      duration_unit:
+        description: "minute ou day"
+        required: false
+
+    sequence:
+      # -----------------------------------------------------------------------
+      # CONSTRUCTION DU PAYLOAD COMPLET
+      # -----------------------------------------------------------------------
+
+      - variables:
+          update_payload: >-
+            {{
+              {
+                "content": content
+              }
+
+              | combine(
+                  {
+                    "description": description
+                  }
+                  if description is defined
+                  and description is not none
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "labels": labels
+                  }
+                  if labels is defined
+                  and labels is not none
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "priority": priority | int
+                  }
+                  if priority is defined
+                  and priority not in [none, ""]
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "assignee_id": assignee_id | int
+                  }
+                  if assignee_id is defined
+                  and assignee_id not in [none, ""]
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "due_string": due_string
+                  }
+                  if due_string is defined
+                  and due_string not in [none, ""]
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "due_date": due_date
+                  }
+                  if due_date is defined
+                  and due_date not in [none, ""]
+                  and (
+                    due_string is not defined
+                    or due_string in [none, ""]
+                  )
+                  and (
+                    due_datetime is not defined
+                    or due_datetime in [none, ""]
+                  )
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "due_datetime": due_datetime
+                  }
+                  if due_datetime is defined
+                  and due_datetime not in [none, ""]
+                  and (
+                    due_string is not defined
+                    or due_string in [none, ""]
+                  )
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "due_lang": due_lang
+                  }
+                  if due_lang is defined
+                  and due_lang not in [none, ""]
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "deadline_date": deadline_date
+                  }
+                  if deadline_date is defined
+                  and deadline_date is not none
+                  else {}
+                )
+
+              | combine(
+                  {
+                    "duration": duration | int,
+                    "duration_unit": duration_unit
+                  }
+                  if duration is defined
+                  and duration not in [none, ""]
+                  and duration_unit is defined
+                  and duration_unit not in [none, ""]
+                  else {}
+                )
+
+              | tojson
+            }}
+
+      # -----------------------------------------------------------------------
+      # ENVOI À TODOIST
+      # -----------------------------------------------------------------------
+
+      - action: rest_command.todoist_update_task
+        data:
+          task_id: "{{ task_id }}"
+          payload: "{{ update_payload }}"
+
+      # -----------------------------------------------------------------------
+      # RAFRAÎCHISSEMENT
+      # -----------------------------------------------------------------------
+
+      - delay:
+          milliseconds: 1000
+
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.kanban_gregory
+            - sensor.kanban_matteo
+            - sensor.kanban_sandrine
+            - sensor.kanban_famille
+
+  # ===========================================================================
+  # SUPPRIMER UNE TÂCHE
+  # ===========================================================================
+
+  kanban_todoist_delete_task:
+    alias: "Kanban - Supprimer une tâche"
+    description: "Supprime une tâche Todoist"
+    mode: queued
+
+    fields:
+      task_id:
+        description: "ID de la tâche Todoist"
+        required: true
+
+    sequence:
+      - action: rest_command.todoist_delete_task
+        data:
+          task_id: "{{ task_id }}"
+
+      - delay:
+          milliseconds: 800
+
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.kanban_gregory
+            - sensor.kanban_matteo
+            - sensor.kanban_sandrine
+            - sensor.kanban_famille
+
+  # ===========================================================================
+  # DÉPLACER UNE TÂCHE
+  # ===========================================================================
+
+  kanban_todoist_move_task:
+    alias: "Kanban - Déplacer une tâche"
+    description: "Déplace une tâche vers une section Todoist"
+    mode: queued
+
+    fields:
+      task_id:
+        description: "ID de la tâche Todoist"
+        required: true
+
+      section_id:
+        description: "ID de la section destination"
+        required: true
+
+    sequence:
+      - variables:
+          move_payload: >-
+            {{
+              {
+                "section_id": section_id
+              }
+              | tojson
+            }}
+
+      - action: rest_command.todoist_move_task
+        data:
+          task_id: "{{ task_id }}"
+          payload: "{{ move_payload }}"
+
+      - delay:
+          milliseconds: 800
+
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.kanban_gregory
+            - sensor.kanban_matteo
+            - sensor.kanban_sandrine
+            - sensor.kanban_famille
+
+  # ===========================================================================
+  # TERMINER UNE TÂCHE
+  # ===========================================================================
+
+  kanban_todoist_close_task:
+    alias: "Kanban - Terminer une tâche"
+    description: "Termine une tâche Todoist"
+    mode: queued
+
+    fields:
+      task_id:
+        description: "ID de la tâche Todoist"
+        required: true
+
+    sequence:
+      - action: rest_command.todoist_close_task
+        data:
+          task_id: "{{ task_id }}"
+
+      - delay:
+          milliseconds: 800
+
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.kanban_gregory
+            - sensor.kanban_matteo
+            - sensor.kanban_sandrine
+            - sensor.kanban_famille
+
+  # ===========================================================================
+  # ROUVRIR UNE TÂCHE
+  # ===========================================================================
+
+  kanban_todoist_reopen_task:
+    alias: "Kanban - Rouvrir une tâche"
+    description: "Rouvre une tâche Todoist"
+    mode: queued
+
+    fields:
+      task_id:
+        description: "ID de la tâche Todoist"
+        required: true
+
+    sequence:
+      - action: rest_command.todoist_reopen_task
+        data:
+          task_id: "{{ task_id }}"
+
+      - delay:
+          milliseconds: 800
+
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.kanban_gregory
+            - sensor.kanban_matteo
+            - sensor.kanban_sandrine
+            - sensor.kanban_famille

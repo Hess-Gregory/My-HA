@@ -1,0 +1,34 @@
+# ============================================================================
+# PACKAGE "TÂCHES - COMPTEURS" — compteurs hebdomadaires de tâches complétées
+# ----------------------------------------------------------------------------
+# À placer dans ton dossier de packages Home Assistant :
+#   /config/packages/taches_counters.yaml
+#
+# CONTEXTE : automations.yaml contient déjà "taches_completees_incrementer"
+# et "taches_completees_reset_hebdo", qui utilisent counter.taches_completees_
+# gregory/_matteo/_sandrine. Ces compteurs n'avaient jamais été créés (le
+# commentaire dans automations.yaml demandait de les créer manuellement via
+# Paramètres > Aides > Créer une aide > Compteur, mais ça n'a pas été fait),
+# d'où les erreurs "Referenced entities ... are missing or not currently
+# available" dans le journal. Ce fichier les définit directement en YAML,
+# donc plus besoin de les créer à la main dans l'interface.
+# ============================================================================
+counter:
+  taches_completees_gregory:
+    name: "Tâches complétées - Grégory"
+    icon: mdi:trophy
+    initial: 0
+    step: 1
+    restore: true
+  taches_completees_matteo:
+    name: "Tâches complétées - Matteo"
+    icon: mdi:trophy
+    initial: 0
+    step: 1
+    restore: true
+  taches_completees_sandrine:
+    name: "Tâches complétées - Sandrine"
+    icon: mdi:trophy
+    initial: 0
+    step: 1
+    restore: true

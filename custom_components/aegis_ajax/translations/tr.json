@@ -1,0 +1,658 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Aegis for Ajax — Giriş",
+                "description": "Ajax hesabınızın kimlik bilgilerini girin.",
+                "data": {
+                    "email": "E-posta",
+                    "password": "Parola",
+                    "app_label": "Uygulama etiketi (co-branded uygulama adı)"
+                }
+            },
+            "2fa": {
+                "title": "İki Faktörlü Doğrulama",
+                "description": "Doğrulama uygulamanızdaki 6 haneli kodu girin.",
+                "data": {
+                    "totp_code": "TOTP Kodu"
+                }
+            },
+            "select_spaces": {
+                "title": "Alan Seçimi",
+                "description": "Eklemek istediğiniz alanları (hub'ları) seçin.",
+                "data": {
+                    "spaces": "Alanlar"
+                }
+            },
+            "reconfigure": {
+                "title": "Aegis for Ajax — Yeniden yapılandır",
+                "description": "Hesap kimlik bilgilerinizi güncelleyin.",
+                "data": {
+                    "email": "E-posta",
+                    "password": "Şifre",
+                    "app_label": "Uygulama etiketi"
+                }
+            },
+            "reconfigure_2fa": {
+                "title": "İki Faktörlü Doğrulama",
+                "description": "Doğrulama uygulamanızdaki 6 haneli kodu girin.",
+                "data": {
+                    "totp_code": "TOTP Kodu"
+                }
+            },
+            "reauth_confirm": {
+                "title": "Aegis for Ajax yeniden kimlik doğrulaması",
+                "description": "{email} için Ajax oturumunuz artık geçerli değil. Erişimi geri yüklemek için hesabın mevcut parolasını girin.",
+                "data": {
+                    "password": "Parola"
+                }
+            },
+            "reauth_2fa": {
+                "title": "İki faktörlü kimlik doğrulama",
+                "description": "Kimlik doğrulama uygulamanızdan 6 haneli kodu girin.",
+                "data": {
+                    "totp_code": "TOTP Kodu"
+                }
+            }
+        },
+        "error": {
+            "invalid_auth": "Geçersiz e-posta veya parola.",
+            "invalid_totp": "Geçersiz TOTP kodu. Lütfen tekrar deneyin.",
+            "cannot_connect": "Ajax sunucularına bağlanılamıyor.",
+            "unknown": "Beklenmeyen bir hata oluştu."
+        },
+        "abort": {
+            "already_configured": "Bu hesap zaten yapılandırılmış.",
+            "account_locked": "Hesap kilitlendi. Lütfen daha sonra tekrar deneyin.",
+            "reauth_successful": "Yeniden doğrulama başarılı.",
+            "already_in_progress": "Yapılandırma zaten devam ediyor. Mevcut akışı tamamlayın veya iptal edin.",
+            "reconfigure_successful": "Kimlik bilgileri başarıyla güncellendi."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Aegis for Ajax — Seçenekler",
+                "data": {
+                    "poll_interval": "Yedek yoklama aralığı (saniye, 60-300)",
+                    "force_arm": "Zorla kurma (açık sensörleri ve arızaları yoksay)",
+                    "expose_arm_home": "\"Evde Devreye Al\" düğmesini göster",
+                    "delay_panel_states": "Çıkış / giriş gecikmelerini panel durumu olarak göster",
+                    "use_pin_code": "Kurma/devre dışı bırakma için PIN kodu gerektir",
+                    "pin_code": "PIN kodu",
+                    "fcm_project_id": "FCM Proje Kimliği (anlık bildirimler için)",
+                    "fcm_app_id": "FCM Uygulama Kimliği",
+                    "fcm_api_key": "FCM API Anahtarı",
+                    "fcm_sender_id": "FCM Gönderici Kimliği",
+                    "clear_fcm_credentials": "FCM kimlik bilgilerini sil (dört alanı da temizler)",
+                    "disable_push_warning": "Anlık bildirim kullanmıyorum",
+                    "photo_retention_days": "Fotoğraf saklama süresi (gün)",
+                    "photo_max_per_device": "Cihaz başına maks. fotoğraf (0 = sınırsız)",
+                    "auto_create_labels": "Aegis etiketlerini otomatik olarak oluştur ve varlıklara ata",
+                    "bypass_switches": "Cihaz atlama anahtarları oluştur",
+                    "persistent_notifications": "Güvenlik olaylarını kalıcı bildirim olarak göster",
+                    "persistent_notification_events": "Kalıcı bildirim oluşturan olaylar"
+                },
+                "data_description": {
+                    "bypass_switches": "Atlama anahtarları, kurma öncesinde bir cihazı devre dışı bırakmanı sağlar. 'Otomatik' bunları yalnızca Ajax hesabının cihazları devre dışı bırakma izni varsa oluşturur.",
+                    "expose_arm_home": "Alarm paneline bir Evde Devreye Alma modu ekler. Gece modunu yansıtır ve esas olarak Amazon Alexa veya Nabu Casa Cloud için gereklidir. Bunları kullanmıyorsanız yinelenen düğmeyi gizlemek için kapatın.",
+                    "delay_panel_states": "Açıkken alarm paneli, hub bir dedektörün \"Çıkarken gecikme\" süresini işletirken \"arming\", bir \"Girerken gecikme\" sürerken \"pending\" gösterir; ikisi de bizim bir zamanlayıcımıza değil hub'ın kendi sinyallerine dayanır. Gecikmesi olmayan dedektörler (anlık alarm) \"arming\" sırasında zaten etkindir. \"armed_away\" bekleyen otomasyonlar çıkış gecikmesi tamamlandığında tetiklenir. Hub'ın ham durumu \"hub_state\" özniteliğinde kalır.",
+                    "disable_push_warning": "Bilerek push olmadan çalışıyorsanız etkinleştirin. Yinelenen \"FCM yapılandırılmadı\" hatırlatmasını ve Onarım kartını gizler. Gerçek zamanlı olaylar (kapı zili, kurma/devre dışı bırakma, alarm) FCM'yi yapılandırana kadar Home Assistant'a ulaşmaz.",
+                    "persistent_notifications": "Açıldığında, seçilen olaylar kapatılana veya Home Assistant yeniden başlatılana kadar görünür kalan kalıcı Home Assistant bildirimleri olarak gösterilir. Bu olaylar push (FCM) üzerinden iletilir; ulaşmaları için push yapılandırılmış olmalıdır.",
+                    "persistent_notification_events": "Hangi olayların kalıcı bildirim oluşturacağı. Varsayılan olarak gerçek olaylar (alarm, panik, kurcalama, yangın, CO, su baskını, cam kırılması). Kurma/çözme, hareket veya zili de istiyorsanız ekleyin."
+                }
+            }
+        }
+    },
+    "system_health": {
+        "info": {
+            "can_reach_server": "Ajax bulutuna erisim (gRPC ana makinesi)",
+            "configured_accounts": "Yapilandirilmis hesaplar",
+            "spaces": "Alanlar (hub'lar)",
+            "hts_connected": "Bagli HTS akislari",
+            "fcm_connected": "Bagli FCM push istemcileri",
+            "pushes_received": "Alinan push'lar",
+            "last_push": "Son alinan push",
+            "last_poll": "Son basarili sorgu"
+        }
+    },
+    "services": {
+        "force_arm": {
+            "name": "Zorla kurma",
+            "description": "Acik sensorleri ve aktif alarmlari yok sayarak sistemi kurun.",
+            "fields": {
+                "entity_id": {
+                    "name": "Varlık",
+                    "description": "Zorla kurulacak alarm paneli. Belirtilmezse tüm paneller kurulur."
+                }
+            }
+        },
+        "force_arm_night": {
+            "name": "Zorla gece modu",
+            "description": "Acik sensorleri ve aktif alarmlari yok sayarak gece modunu etkinlestirin.",
+            "fields": {
+                "entity_id": {
+                    "name": "Varlık",
+                    "description": "Zorla kurulacak alarm paneli. Belirtilmezse tüm paneller kurulur."
+                }
+            }
+        },
+        "disarm_night_mode": {
+            "name": "Gece modunu devre dışı bırak",
+            "description": "Bağımsız olarak (dışarıda modu) kurulu grupları kurulu bırakarak gece modundan çıkar. Tam devre dışı bırakmanın aksine yalnızca gece modu gruplarını devre dışı bırakır — Ajax'ın yerel \"gece modunu devre dışı bırak\" işlemi.",
+            "fields": {
+                "entity_id": {
+                    "name": "Varlık",
+                    "description": "Gece modundan çıkarılacak alanın alarm paneli varlığı. Belirtilmezse tüm panellere uygulanır."
+                }
+            }
+        },
+        "press_panic_button": {
+            "name": "Panik butonuna bas (SOS)",
+            "description": "Ajax SOS / panik butonunu bir alanda tetikler. Resmi mobil uygulamadaki kırmızı SOS butonuyla aynı uç noktayı çağırır ve bir Panik alarmını izleme istasyonuna (CRA) iletir; bu da çoğu sözleşmede doğrulama pencerelerini atlayarak anında polis sevkini tetikler. Yalnızca gerçek acil durumlarda kullanın. confirm alanı true olarak ayarlanmalı, aksi takdirde çağrı reddedilir.",
+            "fields": {
+                "confirm": {
+                    "name": "Paniği onayla",
+                    "description": "true olarak ayarlanmalıdır. Otomasyonların bu hizmeti yanlışlıkla tetiklemesini önleyen güvenlik kilidi olarak çalışır."
+                },
+                "entity_id": {
+                    "name": "Varlık",
+                    "description": "Panik butonu basılacak alanın alarm paneli varlığı. Atlanırsa panik tüm yapılandırılmış alanlara gönderilir."
+                },
+                "latitude": {
+                    "name": "Enlem",
+                    "description": "Çağrı yapanın isteğe bağlı enlemi Ajax'a iletilir. Boylamla birlikte kullanın."
+                },
+                "longitude": {
+                    "name": "Boylam",
+                    "description": "Çağrı yapanın isteğe bağlı boylamı Ajax'a iletilir. Enlemle birlikte kullanın."
+                }
+            }
+        },
+        "set_photo_on_demand_mode": {
+            "name": "Set Photo on Demand mode",
+            "description": "Enable or disable Photo on Demand mode on a hub. Two independent channels can be toggled separately — user requests (whether hub users can request photos from the Ajax app) and scenarios (whether scenarios / automations can trigger captures). Leave a field unset to keep its current value. At least one is required.",
+            "fields": {
+                "user": {
+                    "name": "User requests",
+                    "description": "When set, enables or disables on-demand photo requests initiated by hub users. Leave unset to keep the current value."
+                },
+                "scenario": {
+                    "name": "Scenarios",
+                    "description": "When set, enables or disables Photo on Demand captures triggered by Ajax scenarios / automations. Leave unset to keep the current value."
+                },
+                "entity_id": {
+                    "name": "Entity",
+                    "description": "Alarm panel entity for the space whose hub mode to update. If omitted, applies to every configured space."
+                }
+            }
+        },
+        "refresh_alarm_images": {
+            "name": "Refresh alarm camera images",
+            "description": "Import recent alarm photos into local albums without taking a new photo. New alarm pushes import automatically. Manual backfill is limited to once per five minutes per space, with one history query and at most ten media streams; completed local albums are skipped.",
+            "fields": {
+                "entity_id": {
+                    "name": "Entity",
+                    "description": "Alarm panel entity for the space to import. If omitted, imports from every configured space."
+                }
+            }
+        },
+        "list_client_sessions": {
+            "name": "List account sessions",
+            "description": "Return active Ajax account sessions for manual inspection on demand. This service calls an internal Ajax endpoint that may rate limit frequent requests; do not poll it in automations. The currently active Aegis session is marked is_current when it can be identified.",
+            "fields": {
+                "entry_id": {
+                    "name": "Config entry ID",
+                    "description": "Required when more than one Aegis account is configured."
+                }
+            }
+        },
+        "terminate_client_session": {
+            "name": "Terminate account session",
+            "description": "Immediately log the selected other device out of the Ajax account. Obtain its session ID through list_client_sessions. The integration never terminates its own session.",
+            "fields": {
+                "session_id": {
+                    "name": "Session ID",
+                    "description": "Session ID returned by list_client_sessions."
+                },
+                "confirm": {
+                    "name": "Confirm termination",
+                    "description": "Must be true to immediately terminate the selected session."
+                },
+                "entry_id": {
+                    "name": "Config entry ID",
+                    "description": "Required when more than one Aegis account is configured."
+                }
+            }
+        },
+        "terminate_other_client_sessions": {
+            "name": "Terminate all other account sessions",
+            "description": "Immediately log all other devices out of the Ajax account. This signs out other active Ajax mobile and desktop apps. The integration never terminates its own session.",
+            "fields": {
+                "confirm": {
+                    "name": "Confirm termination",
+                    "description": "Must be true to immediately terminate all other sessions."
+                },
+                "entry_id": {
+                    "name": "Config entry ID",
+                    "description": "Required when more than one Aegis account is configured."
+                }
+            }
+        }
+    },
+    "issues": {
+        "hub_offline_24h": {
+            "title": "Hub {hub_name} {hours_offline} saatten fazla cevrimdisi",
+            "description": "Aegis, {hub_name} hub'i icin {hours_offline} saat boyunca kesintisiz OFFLINE durumu aliyor. Hub yeniden baglanana kadar varliklar guncel olmayacak. Yaygin nedenler: hub'in fisten cekilmesi, ag kesintisi veya hub'in Ajax bulutuna giden baglantisinin bir guvenlik duvari tarafindan engellenmesi. Aegis hub'i tekrar cevrimici gordugunde sorun otomatik olarak kapanir."
+        },
+        "hts_chronic_failure": {
+            "title": "Hub ag sensorleri zayiflamis",
+            "description": "{space_id} alani icin HTS baglantisi (Ethernet / Wi-Fi / GSM / sebeke gucu sensorlerini besleyen), {minutes_failing} dakikadir ayakta kalamiyor. Hub ag sensorleri toparlanana kadar kullanilamaz olacak. En yaygin neden: Ajax HTS uc noktalarina giden trafigi engelleyen bir guvenlik duvari veya Home Assistant ile Ajax bulutu arasindaki surekli ag kararsizligi. HTS yeniden baglandiginda sorun otomatik olarak kapanir."
+        },
+        "fcm_push_stuck": {
+            "title": "Anlık bildirimler kesildi — aynı mesaj bağlantıyı sürekli koparıyor",
+            "description": "Push bağlantısı aynı mesaj işlenirken üst üste {terminations} kez koptu. Bu mesaj hiçbir zaman onaylanmadığı için Ajax'ın push servisi onu tekrar gönderiyor ve her yeni bağlantı aynı şekilde sona eriyor; dolayısıyla durum kendi kendine düzelmiyor. Alarm durumu etkilenmez (yoklamadan ve hub bağlantısından gelir, asla push'tan gelmez), ancak bu süre boyunca kapı zili gibi gerçek zamanlı olaylar kaybedilir. Aegis, döngüyü kırmak için push kaydını değiştirdi; push bir dakika içinde geri dönmelidir. Bağlantı bir süre kararlı kaldığında bu uyarı kendiliğinden kaybolur. Tekrar ortaya çıkarsa lütfen GitHub'da bildirin (issue #373)."
+        },
+        "grpcio_version_mismatch": {
+            "title": "Aegis grpcio {required} veya daha yeni gerektirir (bulunan {current})",
+            "description": "Aegis, Ajax bulutuyla konusan gRPC kanali icin `grpcio` modulune bagimlidir ve Home Assistant kurulumunuzda `grpcio` {current} bulunuyor. {required} altinda oturum acma, anlamsiz HTTP/2 hatalariyla basarisiz olabilir. Home Assistant Core veya Container'da entegrasyon manifest dosyasi kurulumda surumu sabitler, ancak Home Assistant OS'ta calisma zamani sistem genelinde bir grpcio kullanir ve bu manifest onu etkileyemez — genellikle daha yeni bir grpcio iceren bir Home Assistant OS surumune yukseltmeniz gerekir. Surum {required} esiglini astiginda sorun bir sonraki yeniden yuklemede otomatik olarak kapanir."
+        },
+        "fcm_credentials_invalid": {
+            "title": "Push bildirimleri devre disi - FCM kimlik bilgileri reddedildi",
+            "fix_flow": {
+                "step": {
+                    "init": {
+                        "title": "Aegis FCM kimlik bilgilerini onar",
+                        "description": "Bu hesap icin Firebase Cloud Messaging kaydi basarisiz oldu. Push'a bagimli ozellikler (anlik armed/disarmed durumu, security_event varligi, MotionCam'den foto URL'leri) bu duzeltilene kadar daha yavas polling'e dusecektir. Dort degeri asagida yeniden girin. Entegrasyon yeniden yuklenecek ve yeni kimlik bilgileri calisiyorsa Repair otomatik olarak kapanacak; calismiyorsa form yeniden gorunecektir. README'deki 'How to obtain FCM credentials' bolumune bakin.",
+                        "data": {
+                            "fcm_project_id": "FCM Project ID",
+                            "fcm_app_id": "FCM App ID",
+                            "fcm_api_key": "FCM API Key",
+                            "fcm_sender_id": "FCM Sender ID"
+                        }
+                    }
+                },
+                "abort": {
+                    "entry_missing": "Bu Repair'in olusturuldugu Aegis hesabi artik yapilandirilmis degil. Onarilacak bir sey yok."
+                }
+            }
+        },
+        "fcm_credentials_malformed": {
+            "title": "Push bildirimleri kapatildi — FCM kimlik bilgileri bozuk ({problem})",
+            "fix_flow": {
+                "step": {
+                    "init": {
+                        "title": "Aegis FCM kimlik bilgilerini onar",
+                        "description": "Aegis, Google ile iletisime gecmeden once yapilandirilmis FCM kimlik bilgilerinde yapisal bir sorun tespit etti: {problem}. Dort degerin de ayni Firebase projesinden gelmesi gerekir. README'deki 'Where the values live' bolumune gore co-branded Ajax uygulamandan tekrar cikar ve dordunu de asagiya yeniden gir. Entegrasyon yeniden yuklenecek, kontrol tekrar calisacak ve degerler tutarli oldugunda Repair kapanacak.",
+                        "data": {
+                            "fcm_project_id": "FCM Project ID",
+                            "fcm_app_id": "FCM App ID",
+                            "fcm_api_key": "FCM API Key",
+                            "fcm_sender_id": "FCM Sender ID"
+                        }
+                    }
+                },
+                "abort": {
+                    "entry_missing": "Bu Repair'in olusturuldugu Aegis hesabi artik yapilandirilmis degil. Onarilacak bir sey yok."
+                }
+            }
+        },
+        "fcm_not_configured": {
+            "title": "Push bildirimleri yapilandirilmadi — gercek zamanli olaylar devre disi",
+            "fix_flow": {
+                "step": {
+                    "init": {
+                        "title": "Aegis FCM kimlik bilgilerini yapilandir",
+                        "description": "Bu hesap icin FCM kimlik bilgileri hic ayarlanmadi, bu yuzden Ajax'tan gelen gercek zamanli olaylar (kapi zili, kurma/devre disi birakma, alarm) Home Assistant'a ulasamiyor — entegrasyon her 5 dakikada bir polling'e duser. Asagida co-brand Ajax uygulamaniz icin dort FCM degerini girin ve entegrasyon yeniden yuklenecek. Bunlari uygulamanizdan cikarmak icin README'deki 'How to obtain FCM credentials' bolumune bakin.",
+                        "data": {
+                            "fcm_project_id": "FCM Project ID",
+                            "fcm_app_id": "FCM App ID",
+                            "fcm_api_key": "FCM API Key",
+                            "fcm_sender_id": "FCM Sender ID"
+                        }
+                    }
+                },
+                "abort": {
+                    "entry_missing": "Bu Repair'in olusturuldugu Aegis hesabi artik yapilandirilmadi. Onarilacak bir sey yok."
+                }
+            }
+        },
+        "fcm_never_delivered": {
+            "title": "Push notifications are not arriving",
+            "description": "Aegis has seen {events} events from your hub while the push connection was up, and not one of them arrived over push. Your alarm state is not affected — it comes from the hub connection and from polling, never from push — but real-time events such as doorbell rings and intrusion alarms reach Home Assistant only over push, so those are being lost.\n\nThree things produce this and they look identical from here: the four FCM values may belong to a Firebase project your co-branded app's push provider does not send through, another registration may be holding your Ajax account's push destination, or the push connection may never have completed.\n\nWhat helps: re-enter the four values for your co-branded app, under Settings > Repairs or in the integration options. If the same Ajax account is used by another Home Assistant instance, try a separate account for this integration. This notice clears by itself as soon as one push arrives."
+        }
+    },
+    "entity": {
+        "button": {
+            "capture_photo": {
+                "name": "Fotoğraf çek"
+            },
+            "refresh_hub": {
+                "name": "Hub'ı yenile"
+            }
+        },
+        "event": {
+            "security_event": {
+                "name": "Güvenlik olayı",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "alarm": "Alarm",
+                            "arm": "Kuruldu",
+                            "arm_night": "Gece modu etkin",
+                            "battery_low": "Düşük pil",
+                            "co_alarm": "CO alarmı",
+                            "connection_lost": "Bağlantı kesildi",
+                            "disarm": "Devre dışı",
+                            "disarm_night": "Gece modu devre dışı",
+                            "door_open": "Kapı açıldı",
+                            "doorbell_pressed": "Zile basıldı",
+                            "fire": "Yangın",
+                            "flood": "Su baskını",
+                            "glass_break": "Cam kırılması",
+                            "malfunction": "Arıza",
+                            "motion": "Hareket",
+                            "panic": "Panik",
+                            "tamper": "Müdahale"
+                        }
+                    }
+                }
+            },
+            "doorbell": {
+                "name": "Kapı zili",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "ring": "Zile basıldı"
+                        }
+                    }
+                }
+            },
+            "button_press": {
+                "name": "Düğme",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "pressed": "Basıldı"
+                        }
+                    }
+                }
+            }
+        },
+        "binary_sensor": {
+            "monitoring": {
+                "name": "Güvenlik merkezi bağlantısı"
+            },
+            "gsm": {
+                "name": "Hücresel ağ bağlı"
+            },
+            "lid": {
+                "name": "Kapak açık"
+            },
+            "ext_contact": {
+                "name": "Harici kontak açık"
+            },
+            "ext_alert": {
+                "name": "Harici kontak alarmı"
+            },
+            "drilling": {
+                "name": "Gövde delme algılandı"
+            },
+            "anti_mask": {
+                "name": "Örtme koruması"
+            },
+            "malfunction": {
+                "name": "Arıza"
+            },
+            "interference": {
+                "name": "Parazit"
+            },
+            "relay_stuck": {
+                "name": "Röle takılı"
+            },
+            "always_active": {
+                "name": "Her zaman aktif"
+            },
+            "glass_break": {
+                "name": "Cam kırılması"
+            },
+            "vibration": {
+                "name": "Titreşim"
+            },
+            "tilt": {
+                "name": "Eğilme"
+            },
+            "steam": {
+                "name": "Buhar"
+            },
+            "wire_input_alert": {
+                "name": "Kablolu giriş uyarısı"
+            },
+            "tamper": {
+                "name": "Kasa kurcalama"
+            },
+            "connectivity": {
+                "name": "Bağlantı"
+            },
+            "problem": {
+                "name": "Cihaz sorunu"
+            },
+            "ethernet": {
+                "name": "Ethernet"
+            },
+            "wifi": {
+                "name": "Wi-Fi"
+            },
+            "mains_power": {
+                "name": "Şebeke gücü"
+            },
+            "external_contact_open": {
+                "name": "Kontak"
+            },
+            "delay_when_leaving": {
+                "name": "Çıkışta gecikme"
+            },
+            "siren_on_panic_button": {
+                "name": "Panik düğmesinde siren"
+            },
+            "siren_on_any_tamper": {
+                "name": "Kurcalamada siren"
+            }
+        },
+        "sensor": {
+            "monitoring_company": {
+                "name": "İzleme merkezi şirketi"
+            },
+            "signal_strength": {
+                "name": "Sinyal gücü"
+            },
+            "mobile_network_type": {
+                "name": "Mobil ağ türü"
+            },
+            "wifi_signal_level": {
+                "name": "Wi-Fi sinyal seviyesi"
+            },
+            "sim_status": {
+                "name": "SIM durumu"
+            },
+            "sim_imei": {
+                "name": "IMEI"
+            },
+            "connection_type": {
+                "name": "Bağlantı türü"
+            },
+            "wifi_ssid": {
+                "name": "Wi-Fi SSID"
+            },
+            "wifi_ip": {
+                "name": "Wi-Fi IP adresi"
+            },
+            "ethernet_ip": {
+                "name": "Ethernet IP adresi"
+            },
+            "ethernet_gateway": {
+                "name": "Ethernet ağ geçidi"
+            },
+            "ethernet_dns": {
+                "name": "Ethernet DNS"
+            },
+            "cellular_signal": {
+                "name": "Hücresel sinyal"
+            },
+            "cellular_network": {
+                "name": "Hücresel ağ"
+            },
+            "current": {
+                "name": "Akım"
+            },
+            "voltage": {
+                "name": "Voltaj"
+            },
+            "energy_consumed": {
+                "name": "Tüketilen elektrik enerjisi"
+            },
+            "power_derived": {
+                "name": "Güç"
+            },
+            "power": {
+                "name": "Güç"
+            },
+            "channels_online": {
+                "name": "Çevrimiçi kanallar"
+            },
+            "channels_total": {
+                "name": "Toplam kanal"
+            }
+        },
+        "switch": {
+            "channel_1": {
+                "name": "Kanal 1"
+            },
+            "channel_2": {
+                "name": "Kanal 2"
+            },
+            "bypass": {
+                "name": "Atlama"
+            },
+            "chime": {
+                "name": "Zil sesi"
+            }
+        },
+        "number": {
+            "siren_alarm_duration": {
+                "name": "Alarm süresi"
+            }
+        },
+        "select": {
+            "siren_volume_level": {
+                "name": "Siren ses düzeyi",
+                "state": {
+                    "very_loud": "Çok yüksek",
+                    "loud": "Yüksek",
+                    "quiet": "Düşük",
+                    "disabled": "Devre dışı"
+                }
+            }
+        },
+        "update": {
+            "hub_firmware": {
+                "name": "Donanım yazılımı"
+            },
+            "device_firmware": {
+                "name": "Donanım yazılımı"
+            }
+        }
+    },
+    "exceptions": {
+        "manual_refresh_hts_unavailable": {
+            "message": "Hub ağ bağlantısı (HTS) şu anda etkin değil; manuel yenileme çalıştırılamaz."
+        },
+        "alarm_backfill_rate_limited": {
+            "message": "Alarm photos were recently refreshed for this space; wait {seconds} more seconds and try again."
+        },
+        "manual_refresh_rate_limited": {
+            "message": "Hub yenilemesi az önce istendi; {seconds} saniye daha bekleyin ve tekrar deneyin."
+        },
+        "photo_capture_failed": {
+            "message": "Fotoğraf çekimi tamamlanmadı. Hub isteği reddetmiş veya hiç görüntü döndürmemiş olabilir; ayrıntılar için günlükleri kontrol edin."
+        },
+        "photo_no_push": {
+            "message": "İstek üzerine fotoğraf, bu entegrasyon için yapılandırılmamış olan FCM anlık bildirimlerini gerektirir."
+        },
+        "photo_capture_timeout": {
+            "message": "Kameranın çekilen fotoğrafı teslim etmesi beklenirken zaman aşımına uğradı. Tekrar deneyin ve kameranın çevrimiçi olduğunu kontrol edin."
+        },
+        "command_permission_denied": {
+            "message": "Ajax hesabının bu işlemi gerçekleştirme izni yok."
+        },
+        "command_hub_offline": {
+            "message": "Hub çevrimdışı, bu yüzden komut gönderilemedi."
+        },
+        "command_hub_wrong_state": {
+            "message": "Hub şu anda bu işleme izin veren bir durumda değil."
+        },
+        "command_alarm_reset_needed": {
+            "message": "Bu işlem yapılmadan önce etkin bir alarmın sıfırlanması gerekiyor."
+        },
+        "command_not_performed": {
+            "message": "Hub komutu gerçekleştirmedi."
+        },
+        "command_unknown": {
+            "message": "Hub komutu tanımadı."
+        },
+        "command_failed": {
+            "message": "Komut tamamlanamadı. Hub şunu döndürdü: {reason}."
+        }
+    },
+    "device_automation": {
+        "trigger_type": {
+            "alarm": "Alarm",
+            "arm": "Kuruldu",
+            "arm_night": "Gece modu etkin",
+            "battery_low": "Düşük pil",
+            "co_alarm": "CO alarmı",
+            "connection_lost": "Bağlantı kesildi",
+            "disarm": "Devre dışı",
+            "disarm_night": "Gece modu devre dışı",
+            "door_open": "Kapı açıldı",
+            "doorbell_pressed": "Zile basıldı",
+            "fire": "Yangın",
+            "flood": "Su baskını",
+            "glass_break": "Cam kırılması",
+            "malfunction": "Arıza",
+            "motion": "Hareket",
+            "panic": "Panik",
+            "tamper": "Müdahale"
+        }
+    },
+    "selector": {
+        "bypass_switches": {
+            "options": {
+                "auto": "Otomatik (yalnızca hesabın cihazları devre dışı bırakabiliyorsa)",
+                "always": "Her zaman",
+                "never": "Asla"
+            }
+        },
+        "persistent_notification_events": {
+            "options": {
+                "alarm": "Alarm",
+                "arm": "Kuruldu",
+                "arm_night": "Gece modu etkin",
+                "battery_low": "Düşük pil",
+                "co_alarm": "CO alarmı",
+                "connection_lost": "Bağlantı kesildi",
+                "disarm": "Devre dışı",
+                "disarm_night": "Gece modu devre dışı",
+                "door_open": "Kapı açıldı",
+                "doorbell_pressed": "Zile basıldı",
+                "fire": "Yangın",
+                "flood": "Su baskını",
+                "glass_break": "Cam kırılması",
+                "malfunction": "Arıza",
+                "motion": "Hareket",
+                "panic": "Panik",
+                "tamper": "Müdahale"
+            }
+        }
+    }
+}

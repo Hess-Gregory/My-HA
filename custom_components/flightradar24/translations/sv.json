@@ -1,0 +1,73 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Fyll i den plats som ska spåras.",
+        "data": {
+          "radius": "Radie i meter",
+          "latitude": "Latitud",
+          "longitude": "Longitud",
+          "scan_interval": "Uppdateringsintervall i sekunder"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "credentials_incomplete": "Ange både användarnamn och lösenord, eller lämna båda tomma.",
+      "invalid_auth": "Ogiltigt Flightradar24-användarnamn eller lösenord.",
+      "login_failed": "Kunde inte logga in på Flightradar24. Kontrollera dina uppgifter och försök igen."
+    },
+    "step": {
+      "init": {
+        "description": "Redigera parametrar för platsen som spåras.",
+        "data": {
+          "radius": "Radie i meter",
+          "latitude": "Latitud",
+          "longitude": "Longitud",
+          "scan_interval": "Uppdateringsintervall i sekunder",
+          "min_altitude": "Minsta höjd i fot",
+          "max_altitude": "Högsta höjd i fot",
+          "enable_tracker": "Aktivera device_tracker for extra flygspårning",
+          "auto_cleanup": "Aktivera automatisk rensning av spårade landade flygningar",
+          "tracker_name_style": "Namngivningsstil för kartspårare",
+          "username": "Användarnamn (Valfritt)",
+          "password": "Lösenord (Valfritt)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "in_area": { "name": "Flyg i området" },
+      "entered": { "name": "Område äntrat" },
+      "exited": { "name": "Område lämnat" },
+      "additional_tracked": { "name": "Extra spårade" },
+      "airport_arrivals": { "name": "Flygplatsankomster" },
+      "airport_departures": { "name": "Flygplatsavgångar" },
+      "airport_arrivals_on_time": { "name": "Ankomster i tid" },
+      "airport_arrivals_delayed": { "name": "Försenade ankomster" },
+      "airport_arrivals_delay_average": { "name": "Genomsnittlig ankomstförsening" },
+      "airport_arrivals_delay_index": { "name": "Ankomstförseningsindex" },
+      "airport_arrivals_canceled": { "name": "Inställda ankomster" },
+      "airport_departures_on_time": { "name": "Avgångar i tid" },
+      "airport_departures_delayed": { "name": "Försenade avgångar" },
+      "airport_departures_delay_average": { "name": "Genomsnittlig avgångsförsening" },
+      "airport_departures_delay_index": { "name": "Avgångsförseningsindex" },
+      "airport_departures_canceled": { "name": "Inställda avgångar" }
+    },
+    "button": {
+      "clear_tracked": { "name": "Rensa spårningslista" },
+      "tracked_clear": { "name": "Rensa extra spårade" }
+    },
+    "switch": {
+      "scanning": { "name": "API-datahämtning" },
+      "most_tracked": { "name": "Mest spårade" }
+    },
+    "text": {
+      "add_track": { "name": "Lägg till i spårning" },
+      "remove_track": { "name": "Ta bort från spårning" },
+      "airport_track": { "name": "Flygplats-spårning" }
+    }
+  }
+}

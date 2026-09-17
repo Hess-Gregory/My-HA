@@ -1,0 +1,449 @@
+"""WebSocket API for Card Builder integration."""
+from __future__ import annotations
+
+from typing import Any
+
+import base64
+import mimetypes
+from pathlib import Path
+
+import voluptuous as vol
+
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.collection import DictStorageCollectionWebsocket
+from homeassistant.components import websocket_api
+from homeassistant.components.sensor.const import UNIT_CONVERTERS as SENSOR_UNIT_CONVERTERS
+
+from .account import websocket as account_websocket
+from .storage import (
+    CSSCustomPropertyStorageCollection,
+    CardStorageCollection,
+    EditorSettingsStore,
+    StylePresetStorageCollection,
+)
+from .const import (
+    DOMAIN,
+    DATA_KEY_EDITOR_SETTINGS,
+    DATA_KEY_MEDIA,
+    EDITOR_SETTINGS_WS_GET,
+    EDITOR_SETTINGS_WS_UPDATE,
+    MEDIA_DIR_NAME,
+    MEDIA_REFERENCE_LOCAL_ROOT,
+    MEDIA_WS_DELETE,
+    MEDIA_WS_LIST,
+    MEDIA_WS_UPLOAD,
+    UNIT_WS_CONVERSION_INFO,
+    WS_BASE,
+)
+
+CARD_SOURCE_VALUES = ["local", "marketplace"]
+MARKETPLACE_ORIGIN_VALUES = ["official", "community"]
+CARD_TIER_VALUES = ["base", "pro"]
+UNIT_CONVERTER_DOMAINS = {
+    "sensor": SENSOR_UNIT_CONVERTERS,
+}
+
+CARD_CREATE_FIELDS: dict[vol.Marker, Any] = {
+    vol.Required("name"): cv.string,
+    vol.Optional("description", default=""): cv.string,
+    vol.Required("config"): dict,
+    vol.Optional("source", default="local"): vol.In(CARD_SOURCE_VALUES),
+    vol.Optional("author", default=""): cv.string,
+    vol.Optional("marketplace_origin"): vol.In(MARKETPLACE_ORIGIN_VALUES),
+    vol.Optional("marketplace_download", default=False): cv.boolean,
+    vol.Optional("marketplace_download_version"): cv.positive_int,
+    vol.Optional("marketplace_parent_id"): cv.string,
+    vol.Optional("marketplace_parent_version"): cv.positive_int,
+    vol.Optional("meta"): dict,
+    vol.Optional("version", default=1): cv.positive_int,
+    vol.Optional("marketplace_id"): cv.string,
+    vol.Optional("group_id"): cv.string,
+    vol.Optional("license_id"): cv.string,
+    vol.Optional("tags"): vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional("categories"): vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional("min_ha_version"): cv.string,
+    vol.Optional("max_ha_version"): cv.string,
+    vol.Optional("min_builder_version"): cv.string,
+    vol.Optional("checksum"): cv.string,
+    vol.Optional("last_synced_at"): cv.string,
+    vol.Optional("tier", default="base"): vol.In(CARD_TIER_VALUES),
+}
+
+CARD_UPDATE_FIELDS: dict[vol.Marker, Any] = {
+    vol.Optional("name"): cv.string,
+    vol.Optional("description"): cv.string,
+    vol.Optional("config"): dict,
+    vol.Optional("source"): vol.In(CARD_SOURCE_VALUES),
+    vol.Optional("author"): cv.string,
+    vol.Optional("marketplace_origin"): vol.In(MARKETPLACE_ORIGIN_VALUES),
+    vol.Optional("marketplace_download"): cv.boolean,
+    vol.Optional("marketplace_download_version"): cv.positive_int,
+    vol.Optional("marketplace_parent_id"): cv.string,
+    vol.Optional("marketplace_parent_version"): cv.positive_int,
+    vol.Optional("meta"): dict,
+    vol.Optional("version"): cv.positive_int,
+    vol.Optional("marketplace_id"): cv.string,
+    vol.Optional("group_id"): cv.string,
+    vol.Optional("license_id"): cv.string,
+    vol.Optional("tags"): vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional("categories"): vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional("min_ha_version"): cv.string,
+    vol.Optional("max_ha_version"): cv.string,
+    vol.Optional("min_builder_version"): cv.string,
+    vol.Optional("checksum"): cv.string,
+    vol.Optional("last_synced_at"): cv.string,
+    vol.Optional("tier"): vol.In(CARD_TIER_VALUES),
+    vol.Optional("_skip_version_bump"): cv.boolean,
+}
+
+PRESET_CREATE_FIELDS: dict[vol.Marker, Any] = {
+    vol.Required("name"): cv.string,
+    vol.Optional("description", default=""): cv.string,
+    vol.Optional("extends_preset_id"): vol.Any(cv.string, None),
+    vol.Required("data"): dict,
+}
+
+PRESET_UPDATE_FIELDS: dict[vol.Marker, Any] = {
+    vol.Optional("name"): cv.string,
+    vol.Optional("description"): cv.string,
+    vol.Optional("extends_preset_id"): vol.Any(cv.string, None),
+    vol.Optional("data"): dict,
+}
+
+CSS_CUSTOM_PROPERTY_CREATE_FIELDS: dict[vol.Marker, Any] = {
+    vol.Required("name"): cv.string,
+    vol.Required("syntax"): cv.string,
+    vol.Optional("inherits", default=False): cv.boolean,
+    vol.Required("initial_value"): cv.string,
+}
+
+CSS_CUSTOM_PROPERTY_UPDATE_FIELDS: dict[vol.Marker, Any] = {}
+
+EDITOR_BACKGROUND_FIELDS = {
+    vol.Required("mode"): vol.In(["color", "value"]),
+    vol.Optional("color"): cv.string,
+    vol.Optional("value"): cv.string,
+}
+
+EDITOR_SETTINGS_FIELDS = {
+    vol.Optional("options"): {
+        vol.Optional("background"): EDITOR_BACKGROUND_FIELDS,
+    },
+}
+
+
+def _get_media_dir(hass: HomeAssistant) -> Path:
+    media_dir = hass.data.get(DOMAIN, {}).get(DATA_KEY_MEDIA)
+    if not media_dir:
+        raise HomeAssistantError("Media directory not initialized")
+    return Path(media_dir)
+
+
+def _get_editor_settings_store(hass: HomeAssistant) -> EditorSettingsStore:
+    store = hass.data.get(DOMAIN, {}).get(DATA_KEY_EDITOR_SETTINGS)
+    if not store:
+        raise HomeAssistantError("Editor settings storage not initialized")
+    return store
+
+
+def _resolve_media_path(base_dir: Path, relative: str) -> Path:
+    safe_relative = (relative or "").lstrip("/")
+    target = (base_dir / safe_relative).resolve()
+    base_resolved = base_dir.resolve()
+    if target != base_resolved and base_resolved not in target.parents:
+        raise HomeAssistantError("Invalid media path")
+    return target
+
+
+def _build_media_reference(relative: str) -> str:
+    clean_relative = (relative or "").strip("/")
+    if not clean_relative:
+        return MEDIA_REFERENCE_LOCAL_ROOT
+    return f"{MEDIA_REFERENCE_LOCAL_ROOT}/{clean_relative}"
+
+
+def _list_media_entries(base_dir: Path, target_dir: Path) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+    for entry in target_dir.iterdir():
+        if entry.name.startswith("."):
+            continue
+        is_dir = entry.is_dir()
+        rel_path = entry.relative_to(base_dir).as_posix()
+        if is_dir:
+            entries.append(
+                {
+                    "title": entry.name,
+                    "media_content_id": _build_media_reference(rel_path),
+                    "media_content_type": "directory",
+                    "media_class": "directory",
+                    "can_expand": True,
+                }
+            )
+            continue
+
+        mime_type, _ = mimetypes.guess_type(entry.name)
+        media_type = mime_type or "application/octet-stream"
+        media_class = "image" if mime_type and mime_type.startswith("image/") else "file"
+        entries.append(
+            {
+                "title": entry.name,
+                "media_content_id": _build_media_reference(rel_path),
+                "media_content_type": media_type,
+                "media_class": media_class,
+                "can_expand": False,
+            }
+        )
+
+    entries.sort(key=lambda item: (0 if item.get("can_expand") else 1, item.get("title", "").lower()))
+    return entries
+
+
+def _write_media_file(target_dir: Path, filename: str, content: bytes) -> Path:
+    safe_name = Path(filename).name
+    if not safe_name:
+        raise HomeAssistantError("Invalid filename")
+    if not target_dir.exists() or not target_dir.is_dir():
+        raise HomeAssistantError("Target folder does not exist")
+    target_path = (target_dir / safe_name).resolve()
+    if target_path.parent != target_dir.resolve():
+        raise HomeAssistantError("Invalid target path")
+    target_path.write_bytes(content)
+    return target_path
+
+
+def _delete_media_file(path: Path) -> None:
+    if not path.exists():
+        raise HomeAssistantError("File not found")
+    if path.is_dir():
+        raise HomeAssistantError("Deleting folders is not supported")
+    path.unlink()
+
+
+def async_setup(
+    hass: HomeAssistant,
+    card_storage: CardStorageCollection,
+    preset_storage: StylePresetStorageCollection,
+    custom_property_storage: CSSCustomPropertyStorageCollection,
+) -> None:
+    """Set up the Card Builder WebSocket API."""
+
+    card_websocket = DictStorageCollectionWebsocket(
+        card_storage,
+        f"{WS_BASE}/cards",
+        "card",
+        CARD_CREATE_FIELDS,
+        CARD_UPDATE_FIELDS,
+    )
+
+    preset_websocket = DictStorageCollectionWebsocket(
+        preset_storage,
+        f"{WS_BASE}/style_presets",
+        "style_preset",
+        PRESET_CREATE_FIELDS,
+        PRESET_UPDATE_FIELDS,
+    )
+
+    css_custom_property_websocket = DictStorageCollectionWebsocket(
+        custom_property_storage,
+        f"{WS_BASE}/css_custom_properties",
+        "custom_property",
+        CSS_CUSTOM_PROPERTY_CREATE_FIELDS,
+        CSS_CUSTOM_PROPERTY_UPDATE_FIELDS,
+    )
+
+    card_websocket.async_setup(hass)
+    preset_websocket.async_setup(hass)
+    css_custom_property_websocket.async_setup(hass)
+
+    # Media Management
+    websocket_api.async_register_command(hass, ws_media_list)
+    websocket_api.async_register_command(hass, ws_media_upload)
+    websocket_api.async_register_command(hass, ws_media_delete)
+    websocket_api.async_register_command(hass, ws_unit_conversion_info)
+    websocket_api.async_register_command(hass, ws_editor_settings_get)
+    websocket_api.async_register_command(hass, ws_editor_settings_update)
+    # Account Management
+    account_websocket.async_setup(hass)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): EDITOR_SETTINGS_WS_GET,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_editor_settings_get(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """Return global editor settings."""
+    try:
+        store = _get_editor_settings_store(hass)
+        settings = await store.async_load_settings()
+        connection.send_result(msg["id"], settings)
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "editor_settings_get_failed", str(err))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): EDITOR_SETTINGS_WS_UPDATE,
+        vol.Required("settings"): EDITOR_SETTINGS_FIELDS,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_editor_settings_update(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """Update global editor settings."""
+    try:
+        store = _get_editor_settings_store(hass)
+        settings = await store.async_save_settings(msg["settings"])
+        connection.send_result(msg["id"], settings)
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "editor_settings_update_failed", str(err))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): UNIT_WS_CONVERSION_INFO,
+        vol.Required("domain"): cv.string,
+        vol.Required("device_class"): cv.string,
+        vol.Required("from_unit"): cv.string,
+        vol.Required("to_unit"): cv.string,
+    }
+)
+@websocket_api.async_response
+async def ws_unit_conversion_info(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """Return the multiplier needed to convert one unit into another."""
+    domain = msg["domain"]
+    device_class = msg["device_class"]
+    from_unit = msg["from_unit"]
+    to_unit = msg["to_unit"]
+
+    converters = UNIT_CONVERTER_DOMAINS.get(domain)
+    converter = converters.get(device_class) if converters else None
+    if not converter:
+        connection.send_result(msg["id"], {"supported": False})
+        return
+
+    try:
+        multiplier = converter.convert(1, from_unit, to_unit)
+    except (KeyError, TypeError, ValueError):
+        connection.send_result(msg["id"], {"supported": False})
+        return
+
+    connection.send_result(
+        msg["id"],
+        {
+            "supported": True,
+            "multiplier": multiplier,
+            "from_unit": from_unit,
+            "to_unit": to_unit,
+        },
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): MEDIA_WS_LIST,
+        vol.Optional("path", default=""): cv.string,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_media_list(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """List files in the Card Builder media directory."""
+    try:
+        base_dir = _get_media_dir(hass)
+        target_dir = _resolve_media_path(base_dir, msg.get("path", ""))
+        if not target_dir.exists() or not target_dir.is_dir():
+            raise HomeAssistantError("Directory not found")
+
+        entries = await hass.async_add_executor_job(_list_media_entries, base_dir, target_dir)
+        connection.send_result(msg["id"], {"children": entries})
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "media_list_failed", str(err))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): MEDIA_WS_UPLOAD,
+        vol.Optional("path", default=""): cv.string,
+        vol.Required("filename"): cv.string,
+        vol.Required("content"): cv.string,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_media_upload(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """Upload a file to the Card Builder media directory."""
+    try:
+        base_dir = _get_media_dir(hass)
+        target_dir = _resolve_media_path(base_dir, msg.get("path", ""))
+        payload = msg.get("content", "")
+        if not payload:
+            raise HomeAssistantError("Empty upload payload")
+
+        try:
+            raw = base64.b64decode(payload)
+        except (ValueError, TypeError) as err:
+            raise HomeAssistantError("Invalid base64 payload") from err
+
+        target_path = await hass.async_add_executor_job(
+            _write_media_file, target_dir, msg.get("filename", ""), raw
+        )
+        relative_path = target_path.relative_to(base_dir).as_posix()
+        reference = _build_media_reference(relative_path)
+        connection.send_result(
+            msg["id"],
+            {
+                "reference": reference,
+                "path": relative_path,
+                "url": f"/local/{MEDIA_DIR_NAME}/{relative_path}",
+            },
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "media_upload_failed", str(err))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): MEDIA_WS_DELETE,
+        vol.Required("path"): cv.string,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_media_delete(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict,
+) -> None:
+    """Delete a file from the Card Builder media directory."""
+    try:
+        base_dir = _get_media_dir(hass)
+        target_path = _resolve_media_path(base_dir, msg.get("path", ""))
+        await hass.async_add_executor_job(_delete_media_file, target_path)
+        connection.send_result(msg["id"], {"path": msg.get("path"), "success": True})
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "media_delete_failed", str(err))

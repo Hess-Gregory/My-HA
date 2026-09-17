@@ -1,0 +1,40 @@
+amethyst-glow Theme by Greg:
+  # ==========================================
+  # MODE SOMBRE NATIF HA (barre latérale, menus,
+  # popups "plus d'infos", pages Paramètres...)
+  # AUCUN card-mod-theme ici : uniquement des
+  # variables HA natives, pour ne pas entrer en
+  # conflit avec le card_mod déjà présent sur
+  # tes cartes (bug connu card-mod #313).
+  # ==========================================
+  modes:
+    dark:
+      primary-background-color: "#19122a"
+      secondary-background-color: "#241a38"
+      card-background-color: "#241a38"
+      primary-text-color: "#f6d68a"
+      secondary-text-color: "#d9c4f0"
+      text-primary-color: "#f6d68a"
+      disabled-text-color: "#8a7fa0"
+      divider-color: "#3c2c56"
+      primary-color: "#d9c4f0"
+      accent-color: "#f6d68a"
+      app-header-background-color: "#19122a"
+      app-header-text-color: "#f6d68a"
+      sidebar-background-color: "#19122a"
+      sidebar-text-color: "#d9c4f0"
+      sidebar-icon-color: "#d9c4f0"
+      sidebar-selected-background-color: "#3c2c56"
+      sidebar-selected-text-color: "#f6d68a"
+      sidebar-selected-icon-color: "#f6d68a"
+      switch-checked-color: "#f6d68a"
+
+  # ---- Image de fond ----
+  lovelace-background: >-
+    center / cover no-repeat fixed
+    url("/local/images/wallpaper/modern-kitchen-design-clean-elegant-comfortable-luxury-generated-by-ai.jpg")
+
+  # ---- Variables partagées (mode clair si jamais utilisé) ----
+  primary-text-color: "#f6d68a"
+  secondary-text-color: "#d9c4f0"
+  text-primary-color: "#f6d68a"

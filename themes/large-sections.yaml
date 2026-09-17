@@ -1,0 +1,8 @@
+large-sections:
+  card-mod-theme: "large-sections"
+  card-mod-view-yaml: |
+    .: |
+      .wrapper {
+        --ha-view-sections-column-max-width: 900px !important;
+        --ha-view-sections-column-min-width: 900px !important;
+      }

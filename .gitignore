@@ -1,0 +1,17 @@
+.storage/
+.cloud/
+secrets.yaml
+known_devices.yaml
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.log.*
+tts/
+image/
+deps/
+www/community/
+__pycache__/
+*.pyc
+.HA_VERSION
+.uuid

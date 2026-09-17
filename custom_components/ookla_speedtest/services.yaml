@@ -1,0 +1,26 @@
+run_speedtest:
+  name: Run Speedtest
+  description: Manually trigger one or all configured Ookla Speedtest runs.
+  fields:
+    entity_id:
+      name: Entity
+      description: Optional Ookla Speedtest entity to run only that configured test device.
+      selector:
+        entity:
+          filter:
+            integration: ookla_speedtest
+    device_id:
+      name: Device
+      description: Optional Ookla Speedtest device to run only that configured test. If omitted, all configured tests are run.
+      selector:
+        device:
+          filter:
+            integration: ookla_speedtest
+
+register_card_resources:
+  name: Register Card Resources
+  description: >
+    Automatically register Ookla Speedtest card resources in all Lovelace dashboards.
+    Run this service once after installation, then refresh your browser.
+    Cards will be available in the "Add Card" picker.
+  fields: {}

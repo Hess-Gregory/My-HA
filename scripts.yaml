@@ -1,0 +1,432 @@
+allumer_eteindre_clim_salon:
+  sequence:
+  - action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      num_repeats: 1
+      delay_secs: 60
+      hold_secs: 0
+      device: Eurom_salon
+      command: Power
+    alias: Clim Salon Power
+  alias: Allumer/éteindre clim salon
+  description: ''
+allumer_eteindre_clim_salon_dupliquer:
+  sequence:
+  - alias: clim Salon Speed
+    action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      hold_secs: 0
+      device: Eurom_salon
+      command: Speed
+  alias: Clim salon ( Speed )
+  description: ''
+clim_salon_speed_dupliquer:
+  sequence:
+  - alias: clim Salon Sleep
+    action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      hold_secs: 0
+      device: Eurom_salon
+      command: Sleep
+  alias: Clim salon ( Sleep )
+  description: ''
+clim_salon_speed_dupliquer_2:
+  sequence:
+  - alias: clim Salon ( Temp + )
+    action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      hold_secs: 0
+      device: Eurom_salon
+      command: Temp +
+  alias: Clim salon ( Temps + )
+  description: ''
+clim_salon_speed_dupliquer_dupliquer:
+  sequence:
+  - alias: clim Salon Temp -
+    action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      hold_secs: 0
+      device: Eurom_salon
+      command: Temp -
+  alias: Clim salon ( Temp - )
+  description: ''
+clim_salon_speed_dupliquer_dupliquer_2:
+  sequence:
+  - alias: clim Salon Mode
+    action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      hold_secs: 0
+      device: Eurom_salon
+      command: Mode
+  alias: Clim salon - Mode
+  description: ''
+clim_salon_mode_dupliquer:
+  sequence:
+  - alias: clim Salon Timer
+    action: remote.send_command
+    metadata: {}
+    target:
+      device_id: 3c0dab21c8ba8fbc22b611816ce926c4
+    data:
+      hold_secs: 0
+      device: Eurom_salon
+      command: Timer
+  alias: Clim salon - Timer
+  description: ''
+demarrage_mixer:
+  sequence:
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.coin_dj_sono_mixeur
+    data: {}
+    alias: Allumer mixer
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 4
+      milliseconds: 0
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.coin_dj_sono_lecteurs
+    data: {}
+    alias: Allumer les lecteurs
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.coin_dj_sono_adams
+    data: {}
+    alias: Allumer les monitoring
+  alias: Démarrage mixer
+  description: ''
+'1786831774432':
+  sequence:
+  - action: light.turn_off
+    metadata: {}
+    target:
+      device_id: d6d3ecc9381fe176c3a2d221dbfea972
+    data: {}
+    alias: Éteindre les monitoring
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 4
+      milliseconds: 0
+  - action: light.turn_off
+    metadata: {}
+    target:
+      device_id: 0e1829e431fb614759daba71cf68e072
+    data: {}
+    alias: Éteindre les lecteurs
+  - action: light.turn_off
+    metadata: {}
+    target:
+      device_id: 39a2297d69494fd2b86c053bd7e9bde4
+    data: {}
+    alias: Éteindre mixer
+  alias: Éteindre la sono
+  description: ''
+bonne_nuit:
+  alias: "\U0001F319 Bonne nuit"
+  description: ''
+  icon: mdi:weather-night
+  mode: single
+  sequence:
+  - action: light.turn_off
+    target:
+      entity_id: &id001
+      - light.lustre_salon
+      - light.salon_panneau_mural
+      - light.salon_ambilight_tv
+      - light.lustre_salle_a_manger
+      - light.vitrine
+      - light.salle_a_manger_chevet
+      - light.cuisine_cuisine
+      - light.spot_cuisine
+      - light.evier
+      - light.cuisine_etagere_cafe
+      - light.coin_dj_coin_dj
+      - light.coin_dj_sono_gauche
+      - light.coin_dj_sono_droite
+      - light.coin_dj_sono_adams
+      - light.coin_dj_sono_mixeur
+      - light.coin_dj_sono_lecteurs
+      - light.lampe_murale_lit_matteo
+      - light.lampe_galaxie_tuya
+      - light.salle_de_bain_salle_de_bain
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.fire_tv_192_168_80_103
+  - action: number.set_value
+    target:
+      entity_id: number.salon_sam_tablette_luminosite_de_l_economiseur_d_ecran
+    data:
+      value: 30
+  - action: switch.turn_on
+    target:
+      entity_id: switch.salon_sam_tablette_economiseur_d_ecran
+tout_eteindre:
+  alias: "\U0001F50C Tout éteindre"
+  description: ''
+  icon: mdi:power
+  mode: single
+  sequence:
+  - action: light.turn_off
+    target:
+      entity_id: *id001
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.fire_tv_192_168_80_103
+je_pars:
+  alias: "\U0001F6AA Je pars"
+  description: ''
+  icon: mdi:home-export-outline
+  mode: single
+  sequence:
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.lustre_salon
+      - light.salon_panneau_mural
+      - light.salon_ambilight_tv
+      - light.lustre_salle_a_manger
+      - light.vitrine
+      - light.salle_a_manger_chevet
+      - light.cuisine_cuisine
+      - light.spot_cuisine
+      - light.evier
+      - light.cuisine_etagere_cafe
+      - light.coin_dj_coin_dj
+      - light.coin_dj_sono_gauche
+      - light.coin_dj_sono_droite
+      - light.coin_dj_sono_adams
+      - light.coin_dj_sono_mixeur
+      - light.coin_dj_sono_lecteurs
+      - light.lampe_murale_lit_matteo
+      - light.lampe_galaxie_tuya
+      - light.salle_de_bain_salle_de_bain
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.fire_tv_192_168_80_103
+  - action: timer.start
+    target:
+      entity_id: timer.compte_a_rebours_depart
+    data:
+      duration: 00:01:00
+  - action: input_select.select_option
+    target:
+      entity_id:
+      - input_select.mode_chambre_adulte
+      - input_select.mode_chambre_enfants
+      - input_select.mode_piece_de_vie
+      - input_select.mode_salle_de_bain
+    data:
+      option: Éco
+retour:
+  alias: "\U0001F3E0 Retour"
+  description: ''
+  icon: mdi:home-import-outline
+  mode: single
+  sequence:
+  - action: timer.cancel
+    target:
+      entity_id: timer.compte_a_rebours_depart
+  - action: media_player.turn_on
+    target:
+      entity_id: media_player.fire_tv_192_168_80_103
+  - action: switch.turn_off
+    target:
+      entity_id: switch.salon_sam_tablette_economiseur_d_ecran
+  - action: input_select.select_option
+    target:
+      entity_id:
+      - input_select.mode_chambre_adulte
+      - input_select.mode_chambre_enfants
+      - input_select.mode_piece_de_vie
+      - input_select.mode_salle_de_bain
+    data:
+      option: Confort
+sieste_calme:
+  alias: "\U0001F92B Sieste / Calme"
+  description: ''
+  icon: mdi:volume-off
+  mode: single
+  sequence:
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.coin_dj_coin_dj
+      - light.coin_dj_sono_gauche
+      - light.coin_dj_sono_droite
+      - light.coin_dj_sono_adams
+      - light.coin_dj_sono_mixeur
+      - light.coin_dj_sono_lecteurs
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.fire_tv_192_168_80_103
+simulation_presence_rotation:
+  alias: "\U0001F3AD Simulation de présence - rotation"
+  description: ''
+  icon: mdi:motion-sensor
+  mode: single
+  sequence:
+  - repeat:
+      while:
+      - condition: state
+        entity_id: input_boolean.simulation_presence
+        state: 'on'
+      sequence:
+      - variables:
+          etape: '{{ range(0, 6) | random }}'
+      - choose:
+        - conditions: '{{ etape == 0 }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.lustre_salon
+          - delay:
+              seconds: '{{ range(300, 1200) | random }}'
+          - action: light.turn_off
+            target:
+              entity_id: light.lustre_salon
+        - conditions: '{{ etape == 1 }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id:
+              - light.cuisine_cuisine
+              - light.spot_cuisine
+              - light.evier
+          - delay:
+              seconds: '{{ range(300, 1200) | random }}'
+          - action: light.turn_off
+            target:
+              entity_id:
+              - light.cuisine_cuisine
+              - light.spot_cuisine
+              - light.evier
+        - conditions: '{{ etape == 2 }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.salon_panneau_mural
+            data:
+              rgb_color: '{{ [[255,180,80],[180,120,255],[255,255,220],[120,200,255],[255,120,150]]
+                | random }}'
+              brightness: '{{ range(80, 220) | random }}'
+          - delay:
+              seconds: '{{ range(300, 1200) | random }}'
+          - action: light.turn_off
+            target:
+              entity_id: light.salon_panneau_mural
+        - conditions: '{{ etape == 3 }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.salon_ambilight_tv
+          - delay:
+              seconds: '{{ range(300, 1200) | random }}'
+          - action: light.turn_off
+            target:
+              entity_id: light.salon_ambilight_tv
+        - conditions: '{{ etape == 4 }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.lustre_salle_a_manger
+          - delay:
+              seconds: '{{ range(300, 1200) | random }}'
+          - action: light.turn_off
+            target:
+              entity_id: light.lustre_salle_a_manger
+        - conditions: '{{ etape == 5 }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.e1_outdoor_se_poe_projecteur
+          - delay:
+              seconds: '{{ range(300, 1200) | random }}'
+          - action: light.turn_off
+            target:
+              entity_id: light.e1_outdoor_se_poe_projecteur
+      - delay:
+          seconds: '{{ range(180, 900) | random }}'
+claude_proposition_dashboard:
+  alias: Claude - Proposition dashboard
+  description: Genere une proposition de carte Lovelace via Claude AI Task, a relire
+    avant de l'appliquer.
+  fields:
+    demande:
+      name: Demande
+      description: Decris ce que tu veux comme carte ou section de dashboard
+      required: true
+      selector:
+        text:
+          multiline: true
+  sequence:
+  - action: ai_task.generate_data
+    data:
+      task_name: Proposition dashboard Lovelace
+      instructions: 'Tu es un expert Home Assistant Lovelace (dashboards YAML, cartes
+        mushroom, card_mod). Voici la demande de l''utilisateur : {{ demande }}. Reponds
+        uniquement avec le code YAML de la ou des cartes Lovelace demandees, pret
+        a etre colle dans l''editeur de dashboard en mode YAML. N''ajoute aucune explication,
+        aucun texte avant ou apres, uniquement le YAML.'
+      entity_id: ai_task.claude_ai_task
+    response_variable: resultat
+  - action: persistent_notification.create
+    data:
+      title: Proposition dashboard - Claude
+      message: '{{ resultat.data }}'
+  mode: single
+claude_notification_maison:
+  alias: Claude - Notification maison
+  description: Genere un resume chaleureux de l'etat de la maison (meteo, alarme,
+    energie) via Claude AI Task, envoye en notification persistante.
+  fields:
+    consigne:
+      name: Consigne de ton (optionnel)
+      description: 'Precise le ton ou le niveau de detail si tu veux (ex: court et
+        informatif, decontracte). Laisse vide pour un ton chaleureux par defaut.'
+      required: false
+      selector:
+        text: {}
+  sequence:
+  - action: ai_task.generate_data
+    data:
+      task_name: Notification maison
+      instructions: 'Tu es un assistant qui redige des notifications courtes pour
+        la maison de Gregory. Donnees actuelles : meteo = {{ states(''weather.maison'')
+        }}, temperature = {{ state_attr(''weather.maison'',''temperature'') }} degres,
+        alarme = {{ states(''alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax'')
+        }}, consommation electrique aujourd''hui = {{ states(''sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui'')
+        }} kWh. {% if consigne %}Ton souhaite : {{ consigne }}.{% else %}Ton par defaut
+        : chaleureux, naturel, familier.{% endif %} Redige un resume de 2 a 4 phrases
+        maximum en francais, sans jargon technique ni nom d''entite, pret a etre lu
+        tel quel comme notification.'
+      entity_id: ai_task.claude_ai_task
+    response_variable: resultat
+  - action: persistent_notification.create
+    data:
+      title: Resume maison - Claude
+      message: '{{ resultat.data }}'
+  mode: single

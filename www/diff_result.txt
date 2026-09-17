@@ -1,0 +1,82 @@
+25,28c25,27
+< # Vannes connectées : Bosch Radiator Thermostat II M (7 vannes) + passerelle
+< # Bosch Smart Home Controller II, intégrées le 12/09/2026 via l'intégration
+< # HACS "Bosch SHC" (climate.chambre_adulte / climate.chambre_enfants /
+< # climate.couloir / climate.living / climate.salle_de_bain - voir section 9).
+---
+> # Vannes connectées : PAS ENCORE INSTALLÉES.
+> #   -> Tout ce qui les concerne est préparé mais désactivé (initial_state: false).
+> #   -> Cherche "A FAIRE QUAND LES VANNES ARRIVENT" pour savoir quoi modifier.
+1295c1294
+< # 9. APPLICATION DES CONSIGNES SUR LES VANNES (Bosch Radiator Thermostat II M)
+---
+> # 9. A FAIRE QUAND LES VANNES ARRIVENT
+1297,1313c1296,1302
+< # Vannes intégrées le 12/09/2026 via l'intégration HACS "Bosch SHC" (tschamm/
+< # mosandlt) plutôt que l'intégration officielle intégrée à HA - celle-ci
+< # n'expose que des capteurs pour les Radiator Thermostat II (pas de climate),
+< # alors que la version HACS crée un vrai climate PAR PIÈCE (regroupement fait
+< # côté passerelle Bosch, pas ici). Les 3 vannes physiques du salon/cuisine/
+< # salle à manger sont ainsi déjà fusionnées par Bosch en UNE seule entité
+< # climate.living : pas besoin de les piloter séparément.
+< # Entity_id confirmés via Outils de développement > États le 12/09/2026 :
+< #   climate.chambre_adulte / climate.chambre_enfants / climate.couloir /
+< #   climate.living (pièce de vie, 3 vannes) / climate.salle_de_bain
+< # ⚠️ À vérifier une fois l'automatisation active : les hvac_modes réellement
+< # supportés par ces entités (Outils de développement > États > climate.living
+< # > attributs > hvac_modes). Le hvac_mode "off" ci-dessous suppose que ces
+< # thermostats peuvent être coupés comme un climate classique - si "off" n'est
+< # pas dans la liste (thermostats Bosch parfois limités à heat/auto), remplace
+< # la branche "Été" ci-dessous par une consigne basse (ex. 10°C) au lieu de
+< # hvac_mode off.
+---
+> # Étapes :
+> #   1) Une fois les vannes connectées appairées, note leurs entity_id réels
+> #      (ex. climate.vanne_chambre_adulte) et remplace les placeholders ci-dessous.
+> #   2) Supprime la ligne "initial_state: false" (ou passe-la à "true") juste
+> #      en dessous de l'id de l'automatisation, pour qu'elle démarre active.
+> #   3) Recharge les automatisations (Outils de développement > YAML > Automatisations).
+> #
+1315a1305,1307
+> # Note : "initial_state: false" (et non "enabled: false") est utilisé ici
+> # pour rester compatible avec les versions de Home Assistant qui ne
+> # reconnaissent pas encore la clé "enabled" sur les automatisations.
+1318a1311
+>     initial_state: false   # <-- passer à true (ou supprimer la ligne) une fois les vannes installées
+1330a1324,1328
+>           # Noms alignés sur ceux déjà utilisés par le dashboard "Mon Confort"
+>           # (climate.trv_*). La pièce de vie a 3 radiateurs physiques mais UNE
+>           # seule zone logique chez vous : les 3 entités lisent donc la même
+>           # consigne (sensor.consigne_piece_de_vie) et resteront toujours
+>           # synchronisées entre elles.
+1332c1330
+<             - climate: climate.chambre_adulte
+---
+>             - climate: climate.trv_chambre_parents       # <-- à renommer une fois la vraie entité connue
+1334c1332
+<             - climate: climate.chambre_enfants
+---
+>             - climate: climate.trv_chambre_enfants        # <-- à renommer
+1336c1334
+<             - climate: climate.couloir
+---
+>             - climate: climate.trv_couloir                 # <-- à renommer
+1338c1336,1338
+<             - climate: climate.living
+---
+>             - climate: climate.trv_piece_de_vie_1          # <-- Salon
+>               consigne: sensor.consigne_piece_de_vie
+>             - climate: climate.trv_piece_de_vie_2          # <-- Salle à manger
+1340c1340,1342
+<             - climate: climate.salle_de_bain
+---
+>             - climate: climate.trv_piece_de_vie_3          # <-- Cuisine
+>               consigne: sensor.consigne_piece_de_vie
+>             - climate: climate.trv_salle_de_bain           # <-- à renommer
+1584c1586,1587
+<         data: { option: "Confort" }
+\ No newline at end of file
+---
+>         data: { option: "Confort" }
+>         
+\ No newline at end of file

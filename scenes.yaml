@@ -1,0 +1,148 @@
+# =============================================================================
+# SCÈNES D'AMBIANCE — Éclairage
+# =============================================================================
+# À copier dans ton fichier scenes.yaml (Paramètres > Appareils et services >
+# Ajouter une intégration, ou directement via l'éditeur de fichiers si le
+# fichier scenes.yaml existe déjà et est inclus dans configuration.yaml via
+# "scene: !include scenes.yaml").
+#
+# Ce sont des valeurs de DÉPART. Une fois créées, chaque scène est modifiable
+# facilement à la souris dans Paramètres > Automatisations et scènes > Scènes
+# (tu ouvres la scène, tu règles chaque lumière comme tu veux avec les
+# sliders, puis "Enregistrer" — pas besoin de retoucher au YAML).
+#
+# Remarque : certaines lumières ci-dessous sont pilotées en "color_temp_kelvin"
+# (blanc chaud/froid réglable — pour les lustres/lampes classiques) et
+# d'autres en "rgb_color" (pour les rubans LED RGB). Si une lumière ne
+# supporte pas l'attribut utilisé, Home Assistant l'ignore simplement pour
+# cette lumière au moment d'appliquer la scène (pas d'erreur bloquante).
+# =============================================================================
+
+- id: ambiance_soiree
+  name: Soirée
+  entities:
+    light.lustre_salon:
+      state: 'on'
+      brightness_pct: 35
+      color_temp_kelvin: 2700
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness_pct: 25
+      rgb_color: [255, 147, 41]
+    light.salon_ambilight_tv:
+      state: 'off'
+    light.lustre_salle_a_manger:
+      state: 'on'
+      brightness_pct: 30
+      color_temp_kelvin: 2700
+    light.vitrine:
+      state: 'on'
+      brightness_pct: 20
+    light.salle_a_manger_chevet:
+      state: 'on'
+      brightness_pct: 25
+      color_temp_kelvin: 2400
+    light.cuisine_cuisine:
+      state: 'off'
+    light.spot_cuisine:
+      state: 'off'
+    light.evier:
+      state: 'off'
+    light.cuisine_etagere_cafe:
+      state: 'off'
+    light.coin_dj_coin_dj:
+      state: 'off'
+    light.coin_dj_sono_gauche:
+      state: 'off'
+    light.coin_dj_sono_droite:
+      state: 'off'
+
+- id: ambiance_lecture
+  name: Lecture
+  entities:
+    light.lustre_salon:
+      state: 'on'
+      brightness_pct: 80
+      color_temp_kelvin: 4000
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness_pct: 60
+      color_temp_kelvin: 4000
+    light.salon_ambilight_tv:
+      state: 'off'
+    light.lustre_salle_a_manger:
+      state: 'on'
+      brightness_pct: 70
+      color_temp_kelvin: 4000
+
+- id: ambiance_fete_dj
+  name: Fête Coin DJ
+  entities:
+    light.coin_dj_coin_dj:
+      state: 'on'
+      brightness_pct: 100
+      rgb_color: [156, 39, 176]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness_pct: 100
+      rgb_color: [33, 150, 243]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness_pct: 100
+      rgb_color: [233, 30, 99]
+    light.coin_dj_sono_adams:
+      state: 'on'
+    light.coin_dj_sono_mixeur:
+      state: 'on'
+    light.coin_dj_sono_lecteurs:
+      state: 'on'
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness_pct: 60
+      rgb_color: [156, 39, 176]
+    light.lustre_salon:
+      state: 'on'
+      brightness_pct: 15
+      color_temp_kelvin: 2700
+    light.cuisine_cuisine:
+      state: 'off'
+
+- id: ambiance_nuit
+  name: Nuit
+  entities:
+    light.lustre_salon:
+      state: 'off'
+    light.salon_panneau_mural:
+      state: 'off'
+    light.salon_ambilight_tv:
+      state: 'off'
+    light.lustre_salle_a_manger:
+      state: 'on'
+      brightness_pct: 8
+      color_temp_kelvin: 2200
+    light.vitrine:
+      state: 'off'
+    light.salle_a_manger_chevet:
+      state: 'off'
+    light.cuisine_cuisine:
+      state: 'off'
+    light.spot_cuisine:
+      state: 'off'
+    light.evier:
+      state: 'off'
+    light.cuisine_etagere_cafe:
+      state: 'off'
+    light.coin_dj_coin_dj:
+      state: 'off'
+    light.coin_dj_sono_gauche:
+      state: 'off'
+    light.coin_dj_sono_droite:
+      state: 'off'
+    light.coin_dj_sono_adams:
+      state: 'off'
+    light.coin_dj_sono_mixeur:
+      state: 'off'
+    light.coin_dj_sono_lecteurs:
+      state: 'off'
+    light.salle_de_bain_salle_de_bain:
+      state: 'off'

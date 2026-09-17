@@ -1,0 +1,1584 @@
+# ============================================================================
+# PACKAGE "CHAUFFAGE" — Appartement 90m² (2 chambres, SdB, couloir, séjour)
+# ----------------------------------------------------------------------------
+# À placer dans ton dossier de packages Home Assistant, par ex. :
+#   /config/packages/chauffage.yaml
+#
+# Si les packages ne sont pas encore activés, ajoute ceci dans configuration.yaml :
+#
+#   homeassistant:
+#     packages: !include_dir_named packages
+#
+# PRÉ-REQUIS : intégration "Workday" (pour ignorer automatiquement week-ends
+# ET jours fériés belges). À ajouter une seule fois via l'interface :
+#   Paramètres > Appareils et services > Ajouter une intégration > "Workday"
+#   -> Pays : Belgique. Elle crée normalement binary_sensor.workday_sensor
+#   (si le nom diffère chez toi, remplace-le partout dans ce fichier).
+#
+# Sondes utilisées (déjà en place, Sonoff Zigbee) :
+#   - Chambre adulte   : sensor.temp_chambre_adulte_sonoff_a480146b5b_*
+#   - Chambre enfants  : sensor.temp_chambre_enfants_sonoff_a480146b58_*
+#   - Couloir          : sensor.temp_couloir_sonoff_a480146b60_*
+#   - Pièce de vie     : sensor.temp_piece_de_vie_sonoff_a480146b56_*
+#   - Salle de bain    : sensor.temp_salle_de_bain_sonoff_a480146b5d_*
+#
+# Vannes connectées : Bosch Radiator Thermostat II M (7 vannes) + passerelle
+# Bosch Smart Home Controller II, intégrées le 12/09/2026 via l'intégration
+# HACS "Bosch SHC" (climate.chambre_adulte / climate.chambre_enfants /
+# climate.couloir / climate.living / climate.salle_de_bain - voir section 9).
+#
+# LOGIQUE GÉNÉRALE :
+#   - Chaque pièce a SON PROPRE mode (contrairement à la 1ère version qui
+#     avait un mode unique pour tout l'appart) car vos horaires réels font
+#     que les pièces ne sont pas toutes dans le même état en même temps
+#     (ex. 16h40 : salon/SdB/chambre enfant repassent en Confort, mais la
+#     chambre adulte reste en Éco jusqu'à 22h30 puisqu'elle n'est pas
+#     utilisée avant le coucher).
+#   - input_boolean.routine_activee est l'interrupteur maître : coupe-le
+#     pendant les vacances ou en cas de maladie pour désactiver tout le
+#     planning automatique (l'appart bascule alors en Hors-gel). Rallume-le
+#     à ton retour pour reprendre la routine normale.
+#   - Le couloir n'a volontairement PAS de planning horaire : il reste
+#     toujours sur "Éco" (jamais chaud, jamais gelé), sauf en Hors-gel
+#     pendant les vacances.
+#   - Chambre enfants, chambre adulte et salle de bain ne sont PLUS chauffées
+#     automatiquement "en journée" (quand elles sont inoccupées) : chambre
+#     enfants et chambre adulte restent en Éco/Nuit sauf sieste déclenchée
+#     manuellement (boutons section 9), et la salle de bain reste en Éco en
+#     permanence sauf activation manuelle juste avant de s'en servir (boutons
+#     section 9 aussi). Dans tous les cas, la prochaine transition programmée
+#     (retour du soir, coucher...) reprend la main normalement, donc pas
+#     besoin de désactiver quoi que ce soit après une sieste ou une douche :
+#     au pire ça reste chaud jusqu'au prochain horaire programmé.
+#   - La chambre adulte est pré-chauffée à 22h30 TOUS LES JOURS (pas
+#     seulement en semaine) pour ne jamais se coucher dans des draps froids.
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# 1. MODES PAR PIÈCE + INTERRUPTEUR MAÎTRE
+# ----------------------------------------------------------------------------
+input_select:
+  # "Manuel" : consigne prise sur input_number.temp_manuel_xxx (section 1bis)
+  # au lieu du chiffre fixe du mode. Comme les autres modes, il est repris
+  # par la prochaine transition programmée (pas besoin de le désactiver).
+  # "Boost" : chauffe fort (input_number.temp_boost_cible, 23°C par défaut,
+  # partagé par toutes les pièces) pour les coups de froid / maladie. Se
+  # coupe tout seul après 2h et repasse dans le mode que la pièce DEVRAIT
+  # avoir à cet instant selon son horaire habituel (pas juste "Confort" -
+  # voir section 3ter et 7bis) - pas besoin d'y penser non plus.
+  #
+  # Ordre de la liste ci-dessous (menus déroulants du dashboard) : du plus
+  # froid au plus chaud - Été (chauffage coupé) < Hors-gel < Éco < Nuit <
+  # Confort < Boost -, avec "Manuel" toujours en dernier (sa température est
+  # réglable, donc sans place fixe dans cet ordre). Se base sur les consignes
+  # moyennes par pièce (section 2) ; seul le couloir fait exception (sa
+  # consigne "Nuit" à 16°C est légèrement sous son "Éco" à 17°C).
+  mode_chambre_adulte:
+    name: Mode chambre adulte
+    icon: mdi:thermostat
+    options: &modes ["Été", "Hors-gel", "Éco", "Nuit", "Confort", "Boost", "Manuel"]
+    initial: "Nuit"
+
+  mode_chambre_enfants:
+    name: Mode chambre enfants
+    icon: mdi:thermostat
+    options: *modes
+    initial: "Nuit"
+
+  mode_piece_de_vie:
+    name: Mode pièce de vie
+    icon: mdi:thermostat
+    options: *modes
+    initial: "Confort"
+
+  mode_salle_de_bain:
+    name: Mode salle de bain
+    icon: mdi:thermostat
+    options: *modes
+    initial: "Éco"
+    # Plus de planning automatique : reste en Éco en permanence, sauf
+    # activation manuelle via le bouton "Activer confort SdB" (section 9)
+    # juste avant utilisation.
+
+  mode_couloir:
+    name: Mode couloir
+    icon: mdi:thermostat
+    options: *modes
+    initial: "Éco"
+
+input_boolean:
+  routine_activee:
+    name: Routine chauffage active (désactiver en vacances / maladie)
+    icon: mdi:calendar-check
+    initial: true
+
+  presence_exceptionnelle:
+    name: "Présent(e) à la maison en semaine (RTT, télétravail...)"
+    icon: mdi:home-clock
+    initial: false
+    # Bouton à mettre sur le dashboard : active le Confort dans la journée un
+    # jour travaillé où l'un de vous est finalement à la maison. Se remet
+    # automatiquement à "off" tout seul dès que le prochain changement de
+    # mode horaire programmé se déclenche (pas besoin d'y repenser).
+
+  chauffage_courbe_active:
+    name: "Courbe de chauffe active (compensation météo)"
+    icon: mdi:chart-bell-curve
+    initial: false
+    # MISE EN PAUSE (constaté le 08/09/2026) : la chaudière a deux molettes
+    # physiques (ECS + radiateurs) et réaffirme leur valeur toutes les ~2 min
+    # quoi qu'on lui envoie par MQTT - l'historique de number.boiler_selflowtemp
+    # montrait des allers-retours constants entre 32 (nous), 75 (molette
+    # radiateurs) et 60 (molette ECS). Se battre contre ça demanderait un
+    # rappel bien plus fréquent (voire le Scheduler intégré à EMS-ESP côté
+    # passerelle) pour un gain marginal - mis de côté pour l'instant au
+    # profit de la coupure sur demande réelle (section 9bis), qui elle ne
+    # rencontre pas ce problème. Réactivable ici si tu veux un jour
+    # retenter (par ex. avec le Scheduler EMS-ESP plutôt que Home Assistant).
+
+# ----------------------------------------------------------------------------
+# 1bis. TEMPÉRATURES MANUELLES — utilisées uniquement quand le mode de la
+#       pièce est réglé sur "Manuel" (sinon ignorées)
+# ----------------------------------------------------------------------------
+input_number:
+  temp_manuel_chambre_adulte:
+    name: Température manuelle - Chambre adulte
+    icon: mdi:thumb
+    min: 10
+    max: 24
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 19
+    mode: slider
+
+  temp_manuel_chambre_enfants:
+    name: Température manuelle - Chambre enfants
+    icon: mdi:thumb
+    min: 10
+    max: 24
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 20
+    mode: slider
+
+  temp_manuel_piece_de_vie:
+    name: Température manuelle - Pièce de vie
+    icon: mdi:thumb
+    min: 10
+    max: 24
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 20
+    mode: slider
+
+  temp_manuel_salle_de_bain:
+    name: Température manuelle - Salle de bain
+    icon: mdi:thumb
+    min: 10
+    max: 24
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 21
+    mode: slider
+
+  temp_boost_cible:
+    name: Température cible en mode Boost (toutes pièces)
+    icon: mdi:fire
+    min: 19
+    max: 26
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 23
+    mode: slider
+    # Une seule valeur partagée par les 5 pièces (plus simple à régler qu'un
+    # curseur par pièce pour un mode pensé pour un coup de froid ponctuel).
+
+  temp_manuel_couloir:
+    name: Température manuelle - Couloir
+    icon: mdi:thumb
+    min: 10
+    max: 24
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 18
+    mode: slider
+
+  # --- Courbe de chauffe (compensation météo) - voir section 9ter ---
+  chauffage_courbe_temp_ext_froid:
+    name: "Courbe chauffe - Temp. extérieure froide (référence)"
+    icon: mdi:thermometer-low
+    min: -15
+    max: 5
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: -7
+    mode: box
+    # Le point "froid" de la courbe : la température extérieure la plus
+    # basse que tu veux couvrir. -7°C est déjà rare à Engis - pas besoin de
+    # viser -15 en permanence, ça ferait tourner la chaudière plus chaud
+    # que nécessaire 99% du temps.
+
+  chauffage_courbe_depart_froid:
+    name: "Courbe chauffe - Départ chaudière à temp. froide"
+    icon: mdi:thermometer-chevron-up
+    min: 30
+    max: 70
+    step: 1
+    unit_of_measurement: "°C"
+    initial: 55
+    mode: box
+    # Température de départ nécessaire pour bien chauffer les radiateurs
+    # quand il fait -7°C dehors. À ajuster à l'usage : si les pièces peinent
+    # à atteindre leur consigne par grand froid, monte cette valeur (ex. 60).
+
+  chauffage_courbe_temp_ext_doux:
+    name: "Courbe chauffe - Temp. extérieure douce (référence)"
+    icon: mdi:thermometer-high
+    min: 5
+    max: 20
+    step: 0.5
+    unit_of_measurement: "°C"
+    initial: 15
+    mode: box
+
+  chauffage_courbe_depart_doux:
+    name: "Courbe chauffe - Départ chaudière à temp. douce"
+    icon: mdi:thermometer-chevron-down
+    min: 25
+    max: 45
+    step: 1
+    unit_of_measurement: "°C"
+    initial: 32
+    mode: box
+    # 32°C reste dans la zone de condensation de la ZWB 28-3 (meilleur
+    # rendement gaz) tout en restant suffisant par temps doux - ne descends
+    # pas trop bas, sous ~28°C certains radiateurs sous-dimensionnés peinent
+    # à monter en régime même par temps doux.
+
+# ----------------------------------------------------------------------------
+# 2. CONSIGNES PAR PIÈCE (matrice modifiable ci-dessous)
+# ----------------------------------------------------------------------------
+# Chaque sensor.consigne_xxx calcule la température cible de la pièce selon
+# SON PROPRE mode. Pour ajuster une consigne, change juste le chiffre dans
+# le dictionnaire "consignes" de la pièce concernée.
+# "None" (mode Été) = chauffage coupé pour cette pièce.
+
+template:
+  - sensor:
+      # --- Chambre adulte ---
+      - name: "Consigne chambre adulte"
+        unique_id: consigne_chambre_adulte
+        icon: mdi:target
+        unit_of_measurement: "°C"
+        state: >
+          {% if states('input_select.mode_chambre_adulte') == 'Manuel' %}
+            {{ states('input_number.temp_manuel_chambre_adulte') }}
+          {% elif states('input_select.mode_chambre_adulte') == 'Boost' %}
+            {{ states('input_number.temp_boost_cible') }}
+          {% else %}
+            {% set consignes = {'Confort': 19, 'Éco': 17, 'Nuit': 17, 'Hors-gel': 10, 'Été': none} %}
+            {% set c = consignes.get(states('input_select.mode_chambre_adulte')) %}
+            {{ c if c is not none else 'off' }}
+          {% endif %}
+
+      # --- Chambre enfants : consigne "Nuit" volontairement proche de
+      #     "Confort" car le petit ne dort jamais avec une couverture/un
+      #     drap sur lui - la pièce doit rester chaude toute la nuit.
+      - name: "Consigne chambre enfants"
+        unique_id: consigne_chambre_enfants
+        icon: mdi:target
+        unit_of_measurement: "°C"
+        state: >
+          {% if states('input_select.mode_chambre_enfants') == 'Manuel' %}
+            {{ states('input_number.temp_manuel_chambre_enfants') }}
+          {% elif states('input_select.mode_chambre_enfants') == 'Boost' %}
+            {{ states('input_number.temp_boost_cible') }}
+          {% else %}
+            {% set consignes = {'Confort': 20, 'Éco': 17, 'Nuit': 20, 'Hors-gel': 12, 'Été': none} %}
+            {% set c = consignes.get(states('input_select.mode_chambre_enfants')) %}
+            {{ c if c is not none else 'off' }}
+          {% endif %}
+
+      # --- Couloir : jamais chauffé "confort" même quand vous êtes présents,
+      #     mais jamais glacial non plus. Aucun planning horaire ne touche ce
+      #     mode (section 4/5) : il reste sur "Éco" tant que tu ne le changes
+      #     pas toi-même sur le dashboard -> valeur "Éco" ci-dessous = la
+      #     seule qui compte au quotidien, quelque part entre l'éco et le
+      #     confort des autres pièces (16-17°C ailleurs vs 19-21°C en confort).
+      - name: "Consigne couloir"
+        unique_id: consigne_couloir
+        icon: mdi:target
+        unit_of_measurement: "°C"
+        state: >
+          {% if states('input_select.mode_couloir') == 'Manuel' %}
+            {{ states('input_number.temp_manuel_couloir') }}
+          {% elif states('input_select.mode_couloir') == 'Boost' %}
+            {{ states('input_number.temp_boost_cible') }}
+          {% else %}
+            {% set consignes = {'Confort': 18, 'Éco': 17, 'Nuit': 16, 'Hors-gel': 10, 'Été': none} %}
+            {% set c = consignes.get(states('input_select.mode_couloir')) %}
+            {{ c if c is not none else 'off' }}
+          {% endif %}
+
+      # --- Pièce de vie ---
+      - name: "Consigne pièce de vie"
+        unique_id: consigne_piece_de_vie
+        icon: mdi:target
+        unit_of_measurement: "°C"
+        state: >
+          {% if states('input_select.mode_piece_de_vie') == 'Manuel' %}
+            {{ states('input_number.temp_manuel_piece_de_vie') }}
+          {% elif states('input_select.mode_piece_de_vie') == 'Boost' %}
+            {{ states('input_number.temp_boost_cible') }}
+          {% else %}
+            {% set consignes = {'Confort': 20, 'Éco': 17, 'Nuit': 17, 'Hors-gel': 10, 'Été': none} %}
+            {% set c = consignes.get(states('input_select.mode_piece_de_vie')) %}
+            {{ c if c is not none else 'off' }}
+          {% endif %}
+
+      # --- Salle de bain ---
+      - name: "Consigne salle de bain"
+        unique_id: consigne_salle_de_bain
+        icon: mdi:target
+        unit_of_measurement: "°C"
+        state: >
+          {% if states('input_select.mode_salle_de_bain') == 'Manuel' %}
+            {{ states('input_number.temp_manuel_salle_de_bain') }}
+          {% elif states('input_select.mode_salle_de_bain') == 'Boost' %}
+            {{ states('input_number.temp_boost_cible') }}
+          {% else %}
+            {% set consignes = {'Confort': 21, 'Éco': 18, 'Nuit': 18, 'Hors-gel': 12, 'Été': none} %}
+            {% set c = consignes.get(states('input_select.mode_salle_de_bain')) %}
+            {{ c if c is not none else 'off' }}
+          {% endif %}
+
+# ----------------------------------------------------------------------------
+# 3. ÉCARTS consigne / température réelle (utiles dès maintenant pour vérifier
+#    que le planning est cohérent, et plus tard pour détecter une vanne
+#    bloquée ou mal réglée)
+# ----------------------------------------------------------------------------
+  - sensor:
+      - name: "Écart chambre adulte"
+        unique_id: ecart_chambre_adulte
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer-alert
+        state: >
+          {% set consigne = states('sensor.consigne_chambre_adulte') %}
+          {% set actuelle = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature') %}
+          {% if consigne not in ['off', 'unknown', 'unavailable'] and actuelle not in ['unknown','unavailable'] %}
+            {{ (actuelle | float - consigne | float) | round(1) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
+
+      - name: "Écart chambre enfants"
+        unique_id: ecart_chambre_enfants
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer-alert
+        state: >
+          {% set consigne = states('sensor.consigne_chambre_enfants') %}
+          {% set actuelle = states('sensor.temp_chambre_enfants_sonoff_a480146b58_temperature') %}
+          {% if consigne not in ['off', 'unknown', 'unavailable'] and actuelle not in ['unknown','unavailable'] %}
+            {{ (actuelle | float - consigne | float) | round(1) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
+
+      - name: "Écart couloir"
+        unique_id: ecart_couloir
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer-alert
+        state: >
+          {% set consigne = states('sensor.consigne_couloir') %}
+          {% set actuelle = states('sensor.temp_couloir_sonoff_a480146b60_temperature') %}
+          {% if consigne not in ['off', 'unknown', 'unavailable'] and actuelle not in ['unknown','unavailable'] %}
+            {{ (actuelle | float - consigne | float) | round(1) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
+
+      - name: "Écart pièce de vie"
+        unique_id: ecart_piece_de_vie
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer-alert
+        state: >
+          {% set consigne = states('sensor.consigne_piece_de_vie') %}
+          {% set actuelle = states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature') %}
+          {% if consigne not in ['off', 'unknown', 'unavailable'] and actuelle not in ['unknown','unavailable'] %}
+            {{ (actuelle | float - consigne | float) | round(1) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
+
+      - name: "Écart salle de bain"
+        unique_id: ecart_salle_de_bain
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer-alert
+        state: >
+          {% set consigne = states('sensor.consigne_salle_de_bain') %}
+          {% set actuelle = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature') %}
+          {% if consigne not in ['off', 'unknown', 'unavailable'] and actuelle not in ['unknown','unavailable'] %}
+            {{ (actuelle | float - consigne | float) | round(1) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
+
+      # --- Écart minimum toutes pièces confondues : sert de signal de
+      #     demande réelle pour piloter le circuit central de la chaudière
+      #     (section 9bis) - ignore les pièces en mode Été (pas de consigne
+      #     donc pas d'écart calculable). S'il ne reste aucune pièce avec une
+      #     consigne active (les 5 en Été), on force 99 -> "aucune demande".
+      - name: "Écart minimum demande chauffage"
+        unique_id: ecart_demande_min
+        unit_of_measurement: "°C"
+        icon: mdi:radiator
+        state: >
+          {% set ns = namespace(vals=[]) %}
+          {% for eid in ['sensor.ecart_chambre_adulte', 'sensor.ecart_chambre_enfants',
+                         'sensor.ecart_couloir', 'sensor.ecart_piece_de_vie',
+                         'sensor.ecart_salle_de_bain'] %}
+            {% set v = states(eid) %}
+            {% if v not in ['unknown', 'unavailable', 'none', 'None'] %}
+              {% set ns.vals = ns.vals + [v | float] %}
+            {% endif %}
+          {% endfor %}
+          {{ (ns.vals | min) if ns.vals | count > 0 else 99 }}
+
+# ----------------------------------------------------------------------------
+# 3bis. PROCHAIN CHANGEMENT PROGRAMMÉ — pour affichage dashboard
+# ----------------------------------------------------------------------------
+# Un capteur texte par pièce, du type :
+#   "Mode Confort actuellement activé — le mode Éco sera activé aujourd'hui
+#    à 07:05."
+# Se base sur le planning horaire fixe (sections 4/5) + binary_sensor.workday_sensor
+# (aujourd'hui = valeur réelle, demain = simple jour ouvré Lun-Ven, sans tenir
+# compte des jours fériés belges de demain - limite mineure, juste pour
+# l'affichage). Ignore volontairement les deux automatisations "présence
+# réelle" de la section 7 (alarme/trajet), qui ne sont pas des horaires fixes.
+  - sensor:
+      - name: "Prochain changement chambre adulte"
+        unique_id: prochain_changement_chambre_adulte
+        icon: mdi:clock-outline
+        state: >
+          {% set mode_actuel = states('input_select.mode_chambre_adulte') %}
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Mode {{ mode_actuel }} actuellement activé — routine en pause (vacances/maladie), aucun changement automatique prévu.
+          {% else %}
+            {% set is_wd_today = is_state('binary_sensor.workday_sensor', 'on') %}
+            {% set is_wd_tomorrow = (now().date() + timedelta(days=1)).weekday() < 5 %}
+            {% set events = [] %}
+            {% if is_wd_today %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00'), 'mode': 'Éco'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('22:30:00'), 'mode': 'Confort'},
+              {'dt': today_at('23:15:00'), 'mode': 'Nuit'},
+            ] %}
+            {% if is_wd_tomorrow %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00') + timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00') + timedelta(days=1), 'mode': 'Éco'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('22:30:00') + timedelta(days=1), 'mode': 'Confort'},
+              {'dt': today_at('23:15:00') + timedelta(days=1), 'mode': 'Nuit'},
+            ] %}
+            {% set nxt = (events | selectattr('dt', 'gt', now()) | sort(attribute='dt') | list)[0] %}
+            {% set jour = "aujourd'hui" if nxt.dt.date() == now().date() else "demain" %}
+            Mode {{ mode_actuel }} actuellement activé — le mode {{ nxt.mode }} sera activé {{ jour }} à {{ nxt.dt.strftime('%Hh%M') }}.
+          {% endif %}
+
+      - name: "Prochain changement chambre enfants"
+        unique_id: prochain_changement_chambre_enfants
+        icon: mdi:clock-outline
+        state: >
+          {% set mode_actuel = states('input_select.mode_chambre_enfants') %}
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Mode {{ mode_actuel }} actuellement activé — routine en pause (vacances/maladie), aucun changement automatique prévu.
+          {% else %}
+            {% set is_wd_today = is_state('binary_sensor.workday_sensor', 'on') %}
+            {% set is_wd_tomorrow = (now().date() + timedelta(days=1)).weekday() < 5 %}
+            {% set events = [] %}
+            {% if is_wd_today %}
+              {% set events = events + [
+                {'dt': today_at('06:15:00'), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00'), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00'), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('20:30:00'), 'mode': 'Nuit'},
+            ] %}
+            {% if is_wd_tomorrow %}
+              {% set events = events + [
+                {'dt': today_at('06:15:00') + timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00') + timedelta(days=1), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00') + timedelta(days=1), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('20:30:00') + timedelta(days=1), 'mode': 'Nuit'},
+            ] %}
+            {% set nxt = (events | selectattr('dt', 'gt', now()) | sort(attribute='dt') | list)[0] %}
+            {% set jour = "aujourd'hui" if nxt.dt.date() == now().date() else "demain" %}
+            Mode {{ mode_actuel }} actuellement activé — le mode {{ nxt.mode }} sera activé {{ jour }} à {{ nxt.dt.strftime('%Hh%M') }}.
+          {% endif %}
+
+      - name: "Prochain changement pièce de vie"
+        unique_id: prochain_changement_piece_de_vie
+        icon: mdi:clock-outline
+        state: >
+          {% set mode_actuel = states('input_select.mode_piece_de_vie') %}
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Mode {{ mode_actuel }} actuellement activé — routine en pause (vacances/maladie), aucun changement automatique prévu.
+          {% else %}
+            {% set is_wd_today = is_state('binary_sensor.workday_sensor', 'on') %}
+            {% set is_wd_tomorrow = (now().date() + timedelta(days=1)).weekday() < 5 %}
+            {% set events = [] %}
+            {% if is_wd_today %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00'), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00'), 'mode': 'Confort'},
+              ] %}
+            {% else %}
+              {% set events = events + [
+                {'dt': today_at('08:00:00'), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('23:15:00'), 'mode': 'Éco'},
+            ] %}
+            {% if is_wd_tomorrow %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00') + timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00') + timedelta(days=1), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00') + timedelta(days=1), 'mode': 'Confort'},
+              ] %}
+            {% else %}
+              {% set events = events + [
+                {'dt': today_at('08:00:00') + timedelta(days=1), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('23:15:00') + timedelta(days=1), 'mode': 'Éco'},
+            ] %}
+            {% set nxt = (events | selectattr('dt', 'gt', now()) | sort(attribute='dt') | list)[0] %}
+            {% set jour = "aujourd'hui" if nxt.dt.date() == now().date() else "demain" %}
+            Mode {{ mode_actuel }} actuellement activé — le mode {{ nxt.mode }} sera activé {{ jour }} à {{ nxt.dt.strftime('%Hh%M') }}.
+          {% endif %}
+
+      - name: "Prochain changement salle de bain"
+        unique_id: prochain_changement_salle_de_bain
+        icon: mdi:clock-outline
+        state: >
+          {% set mode_actuel = states('input_select.mode_salle_de_bain') %}
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Mode {{ mode_actuel }} actuellement activé — routine en pause (vacances/maladie), aucun changement automatique prévu.
+          {% else %}
+            {% set events = [
+              {'dt': today_at('23:15:00'), 'mode': 'Éco'},
+              {'dt': today_at('23:15:00') + timedelta(days=1), 'mode': 'Éco'},
+            ] %}
+            {% set nxt = (events | selectattr('dt', 'gt', now()) | sort(attribute='dt') | list)[0] %}
+            {% set jour = "aujourd'hui" if nxt.dt.date() == now().date() else "demain" %}
+            Mode {{ mode_actuel }} actuellement activé — seul changement auto : le mode {{ nxt.mode }} sera réappliqué {{ jour }} à {{ nxt.dt.strftime('%Hh%M') }} (sinon, utilise les boutons Confort/Éco manuels).
+          {% endif %}
+
+      - name: "Prochain changement couloir"
+        unique_id: prochain_changement_couloir
+        icon: mdi:clock-outline
+        state: >
+          {% set mode_actuel = states('input_select.mode_couloir') %}
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Mode {{ mode_actuel }} actuellement activé — routine en pause (vacances/maladie), aucun changement automatique prévu.
+          {% else %}
+            Mode {{ mode_actuel }} actuellement activé — pas de planning horaire pour cette pièce, elle ne change que si tu la règles manuellement.
+          {% endif %}
+
+# ----------------------------------------------------------------------------
+# 3ter. MODE "SELON HORAIRE" À L'INSTANT PRÉSENT — pour la coupure auto du
+#       Boost (section 7bis) : quel mode CETTE pièce devrait-elle avoir MAINTENANT
+#       si on suivait le planning normal (sections 4/5), en ignorant Boost/Manuel ?
+# ----------------------------------------------------------------------------
+# Même logique que "Prochain changement" (3bis) mais à l'envers : on regarde
+# le dernier horaire déjà passé (hier + aujourd'hui) plutôt que le prochain.
+# Comme pour 3bis, on ignore volontairement vacances en cours (sauf routine
+# coupée -> "Hors-gel", le vrai mode "de fond" pendant vacances/maladie) et
+# les 2 automatisations "présence réelle" (alarme/trajet) de la section 7 :
+# ce sont des rattrapages ponctuels, pas un horaire fixe à reproduire.
+  - sensor:
+      - name: "Mode horaire chambre adulte"
+        unique_id: mode_horaire_chambre_adulte
+        icon: mdi:calendar-clock
+        state: >
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Hors-gel
+          {% else %}
+            {% set is_wd_hier = (now().date() - timedelta(days=1)).weekday() < 5 %}
+            {% set is_wd_today = is_state('binary_sensor.workday_sensor', 'on') %}
+            {% set events = [] %}
+            {% if is_wd_hier %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00') - timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00') - timedelta(days=1), 'mode': 'Éco'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('22:30:00') - timedelta(days=1), 'mode': 'Confort'},
+              {'dt': today_at('23:15:00') - timedelta(days=1), 'mode': 'Nuit'},
+            ] %}
+            {% if is_wd_today %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00'), 'mode': 'Éco'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('22:30:00'), 'mode': 'Confort'},
+              {'dt': today_at('23:15:00'), 'mode': 'Nuit'},
+            ] %}
+            {% set passes = events | selectattr('dt', 'le', now()) | sort(attribute='dt') | list %}
+            {{ passes[-1].mode if passes else 'Nuit' }}
+          {% endif %}
+
+      - name: "Mode horaire chambre enfants"
+        unique_id: mode_horaire_chambre_enfants
+        icon: mdi:calendar-clock
+        state: >
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Hors-gel
+          {% else %}
+            {% set is_wd_hier = (now().date() - timedelta(days=1)).weekday() < 5 %}
+            {% set is_wd_today = is_state('binary_sensor.workday_sensor', 'on') %}
+            {% set events = [] %}
+            {% if is_wd_hier %}
+              {% set events = events + [
+                {'dt': today_at('06:15:00') - timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00') - timedelta(days=1), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00') - timedelta(days=1), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('20:30:00') - timedelta(days=1), 'mode': 'Nuit'},
+            ] %}
+            {% if is_wd_today %}
+              {% set events = events + [
+                {'dt': today_at('06:15:00'), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00'), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00'), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('20:30:00'), 'mode': 'Nuit'},
+            ] %}
+            {% set passes = events | selectattr('dt', 'le', now()) | sort(attribute='dt') | list %}
+            {{ passes[-1].mode if passes else 'Nuit' }}
+          {% endif %}
+
+      - name: "Mode horaire pièce de vie"
+        unique_id: mode_horaire_piece_de_vie
+        icon: mdi:calendar-clock
+        state: >
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Hors-gel
+          {% else %}
+            {% set is_wd_hier = (now().date() - timedelta(days=1)).weekday() < 5 %}
+            {% set is_wd_today = is_state('binary_sensor.workday_sensor', 'on') %}
+            {% set events = [] %}
+            {% if is_wd_hier %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00') - timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00') - timedelta(days=1), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00') - timedelta(days=1), 'mode': 'Confort'},
+              ] %}
+            {% else %}
+              {% set events = events + [
+                {'dt': today_at('08:00:00') - timedelta(days=1), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('23:15:00') - timedelta(days=1), 'mode': 'Éco'},
+            ] %}
+            {% if is_wd_today %}
+              {% set events = events + [
+                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('07:05:00'), 'mode': 'Éco'},
+                {'dt': today_at('16:40:00'), 'mode': 'Confort'},
+              ] %}
+            {% else %}
+              {% set events = events + [
+                {'dt': today_at('08:00:00'), 'mode': 'Confort'},
+              ] %}
+            {% endif %}
+            {% set events = events + [
+              {'dt': today_at('23:15:00'), 'mode': 'Éco'},
+            ] %}
+            {% set passes = events | selectattr('dt', 'le', now()) | sort(attribute='dt') | list %}
+            {{ passes[-1].mode if passes else 'Éco' }}
+          {% endif %}
+
+      - name: "Mode horaire salle de bain"
+        unique_id: mode_horaire_salle_de_bain
+        icon: mdi:calendar-clock
+        state: >
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Hors-gel
+          {% else %}
+            Éco
+          {% endif %}
+          {# Pas de planning en journée (activation manuelle uniquement, boutons
+             section 10) : le seul horaire fixe est le reset de 23h15, qui remet
+             déjà "Éco" - donc "Éco" est aussi le mode "de fond" à tout moment. #}
+
+      - name: "Mode horaire couloir"
+        unique_id: mode_horaire_couloir
+        icon: mdi:calendar-clock
+        state: >
+          {% if not is_state('input_boolean.routine_activee', 'on') %}
+            Hors-gel
+          {% else %}
+            Éco
+          {% endif %}
+          {# Aucun planning horaire pour cette pièce (voir section 1) : "Éco"
+             est son mode "de fond" permanent tant que tu ne la règles pas
+             toi-même. #}
+
+# ----------------------------------------------------------------------------
+# 3quater. CHAUDIÈRE — CONSIGNE DE DÉPART CALCULÉE PAR LA COURBE DE CHAUFFE
+#          (compensation météo, voir automatisation section 9ter)
+# ----------------------------------------------------------------------------
+# Interpolation linéaire entre deux points de référence réglables via les
+# input_number "chauffage_courbe_*" (section 1bis) : plus il fait froid
+# dehors (weather.forecast_maison), plus la consigne de départ chaudière
+# calculée est haute, et inversement. Objectif : ne jamais faire tourner
+# la chaudière plus chaud que nécessaire (meilleur rendement en mode
+# condensation = moins de gaz), sans jamais sous-chauffer par grand froid.
+# Se contente de RENVOYER LA VALEUR ACTUELLE de number.boiler_selflowtemp si
+# weather.forecast_maison est indisponible, pour ne jamais forcer un
+# changement basé sur une donnée manquante.
+  - sensor:
+      - name: "Chauffage - Consigne départ courbe météo"
+        unique_id: chauffage_consigne_depart_courbe
+        icon: mdi:chart-bell-curve
+        unit_of_measurement: "°C"
+        state: >
+          {% set t_ext = state_attr('weather.forecast_maison', 'temperature') %}
+          {% if t_ext is none %}
+            {{ states('number.boiler_selflowtemp') }}
+          {% else %}
+            {% set t_ext = t_ext | float %}
+            {% set x1 = states('input_number.chauffage_courbe_temp_ext_froid') | float(-7) %}
+            {% set y1 = states('input_number.chauffage_courbe_depart_froid') | float(55) %}
+            {% set x2 = states('input_number.chauffage_courbe_temp_ext_doux') | float(15) %}
+            {% set y2 = states('input_number.chauffage_courbe_depart_doux') | float(32) %}
+            {% if t_ext <= x1 %}
+              {{ y1 }}
+            {% elif t_ext >= x2 %}
+              {{ y2 }}
+            {% else %}
+              {% set pente = (y2 - y1) / (x2 - x1) %}
+              {{ (y1 + pente * (t_ext - x1)) | round(1) }}
+            {% endif %}
+          {% endif %}
+
+# ----------------------------------------------------------------------------
+# 4. PLANNING AUTOMATIQUE — JOURS TRAVAILLÉS
+#    (actif seulement si routine_activee = ON et binary_sensor.workday_sensor
+#    = "on", donc automatiquement ignoré le week-end ET les jours fériés
+#    belges - pas besoin d'y toucher pour ça)
+#    Exception : "chauffage_soir_prechauffe_chambre_adulte" (22h30) tourne
+#    TOUS LES jours, semaine ET week-end (cf. section 5 pour la logique
+#    "tous les jours" - elle est juste rangée ici avec les autres horaires
+#    du soir pour rester lisible).
+# ----------------------------------------------------------------------------
+automation:
+  - id: chauffage_matin_prechauffe_parents_salon
+    alias: "Chauffage - Pré-chauffe chambre adulte + salon (matin semaine)"
+    description: "Avant réveil Sandrine 6h15 / Grégory 6h30."
+    trigger:
+      - platform: time
+        at: "06:00:00"
+    condition: &cond_jour_travaille
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_piece_de_vie
+        data: { option: "Confort" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+  - id: chauffage_matin_enfant
+    alias: "Chauffage - Chambre enfant (matin semaine)"
+    description: "Réveil et habillage avant le départ vers la crèche/école."
+    trigger:
+      - platform: time
+        at: "06:15:00"
+    condition: *cond_jour_travaille
+    action:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_enfants }
+        data: { option: "Confort" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+  - id: chauffage_tout_le_monde_parti
+    alias: "Chauffage - Tout le monde est parti (semaine)"
+    description: >
+      Grégory part à 7h05 avec le petit (dernier départ) - appart vide
+      jusqu'au retour. Ignoré si presence_exceptionnelle est activé (l'un de
+      vous reste à la maison ce jour-là).
+    trigger:
+      - platform: time
+        at: "07:05:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.presence_exceptionnelle
+        state: "off"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+        data: { option: "Éco" }
+    mode: single
+
+  - id: chauffage_activation_presence_exceptionnelle
+    alias: "Chauffage - Activation présence exceptionnelle"
+    description: >
+      Déclenché en appuyant sur le bouton/interrupteur presence_exceptionnelle
+      (RTT, télétravail, jour off...). Repasse tout de suite l'appart en
+      Confort, y compris si l'on est déjà passé en Éco à 7h05.
+    trigger:
+      - platform: state
+        entity_id: input_boolean.presence_exceptionnelle
+        to: "on"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+        data: { option: "Confort" }
+    mode: single
+
+  - id: chauffage_retour_sandrine_enfant
+    alias: "Chauffage - Retour Sandrine + enfant (semaine)"
+    description: >
+      Sandrine récupère le petit et rentre vers 16h40. On se cale sur son
+      horaire fixe plutôt que sur celui de Grégory (variable ~16h30 et +).
+      La chambre adulte reste en Éco (pas utilisée avant le coucher), et la
+      salle de bain reste en Éco aussi désormais : utilise le bouton
+      "Activer confort salle de bain" (section 9) juste avant de s'en servir.
+    trigger:
+      - platform: time
+        at: "16:40:00"
+    condition: *cond_jour_travaille
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_piece_de_vie
+            - input_select.mode_chambre_enfants
+        data: { option: "Confort" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+  - id: chauffage_soir_prechauffe_chambre_adulte
+    alias: "Chauffage - Pré-chauffe chambre adulte (avant coucher, tous les jours)"
+    description: >
+      45 min avant le coucher à 23h15 - tous les jours (semaine ET week-end)
+      pour ne jamais retrouver des draps froids.
+    trigger:
+      - platform: time
+        at: "22:30:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+    action:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_adulte }
+        data: { option: "Confort" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+# ----------------------------------------------------------------------------
+# 5. PLANNING AUTOMATIQUE — TOUS LES JOURS (coucher, week-end compris)
+# ----------------------------------------------------------------------------
+  - id: chauffage_coucher_enfant
+    alias: "Chauffage - Coucher du petit (20h30, tous les jours)"
+    trigger:
+      - platform: time
+        at: "20:30:00"
+    condition: &cond_actif
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+    action:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_enfants }
+        data: { option: "Nuit" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+  - id: chauffage_coucher_adultes
+    alias: "Chauffage - Coucher adultes (23h15, tous les jours)"
+    description: >
+      Vendredi/samedi soir vous vous couchez parfois ~1h plus tard : dans ce
+      cas, resélectionne juste "Confort" manuellement sur la pièce de vie /
+      salle de bain le temps qu'il faut, pas besoin d'automatiser un horaire
+      qui n'est pas fixe.
+      Seule la chambre adulte passe en "Nuit" (occupée pour dormir) : le
+      salon et la salle de bain, inoccupés la nuit, passent en "Éco" comme
+      le reste de l'appart en journée (et non "Nuit", qui est réservé aux
+      pièces où l'on dort).
+    trigger:
+      - platform: time
+        at: "23:15:00"
+    condition: *cond_actif
+    action:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_adulte }
+        data: { option: "Nuit" }
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+        data: { option: "Éco" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+  - id: chauffage_weekend_matin
+    alias: "Chauffage - Matin week-end / jour férié"
+    description: >
+      Lever vers 8h le samedi/dimanche (variable selon réveil du petit).
+      Seule la pièce de vie repasse automatiquement en Confort : chambre
+      adulte et chambre enfants restent en Éco/Nuit toute la journée sauf
+      sieste (boutons section 9), et la salle de bain reste en Éco sauf
+      activation manuelle (bouton section 9) - inutile de les chauffer en
+      continu toute la journée.
+    trigger:
+      - platform: time
+        at: "08:00:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "off"
+    action:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_piece_de_vie }
+        data: { option: "Confort" }
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+# ----------------------------------------------------------------------------
+# 6. VACANCES / MALADIE — piloté par l'interrupteur routine_activee
+# ----------------------------------------------------------------------------
+  - id: chauffage_vacances_hors_gel
+    alias: "Chauffage - Passage hors-gel (vacances/maladie)"
+    description: "Se déclenche quand tu coupes l'interrupteur routine_activee."
+    trigger:
+      - platform: state
+        entity_id: input_boolean.routine_activee
+        to: "off"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+            - input_select.mode_couloir
+        data: { option: "Hors-gel" }
+    mode: single
+
+  - id: chauffage_retour_vacances
+    alias: "Chauffage - Retour à la normale (fin vacances/maladie)"
+    description: "Se déclenche quand tu rallumes routine_activee - confort immédiat, puis le planning reprend la main."
+    trigger:
+      - platform: state
+        entity_id: input_boolean.routine_activee
+        to: "on"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+        data: { option: "Confort" }
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_couloir }
+        data: { option: "Éco" }
+    mode: single
+
+# ----------------------------------------------------------------------------
+# 7. PRÉSENCE RÉELLE — ALARME + TRAJET RETOUR
+# ----------------------------------------------------------------------------
+# Deux automatisations complémentaires au planning horaire, pour les cas où
+# vous partez/rentrez en dehors des horaires habituels :
+#   - Maison confirmée vide (alarme armée absence + porte fermée + ni
+#     Sandrine ni Grégory détectés "home") -> tout repasse en Éco.
+#   - L'un de vous est à moins de 10 min de la maison (trajet Waze) -> le
+#     salon repasse en Confort pour votre arrivée.
+# Toutes deux respectent routine_activee (désactivées pendant vacances/
+# maladie, pour ne pas remonter le chauffage au-dessus du Hors-gel déclaré).
+
+  - id: chauffage_absence_confirmee
+    alias: "Chauffage - Maison vide confirmée (alarme + porte + présence, hors jour travaillé)"
+    description: >
+      Alarme armée en mode absence, porte d'entrée fermée, et ni Sandrine ni
+      Grégory détectés "home" -> tout le chauffage repasse en Éco (sauf les
+      pièces déjà en Été, qu'on laisse coupées).
+      Limité aux jours NON travaillés (week-end, jours fériés, vacances) :
+      les jours travaillés, "chauffage_tout_le_monde_parti" (7h05) fait déjà
+      exactement ça, pas besoin de la doubler.
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+        to: "armed_away"
+      - platform: state
+        entity_id: binary_sensor.hall_dentree_porte_entree_porte
+        to: "off"
+      - platform: state
+        entity_id: person.sandrine
+        to: "not_home"
+      - platform: state
+        entity_id: person.gregory
+        to: "not_home"
+    condition:
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "off"
+      - condition: state
+        entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+        state: "armed_away"
+      - condition: state
+        entity_id: binary_sensor.hall_dentree_porte_entree_porte
+        state: "off"   # <-- si ton capteur Ajax inverse ouvert/fermé, mets "on" ici
+      - condition: state
+        entity_id: person.sandrine
+        state: "not_home"
+      - condition: state
+        entity_id: person.gregory
+        state: "not_home"
+    action:
+      - repeat:
+          for_each:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+            - input_select.mode_couloir
+          sequence:
+            - condition: template
+              value_template: "{{ states(repeat.item) != 'Été' }}"
+            - service: input_select.select_option
+              target:
+                entity_id: "{{ repeat.item }}"
+              data:
+                option: "Éco"
+      - service: input_boolean.turn_off
+        target: { entity_id: input_boolean.presence_exceptionnelle }
+    mode: single
+
+  - id: chauffage_retour_imminent_salon
+    alias: "Chauffage - Retour imminent (< 10 min) → salon en confort"
+    description: >
+      Dès que le trajet retour de Sandrine ou Grégory (Waze) passe sous
+      10 minutes, la pièce de vie repasse en Confort pour votre arrivée.
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.trajet_greg_waze_trajet_greg_vers_maison
+        below: 10
+      - platform: numeric_state
+        entity_id: sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison
+        below: 10
+    condition:
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+    action:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_piece_de_vie }
+        data: { option: "Confort" }
+    mode: single
+
+# ----------------------------------------------------------------------------
+# 7bis. MODE BOOST — coupure automatique après 2h
+# ----------------------------------------------------------------------------
+# "Boost" chauffe une pièce à input_number.temp_boost_cible (23°C par défaut,
+# modifiable, partagé par les 5 pièces) pour les coups de froid ou en cas de
+# maladie. Se déclenche pièce par pièce (choisis "Boost" sur le sélecteur de
+# mode de la pièce concernée). Par sécurité, chaque activation se coupe
+# automatiquement 2h plus tard et la pièce reprend le mode qu'elle DEVRAIT
+# avoir à cet instant selon son horaire habituel (sensor.mode_horaire_xxx,
+# section 3ter) - PAS systématiquement "Confort". Exemples : Boost lancé à
+# 22h dans la chambre des enfants -> à minuit elle repasse en "Nuit" (son
+# horaire normal à cette heure-là), pas en "Confort". Boost lancé dans le
+# couloir ou la salle de bain -> repasse en "Éco" (leur mode "de fond", ces
+# pièces n'ayant pas de planning horaire). Rien ne se passe si tu as déjà
+# changé la pièce toi-même entretemps.
+# mode: parallel + trigger.entity_id : chaque pièce qui passe en Boost lance
+# sa PROPRE minuterie de 2h, indépendante des autres (contrairement à
+# "restart", qui aurait annulé le décompte d'une pièce si une autre pièce
+# passait en Boost entre-temps).
+  - id: chauffage_boost_coupure_auto
+    alias: "Chauffage - Boost, coupure automatique après 2h"
+    description: >
+      2h après le passage d'une pièce en mode Boost, elle reprend le mode
+      prévu par son horaire à cet instant (pas juste "Confort") - sauf si tu
+      l'as déjà changée toi-même entretemps (rien ne se passe dans ce cas).
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.mode_chambre_adulte
+          - input_select.mode_chambre_enfants
+          - input_select.mode_piece_de_vie
+          - input_select.mode_salle_de_bain
+          - input_select.mode_couloir
+        to: "Boost"
+    action:
+      - delay: "02:00:00"
+      - condition: template
+        value_template: "{{ states(trigger.entity_id) == 'Boost' }}"
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_select.mode_chambre_adulte' }}"
+            sequence:
+              - service: input_select.select_option
+                target: { entity_id: input_select.mode_chambre_adulte }
+                data:
+                  option: "{{ states('sensor.mode_horaire_chambre_adulte') }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_select.mode_chambre_enfants' }}"
+            sequence:
+              - service: input_select.select_option
+                target: { entity_id: input_select.mode_chambre_enfants }
+                data:
+                  option: "{{ states('sensor.mode_horaire_chambre_enfants') }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_select.mode_piece_de_vie' }}"
+            sequence:
+              - service: input_select.select_option
+                target: { entity_id: input_select.mode_piece_de_vie }
+                data:
+                  option: "{{ states('sensor.mode_horaire_piece_de_vie') }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_select.mode_salle_de_bain' }}"
+            sequence:
+              - service: input_select.select_option
+                target: { entity_id: input_select.mode_salle_de_bain }
+                data:
+                  option: "{{ states('sensor.mode_horaire_salle_de_bain') }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'input_select.mode_couloir' }}"
+            sequence:
+              - service: input_select.select_option
+                target: { entity_id: input_select.mode_couloir }
+                data:
+                  option: "{{ states('sensor.mode_horaire_couloir') }}"
+    mode: parallel
+    max: 5
+
+# ----------------------------------------------------------------------------
+# 8. ALERTES (fonctionnent dès maintenant, avant même d'avoir les vannes)
+# ----------------------------------------------------------------------------
+  - id: chauffage_alerte_ecart_temperature
+    alias: "Chauffage - Alerte écart de température"
+    description: >
+      Prévient si une pièce reste plus de 2°C sous SA consigne du moment
+      (quel que soit le mode) pendant 45 min - utile dès maintenant pour
+      repérer une pièce mal chauffée, et plus tard pour détecter une vanne
+      qui ne répond plus.
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.ecart_chambre_adulte
+          - sensor.ecart_chambre_enfants
+          - sensor.ecart_couloir
+          - sensor.ecart_piece_de_vie
+          - sensor.ecart_salle_de_bain
+        below: -2
+        for: "00:45:00"
+    action:
+      - service: notify.mobile_app_ton_telephone   # <-- à remplacer par ton vrai notify.*
+        data:
+          title: "Chauffage : écart détecté"
+          message: >
+            {{ trigger.to_state.attributes.friendly_name }} est {{ trigger.to_state.state }}°C
+            sous la consigne depuis plus de 45 min.
+    mode: queued
+
+  - id: chauffage_alerte_humidite_sdb
+    alias: "Chauffage - Alerte humidité salle de bain"
+    description: "Prévient si l'humidité de la salle de bain reste élevée (risque de moisissure)."
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity
+        above: 70
+        for: "01:00:00"
+    action:
+      - service: notify.mobile_app_ton_telephone   # <-- à remplacer par ton vrai notify.*
+        data:
+          title: "Salle de bain : humidité élevée"
+          message: >-
+            Humidité au-dessus de 70% depuis plus d'1h : le ventilateur
+            électrique (VMC) aurait dû faire redescendre ça tout seul,
+            vérifie qu'il tourne bien.
+    mode: single
+
+  - id: chauffage_alerte_batterie_sonde
+    alias: "Chauffage - Alerte batterie sonde basse"
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.temp_chambre_adulte_sonoff_a480146b5b_battery
+          - sensor.temp_chambre_enfants_sonoff_a480146b58_battery
+          - sensor.temp_couloir_sonoff_a480146b60_battery
+          - sensor.temp_piece_de_vie_sonoff_a480146b56_battery
+          - sensor.temp_salle_de_bain_sonoff_a480146b5d_battery
+        below: 20
+    action:
+      - service: notify.mobile_app_ton_telephone   # <-- à remplacer par ton vrai notify.*
+        data:
+          title: "Sonde chauffage : batterie faible"
+          message: "{{ trigger.to_state.attributes.friendly_name }} est à {{ trigger.to_state.state }}%."
+    mode: queued
+
+# ----------------------------------------------------------------------------
+# 9. APPLICATION DES CONSIGNES SUR LES VANNES (Bosch Radiator Thermostat II M)
+# ----------------------------------------------------------------------------
+# Vannes intégrées le 12/09/2026 via l'intégration HACS "Bosch SHC" (tschamm/
+# mosandlt) plutôt que l'intégration officielle intégrée à HA - celle-ci
+# n'expose que des capteurs pour les Radiator Thermostat II (pas de climate),
+# alors que la version HACS crée un vrai climate PAR PIÈCE (regroupement fait
+# côté passerelle Bosch, pas ici). Les 3 vannes physiques du salon/cuisine/
+# salle à manger sont ainsi déjà fusionnées par Bosch en UNE seule entité
+# climate.living : pas besoin de les piloter séparément.
+# Entity_id confirmés via Outils de développement > États le 12/09/2026 :
+#   climate.chambre_adulte / climate.chambre_enfants / climate.couloir /
+#   climate.living (pièce de vie, 3 vannes) / climate.salle_de_bain
+# ⚠️ À vérifier une fois l'automatisation active : les hvac_modes réellement
+# supportés par ces entités (Outils de développement > États > climate.living
+# > attributs > hvac_modes). Le hvac_mode "off" ci-dessous suppose que ces
+# thermostats peuvent être coupés comme un climate classique - si "off" n'est
+# pas dans la liste (thermostats Bosch parfois limités à heat/auto), remplace
+# la branche "Été" ci-dessous par une consigne basse (ex. 10°C) au lieu de
+# hvac_mode off.
+# Cette automatisation applique automatiquement la consigne de chaque pièce
+# sur sa vanne dès qu'elle change (planning, manuel, ou vacances).
+
+  - id: chauffage_appliquer_consignes_vannes
+    alias: "Chauffage - Appliquer consignes sur les vannes"
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.consigne_chambre_adulte
+          - sensor.consigne_chambre_enfants
+          - sensor.consigne_couloir
+          - sensor.consigne_piece_de_vie
+          - sensor.consigne_salle_de_bain
+      - platform: homeassistant
+        event: start
+    action:
+      - variables:
+          rooms:
+            - climate: climate.chambre_adulte
+              consigne: sensor.consigne_chambre_adulte
+            - climate: climate.chambre_enfants
+              consigne: sensor.consigne_chambre_enfants
+            - climate: climate.couloir
+              consigne: sensor.consigne_couloir
+            - climate: climate.living
+              consigne: sensor.consigne_piece_de_vie
+            - climate: climate.salle_de_bain
+              consigne: sensor.consigne_salle_de_bain
+      - repeat:
+          for_each: "{{ rooms }}"
+          sequence:
+            - choose:
+                # Mode Été (ou toute consigne = off) -> on coupe la vanne
+                - conditions:
+                    - condition: template
+                      value_template: "{{ states(repeat.item.consigne) == 'off' }}"
+                  sequence:
+                    - service: climate.set_hvac_mode
+                      target:
+                        entity_id: "{{ repeat.item.climate }}"
+                      data:
+                        hvac_mode: "off"
+              default:
+                # Sinon -> on pousse la consigne numérique
+                - service: climate.set_hvac_mode
+                  target:
+                    entity_id: "{{ repeat.item.climate }}"
+                  data:
+                    hvac_mode: "heat"
+                - service: climate.set_temperature
+                  target:
+                    entity_id: "{{ repeat.item.climate }}"
+                  data:
+                    temperature: "{{ states(repeat.item.consigne) | float }}"
+    mode: parallel
+
+# ----------------------------------------------------------------------------
+# 9bis. CHAUDIÈRE — COUPURE DU CHAUFFAGE CENTRAL SELON LA DEMANDE RÉELLE
+# ----------------------------------------------------------------------------
+# Le circuit chauffage (départ chaudière -> radiateurs) reste chaud tant que
+# switch.boiler_heatingactivated est activé, indépendamment du mode affiché
+# sur le dashboard - une pièce en "Éco" ou "Nuit" peut très bien être DÉJÀ à
+# sa consigne (soleil, apport interne, journée douce) sans que ça coupe quoi
+# que ce soit : couper les vannes ne suffit donc pas pour vraiment économiser
+# le gaz. Au lieu de ne couper le circuit que dans le cas extrême "les 5
+# pièces sont en Été" (ancienne version de cette automatisation), on se base
+# maintenant sur sensor.ecart_minimum_demande_chauffage (section 3, l'écart le plus froid
+# parmi les pièces qui ont une consigne active) : le circuit s'éteint dès
+# qu'AUCUNE pièce n'a réellement besoin de chaleur à l'instant présent, peu
+# importe le mode. Hystérésis (0.3°C sous consigne pour rallumer, 0.2°C
+# au-dessus pour couper) + délais minimum (5 min avant d'allumer, 15 min
+# avant de couper) pour éviter de faire claquer le brûleur à chaque petite
+# variation (voir sensor.boiler_burnstarts sur le dashboard pour vérifier
+# que ça reste raisonnable). L'eau chaude sanitaire n'est jamais concernée :
+# switch.boiler_dhw_activated reste piloté séparément (section ECS du
+# dashboard Chaudière).
+# IMPORTANT (constaté en usage) : un déclencheur numeric_state avec "for" ne
+# démarre son décompte qu'au moment d'un vrai changement d'état de l'entité
+# surveillée. Si sensor.ecart_minimum_demande_chauffage reste parfaitement
+# stable pendant longtemps (aucune pièce dont la température ne bouge), il
+# peut ne jamais y avoir de nouvel événement pour déclencher l'évaluation,
+# et le circuit reste bloqué dans son état même si la condition est réunie
+# depuis longtemps. D'où l'ajout d'un contrôle périodique de secours (toutes
+# les 10 min) qui vérifie directement la valeur actuelle, sans dépendre d'un
+# changement d'état.
+  - id: chauffage_demande_globale_circuit
+    alias: "Chauffage - Circuit central selon demande réelle (pas juste Été)"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ecart_minimum_demande_chauffage
+        below: -0.3
+        for: "00:05:00"
+        id: demande_active
+      - platform: numeric_state
+        entity_id: sensor.ecart_minimum_demande_chauffage
+        above: 0.2
+        for: "00:15:00"
+        id: demande_inactive
+      - platform: time_pattern
+        minutes: "/10"
+        id: verification_periodique
+    condition:
+      - condition: template
+        value_template: "{{ states('switch.boiler_heatingactivated') not in ['unavailable', 'unknown'] }}"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: demande_active
+            sequence:
+              - service: switch.turn_on
+                target: { entity_id: switch.boiler_heatingactivated }
+          - conditions:
+              - condition: trigger
+                id: demande_inactive
+            sequence:
+              - service: switch.turn_off
+                target: { entity_id: switch.boiler_heatingactivated }
+          - conditions:
+              - condition: trigger
+                id: verification_periodique
+            sequence:
+              - choose:
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ states('sensor.ecart_minimum_demande_chauffage') | float(99) < -0.3 }}"
+                    sequence:
+                      - service: switch.turn_on
+                        target: { entity_id: switch.boiler_heatingactivated }
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ states('sensor.ecart_minimum_demande_chauffage') | float(99) > 0.2 }}"
+                    sequence:
+                      - service: switch.turn_off
+                        target: { entity_id: switch.boiler_heatingactivated }
+    mode: single
+
+# ----------------------------------------------------------------------------
+# 9ter. CHAUDIÈRE — COURBE DE CHAUFFE (compensation météo)
+# ----------------------------------------------------------------------------
+# Applique en continu sur number.boiler_selflowtemp la consigne calculée par
+# sensor.chauffage_consigne_depart_courbe_meteo (section 3quater), qui se base sur
+# la température extérieure réelle (weather.forecast_maison - Forecast Maison,
+# met.no). C'est une optimisation complémentaire à la 9bis : la 9bis décide
+# QUAND le circuit tourne (marche/arrêt selon la demande réelle des pièces),
+# celle-ci décide À QUELLE TEMPÉRATURE il tourne quand il est allumé. Se met
+# à jour même quand le circuit est actuellement coupé, pour que la bonne
+# consigne soit déjà en place dès que la 9bis rallume le circuit.
+# Se désactive proprement via input_boolean.chauffage_courbe_active (section
+# 1bis) si tu veux reprendre la main manuellement sur le curseur du
+# dashboard sans qu'elle ne revienne l'écraser.
+# IMPORTANT (constaté en usage) : sans module HC1/RC installé, cette chaudière
+# semble "oublier" la consigne envoyée par un contrôleur externe et revenir
+# toute seule à sa valeur installateur par défaut (number.boiler_heatingtemp,
+# 75°C) si elle ne reçoit pas de rappel assez fréquent. D'où le passage à un
+# rappel toutes les 5 min (au lieu de 30) + un rappel immédiat à chaque
+# démarrage de la pompe de chauffage ou activation du circuit, pour que la
+# bonne valeur soit systématiquement en place au moment où elle compte.
+  - id: chauffage_courbe_chauffe_ajustement
+    alias: "Chauffage - Ajustement départ chaudière selon météo extérieure"
+    trigger:
+      - platform: state
+        entity_id: sensor.chauffage_consigne_depart_courbe_meteo
+      - platform: time_pattern
+        minutes: "/5"
+      - platform: state
+        entity_id: binary_sensor.boiler_heatingpump
+        to: "on"
+      - platform: state
+        entity_id: switch.boiler_heatingactivated
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.chauffage_courbe_active
+        state: "on"
+      - condition: template
+        value_template: "{{ states('sensor.chauffage_consigne_depart_courbe_meteo') | is_number }}"
+    action:
+      - service: number.set_value
+        target: { entity_id: number.boiler_selflowtemp }
+        data:
+          value: "{{ states('sensor.chauffage_consigne_depart_courbe_meteo') | float }}"
+    mode: single
+
+# ----------------------------------------------------------------------------
+# 10. RACCOURCIS MANUELS — boutons à ajouter sur ton tableau de bord
+# ----------------------------------------------------------------------------
+# Tous ces scripts sont des actions ponctuelles (pas de minuterie, pas de
+# toggle qui pourrait rentrer en conflit avec le planning horaire) : la
+# prochaine transition programmée (retour, coucher...) reprend toujours la
+# main normalement, donc pas besoin de "désactiver" quoi que ce soit après -
+# au pire la pièce reste chaude jusqu'au prochain horaire programmé.
+
+script:
+  # --- Salle de bain : activation juste avant utilisation, désactivation en sortant ---
+  chauffage_sdb_activer_confort:
+    alias: "SdB - Activer confort"
+    icon: mdi:shower
+    sequence:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_salle_de_bain }
+        data: { option: "Confort" }
+
+  chauffage_sdb_desactiver_confort:
+    alias: "SdB - Désactiver confort"
+    icon: mdi:shower-head
+    sequence:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_salle_de_bain }
+        data: { option: "Éco" }
+
+  # --- Sieste enfant : chambre enfants pas chauffée en journée sauf sieste ---
+  chauffage_sieste_enfant_debut:
+    alias: "Sieste enfant - Début"
+    icon: mdi:bed
+    sequence:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_enfants }
+        data: { option: "Confort" }
+
+  chauffage_sieste_enfant_fin:
+    alias: "Sieste enfant - Fin"
+    icon: mdi:bed-outline
+    sequence:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_enfants }
+        data: { option: "Éco" }
+
+  # --- Sieste adulte : chambre adulte pas chauffée en journée sauf sieste ---
+  chauffage_sieste_adulte_debut:
+    alias: "Sieste adulte - Début"
+    icon: mdi:bed
+    sequence:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_adulte }
+        data: { option: "Confort" }
+
+  chauffage_sieste_adulte_fin:
+    alias: "Sieste adulte - Fin"
+    icon: mdi:bed-outline
+    sequence:
+      - service: input_select.select_option
+        target: { entity_id: input_select.mode_chambre_adulte }
+        data: { option: "Éco" }
+
+  # --- Sorties ponctuelles (courses, famille...) ---
+  chauffage_depart_temporaire:
+    alias: "Chauffage - Départ temporaire (courses, famille...)"
+    icon: mdi:home-export-outline
+    sequence:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+        data: { option: "Éco" }
+
+  chauffage_retour_temporaire:
+    alias: "Chauffage - Retour après absence"
+    icon: mdi:home-import-outline
+    sequence:
+      - service: input_select.select_option
+        target:
+          entity_id:
+            - input_select.mode_chambre_adulte
+            - input_select.mode_chambre_enfants
+            - input_select.mode_piece_de_vie
+            - input_select.mode_salle_de_bain
+        data: { option: "Confort" }

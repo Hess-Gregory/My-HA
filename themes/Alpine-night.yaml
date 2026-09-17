@@ -1,0 +1,83 @@
+alpine-night:
+  # ==========================================
+  # MODE SOMBRE NATIF HA
+  # ==========================================
+  modes:
+    dark:
+      primary-background-color: "#0d1219"
+      secondary-background-color: "#1b2431"
+      card-background-color: "#293544"
+      primary-text-color: "#ffffff"
+      secondary-text-color: "#c7ccd4"
+      text-primary-color: "#ffffff"
+      disabled-text-color: "#7c8794"
+      divider-color: "#3a4552"
+
+      primary-color: "#ffffff"
+      accent-color: "#f5a742"
+      dark-primary-color: "#0d1219"
+      light-primary-color: "#3a4552"
+
+      app-header-background-color: "#0d1219"
+      app-header-text-color: "#ffffff"
+
+      sidebar-background-color: "#0d1219"
+      sidebar-text-color: "#ffffff"
+      sidebar-icon-color: "#ffffff"
+      sidebar-selected-background-color: "#293544"
+      sidebar-selected-text-color: "#f5a742"
+      sidebar-selected-icon-color: "#f5a742"
+
+      table-row-background-color: "#293544"
+      table-row-alternative-background-color: "#1b2431"
+
+      mdc-theme-primary: "#ffffff"
+      mdc-theme-secondary: "#f5a742"
+      mdc-theme-surface: "#293544"
+      mdc-theme-on-surface: "#ffffff"
+
+      switch-checked-color: "#f5a742"
+      switch-unchecked-button-color: "#7c8794"
+      switch-unchecked-track-color: "#3a4552"
+
+      state-icon-active-color: "#f5a742"
+
+  # ---- Image de fond (remplace le "background:" du dashboard) ----
+  lovelace-background: >-
+    center / cover no-repeat fixed
+    url("/local/images/wallpaper/alpine/les-orres-01.jpg")
+
+
+  # ---- Variables partagées ----
+  primary-text-color: "#ffffff"
+  secondary-text-color: "#c7ccd4"
+  text-primary-color: "#ffffff"
+
+  # ---- Activation card-mod pour ce thème ----
+  card-mod-theme: "alpine-night"
+
+  # ---- Style appliqué automatiquement selon le type de carte ----
+  card-mod-card-yaml: |
+    entities: |
+      ha-card {
+        background: rgba(41, 53, 68, 0.75) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        color: #ffffff !important;
+        border-radius: 14px !important;
+        box-shadow: none !important;
+      }
+      .card-header {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.3rem !important;
+      }
+    .: |
+      ha-card {
+        background: rgba(41, 53, 68, 0.75) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        color: #ffffff !important;
+        border-radius: 14px !important;
+        box-shadow: none !important;
+      }

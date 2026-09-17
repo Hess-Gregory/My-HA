@@ -1,0 +1,87 @@
+# =============================================================================
+# THÈME "maison" — Home Assistant
+# À placer dans /config/themes/maison.yaml
+# Puis dans configuration.yaml, vérifier que vous avez bien :
+#   frontend:
+#     themes: !include_dir_merge_named themes
+#
+# Ce thème définissait à l'origine deux variantes (light / dark) censées
+# s'adapter automatiquement. Sur demande, le mode "light" (jour) est
+# maintenant une COPIE EXACTE du mode "dark" (soir/nuit) — plus aucune
+# différence entre les deux, donc peu importe ce que bascule
+# automations/theme_jour_nuit.yaml, l'affichage reste identique matin, midi
+# et soir : le thème sombre violacé, celui utilisé partout dans les 15
+# dashboards. L'automation jour/nuit peut rester active sans effet visuel,
+# ou être désactivée si tu préfères — les deux options sont équivalentes
+# maintenant.
+#
+# Objectif demandé : lisible à plus d'un mètre, jamais "criard" le jour,
+# jamais aveuglant/trop contrasté la nuit.
+# =============================================================================
+
+maison:
+  # ---- Palette de base ----
+  primary-color: "#8a6d3b"
+  accent-color: "#6d5a8a"
+  mush-title-color: "#8a6d3b"
+  mush-icon-color: "#8a6d3b"
+
+  modes:
+    # ======================= MODE CLAIR (JOUR) =======================
+    # Copie exacte du mode sombre ci-dessous (sur demande explicite).
+    light:
+      primary-background-color: "#14101d"
+      secondary-background-color: "#1d1729"
+      card-background-color: "#251c33cc"
+      ha-card-background: "#251c33cc"
+      primary-text-color: "#efe6fb"
+      secondary-text-color: "#c8b8dd"
+      disabled-text-color: "#786f8a"
+      divider-color: "#ffffff14"
+      state-icon-active-color: "#f6d68a"
+
+      "--glass-bg": "rgba(38, 28, 58, 0.55)"
+      "--glass-bg-strong": "rgba(25, 18, 38, 0.72)"
+      "--glass-bg-accent": "rgba(60, 40, 90, 0.55)"
+      "--glass-blur": "blur(16px)"
+      "--glass-border": "1px solid rgba(255, 255, 255, 0.06)"
+      "--glass-shadow": "0 4px 22px rgba(0, 0, 0, 0.35)"
+      "--header-text": "#f6d68a"
+      "--header-sub": "#d9c4f0"
+      "--header-glow": "0 1px 3px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.8)"
+      "--accent-gold": "#f6d68a"
+      "--accent-lavender": "#d9c4f0"
+      "--accent-good": "#66bb6a"
+      "--accent-warn": "#ffb74d"
+      "--accent-bad": "#ef5350"
+      "--wallpaper-scrim": "rgba(10, 6, 18, 0.35)"
+
+    # ======================= MODE SOMBRE (SOIR / NUIT) =======================
+    # Volontairement PAS noir pur : gris-violet profond, contraste doux,
+    # pour rester lisible à distance sans être une lampe de poche la nuit.
+    dark:
+      primary-background-color: "#14101d"
+      secondary-background-color: "#1d1729"
+      card-background-color: "#251c33cc"
+      ha-card-background: "#251c33cc"
+      primary-text-color: "#efe6fb"
+      secondary-text-color: "#c8b8dd"
+      disabled-text-color: "#786f8a"
+      divider-color: "#ffffff14"
+      state-icon-active-color: "#f6d68a"
+
+      "--glass-bg": "rgba(38, 28, 58, 0.55)"
+      "--glass-bg-strong": "rgba(25, 18, 38, 0.72)"
+      "--glass-bg-accent": "rgba(60, 40, 90, 0.55)"
+      "--glass-blur": "blur(16px)"
+      "--glass-border": "1px solid rgba(255, 255, 255, 0.06)"
+      "--glass-shadow": "0 4px 22px rgba(0, 0, 0, 0.35)"
+      "--header-text": "#f6d68a"
+      "--header-sub": "#d9c4f0"
+      "--header-glow": "0 1px 3px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.8)"
+      "--accent-gold": "#f6d68a"
+      "--accent-lavender": "#d9c4f0"
+      "--accent-good": "#66bb6a"
+      "--accent-warn": "#ffb74d"
+      "--accent-bad": "#ef5350"
+      "--wallpaper-scrim": "rgba(10, 6, 18, 0.35)"

@@ -1,0 +1,453 @@
+"""Todo platform for Grocy."""
+
+from __future__ import annotations
+
+import datetime
+import logging
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
+
+from homeassistant.components.todo import (
+    TodoItem,
+    TodoItemStatus,
+    TodoListEntity,
+    TodoListEntityFeature,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityDescription
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+
+from grocy.data_models.battery import Battery
+from grocy.data_models.chore import Chore
+from grocy.data_models.meal_items import MealPlanItem
+from grocy.data_models.product import Product, ShoppingListProduct
+from grocy.data_models.task import Task
+
+from .const import (
+    ATTR_BATTERIES,
+    ATTR_CHORES,
+    ATTR_MEAL_PLAN,
+    ATTR_SHOPPING_LIST,
+    ATTR_STOCK,
+    ATTR_TASKS,
+    DOMAIN,
+)
+from .coordinator import GrocyCoordinatorData, GrocyDataUpdateCoordinator
+from .entity import GrocyEntity
+from .helpers import MealPlanItemWrapper
+from .services import (
+    SERVICE_AMOUNT,
+    SERVICE_BATTERY_ID,
+    SERVICE_CHORE_ID,
+    SERVICE_DATA,
+    SERVICE_DONE_BY,
+    SERVICE_ENTITY_TYPE,
+    SERVICE_OBJECT_ID,
+    SERVICE_PRODUCT_ID,
+    SERVICE_RECIPE_ID,
+    SERVICE_SKIPPED,
+    SERVICE_TASK_ID,
+    async_add_generic_service,
+    async_complete_task_service,
+    async_consume_product_service,
+    async_consume_recipe_service,
+    async_delete_generic_service,
+    async_execute_chore_service,
+    async_mark_shopping_list_item_done,
+    async_track_battery_service,
+)
+
+_LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
+):
+    """Do setup todo platform."""
+    coordinator: GrocyDataUpdateCoordinator = hass.data[DOMAIN]
+    entities = []
+    for description in TODOS:
+        if description.exists_fn(coordinator.available_entities):
+            entity = GrocyTodoListEntity(coordinator, description, config_entry)
+            entities.append(entity)
+        else:
+            _LOGGER.debug(
+                "Entity description '%s' is not available",
+                description.key,
+            )
+
+    async_add_entities(entities, True)
+    coordinator.entities.extend(entities)
+
+
+@dataclass
+class GrocyTodoListEntityDescription(EntityDescription):
+    """Grocy todo entity description."""
+
+    attributes_fn: Callable[[list[Any]], GrocyCoordinatorData | None] = lambda _: None
+    exists_fn: Callable[[list[str]], bool] = lambda _: True
+    entity_registry_enabled_default: bool = False
+
+
+TODOS: tuple[GrocyTodoListEntityDescription, ...] = (
+    GrocyTodoListEntityDescription(
+        key=ATTR_BATTERIES,
+        name="Grocy batteries",
+        icon="mdi:battery",
+        exists_fn=lambda entities: ATTR_BATTERIES in entities,
+    ),
+    GrocyTodoListEntityDescription(
+        key=ATTR_CHORES,
+        name="Grocy chores",
+        icon="mdi:broom",
+        exists_fn=lambda entities: ATTR_CHORES in entities,
+    ),
+    GrocyTodoListEntityDescription(
+        key=ATTR_MEAL_PLAN,
+        name="Grocy meal plan",
+        icon="mdi:silverware-variant",
+        exists_fn=lambda entities: ATTR_MEAL_PLAN in entities,
+    ),
+    GrocyTodoListEntityDescription(
+        key=ATTR_SHOPPING_LIST,
+        name="Grocy shopping list",
+        icon="mdi:cart-outline",
+        exists_fn=lambda entities: ATTR_SHOPPING_LIST in entities,
+    ),
+    GrocyTodoListEntityDescription(
+        key=ATTR_STOCK,
+        name="Grocy stock",
+        icon="mdi:fridge-outline",
+        exists_fn=lambda entities: ATTR_STOCK in entities,
+    ),
+    GrocyTodoListEntityDescription(
+        key=ATTR_TASKS,
+        name="Grocy tasks",
+        icon="mdi:checkbox-marked-circle-outline",
+        exists_fn=lambda entities: ATTR_TASKS in entities,
+    ),
+)
+
+
+def _calculate_days_until(
+    due: datetime.datetime | datetime.date | None, date_only: bool = False
+) -> int:
+    return (
+        (
+            (due.date() if isinstance(due, datetime.datetime) else due)
+            - datetime.date.today()
+            if date_only
+            else due - datetime.datetime.now()
+        ).days
+        if due
+        else 0
+    )
+
+
+def _calculate_item_status(daysUntilDue: int):
+    return TodoItemStatus.NEEDS_ACTION if daysUntilDue < 1 else TodoItemStatus.COMPLETED
+
+
+class GrocyTodoItem(TodoItem):
+    def __init__(
+        self,
+        item: Chore
+        | Battery
+        | MealPlanItem
+        | MealPlanItemWrapper
+        | Product
+        | ShoppingListProduct
+        | Task
+        | None = None,
+        key: str = "",
+    ):
+        if isinstance(item, Chore):
+            due = item.next_estimated_execution_time
+            days_until = _calculate_days_until(due, item.track_date_only)
+            super().__init__(
+                uid=item.id.__str__(),
+                summary=item.name,
+                due=due,
+                status=_calculate_item_status(days_until),
+                description=item.description or None,
+            )
+        elif isinstance(item, Battery):
+            due = item.next_estimated_charge_time
+            days_until = _calculate_days_until(due, True)
+            super().__init__(
+                uid=item.id.__str__(),
+                summary=item.name,
+                due=due,
+                status=_calculate_item_status(days_until),
+                description=item.description or None,
+            )
+        elif isinstance(item, MealPlanItem):
+            due = item.day
+            days_until = _calculate_days_until(due, True)
+            recipe = getattr(item, "recipe", None)
+            summary = (
+                recipe.name
+                if (recipe and getattr(recipe, "name", None))
+                else "Unknown recipe"
+            )
+            description = (
+                recipe.description
+                if (recipe and getattr(recipe, "description", None))
+                else None
+            )
+            super().__init__(
+                uid=item.id.__str__(),
+                summary=summary,
+                due=due,
+                status=_calculate_item_status(days_until),
+                description=description,
+            )
+        elif isinstance(item, MealPlanItemWrapper):
+            due = item.meal_plan.day
+            days_until = _calculate_days_until(due, True)
+            mp = item.meal_plan
+            recipe = getattr(mp, "recipe", None)
+            summary = (
+                recipe.name
+                if (recipe and getattr(recipe, "name", None))
+                else "Unknown recipe"
+            )
+            description = (
+                recipe.description
+                if (recipe and getattr(recipe, "description", None))
+                else None
+            )
+            super().__init__(
+                uid=mp.id.__str__(),
+                summary=summary,
+                due=due,
+                status=_calculate_item_status(days_until),
+                description=description,
+            )
+        elif isinstance(item, Product):
+            super().__init__(
+                uid=item.id.__str__(),
+                summary=f"{item.available_amount:.2f}x {item.name}",
+                status=TodoItemStatus.NEEDS_ACTION
+                if (item.available_amount or 0) > 0
+                else TodoItemStatus.COMPLETED,
+                description=None,
+            )
+        elif isinstance(item, ShoppingListProduct):
+            amount = item.amount or 0
+            product_name = item.product.name if item.product else "Unknown product"
+            super().__init__(
+                uid=item.id.__str__(),
+                summary=f"{amount:.2f}x {product_name}",
+                due=None,
+                status=TodoItemStatus.COMPLETED
+                if item.done
+                else TodoItemStatus.NEEDS_ACTION,
+                description=item.note or None,
+            )
+        elif isinstance(item, Task):
+            due = item.due_date
+            days_until = _calculate_days_until(due, True)
+            super().__init__(
+                uid=item.id.__str__(),
+                summary=item.name,
+                due=due,
+                status=_calculate_item_status(days_until),
+                description=item.description or None,
+            )
+        else:
+            raise NotImplementedError(f"{key} => {type(item)}")
+
+
+class GrocyTodoListEntity(GrocyEntity, TodoListEntity):
+    """Grocy todo entity definition."""
+
+    def __init__(
+        self,
+        coordinator: GrocyDataUpdateCoordinator,
+        description: EntityDescription,
+        config_entry: ConfigEntry,
+    ):
+        self._attr_supported_features = (
+            TodoListEntityFeature.UPDATE_TODO_ITEM
+            | TodoListEntityFeature.DELETE_TODO_ITEM
+        )
+        if description.key in [ATTR_BATTERIES, ATTR_CHORES, ATTR_TASKS]:
+            self._attr_supported_features |= TodoListEntityFeature.CREATE_TODO_ITEM
+        # SET_DESCRIPTION_ON_ITEM, SET_DUE_DATE_ON_ITEM and
+        # SET_DUE_DATETIME_ON_ITEM are deliberately not advertised:
+        # async_update_todo_item only handles status changes, so offering the
+        # edit affordances in the UI would surface fields we cannot write back.
+        super().__init__(coordinator, description, config_entry)
+
+    def _get_grocy_item(self, item_id: str):
+        entity_data = self.coordinator.data[self.entity_description.key]
+        return [
+            item
+            for item in entity_data
+            if (item.id if hasattr(item, "id") else item.meal_plan.id).__str__()
+            == item_id
+        ][0] or None
+
+    @property
+    def todo_items(self) -> list[TodoItem] | None:
+        """Return the value reported by the todo."""
+        entity_data = self.coordinator.data[self.entity_description.key]
+        return (
+            [GrocyTodoItem(item, self.entity_description.key) for item in entity_data]
+            if entity_data
+            else []
+        )
+
+    async def async_create_todo_item(self, item: TodoItem) -> None:
+        """Add an item to the To-do list."""
+        if self.entity_description.key == ATTR_BATTERIES:
+            # TODO grocy-py needs support for empty description, empty used_in
+            await async_add_generic_service(
+                self.hass,
+                self.coordinator,
+                {
+                    SERVICE_ENTITY_TYPE: "batteries",
+                    SERVICE_DATA: {
+                        "name": item.summary,
+                        "description": item.description or "generic",
+                        "used_in": "generic",
+                        "charge_interval_days": "0",
+                    },
+                },
+            )
+        elif self.entity_description.key == ATTR_CHORES:
+            await async_add_generic_service(
+                self.hass,
+                self.coordinator,
+                {
+                    SERVICE_ENTITY_TYPE: "chores",
+                    SERVICE_DATA: {
+                        "name": item.summary,
+                        "description": item.description or "",
+                        # "due_date": item.due,
+                        "period_type": "manually",
+                        "period_days": 0,
+                    },
+                },
+            )
+        elif self.entity_description.key == ATTR_TASKS:
+            # In Validation
+            await async_add_generic_service(
+                self.hass,
+                self.coordinator,
+                {
+                    SERVICE_ENTITY_TYPE: "tasks",
+                    SERVICE_DATA: {
+                        "name": item.summary,
+                        "description": item.description,
+                        "due_date": (item.due or datetime.date.today()).isoformat(),
+                    },
+                },
+            )
+        else:
+            raise NotImplementedError(self.entity_description.key)
+        # Meal Plan, Stock, Shopping List are not intuitive to add.
+        # (Requires nested IDs, which need to be provided by the user)
+        await self.coordinator.async_refresh()
+
+    async def async_update_todo_item(self, item: GrocyTodoItem) -> None:
+        """Update an item in the To-do list."""
+        # My template Update handler
+        if self.entity_description.key == ATTR_BATTERIES:
+            if item.status == TodoItemStatus.COMPLETED:
+                await async_track_battery_service(
+                    self.hass, self.coordinator, {SERVICE_BATTERY_ID: item.uid}
+                )
+            else:
+                raise NotImplementedError(self.entity_description.key)
+        elif self.entity_description.key == ATTR_CHORES:
+            if item.status == TodoItemStatus.COMPLETED:
+                data: dict[str, Any] = {
+                    SERVICE_CHORE_ID: item.uid,
+                    SERVICE_DONE_BY: 1,
+                    SERVICE_SKIPPED: False,
+                }
+                await async_execute_chore_service(self.hass, self.coordinator, data)
+            else:
+                # I Probably need to cache the chore completion, so that I can undo it...
+                raise NotImplementedError(self.entity_description.key)
+        elif self.entity_description.key == ATTR_MEAL_PLAN:
+            if item.status == TodoItemStatus.COMPLETED:
+                grocy_item = self._get_grocy_item(item.uid)
+                await async_consume_recipe_service(
+                    self.hass,
+                    self.coordinator,
+                    {SERVICE_RECIPE_ID: grocy_item.meal_plan.recipe.id},
+                )
+                await async_delete_generic_service(
+                    self.hass,
+                    self.coordinator,
+                    {
+                        SERVICE_ENTITY_TYPE: "meal_plan",
+                        SERVICE_OBJECT_ID: item.uid,
+                    },
+                )
+            else:
+                # I Probably need to cache the chore completion, so that I can undo it...
+                raise NotImplementedError(self.entity_description.key)
+        elif self.entity_description.key == ATTR_SHOPPING_LIST:
+            await async_mark_shopping_list_item_done(
+                self.hass,
+                self.coordinator,
+                {
+                    SERVICE_OBJECT_ID: int(item.uid),
+                    "done": item.status == TodoItemStatus.COMPLETED,
+                },
+            )
+        elif self.entity_description.key == ATTR_STOCK:
+            if item.status == TodoItemStatus.COMPLETED:
+                grocy_item = self._get_grocy_item(item.uid)
+                await async_consume_product_service(
+                    self.hass,
+                    self.coordinator,
+                    {
+                        SERVICE_PRODUCT_ID: item.uid,
+                        SERVICE_AMOUNT: grocy_item.available_amount,
+                    },
+                )
+            else:
+                raise NotImplementedError(self.entity_description.key)
+        elif self.entity_description.key == ATTR_TASKS:
+            # In Validation, process executes; however, throws error about hass being undefined. (NOTE Action is still performed)
+            if item.status == TodoItemStatus.COMPLETED:
+                data: dict[str, Any] = {
+                    SERVICE_TASK_ID: item.uid,
+                }
+                await async_complete_task_service(self.hass, self.coordinator, data)
+            else:
+                raise NotImplementedError(self.entity_description.key)
+        # My template Update handler
+        elif self.entity_description.key == "unsupported":
+            if item.status == TodoItemStatus.COMPLETED:
+                raise NotImplementedError(self.entity_description.key)
+            raise NotImplementedError(self.entity_description.key)
+        else:
+            raise NotImplementedError(self.entity_description.key)
+        await self.coordinator.async_refresh()
+
+    async def async_delete_todo_items(self, uids: list[str]) -> None:
+        """Delete an item in the To-do list."""
+        routines = [
+            async_delete_generic_service(
+                self.hass,
+                self.coordinator,
+                {
+                    SERVICE_ENTITY_TYPE: self.entity_description.key,
+                    SERVICE_OBJECT_ID: uid,
+                },
+            )
+            for uid in uids
+        ]
+        for routine in routines:
+            await routine
+        await self.coordinator.async_refresh()

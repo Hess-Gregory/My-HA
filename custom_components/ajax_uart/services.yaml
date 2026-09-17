@@ -1,0 +1,30 @@
+remove_device:
+  name: Remove Ajax Device
+  description: Remove a paired Ajax device from the bridge
+  fields:
+    device_id:
+      name: Device
+      description: Select the Home Assistant device to remove from the Ajax bridge
+      required: true
+      selector:
+        device:
+          integration: ajax_uart
+set_parameters:
+  name: Set Ajax Device Parameters
+  description: Update the configuration parameters of a paired Ajax device
+  fields:
+    device_id:
+      name: Device
+      description: Select the Ajax device (or enter the Ajax ID manually)
+      required: true
+      example: D6E24C
+      selector:
+        device:
+          integration: ajax_uart
+    parameters:
+      name: Parameters
+      description: "Mapping of parameter names to desired values (for example: {\"sensitivity\": \"max\"})"
+      required: true
+      example: '{"sensitivity": "max"}'
+      selector:
+        object:

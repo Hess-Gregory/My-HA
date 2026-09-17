@@ -1,0 +1,14 @@
+{
+  "domain": "ajax_uart",
+  "name": "Ajax UART",
+  "after_dependencies": [],
+  "codeowners": ["@vertsynskyi-vasyl"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/FScoua/ha-ajax-uart",
+  "integration_type": "hub",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/FScoua/ha-ajax-uart/issues",
+  "requirements": ["pyserial-asyncio==0.6"],
+  "version": "0.1.0"
+}

@@ -1,0 +1,74 @@
+59:input_select:
+76:    name: Mode chambre adulte
+82:    name: Mode chambre enfants
+88:    name: Mode pièce de vie
+94:    name: Mode salle de bain
+103:    name: Mode couloir
+108:input_boolean:
+110:    name: Routine chauffage active (désactiver en vacances / maladie)
+115:    name: "Présent(e) à la maison en semaine (RTT, télétravail...)"
+124:    name: "Courbe de chauffe active (compensation météo)"
+142:input_number:
+144:    name: Température manuelle - Chambre adulte
+154:    name: Température manuelle - Chambre enfants
+164:    name: Température manuelle - Pièce de vie
+174:    name: Température manuelle - Salle de bain
+184:    name: Température cible en mode Boost (toutes pièces)
+196:    name: Température manuelle - Couloir
+207:    name: "Courbe chauffe - Temp. extérieure froide (référence)"
+221:    name: "Courbe chauffe - Départ chaudière à temp. froide"
+234:    name: "Courbe chauffe - Temp. extérieure douce (référence)"
+244:    name: "Courbe chauffe - Départ chaudière à temp. douce"
+265:template:
+268:      - name: "Consigne chambre adulte"
+286:      - name: "Consigne chambre enfants"
+307:      - name: "Consigne couloir"
+323:      - name: "Consigne pièce de vie"
+339:      - name: "Consigne salle de bain"
+360:      - name: "Écart chambre adulte"
+373:      - name: "Écart chambre enfants"
+386:      - name: "Écart couloir"
+399:      - name: "Écart pièce de vie"
+412:      - name: "Écart salle de bain"
+430:      - name: "Écart minimum demande chauffage"
+458:      - name: "Prochain changement chambre adulte"
+494:      - name: "Prochain changement chambre enfants"
+530:      - name: "Prochain changement pièce de vie"
+574:      - name: "Prochain changement salle de bain"
+591:      - name: "Prochain changement couloir"
+614:      - name: "Mode horaire chambre adulte"
+648:      - name: "Mode horaire chambre enfants"
+682:      - name: "Mode horaire pièce de vie"
+724:      - name: "Mode horaire salle de bain"
+737:      - name: "Mode horaire couloir"
+764:      - name: "Chauffage - Consigne départ courbe météo"
+798:automation:
+800:    alias: "Chauffage - Pré-chauffe chambre adulte + salon (matin semaine)"
+824:    alias: "Chauffage - Chambre enfant (matin semaine)"
+839:    alias: "Chauffage - Tout le monde est parti (semaine)"
+869:    alias: "Chauffage - Activation présence exceptionnelle"
+890:    alias: "Chauffage - Retour Sandrine + enfant (semaine)"
+913:    alias: "Chauffage - Pré-chauffe chambre adulte (avant coucher, tous les jours)"
+936:    alias: "Chauffage - Coucher du petit (20h30, tous les jours)"
+953:    alias: "Chauffage - Coucher adultes (23h15, tous les jours)"
+982:    alias: "Chauffage - Matin week-end / jour férié"
+1012:    alias: "Chauffage - Passage hors-gel (vacances/maladie)"
+1031:    alias: "Chauffage - Retour à la normale (fin vacances/maladie)"
+1064:    alias: "Chauffage - Maison vide confirmée (alarme + porte + présence, hors jour travaillé)"
+1125:    alias: "Chauffage - Retour imminent (< 10 min) → salon en confort"
+1166:    alias: "Chauffage - Boost, coupure automatique après 2h"
+1232:    alias: "Chauffage - Alerte écart de température"
+1258:    alias: "Chauffage - Alerte humidité salle de bain"
+1276:    alias: "Chauffage - Alerte batterie sonde basse"
+1310:    alias: "Chauffage - Appliquer consignes sur les vannes"
+1402:    alias: "Chauffage - Circuit central selon demande réelle (pas juste Été)"
+1475:    alias: "Chauffage - Ajustement départ chaudière selon météo extérieure"
+1509:script:
+1512:    alias: "SdB - Activer confort"
+1520:    alias: "SdB - Désactiver confort"
+1529:    alias: "Sieste enfant - Début"
+1537:    alias: "Sieste enfant - Fin"
+1546:    alias: "Sieste adulte - Début"
+1554:    alias: "Sieste adulte - Fin"
+1563:    alias: "Chauffage - Départ temporaire (courses, famille...)"
+1576:    alias: "Chauffage - Retour après absence"

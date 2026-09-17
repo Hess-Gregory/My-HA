@@ -1,0 +1,73 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Въведете местоположение за проследяване.",
+        "data": {
+          "radius": "Радиус в метри",
+          "latitude": "Географска ширина",
+          "longitude": "Географска дължина",
+          "scan_interval": "Интервал на актуализация в секунди"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "credentials_incomplete": "Въведете както потребителско име, така и парола, или оставете и двете празни.",
+      "invalid_auth": "Невалидно потребителско име или парола за Flightradar24.",
+      "login_failed": "Неуспешен вход в Flightradar24. Проверете данните си и опитайте отново."
+    },
+    "step": {
+      "init": {
+        "description": "Редактиране на параметрите за местоположението.",
+        "data": {
+          "radius": "Радиус в метри",
+          "latitude": "Географска ширина",
+          "longitude": "Географска дължина",
+          "scan_interval": "Интервал на актуализация в секунди",
+          "min_altitude": "Минимална височина във футове",
+          "max_altitude": "Максимална височина във футове",
+          "enable_tracker": "Активиране на device_tracker за допълнително проследявани полети",
+          "auto_cleanup": "Активиране на автоматично почистване на проследените кацнали полети",
+          "tracker_name_style": "Стил на именуване на проследяващия картата",
+          "username": "Потребителско име (По желание)",
+          "password": "Парола (По желание)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "in_area": { "name": "Полети в зоната" },
+      "entered": { "name": "Влезли в зоната" },
+      "exited": { "name": "Напуснали зоната" },
+      "additional_tracked": { "name": "Допълнително проследявани" },
+      "airport_arrivals": { "name": "Пристигащи на летището" },
+      "airport_departures": { "name": "Заминаващи от летището" },
+      "airport_arrivals_on_time": { "name": "Пристигащи навреме" },
+      "airport_arrivals_delayed": { "name": "Закъснели пристигащи" },
+      "airport_arrivals_delay_average": { "name": "Средно закъснение пристигащи" },
+      "airport_arrivals_delay_index": { "name": "Индекс на закъснение пристигащи" },
+      "airport_arrivals_canceled": { "name": "Отменени пристигащи" },
+      "airport_departures_on_time": { "name": "Заминаващи навреме" },
+      "airport_departures_delayed": { "name": "Закъснели заминаващи" },
+      "airport_departures_delay_average": { "name": "Средно закъснение заминаващи" },
+      "airport_departures_delay_index": { "name": "Индекс на закъснение заминаващи" },
+      "airport_departures_canceled": { "name": "Отменени заминаващи" }
+    },
+    "button": {
+      "clear_tracked": { "name": "Изчистване на списъка" },
+      "tracked_clear": { "name": "Изчистване на допълнително проследявани" }
+    },
+    "switch": {
+      "scanning": { "name": "Извличане на данни от API" },
+      "most_tracked": { "name": "Най-проследявани" }
+    },
+    "text": {
+      "add_track": { "name": "Добавяне за проследяване" },
+      "remove_track": { "name": "Премахване от проследяване" },
+      "airport_track": { "name": "Проследяване на летище" }
+    }
+  }
+}

@@ -1,0 +1,169 @@
+"""Sensor platform for Grocy."""
+
+from __future__ import annotations
+
+import logging
+from collections.abc import Callable
+from dataclasses import dataclass
+
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorEntityDescription,
+    SensorStateClass,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.typing import StateType
+
+from .const import (
+    ATTR_BATTERIES,
+    ATTR_CHORES,
+    ATTR_MEAL_PLAN,
+    ATTR_RECIPES,
+    ATTR_SHOPPING_LIST,
+    ATTR_STOCK,
+    ATTR_TASKS,
+    CHORES,
+    DOMAIN,
+    ITEMS,
+    MEAL_PLANS,
+    PRODUCTS,
+    RECIPES,
+    TASKS,
+)
+from .coordinator import GrocyCoordinatorData, GrocyDataUpdateCoordinator
+from .entity import GrocyEntity
+from .helpers import model_to_dict
+
+_LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
+):
+    """Do setup sensor platform."""
+    coordinator: GrocyDataUpdateCoordinator = hass.data[DOMAIN]
+    entities = []
+    for description in SENSORS:
+        if description.exists_fn(coordinator.available_entities):
+            entity = GrocySensorEntity(coordinator, description, config_entry)
+            entities.append(entity)
+        else:
+            _LOGGER.debug(
+                "Entity description '%s' is not available",
+                description.key,
+            )
+
+    async_add_entities(entities, True)
+    coordinator.entities.extend(entities)
+
+
+@dataclass
+class GrocySensorEntityDescription(SensorEntityDescription):
+    """Grocy sensor entity description."""
+
+    attributes_fn: Callable[GrocyCoordinatorData | None] = lambda _: None
+    exists_fn: Callable[[list[str]], bool] = lambda _: True
+    entity_registry_enabled_default: bool = False
+
+
+SENSORS: tuple[GrocySensorEntityDescription, ...] = (
+    GrocySensorEntityDescription(
+        key=ATTR_CHORES,
+        name="Grocy chores",
+        native_unit_of_measurement=CHORES,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:broom",
+        exists_fn=lambda entities: ATTR_CHORES in entities,
+        attributes_fn=lambda data: {
+            "chores": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+    GrocySensorEntityDescription(
+        key=ATTR_MEAL_PLAN,
+        name="Grocy meal plan",
+        native_unit_of_measurement=MEAL_PLANS,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:silverware-variant",
+        exists_fn=lambda entities: ATTR_MEAL_PLAN in entities,
+        attributes_fn=lambda data: {
+            "meals": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+    GrocySensorEntityDescription(
+        key=ATTR_SHOPPING_LIST,
+        name="Grocy shopping list",
+        native_unit_of_measurement=PRODUCTS,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:cart-outline",
+        exists_fn=lambda entities: ATTR_SHOPPING_LIST in entities,
+        attributes_fn=lambda data: {
+            "products": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+    GrocySensorEntityDescription(
+        key=ATTR_STOCK,
+        name="Grocy stock",
+        native_unit_of_measurement=PRODUCTS,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:fridge-outline",
+        exists_fn=lambda entities: ATTR_STOCK in entities,
+        attributes_fn=lambda data: {
+            "products": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+    GrocySensorEntityDescription(
+        key=ATTR_TASKS,
+        name="Grocy tasks",
+        native_unit_of_measurement=TASKS,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:checkbox-marked-circle-outline",
+        exists_fn=lambda entities: ATTR_TASKS in entities,
+        attributes_fn=lambda data: {
+            "tasks": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+    GrocySensorEntityDescription(
+        key=ATTR_BATTERIES,
+        name="Grocy batteries",
+        native_unit_of_measurement=ITEMS,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:battery",
+        exists_fn=lambda entities: ATTR_BATTERIES in entities,
+        attributes_fn=lambda data: {
+            "batteries": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+    GrocySensorEntityDescription(
+        key=ATTR_RECIPES,
+        name="Grocy recipes",
+        native_unit_of_measurement=RECIPES,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:book-open-variant",
+        exists_fn=lambda entities: ATTR_RECIPES in entities,
+        attributes_fn=lambda data: {
+            "recipes": [model_to_dict(x) for x in data],
+            "count": len(data),
+        },
+    ),
+)
+
+
+class GrocySensorEntity(GrocyEntity, SensorEntity):
+    """Grocy sensor entity definition."""
+
+    @property
+    def native_value(self) -> StateType:
+        """Return the value reported by the sensor."""
+        entity_data = self.coordinator.data[self.entity_description.key]
+
+        return len(entity_data) if entity_data else 0

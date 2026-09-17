@@ -1,0 +1,516 @@
+{
+  "global": {
+    "codes": {
+      "1": {
+        "key": "tamper",
+        "target": "device",
+        "entity": "tamper",
+        "platform": "binary_sensor",
+        "device_class": "tamper",
+        "action": "on",
+        "category": "diagnostic"
+      },
+      "2": {
+        "key": "tamper",
+        "target": "device",
+        "entity": "tamper",
+        "platform": "binary_sensor",
+        "device_class": "tamper",
+        "action": "off",
+        "category": "diagnostic"
+      },
+      "3": {
+        "key": "tamper",
+        "target": "device",
+        "entity": "tamper",
+        "platform": "binary_sensor",
+        "device_class": "tamper",
+        "action": "off",
+        "category": "diagnostic"
+      },
+      "41": {
+        "key": "battery_low",
+        "target": "device",
+        "entity": "battery_low",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "on",
+        "category": "diagnostic"
+      },
+      "42": {
+        "key": "battery_low",
+        "target": "device",
+        "entity": "battery_low",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "off",
+        "category": "diagnostic"
+      },
+      "43": {
+        "key": "link_problem",
+        "target": "device",
+        "entity": "link_problem",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "on",
+        "category": "diagnostic"
+      },
+      "44": {
+        "key": "link_problem",
+        "target": "device",
+        "entity": "link_problem",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "off",
+        "category": "diagnostic"
+      },
+      "45": {
+        "key": "radio_recovery",
+        "target": "hub",
+        "entity": "radio_recovery",
+        "platform": "event",
+        "action": "log",
+        "category": "information"
+      },
+      "100": {
+        "key": "jamming",
+        "target": "hub",
+        "entity": "jamming",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "on",
+        "category": "diagnostic"
+      },
+      "101": {
+        "key": "jamming",
+        "target": "hub",
+        "entity": "jamming",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "off",
+        "category": "diagnostic"
+      },
+      "110": {
+        "key": "masking_by_jamming",
+        "target": "hub",
+        "entity": "masking_by_jamming",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "on",
+        "category": "diagnostic"
+      },
+      "111": {
+        "key": "masking_by_jamming",
+        "target": "hub",
+        "entity": "masking_by_jamming",
+        "platform": "binary_sensor",
+        "device_class": "problem",
+        "action": "off",
+        "category": "diagnostic"
+      }
+    }
+  },
+  "devices": {
+    "1": {
+      "model": "DoorProtect",
+      "codes": {
+        "4": {
+          "key": "door",
+          "target": "device",
+          "entity": "door",
+          "platform": "binary_sensor",
+          "device_class": "opening",
+          "action": "on",
+          "category": "sensor"
+        },
+        "5": {
+          "key": "door",
+          "target": "device",
+          "entity": "door",
+          "platform": "binary_sensor",
+          "device_class": "opening",
+          "action": "off",
+          "category": "sensor"
+        },
+        "6": {
+          "key": "door",
+          "target": "device",
+          "entity": "door",
+          "platform": "binary_sensor",
+          "device_class": "opening",
+          "action": "off",
+          "category": "sensor"
+        }
+      }
+    },
+    "2": {
+      "model": "MotionProtect",
+      "codes": {
+        "22": {
+          "key": "motion",
+          "target": "device",
+          "entity": "motion",
+          "platform": "binary_sensor",
+          "device_class": "motion",
+          "action": "pulse",
+          "category": "sensor",
+          "off_seconds": 8
+        }
+      },
+      "sensitivity": {
+        "levels": 3,
+        "levels_map": {
+          "min": 0,
+          "mid": 1,
+          "max": 2
+        }
+      },
+      "params": {
+        "template": "sensitivity_0_2__zone24h_1_2"
+      },
+      "setting_byte_1": "sensitivity",
+      "setting_byte_2": "zone_24h"
+    },
+    "3": {
+      "model": "FireProtect",
+      "codes": {
+        "10": {
+          "key": "smoke",
+          "target": "device",
+          "entity": "smoke",
+          "platform": "binary_sensor",
+          "device_class": "smoke",
+          "action": "on",
+          "category": "sensor"
+        },
+        "11": {
+          "key": "smoke",
+          "target": "device",
+          "entity": "smoke",
+          "platform": "binary_sensor",
+          "device_class": "smoke",
+          "action": "off",
+          "category": "sensor"
+        },
+        "12": {
+          "key": "smoke",
+          "target": "device",
+          "entity": "smoke",
+          "platform": "binary_sensor",
+          "device_class": "smoke",
+          "action": "off",
+          "category": "sensor"
+        },
+        "16": {
+          "key": "heat",
+          "target": "device",
+          "entity": "heat",
+          "platform": "binary_sensor",
+          "device_class": "heat",
+          "action": "on",
+          "category": "sensor"
+        },
+        "17": {
+          "key": "heat",
+          "target": "device",
+          "entity": "heat",
+          "platform": "binary_sensor",
+          "device_class": "heat",
+          "action": "off",
+          "category": "sensor"
+        },
+        "18": {
+          "key": "heat",
+          "target": "device",
+          "entity": "heat",
+          "platform": "binary_sensor",
+          "device_class": "heat",
+          "action": "off",
+          "category": "sensor"
+        }
+      }
+    },
+    "4": {
+      "model": "GlassProtect",
+      "codes": {
+        "23": {
+          "key": "glass",
+          "target": "device",
+          "entity": "glass",
+          "platform": "binary_sensor",
+          "device_class": "sound",
+          "action": "pulse",
+          "category": "sensor",
+          "off_seconds": 5
+        }
+      },
+      "sensitivity": {
+        "levels": 3,
+        "levels_map": {
+          "min": 0,
+          "mid": 1,
+          "max": 2
+        }
+      },
+      "params": {
+        "template": "sensitivity_0_2__zone24h_1_2"
+      },
+      "setting_byte_1": "sensitivity",
+      "setting_byte_2": "zone_24h"
+    },
+    "5": {
+      "model": "LeaksProtect",
+      "codes": {
+        "19": {
+          "key": "flood",
+          "target": "device",
+          "entity": "flood",
+          "platform": "binary_sensor",
+          "device_class": "moisture",
+          "action": "on",
+          "category": "sensor"
+        },
+        "20": {
+          "key": "flood",
+          "target": "device",
+          "entity": "flood",
+          "platform": "binary_sensor",
+          "device_class": "moisture",
+          "action": "off",
+          "category": "sensor"
+        },
+        "21": {
+          "key": "flood",
+          "target": "device",
+          "entity": "flood",
+          "platform": "binary_sensor",
+          "device_class": "moisture",
+          "action": "off",
+          "category": "sensor"
+        }
+      }
+    },
+    "8": {
+      "model": "CombiProtect",
+      "description": "hybrid detector of motion and breakage",
+      "codes": {
+        "22": {
+          "key": "motion",
+          "target": "device",
+          "entity": "motion",
+          "platform": "binary_sensor",
+          "device_class": "motion",
+          "action": "pulse",
+          "category": "sensor",
+          "off_seconds": 8
+        },
+        "23": {
+          "key": "glass",
+          "target": "device",
+          "entity": "glass",
+          "platform": "binary_sensor",
+          "device_class": "sound",
+          "action": "pulse",
+          "category": "sensor",
+          "off_seconds": 5
+        }
+      }
+    },
+    "9": {
+      "model": "FireProtect Plus",
+      "codes": {
+        "10": {
+          "key": "smoke",
+          "target": "device",
+          "entity": "smoke",
+          "platform": "binary_sensor",
+          "device_class": "smoke",
+          "action": "on",
+          "category": "sensor"
+        },
+        "11": {
+          "key": "smoke",
+          "target": "device",
+          "entity": "smoke",
+          "platform": "binary_sensor",
+          "device_class": "smoke",
+          "action": "off",
+          "category": "sensor"
+        },
+        "12": {
+          "key": "smoke",
+          "target": "device",
+          "entity": "smoke",
+          "platform": "binary_sensor",
+          "device_class": "smoke",
+          "action": "off",
+          "category": "sensor"
+        },
+        "13": {
+          "key": "co",
+          "target": "device",
+          "entity": "co",
+          "platform": "binary_sensor",
+          "device_class": "gas",
+          "action": "on",
+          "category": "sensor"
+        },
+        "14": {
+          "key": "co",
+          "target": "device",
+          "entity": "co",
+          "platform": "binary_sensor",
+          "device_class": "gas",
+          "action": "off",
+          "category": "sensor"
+        },
+        "15": {
+          "key": "co",
+          "target": "device",
+          "entity": "co",
+          "platform": "binary_sensor",
+          "device_class": "gas",
+          "action": "off",
+          "category": "sensor"
+        },
+        "16": {
+          "key": "heat",
+          "target": "device",
+          "entity": "heat",
+          "platform": "binary_sensor",
+          "device_class": "heat",
+          "action": "on",
+          "category": "sensor"
+        },
+        "17": {
+          "key": "heat",
+          "target": "device",
+          "entity": "heat",
+          "platform": "binary_sensor",
+          "device_class": "heat",
+          "action": "off",
+          "category": "sensor"
+        },
+        "18": {
+          "key": "heat",
+          "target": "device",
+          "entity": "heat",
+          "platform": "binary_sensor",
+          "device_class": "heat",
+          "action": "off",
+          "category": "sensor"
+        }
+      }
+    },
+    "11": {
+      "model": "SpaceControl",
+      "codes": {
+        "24": {
+          "key": "keyfob_button_1",
+          "target": "device",
+          "entity": "key_1",
+          "platform": "event",
+          "action": "log",
+          "category": "information"
+        },
+        "25": {
+          "key": "keyfob_button_2",
+          "target": "device",
+          "entity": "key_2",
+          "platform": "event",
+          "action": "log",
+          "category": "information"
+        },
+        "26": {
+          "key": "keyfob_button_3",
+          "target": "device",
+          "entity": "key_3",
+          "platform": "event",
+          "action": "log",
+          "category": "information"
+        },
+        "27": {
+          "key": "keyfob_button_4",
+          "target": "device",
+          "entity": "key_4",
+          "platform": "event",
+          "action": "log",
+          "category": "information"
+        }
+      }
+    },
+    "14": {
+      "model": "MotionProtect Plus",
+      "codes": {
+        "22": {
+          "key": "motion",
+          "target": "device",
+          "entity": "motion",
+          "platform": "binary_sensor",
+          "device_class": "motion",
+          "action": "pulse",
+          "category": "sensor",
+          "off_seconds": 8
+        }
+      },
+      "sensitivity": {
+        "levels": 3,
+        "levels_map": {
+          "min": 0,
+          "mid": 1,
+          "max": 2
+        }
+      },
+      "params": {
+        "template": "sensitivity_0_2__zone24h_1_2"
+      },
+      "setting_byte_1": "sensitivity",
+      "setting_byte_2": "zone_24h"
+    }
+  },
+  "params_templates": {
+    "sensitivity_0_2__zone24h_1_2": {
+      "bytes": [
+        {
+          "name": "sensitivity",
+          "type": "enum",
+          "options": {
+            "0": "min",
+            "1": "mid",
+            "2": "max"
+          }
+        },
+        {
+          "name": "zone_24h",
+          "type": "enum",
+          "options": {
+            "0": "off",
+            "1": "on",
+            "2": "off"
+          }
+        }
+      ],
+      "command": "par {DevID},{Byte1},{Byte2}",
+      "ui": {
+        "entities": [
+          {
+            "platform": "select",
+            "name": "Sensitivity",
+            "entity": "sensitivity",
+            "category": "config"
+          },
+          {
+            "platform": "select",
+            "name": "24-hour zone",
+            "entity": "zone_24h",
+            "category": "config"
+          }
+        ]
+      }
+    }
+  },
+  "meta": {
+    "notes": "No selectors. Global applies to all; device section overrides/adds. Pulse means auto-OFF after given seconds.",
+    "par_command": "par <DevID>,<Byte1>,<Byte2> (byte order defined per device via setting_byte_x; values depend on detector type)."
+  }
+}

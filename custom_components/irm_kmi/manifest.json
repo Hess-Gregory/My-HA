@@ -1,0 +1,15 @@
+{
+  "domain": "irm_kmi",
+  "name": "IRM KMI Weather Belgium",
+  "codeowners": ["@jdejaegh"],
+  "config_flow": true,
+  "dependencies": ["zone"],
+  "documentation": "https://github.com/jdejaegh/irm-kmi-ha/",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/jdejaegh/irm-kmi-ha/issues",
+  "requirements": [
+    "irm-kmi-api==0.2.1"
+  ],
+  "version": "0.3.3"
+}

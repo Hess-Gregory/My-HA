@@ -1,0 +1,82 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Fill in the location to track.",
+        "data": {
+          "radius": "Radius in meters",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "scan_interval": "Update interval in seconds"
+        },
+        "data_description": {
+          "radius": "Radius of the monitored area in meters, not kilometers. For example, enter 25000 for a 25 km radius.",
+          "scan_interval": "How often Flightradar24 is polled. Short intervals make it more likely that your requests get throttled."
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "credentials_incomplete": "Enter both username and password, or leave both empty.",
+      "invalid_auth": "Invalid Flightradar24 username or password.",
+      "login_failed": "Could not log in to Flightradar24. Check your credentials and try again."
+    },
+    "step": {
+      "init": {
+        "description": "Edit parameters for the location to track.",
+        "data": {
+          "radius": "Radius in meters",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "scan_interval": "Update interval in seconds",
+          "min_altitude": "Minimum altitude",
+          "max_altitude": "Maximum altitude",
+          "enable_tracker": "Enable device tracker",
+          "auto_cleanup": "Enable auto-cleanup of landed tracked flights",
+          "tracker_name_style": "Map Tracker Naming Style",
+          "username": "Username (Optional)",
+          "password": "Password (Optional)"
+        },
+        "data_description": {
+          "radius": "Radius of the monitored area in meters, not kilometers. For example, enter 25000 for a 25 km radius.",
+          "scan_interval": "How often Flightradar24 is polled. Short intervals make it more likely that your requests get throttled.",
+          "min_altitude": "Aircraft below this altitude are ignored. Raising it reduces the number of requests made to Flightradar24."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "in_area": { "name": "Current in area" },
+      "entered": { "name": "Entered area" },
+      "exited": { "name": "Exited area" },
+      "additional_tracked": { "name": "Additional tracked" },
+      "airport_arrivals": { "name": "Airport arrivals" },
+      "airport_departures": { "name": "Airport departures" },
+      "airport_arrivals_on_time": { "name": "Airport arrivals on time" },
+      "airport_arrivals_delayed": { "name": "Airport arrivals delayed" },
+      "airport_arrivals_delay_average": { "name": "Arrivals delay average" },
+      "airport_arrivals_delay_index": { "name": "Arrivals delay index" },
+      "airport_arrivals_canceled": { "name": "Arrivals canceled" },
+      "airport_departures_on_time": { "name": "Departures on time" },
+      "airport_departures_delayed": { "name": "Departures delayed" },
+      "airport_departures_delay_average": { "name": "Departures delay average" },
+      "airport_departures_delay_index": { "name": "Departures delay index" },
+      "airport_departures_canceled": { "name": "Departures canceled" }
+    },
+    "button": {
+      "clear_tracked": { "name": "Clear tracked" },
+      "tracked_clear": { "name": "Clear Additional tracked" }
+    },
+    "switch": {
+      "scanning": { "name": "API data fetching" },
+      "most_tracked": { "name": "Most tracked" }
+    },
+    "text": {
+      "add_track": { "name": "Add to track" },
+      "remove_track": { "name": "Remove from track" },
+      "airport_track": { "name": "Airport track" }
+    }
+  }
+}

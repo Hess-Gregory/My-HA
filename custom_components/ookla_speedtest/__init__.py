@@ -1,0 +1,668 @@
+"""Initialize the Ookla Speedtest integration."""
+
+import json
+import logging
+import subprocess
+import time
+from datetime import timedelta
+from typing import Any
+
+import voluptuous as vol
+
+from homeassistant.components import persistent_notification
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import (
+    ATTR_DEVICE_ID,
+    ATTR_ENTITY_ID,
+    EVENT_HOMEASSISTANT_STARTED,
+    Platform,
+)
+from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.helpers import device_registry as dr, entity_registry as er, selector
+from homeassistant.helpers.event import (
+    async_call_later,
+    async_track_point_in_time,
+)
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.util import dt as dt_util
+
+from .const import (
+    ATTR_BUFFERBLOAT_GRADE,
+    ATTR_DATE_LAST_TEST,
+    ATTR_DL_PCT,
+    ATTR_DOWNLOAD,
+    ATTR_DOWNLOAD_LATENCY_IQM,
+    ATTR_DOWNLOAD_LATENCY_LOW,
+    ATTR_DOWNLOAD_LATENCY_HIGH,
+    ATTR_DOWNLOAD_LATENCY_JITTER,
+    ATTR_ISP,
+    ATTR_JITTER,
+    ATTR_PING,
+    ATTR_PING_LOW,
+    ATTR_PING_HIGH,
+    ATTR_RESULT_URL,
+    ATTR_SERVER,
+    ATTR_UL_PCT,
+    ATTR_UPLOAD,
+    ATTR_UPLOAD_LATENCY_IQM,
+    ATTR_UPLOAD_LATENCY_LOW,
+    ATTR_UPLOAD_LATENCY_HIGH,
+    ATTR_UPLOAD_LATENCY_JITTER,
+    CONF_FALLBACK_TO_CLOSEST,
+    CONF_MANUAL,
+    CONF_ISP_DL_SPEED,
+    CONF_ISP_UL_SPEED,
+    CONF_SCAN_INTERVAL,
+    CONF_SOURCE_INTERFACE,
+    CONF_SOURCE_IP,
+    CONF_SERVER_ID,
+    CONF_START_TIME,
+    CONF_SURVEY_NOTIFICATION_VERSION,
+    DEFAULT_FALLBACK_TO_CLOSEST,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    SERVICE_RUN_SPEEDTEST,
+    SPEEDTEST_BIN_PATH,
+    STARTUP_DELAY,
+    SURVEY_NOTIFICATION_ID,
+    SURVEY_NOTIFICATION_VERSION,
+    SURVEY_URL,
+)
+from .binary_manager import async_setup_speedtest
+from .helpers import validate_server_id, validate_source_ip
+from .www_manager import (
+    async_setup_cards,
+    async_register_resources_service,
+    async_register_cards,
+    async_remove_cards_and_resources
+)
+
+_LOGGER = logging.getLogger(__name__)
+
+PLATFORMS = [Platform.SENSOR]
+
+RUN_SPEEDTEST_SCHEMA = vol.Schema(
+    {
+        vol.Optional(ATTR_DEVICE_ID): selector.DeviceSelector(
+            selector.DeviceSelectorConfig(
+                filter=selector.DeviceFilterSelectorConfig(integration=DOMAIN)
+            )
+        ),
+        vol.Optional(ATTR_ENTITY_ID): selector.EntitySelector(
+            selector.EntitySelectorConfig(
+                filter=selector.EntityFilterSelectorConfig(integration=DOMAIN)
+            )
+        ),
+    }
+)
+
+
+def _async_show_survey_notification(
+    hass: HomeAssistant, entry: ConfigEntry
+) -> None:
+    """Show the optional feedback survey once to existing installations."""
+    if (
+        entry.data.get(CONF_SURVEY_NOTIFICATION_VERSION)
+        == SURVEY_NOTIFICATION_VERSION
+    ):
+        return
+
+    persistent_notification.async_create(
+        hass,
+        title="Ookla Speedtest 3.1.2: share your results",
+        message=(
+            "Version 3.1.2 adds diagnostics and bufferbloat grading improvements. "
+            "Please run the same test you normally use, compare it with a browser or app test "
+            "on the same server when possible, and record both results in the poll.\n\n"
+            f"[Answer the v3.1.2 follow-up poll]({SURVEY_URL})\n\n"
+            "No survey information is collected or sent automatically. "
+            "Participation is optional."
+        ),
+        notification_id=SURVEY_NOTIFICATION_ID,
+    )
+
+    hass.config_entries.async_update_entry(
+        entry,
+        data={
+            **entry.data,
+            CONF_SURVEY_NOTIFICATION_VERSION: SURVEY_NOTIFICATION_VERSION,
+        },
+    )
+
+
+async def async_setup_cards_and_resources(hass: HomeAssistant) -> None:
+    """Set up custom cards and register resources.
+    
+    This function:
+    1. Copies card files to www folder for accessibility
+    2. Registers the service to add resources to dashboards
+    3. Automatically registers resources on startup
+    """
+    try:
+        # Copy cards to www folder
+        await async_setup_cards(hass)
+        
+        # Register service for manual resource registration
+        await async_register_resources_service(hass)
+
+        # Auto-register resources when HA starts
+        async def auto_register_resources(event):
+            await async_register_cards(hass)
+
+        if hass.is_running:
+            await auto_register_resources(None)
+        else:
+            hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, auto_register_resources)
+        
+        _LOGGER.info(
+            "Ookla Speedtest cards are ready! "
+            "Resources will be auto-registered on startup. "
+            "Call service 'ookla_speedtest.register_card_resources' to manually register."
+        )
+        
+    except Exception as e:
+        _LOGGER.error("Failed to set up cards: %s", e)
+
+
+class SpeedtestCoordinator(DataUpdateCoordinator[dict[str, Any]]):
+    """Coordinator to manage Speedtest updates."""
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        server_id: str,
+        scan_interval: int,
+        manual: bool,
+        start_time: str | None = None,
+        isp_dl_speed: float | None = None,
+        isp_ul_speed: float | None = None,
+        source_interface: str | None = None,
+        source_ip: str | None = None,
+        fallback_to_closest: bool = DEFAULT_FALLBACK_TO_CLOSEST,
+    ) -> None:
+        """Initialize the coordinator."""
+        self.server_id = server_id
+        self.entry = entry
+        self.start_time = start_time
+        self.scan_interval = scan_interval
+        self.isp_dl_speed = isp_dl_speed
+        self.isp_ul_speed = isp_ul_speed
+        self.source_interface = (source_interface or "").strip() or None
+        self.source_ip = (source_ip or "").strip() or None
+        self.fallback_to_closest = fallback_to_closest
+        self._unsub_schedule = None
+
+        # If start_time is set, we handle scheduling manually to prevent drift and align to clock
+        update_interval = None
+        if not manual and not start_time:
+            update_interval = timedelta(minutes=scan_interval)
+
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=update_interval,
+        )
+
+    def _schedule_next(self) -> None:
+        """Schedule the next update based on start_time."""
+        if not self.start_time:
+            return
+
+        try:
+            parts = list(map(int, self.start_time.split(":")))
+            if len(parts) == 2:
+                hour, minute = parts
+                second = 0
+            elif len(parts) == 3:
+                hour, minute, second = parts
+            else:
+                raise ValueError
+        except ValueError:
+            _LOGGER.error("Invalid start_time format: %s", self.start_time)
+            return
+        
+        # Get local now
+        local_now = dt_util.now(time_zone=dt_util.DEFAULT_TIME_ZONE)
+        next_run = local_now.replace(hour=hour, minute=minute, second=second, microsecond=0)
+        
+        # Adjust if in past
+        if next_run <= local_now:
+            # Calculate minutes diff
+            diff = (local_now - next_run).total_seconds() / 60
+            # intervals passed
+            intervals = int(diff // self.scan_interval) + 1
+            next_run += timedelta(minutes=intervals * self.scan_interval)
+            
+        _LOGGER.debug("Scheduling next speedtest for %s", next_run)
+
+        if self._unsub_schedule:
+            self._unsub_schedule()
+
+        self._unsub_schedule = async_track_point_in_time(
+            self.hass, self._async_scheduled_refresh, next_run
+        )
+
+    async def _async_scheduled_refresh(self, _):
+        """Refresh data."""
+        await self.async_request_refresh()
+
+    async def _async_update_data(self) -> dict[str, Any] | None:
+        """Fetch new data from speedtest-cli."""
+        if self.start_time:
+            self._schedule_next()
+
+        server_id = (
+            self.server_id
+            if self.server_id != "closest" and validate_server_id(self.server_id)
+            else None
+        )
+        cmd = self._build_speedtest_cmd(server_id)
+
+        try:
+            process = await self._async_run_speedtest(cmd)
+            result = json.loads(process.stdout)
+
+            _LOGGER.debug("Result from speedtest invocation: %s", result)
+            return self._process_speedtest_result(result)
+        except subprocess.CalledProcessError as e:
+            if self._should_fallback_to_closest(e, server_id):
+                _LOGGER.warning(
+                    "Configured speedtest server %s is unavailable; retrying with closest server",
+                    server_id,
+                )
+                fallback_cmd = self._build_speedtest_cmd(None)
+                try:
+                    process = await self._async_run_speedtest(fallback_cmd)
+                    result = json.loads(process.stdout)
+                    _LOGGER.debug("Result from fallback speedtest invocation: %s", result)
+                    return self._process_speedtest_result(result)
+                except subprocess.CalledProcessError as fallback_error:
+                    fallback_error_msg = (
+                        fallback_error.stderr
+                        or fallback_error.stdout
+                        or "No error output"
+                    )
+                    _LOGGER.error(
+                        "Fallback speedtest failed (exit code %s): %s. Command: %s",
+                        fallback_error.returncode,
+                        fallback_error_msg,
+                        " ".join(fallback_cmd),
+                    )
+                    return None
+                except json.JSONDecodeError as fallback_json_error:
+                    _LOGGER.error(
+                        "Failed to parse fallback Speedtest JSON output: %s. Output: %s",
+                        fallback_json_error,
+                        process.stdout if "process" in locals() else "N/A",
+                    )
+                    return None
+                except (KeyError, TypeError) as fallback_data_error:
+                    _LOGGER.error(
+                        "Unexpected data format in fallback speedtest result: %s",
+                        fallback_data_error,
+                    )
+                    return None
+
+            error_msg = e.stderr or e.stdout or "No error output"
+            _LOGGER.error("Speedtest failed (exit code %s): %s. Command: %s", e.returncode, error_msg, " ".join(cmd))
+            return None
+        except json.JSONDecodeError as e:
+            _LOGGER.error(
+                "Failed to parse Speedtest JSON output: %s. Output: %s",
+                e,
+                process.stdout if "process" in locals() else "N/A",
+            )
+            return None
+        except (KeyError, TypeError) as e:
+            _LOGGER.error("Unexpected data format in speedtest result: %s", e)
+            return None
+        except Exception as e:
+            _LOGGER.error(
+                "Unexpected error during speedtest: %s. Command: %s", e, " ".join(cmd)
+            )
+            return None
+
+    def _build_speedtest_cmd(self, server_id: str | None) -> list[str]:
+        """Build the speedtest command for an optional server ID."""
+        # The bundled Ookla CLI (1.2.0) does not expose a multi-connection
+        # switch; its default connection strategy is used automatically.
+        cmd = [SPEEDTEST_BIN_PATH, "--accept-license", "--accept-gdpr", "--format=json"]
+        if self.source_interface:
+            cmd.extend(["--interface", self.source_interface])
+        if self.source_ip:
+            cmd.extend(["--ip", self.source_ip])
+        if server_id:
+            cmd.extend(["-s", server_id])
+        return cmd
+
+    async def _async_run_speedtest(
+        self, cmd: list[str]
+    ) -> subprocess.CompletedProcess[str]:
+        """Run speedtest in the executor."""
+        started = time.monotonic()
+        _LOGGER.debug("Starting Ookla speedtest: %s", " ".join(cmd))
+
+        def _run() -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+        process = await self.hass.async_add_executor_job(_run)
+        _LOGGER.debug(
+            "Ookla speedtest completed in %.1fs (stdout=%d bytes)",
+            time.monotonic() - started,
+            len(process.stdout),
+        )
+        return process
+
+    def _should_fallback_to_closest(
+        self, error: subprocess.CalledProcessError, server_id: str | None
+    ) -> bool:
+        """Return true when a configured server is unavailable."""
+        if not self.fallback_to_closest or not server_id:
+            return False
+
+        error_msg = error.stderr or error.stdout or ""
+        return error.returncode == 2 and (
+            "NoServersException" in error_msg or "No servers defined" in error_msg
+        )
+
+    def _process_speedtest_result(self, result: dict[str, Any]) -> dict[str, Any]:
+        """Convert speedtest JSON output into coordinator data."""
+        ping = result["ping"]
+        download = result["download"]
+        upload = result["upload"]
+        download_latency = download.get("latency") or {}
+        upload_latency = upload.get("latency") or {}
+
+        data = {
+            # ping { jitter, latency, low, high}
+            ATTR_PING: round(ping["latency"], 2),
+            ATTR_JITTER: round(ping["jitter"], 2),
+            ATTR_PING_LOW: round(ping.get("low", 0), 2),
+            ATTR_PING_HIGH: round(ping.get("high", 0), 2),
+            # download { bandwidth, bytes, elapsed, latency { iqm, low, high, jitter }}
+            ATTR_DOWNLOAD: round(download["bandwidth"] * 8 / 1000000, 2),
+            ATTR_DOWNLOAD_LATENCY_IQM: round(download_latency.get("iqm", 0), 2),
+            ATTR_DOWNLOAD_LATENCY_LOW: round(download_latency.get("low", 0), 2),
+            ATTR_DOWNLOAD_LATENCY_HIGH: round(download_latency.get("high", 0), 2),
+            ATTR_DOWNLOAD_LATENCY_JITTER: round(download_latency.get("jitter", 0), 2),
+            # upload { bandwidth, bytes, elapsed, latency { iqm, low, high, jitter }}
+            ATTR_UPLOAD: round(upload["bandwidth"] * 8 / 1000000, 2),
+            ATTR_UPLOAD_LATENCY_IQM: round(upload_latency.get("iqm", 0), 2),
+            ATTR_UPLOAD_LATENCY_LOW: round(upload_latency.get("low", 0), 2),
+            ATTR_UPLOAD_LATENCY_HIGH: round(upload_latency.get("high", 0), 2),
+            ATTR_UPLOAD_LATENCY_JITTER: round(upload_latency.get("jitter", 0), 2),
+            # isp
+            ATTR_ISP: result["isp"],
+            # interface { internalIp, name, macAddr, isVpn, externalIp }
+            # server { id, host, port, name, location, country, ip }
+            ATTR_SERVER: (
+                # produces: Boost Mobile (Chicago, IL, United States)
+                f"{result['server']['name']} "
+                f"({result['server']['location']}, {result['server']['country']})"
+            ),
+            # result { id, url, persisted }
+            ATTR_RESULT_URL: result.get("result", {}).get("url", ""),
+            ATTR_DATE_LAST_TEST: dt_util.now(),
+        }
+
+        if self.isp_dl_speed and data[ATTR_DOWNLOAD] > 0:
+            data[ATTR_DL_PCT] = round(
+                (data[ATTR_DOWNLOAD] / self.isp_dl_speed) * 100, 1
+            )
+
+        if self.isp_ul_speed and data[ATTR_UPLOAD] > 0:
+            data[ATTR_UL_PCT] = round(
+                (data[ATTR_UPLOAD] / self.isp_ul_speed) * 100, 1
+            )
+
+        # Bufferbloat Calculation
+        # Calculate the increase in latency under load
+        ping_idle = data[ATTR_PING]
+        # Handle potential 0/None values if test failed partially
+        ping_dl = data.get(ATTR_DOWNLOAD_LATENCY_IQM, 0)
+        ping_ul = data.get(ATTR_UPLOAD_LATENCY_IQM, 0)
+
+        if ping_dl and ping_ul:
+            max_loaded = max(ping_dl, ping_ul)
+            # Ensure we don't get negative delta due to variance
+            delta = max(0, max_loaded - ping_idle)
+
+            if delta <= 5:
+                grade = "A+"
+            elif delta <= 30:
+                grade = "A"
+            elif delta <= 60:
+                grade = "B"
+            elif delta <= 120:
+                grade = "C"
+            elif delta <= 300:
+                grade = "D"
+            elif delta <= 600:
+                grade = "E"
+            else:
+                grade = "F"
+
+            data[ATTR_BUFFERBLOAT_GRADE] = grade
+        else:
+            data[ATTR_BUFFERBLOAT_GRADE] = None
+
+        return data
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up Ookla Speedtest from a config entry."""
+    hass.data.setdefault(DOMAIN, {})
+
+    # Ensure binary is present and valid, download if missing
+    await async_setup_speedtest(hass)
+
+    # Get config from options first, fall back to data for backwards compatibility
+    server_id = entry.options.get(
+        CONF_SERVER_ID, entry.data.get(CONF_SERVER_ID, "closest")
+    )
+    manual = entry.options.get(CONF_MANUAL, entry.data.get(CONF_MANUAL, True))
+    scan_interval = entry.options.get(
+        CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    )
+    start_time = entry.options.get(
+        CONF_START_TIME, entry.data.get(CONF_START_TIME)
+    )
+    isp_dl_speed = entry.options.get(
+        CONF_ISP_DL_SPEED, entry.data.get(CONF_ISP_DL_SPEED)
+    )
+    isp_ul_speed = entry.options.get(
+        CONF_ISP_UL_SPEED, entry.data.get(CONF_ISP_UL_SPEED)
+    )
+    source_interface = entry.options.get(
+        CONF_SOURCE_INTERFACE, entry.data.get(CONF_SOURCE_INTERFACE)
+    )
+    source_ip = entry.options.get(CONF_SOURCE_IP, entry.data.get(CONF_SOURCE_IP))
+    fallback_to_closest = entry.options.get(
+        CONF_FALLBACK_TO_CLOSEST,
+        entry.data.get(CONF_FALLBACK_TO_CLOSEST, DEFAULT_FALLBACK_TO_CLOSEST),
+    )
+
+    # Validate server_id during setup
+    if not validate_server_id(server_id):
+        _LOGGER.warning(
+            "Invalid server_id '%s' in config entry; defaulting to 'closest'", server_id
+        )
+        server_id = "closest"
+
+    source_interface = (source_interface or "").strip() or None
+    source_ip = (source_ip or "").strip() or None
+
+    if not validate_source_ip(source_ip):
+        _LOGGER.warning(
+            "Invalid source_ip '%s' in config entry; ignoring source IP",
+            source_ip,
+        )
+        source_ip = None
+
+    coordinator = SpeedtestCoordinator(
+        hass,
+        entry,
+        server_id,
+        scan_interval,
+        manual,
+        start_time,
+        isp_dl_speed,
+        isp_ul_speed,
+        source_interface,
+        source_ip,
+        fallback_to_closest,
+    )
+    hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    # Register service to manually run a speed test
+    async def run_speedtest_service(call: ServiceCall) -> None:
+        """Service to manually run a speedtest."""
+        device_id = call.data.get(ATTR_DEVICE_ID)
+        entity_id = call.data.get(ATTR_ENTITY_ID)
+        coordinators: list[SpeedtestCoordinator]
+
+        def _coordinator_from_device(selected_device_id: str) -> SpeedtestCoordinator | None:
+            """Resolve a speedtest coordinator from a device ID."""
+            device_registry = dr.async_get(hass)
+            device_entry = device_registry.async_get(selected_device_id)
+            if device_entry is None:
+                _LOGGER.warning(
+                    "Unknown Ookla Speedtest device requested: %s",
+                    selected_device_id,
+                )
+                return None
+
+            matching_entry_id = next(
+                (
+                    entry_id
+                    for entry_id in device_entry.config_entries
+                    if (
+                        entry := hass.config_entries.async_get_entry(entry_id)
+                    ) is not None
+                    and entry.domain == DOMAIN
+                ),
+                None,
+            )
+            if matching_entry_id is None:
+                _LOGGER.warning(
+                    "Ookla Speedtest device is not linked to a loaded config entry: %s",
+                    selected_device_id,
+                )
+                return None
+
+            config_entry = hass.config_entries.async_get_entry(matching_entry_id)
+            if config_entry is None:
+                _LOGGER.warning(
+                    "Ookla Speedtest config entry is not ready: %s",
+                    matching_entry_id,
+                )
+                return None
+
+            coordinator = hass.data[DOMAIN].get(config_entry.entry_id)
+            if coordinator is None:
+                _LOGGER.warning(
+                    "Ookla Speedtest config entry is not ready: %s",
+                    config_entry.title,
+                )
+                return None
+
+            return coordinator
+
+        if device_id:
+            coordinator = _coordinator_from_device(device_id)
+            if coordinator is None:
+                return
+            coordinators = [coordinator]
+        elif entity_id:
+            entity_entry = er.async_get(hass).async_get(entity_id)
+            if entity_entry is None:
+                _LOGGER.warning(
+                    "Unknown Ookla Speedtest entity requested: %s",
+                    entity_id,
+                )
+                return
+
+            if entity_entry.device_id is None:
+                _LOGGER.warning(
+                    "Ookla Speedtest entity is not linked to a device: %s",
+                    entity_id,
+                )
+                return
+
+            coordinator = _coordinator_from_device(entity_entry.device_id)
+            if coordinator is None:
+                return
+            coordinators = [coordinator]
+        else:
+            coordinators = list(hass.data[DOMAIN].values())
+
+        for item in coordinators:
+            item.async_set_updated_data(None)
+            await item.async_request_refresh()
+
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_RUN_SPEEDTEST,
+        run_speedtest_service,
+        schema=RUN_SPEEDTEST_SCHEMA,
+    )
+
+    # Delay first speedtest in interval mode to avoid blocking HA startup
+    if not manual:
+        async def schedule_first_refresh(_):
+            """Schedule the first speedtest after HA has started."""
+            # Wait for configured delay after HA startup before running first test
+            async def run_first_refresh(_):
+                await coordinator.async_request_refresh()
+
+            async_call_later(hass, STARTUP_DELAY, run_first_refresh)
+
+        # If HA is already started, schedule immediately; otherwise wait for start event
+        if hass.is_running:
+            await schedule_first_refresh(None)
+        else:
+            hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, schedule_first_refresh)
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Set up custom cards and register resources service
+    # Copies cards to www folder and provides service for auto-registration
+    await async_setup_cards_and_resources(hass)
+
+    _async_show_survey_notification(hass, entry)
+
+    # Register options update listener after storing the notification marker so
+    # that the internal config-entry update does not trigger a reload.
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    return True
+
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload the config entry when options change."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok:
+        if entry.entry_id in hass.data[DOMAIN]:
+            hass.data[DOMAIN].pop(entry.entry_id)
+        if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_RUN_SPEEDTEST):
+            hass.services.async_remove(DOMAIN, SERVICE_RUN_SPEEDTEST)
+
+    return unload_ok
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle removal of an entry."""
+    # Remove custom cards and unregister resources
+    await async_remove_cards_and_resources(hass)

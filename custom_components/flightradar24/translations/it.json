@@ -1,0 +1,73 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Inserisci la posizione da monitorare.",
+        "data": {
+          "radius": "Raggio in metri",
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "scan_interval": "Intervallo di aggiornamento in secondi"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "credentials_incomplete": "Inserisci sia nome utente che password, oppure lascia entrambi i campi vuoti.",
+      "invalid_auth": "Nome utente o password Flightradar24 non validi.",
+      "login_failed": "Impossibile accedere a Flightradar24. Controlla le credenziali e riprova."
+    },
+    "step": {
+      "init": {
+        "description": "Modifica i parametri per la posizione da monitorare.",
+        "data": {
+          "radius": "Raggio in metri",
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "scan_interval": "Intervallo di aggiornamento in secondi",
+          "min_altitude": "Altitudine minima in piedi",
+          "max_altitude": "Altitudine massima in piedi",
+          "enable_tracker": "Abilita device_tracker per voli extra",
+          "auto_cleanup": "Abilita la pulizia automatica dei voli tracciati atterrati",
+          "tracker_name_style": "Stile di denominazione del tracker sulla mappa",
+          "username": "Nome utente (Opzionale)",
+          "password": "Password (Opzionale)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "in_area": { "name": "Voli nell'area" },
+      "entered": { "name": "Area entrata" },
+      "exited": { "name": "Area uscita" },
+      "additional_tracked": { "name": "Seguiti extra" },
+      "airport_arrivals": { "name": "Arrivi in aeroporto" },
+      "airport_departures": { "name": "Partenze dall'aeroporto" },
+      "airport_arrivals_on_time": { "name": "Arrivi in orario" },
+      "airport_arrivals_delayed": { "name": "Arrivi in ritardo" },
+      "airport_arrivals_delay_average": { "name": "Ritardo medio arrivi" },
+      "airport_arrivals_delay_index": { "name": "Indice di ritardo arrivi" },
+      "airport_arrivals_canceled": { "name": "Arrivi cancellati" },
+      "airport_departures_on_time": { "name": "Partenze in orario" },
+      "airport_departures_delayed": { "name": "Partenze in ritardo" },
+      "airport_departures_delay_average": { "name": "Ritardo medio partenze" },
+      "airport_departures_delay_index": { "name": "Indice di ritardo partenze" },
+      "airport_departures_canceled": { "name": "Partenze cancellate" }
+    },
+    "button": {
+      "clear_tracked": { "name": "Cancella lista monitoraggio" },
+      "tracked_clear": { "name": "Cancella seguiti extra" }
+    },
+    "switch": {
+      "scanning": { "name": "Recupero dati API" },
+      "most_tracked": { "name": "I più seguiti" }
+    },
+    "text": {
+      "add_track": { "name": "Aggiungi al monitoraggio" },
+      "remove_track": { "name": "Rimuovi dal monitoraggio" },
+      "airport_track": { "name": "Monitoraggio aeroporto" }
+    }
+  }
+}

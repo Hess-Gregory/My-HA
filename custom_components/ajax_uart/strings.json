@@ -1,0 +1,92 @@
+{
+  "config": {
+    "abort": {
+      "no_config_entry": "Ajax UART is not configured yet.",
+      "invalid_hub": "The selected bridge entry is no longer available.",
+      "not_ready": "The bridge is not ready. Try again once the connection is established.",
+      "busy": "The bridge is already processing another pairing request.",
+      "pairing_failed": "Unable to add the device. Please try again.",
+      "pairing_timeout": "No device was detected before the timeout expired.",
+      "pairing_stopped": "Pairing cancelled.",
+      "pairing_success": "Device added successfully.",
+      "pairing_missing_candidate": "No pending device to confirm.",
+      "stop_failed": "Failed to enter engineering mode on the bridge.",
+      "add_failed": "The bridge rejected the pairing command.",
+      "confirm_failed": "The bridge rejected the confirmation command.",
+      "no_session": "Pairing session is no longer active.",
+      "no_candidate": "No pending device available for confirmation.",
+      "invalid_stage": "The bridge returned an unexpected response during pairing."
+    },
+    "progress": {
+      "pairing_search": "Seeking for new devices... Please power on the device you want to add.",
+      "pairing_confirm": "Waiting for the bridge to complete the pairing."
+    },
+    "step": {
+      "user": {
+        "title": "Configure Ajax UART",
+        "description": "Provide the serial connection details for the Ajax uartBridge.",
+        "data": {
+          "port": "Serial port",
+          "baudrate": "Baud rate"
+        }
+      },
+      "add_choice": {
+        "title": "Add Integration",
+        "description": "What would you like to add?",
+        "menu_options": {
+          "add_hub": "Add Hub",
+          "add_device": "Add Device"
+        }
+      },
+      "add_hub": {
+        "title": "Add New Hub",
+        "description": "Configure the serial connection details for the new Ajax uartBridge.",
+        "data": {
+          "port": "Serial port",
+          "baudrate": "Baud rate"
+        }
+      },
+      "add_device": {
+        "title": "Add Device",
+        "description": "Adding a new device to the Ajax UART bridge."
+      },
+      "hub": {
+        "title": "Select bridge",
+        "description": "Choose which Ajax UART instance to use for pairing.",
+        "data": {
+          "entry_id": "Bridge"
+        }
+      },
+      "confirm": {
+        "title": "New device found",
+        "description": "Found a new device {device_name} (ID: {device_id}, FW: {firmware}).",
+        "menu_options": {
+          "confirm_add": "Add device",
+          "confirm_stop": "Stop pairing"
+        }
+      },
+      "confirm_add": {
+        "title": "Add device"
+      },
+      "confirm_stop": {
+        "title": "Stop pairing"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Ajax UART options",
+        "data": {
+          "port": "Serial port",
+          "baudrate": "Baud rate"
+        }
+      }
+    }
+  },
+  "device_automation": {
+    "action_type": {
+      "add_devices": "Add devices"
+    }
+  }
+}

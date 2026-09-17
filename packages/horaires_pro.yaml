@@ -1,0 +1,1252 @@
+# ============================================================
+# HORAIRES PRO — Todoist
+# ============================================================
+# Système indépendant du Kanban familial
+#
+# VERSION
+# ------------------------------------------------------------
+# Version : 2.3.0
+# Date    : 2026-09-17
+# Heure   : (à ajuster à l'heure réelle de déploiement)
+# Fuseau  : Europe/Brussels
+#
+# MODIFICATIONS — VERSION 2.3.0
+# ------------------------------------------------------------
+# - Ajout de 2 calendriers agrégés "Global" (un par personne) :
+#     HP Gregory - Global  (tous les labels G_*)
+#     HP Sandrine - Global (tous les labels S_*)
+#   -> corrige l'inversion de couleurs/étiquettes dans
+#      family-calendar-card, causée par l'utilisation de la
+#      même entité calendar.horaires_pro pour les deux personnes
+#      (collision dans this._calByEntity côté carte + sémantique
+#      d'exclusion du paramètre "filter").
+#   -> permet d'afficher 2 calendriers côte à côte (1 entité par
+#      personne, sans regex de filtrage nécessaire côté carte).
+# - Conservation intégrale des ~40 calendriers par type existants
+#   (HP Gregory - G_xxx / HP Sandrine - S_xxx), toujours utiles
+#   pour un filtrage fin si besoin ailleurs.
+#
+# MODIFICATIONS — VERSION 2.2.0
+# ------------------------------------------------------------
+# - Passage de S_Recup_Heures_48h à S_CSU
+# - Plafond CSU de 56 h en 2026
+# - Plafond CSU de 64 h à partir du 01/01/2027
+# - Réinitialisation automatique du calcul chaque 1er janvier
+# - Ajout du versioning exposé à Home Assistant
+# - Nouveau sensor : sensor.horaires_pro_version
+# - Informations exposées : version, date, heure, affichage
+# - Conservation du fonctionnement Todoist / Horaires Pro
+# ============================================================
+
+rest:
+  - resource: "https://api.todoist.com/api/v1/projects/6hWVvMpjWrXvrCRm"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Horaires Pro Projet"
+        unique_id: horaires_pro_projet
+        value_template: "{{ value_json.name }}"
+        json_attributes:
+          - id
+          - name
+          - color
+          - view_style
+
+  - resource: "https://api.todoist.com/api/v1/tasks?project_id=6hWVvMpjWrXvrCRm&limit=200"
+    method: GET
+    headers:
+      Authorization: !secret todoist_api_token
+    scan_interval: 300
+    sensor:
+      - name: "Horaires Pro Taches"
+        unique_id: horaires_pro_taches
+        value_template: "{{ value_json.results | length }}"
+        json_attributes:
+          - results
+          - next_cursor
+
+# ============================================================
+# TODOIST — CALENDRIERS HORAIRES PRO
+# ============================================================
+# Ces calendriers sont des vues filtrées de Todoist.
+# Ils ne créent ni ne modifient aucune tâche.
+#
+# 1 calendrier = 1 type de bloc (pour le détail fin).
+# + 2 calendriers "Global" (1 par personne, tous types confondus)
+#   ajoutés en v2.3.0 pour l'affichage côte à côte dans
+#   family-calendar-card, sans collision d'entité.
+#
+# Todoist reste la source de vérité.
+# ============================================================
+
+calendar:
+  - platform: todoist
+    token: !secret todoist_api_token
+    custom_projects:
+      # ========================================================
+      # GREGORY — GLOBAL (NOUVEAU v2.3.0)
+      # ========================================================
+      # Un seul calendrier agrégeant TOUS les labels G_*.
+      # custom_projects.labels fonctionne en OU (une tâche est
+      # incluse dès qu'elle a AU MOINS UN des labels listés) —
+      # vérifié dans le code de l'intégration Todoist de HA.
+      # A utiliser dans family-calendar-card à la place de
+      # calendar.horaires_pro + filter regex.
+
+      - name: "HP Gregory - Global"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Jour_Normal
+          - G_Journee_Reduite
+          - G_Heures_Supp_Prestees
+          - G_Heures_Supp_Deduites
+          - G_Vac_ONVA
+          - G_ADV_Mois
+          - G_ADV_Samedi
+          - G_ADV_13eme_mois
+          - G_Jour_Ferie
+          - G_Recup_Jour_Ferie
+          - G_Chomage_Technique
+          - G_Maladie
+          - G_Maladie_Enfant
+          - G_Visite_Medicale
+          - G_Formation
+          - G_Syndicat
+          - G_Meeting
+          - G_Jour_Imperieux
+          - G_Absence_Justifiee
+          - G_Absence_Injustifiee
+          - G_Conge_Sans_Solde
+          - G_Repos_Weekend
+          - G_Greve
+
+      # ========================================================
+      # SANDRINE — GLOBAL (NOUVEAU v2.3.0)
+      # ========================================================
+
+      - name: "HP Sandrine - Global"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Jour_Normal
+          - S_Journee_Reduite
+          - S_Vac_ONVA
+          - S_ADV_Mois
+          - S_ADV_13eme_mois
+          - S_CSU
+          - S_Jour_Ferie
+          - S_Recup_Jour_Ferie
+          - S_Chaleur
+          - S_Maladie
+          - S_Maladie_Enfant
+          - S_Visite_Medicale
+          - S_Formation
+          - S_Syndicat
+          - S_Jour_Imperieux
+          - S_Absence_Justifiee
+          - S_Absence_Injustifiee
+          - S_Repos_Weekend
+          - S_Greve
+
+      # ========================================================
+      # GREGORY — DÉTAIL PAR TYPE (existant, conservé)
+      # ========================================================
+
+      - name: "HP Gregory - G_Jour_Normal"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Jour_Normal
+
+      - name: "HP Gregory - G_Journee_Reduite"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Journee_Reduite
+
+      - name: "HP Gregory - G_Heures_Supp_Prestees"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Heures_Supp_Prestees
+
+      - name: "HP Gregory - G_Heures_Supp_Deduites"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Heures_Supp_Deduites
+
+      - name: "HP Gregory - G_Vac_ONVA"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Vac_ONVA
+
+      - name: "HP Gregory - G_ADV_Mois"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_ADV_Mois
+
+      - name: "HP Gregory - G_ADV_Samedi"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_ADV_Samedi
+
+      - name: "HP Gregory - G_ADV_13eme_mois"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_ADV_13eme_mois
+
+      - name: "HP Gregory - G_Jour_Ferie"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Jour_Ferie
+
+      - name: "HP Gregory - G_Recup_Jour_Ferie"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Recup_Jour_Ferie
+
+      - name: "HP Gregory - G_Chomage_Technique"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Chomage_Technique
+
+      - name: "HP Gregory - G_Maladie"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Maladie
+
+      - name: "HP Gregory - G_Maladie_Enfant"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Maladie_Enfant
+
+      - name: "HP Gregory - G_Visite_Medicale"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Visite_Medicale
+
+      - name: "HP Gregory - G_Formation"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Formation
+
+      - name: "HP Gregory - G_Syndicat"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Syndicat
+
+      - name: "HP Gregory - G_Meeting"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Meeting
+
+      - name: "HP Gregory - G_Jour_Imperieux"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Jour_Imperieux
+
+      - name: "HP Gregory - G_Absence_Justifiee"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Absence_Justifiee
+
+      - name: "HP Gregory - G_Absence_Injustifiee"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Absence_Injustifiee
+
+      - name: "HP Gregory - G_Conge_Sans_Solde"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Conge_Sans_Solde
+
+      - name: "HP Gregory - G_Repos_Weekend"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Repos_Weekend
+
+      - name: "HP Gregory - G_Greve"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - G_Greve
+
+      # ========================================================
+      # SANDRINE — DÉTAIL PAR TYPE (existant, conservé)
+      # ========================================================
+
+      - name: "HP Sandrine - S_Jour_Normal"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Jour_Normal
+
+      - name: "HP Sandrine - S_Journee_Reduite"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Journee_Reduite
+
+      - name: "HP Sandrine - S_Vac_ONVA"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Vac_ONVA
+
+      - name: "HP Sandrine - S_ADV_Mois"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_ADV_Mois
+
+      - name: "HP Sandrine - S_ADV_13eme_mois"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_ADV_13eme_mois
+
+      - name: "HP Sandrine - S_CSU"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_CSU
+
+      - name: "HP Sandrine - S_Jour_Ferie"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Jour_Ferie
+
+      - name: "HP Sandrine - S_Recup_Jour_Ferie"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Recup_Jour_Ferie
+
+      - name: "HP Sandrine - S_Chaleur"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Chaleur
+
+      - name: "HP Sandrine - S_Maladie"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Maladie
+
+      - name: "HP Sandrine - S_Maladie_Enfant"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Maladie_Enfant
+
+      - name: "HP Sandrine - S_Visite_Medicale"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Visite_Medicale
+
+      - name: "HP Sandrine - S_Formation"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Formation
+
+      - name: "HP Sandrine - S_Syndicat"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Syndicat
+
+      - name: "HP Sandrine - S_Jour_Imperieux"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Jour_Imperieux
+
+      - name: "HP Sandrine - S_Absence_Justifiee"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Absence_Justifiee
+
+      - name: "HP Sandrine - S_Absence_Injustifiee"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Absence_Injustifiee
+
+      - name: "HP Sandrine - S_Repos_Weekend"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Repos_Weekend
+
+      - name: "HP Sandrine - S_Greve"
+        include_projects:
+          - "Horaires Pro"
+        labels:
+          - S_Greve
+
+template:
+  - sensor:
+      # ========================================================
+      # VERSION HORAIRES PRO
+      # ========================================================
+
+      - name: "Horaires Pro Version"
+        unique_id: horaires_pro_version
+        icon: mdi:source-branch
+        state: "2.3.0"
+        attributes:
+          version: "2.3.0"
+          date: "2026-09-17"
+          heure: "00:00"
+          fuseau: "Europe/Brussels"
+          affichage: "v2.3.0 · 17/09/2026"
+          modification: "Calendriers Global Gregory/Sandrine (fix inversion couleurs + côte à côte)"
+
+      # ========================================================
+      # NOMBRE TOTAL DE BLOCS
+      # ========================================================
+
+      - name: "Horaires Pro Nombre de Blocs"
+        unique_id: horaires_pro_nombre_blocs
+        icon: mdi:calendar-clock
+        state: >-
+          {{ state_attr('sensor.horaires_pro_taches', 'results')
+             | default([], true)
+             | length }}
+
+      # ========================================================
+      # GREGORY — TRAVAIL EFFECTIF
+      # ========================================================
+
+      - name: "Horaires Pro Heures Travail Gregory"
+        unique_id: horaires_pro_heures_travail_gregory
+        icon: mdi:clock-check-outline
+        unit_of_measurement: "min"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {% set ns = namespace(total=0) %}
+
+          {% for bloc in blocs %}
+            {% if bloc.label != 'G_Heures_Supp_Prestees'
+                  and bloc.label != 'G_Heures_Supp_Deduites' %}
+              {% set ns.total = ns.total + (bloc.effective_minutes | int(0)) %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.total }}
+
+        attributes:
+          heures: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label != 'G_Heures_Supp_Prestees'
+                    and bloc.label != 'G_Heures_Supp_Deduites' %}
+                {% set ns.total = ns.total + (bloc.effective_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.total / 60) | round(2) }}
+
+          affichage: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label != 'G_Heures_Supp_Prestees'
+                    and bloc.label != 'G_Heures_Supp_Deduites' %}
+                {% set ns.total = ns.total + (bloc.effective_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.total // 60) | int }}h{{ '%02d' | format(ns.total % 60) }}
+
+      # ========================================================
+      # GREGORY — SOLDE HEURES SUPPLÉMENTAIRES
+      # ========================================================
+
+      - name: "Horaires Pro Solde Heures Supplémentaires"
+        unique_id: horaires_pro_solde_heures_supplementaires
+        icon: mdi:clock-plus-outline
+        unit_of_measurement: "min"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {% set ns = namespace(solde=0) %}
+
+          {% for bloc in blocs %}
+            {% if bloc.label == 'G_Heures_Supp_Prestees' %}
+              {% set ns.solde = ns.solde + (bloc.duration_minutes | int(0)) %}
+            {% elif bloc.label == 'G_Heures_Supp_Deduites' %}
+              {% set ns.solde = ns.solde - (bloc.duration_minutes | int(0)) %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.solde }}
+
+        attributes:
+          heures: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(solde=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label == 'G_Heures_Supp_Prestees' %}
+                {% set ns.solde = ns.solde + (bloc.duration_minutes | int(0)) %}
+              {% elif bloc.label == 'G_Heures_Supp_Deduites' %}
+                {% set ns.solde = ns.solde - (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.solde / 60) | round(2) }}
+
+          affichage: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(solde=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label == 'G_Heures_Supp_Prestees' %}
+                {% set ns.solde = ns.solde + (bloc.duration_minutes | int(0)) %}
+              {% elif bloc.label == 'G_Heures_Supp_Deduites' %}
+                {% set ns.solde = ns.solde - (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {% set minutes = ns.solde %}
+            {% set signe = '+' if minutes > 0 else '-' if minutes < 0 else '' %}
+            {% set absolu = minutes | abs %}
+
+            {{ signe }}{{ (absolu // 60) | int }}h{{ '%02d' | format(absolu % 60) }}
+
+      # ========================================================
+      # GREGORY — ONVA
+      # ========================================================
+
+      - name: "Horaires Pro ONVA Gregory"
+        unique_id: horaires_pro_onva_gregory
+        icon: mdi:beach
+        unit_of_measurement: "blocs"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'G_Vac_ONVA')
+             | list
+             | length }}
+
+        attributes:
+          utilise: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+
+            {{ blocs
+               | selectattr('label', 'equalto', 'G_Vac_ONVA')
+               | list
+               | length }}
+
+      # ========================================================
+      # GREGORY — ADV MENSUELS
+      # ========================================================
+
+      - name: "Horaires Pro ADV Mensuels Gregory"
+        unique_id: horaires_pro_adv_mensuels_gregory
+        icon: mdi:calendar-check
+        unit_of_measurement: "jours"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'G_ADV_Mois')
+             | list
+             | length }}
+
+      # ========================================================
+      # GREGORY — ADV SAMEDI
+      # ========================================================
+
+      - name: "Horaires Pro ADV Samedi Gregory"
+        unique_id: horaires_pro_adv_samedi_gregory
+        icon: mdi:calendar-week
+        unit_of_measurement: "jours"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'G_ADV_Samedi')
+             | list
+             | length }}
+
+      # ========================================================
+      # GREGORY — ADV 13E MOIS
+      # ========================================================
+
+      - name: "Horaires Pro ADV 13eme Mois Gregory"
+        unique_id: horaires_pro_adv_13eme_mois_gregory
+        icon: mdi:calendar-star
+        unit_of_measurement: "jours"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'G_ADV_13eme_mois')
+             | list
+             | length }}
+
+      # ========================================================
+      # SANDRINE — TRAVAIL EFFECTIF
+      # ========================================================
+
+      - name: "Horaires Pro Heures Travail Sandrine"
+        unique_id: horaires_pro_heures_travail_sandrine
+        icon: mdi:clock-check-outline
+        unit_of_measurement: "min"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+             | default([], true) %}
+
+          {% set ns = namespace(total=0) %}
+
+          {% for bloc in blocs %}
+            {% set ns.total = ns.total + (bloc.effective_minutes | int(0)) %}
+          {% endfor %}
+
+          {{ ns.total }}
+
+        attributes:
+          heures: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% set ns.total = ns.total + (bloc.effective_minutes | int(0)) %}
+            {% endfor %}
+
+            {{ (ns.total / 60) | round(2) }}
+
+          affichage: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% set ns.total = ns.total + (bloc.effective_minutes | int(0)) %}
+            {% endfor %}
+
+            {{ (ns.total // 60) | int }}h{{ '%02d' | format(ns.total % 60) }}
+
+      # ========================================================
+      # SANDRINE — CSU
+      # ========================================================
+
+      - name: "Horaires Pro CSU Sandrine"
+        unique_id: horaires_pro_csu_sandrine
+        icon: mdi:clock-minus-outline
+        unit_of_measurement: "min"
+        state: >-
+          {% set annee = now().year %}
+          {% set plafond_heures = 56 if annee <= 2026 else 64 %}
+          {% set plafond_minutes = plafond_heures * 60 %}
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+             | default([], true) %}
+          {% set ns = namespace(utilise=0) %}
+
+          {% for bloc in blocs %}
+            {% if bloc.label == 'S_CSU'
+                  and bloc.date
+                  and bloc.date[:4] == (annee | string) %}
+              {% set ns.utilise = ns.utilise + (bloc.duration_minutes | int(0)) %}
+            {% endif %}
+          {% endfor %}
+
+          {{ [plafond_minutes - ns.utilise, 0] | max }}
+
+        attributes:
+          annee: "{{ now().year }}"
+
+          plafond_heures: >-
+            {{ 56 if now().year <= 2026 else 64 }}
+
+          plafond_minutes: >-
+            {{ (56 if now().year <= 2026 else 64) * 60 }}
+
+          initial: >-
+            {{ (56 if now().year <= 2026 else 64) * 60 }}
+
+          utilise: >-
+            {% set annee = now().year %}
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(utilise=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label == 'S_CSU'
+                    and bloc.date
+                    and bloc.date[:4] == (annee | string) %}
+                {% set ns.utilise = ns.utilise + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ ns.utilise }}
+
+          utilise_heures: >-
+            {% set annee = now().year %}
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(utilise=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label == 'S_CSU'
+                    and bloc.date
+                    and bloc.date[:4] == (annee | string) %}
+                {% set ns.utilise = ns.utilise + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.utilise / 60) | round(2) }}
+
+          restant_heures: >-
+            {% set annee = now().year %}
+            {% set plafond = 56 if annee <= 2026 else 64 %}
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(utilise=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label == 'S_CSU'
+                    and bloc.date
+                    and bloc.date[:4] == (annee | string) %}
+                {% set ns.utilise = ns.utilise + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ [plafond - (ns.utilise / 60), 0] | max | round(2) }}
+
+          affichage: >-
+            {% set annee = now().year %}
+            {% set plafond = 56 if annee <= 2026 else 64 %}
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(utilise=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label == 'S_CSU'
+                    and bloc.date
+                    and bloc.date[:4] == (annee | string) %}
+                {% set ns.utilise = ns.utilise + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {% set restant = [plafond * 60 - ns.utilise, 0] | max %}
+
+            {{ (restant // 60) | int }}h{{ '%02d' | format(restant % 60) }}
+
+          reset_annuel: >-
+            01/01/{{ now().year }}
+
+      # ========================================================
+      # SANDRINE — ONVA
+      # ========================================================
+
+      - name: "Horaires Pro ONVA Sandrine"
+        unique_id: horaires_pro_onva_sandrine
+        icon: mdi:beach
+        unit_of_measurement: "blocs"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'S_Vac_ONVA')
+             | list
+             | length }}
+
+      # ========================================================
+      # SANDRINE — ADV MENSUELS
+      # ========================================================
+
+      - name: "Horaires Pro ADV Mensuels Sandrine"
+        unique_id: horaires_pro_adv_mensuels_sandrine
+        icon: mdi:calendar-check
+        unit_of_measurement: "jours"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'S_ADV_Mois')
+             | list
+             | length }}
+
+      # ========================================================
+      # SANDRINE — ADV 13E MOIS
+      # ========================================================
+
+      - name: "Horaires Pro ADV 13eme Mois Sandrine"
+        unique_id: horaires_pro_adv_13eme_mois_sandrine
+        icon: mdi:calendar-star
+        unit_of_measurement: "jours"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+             | default([], true) %}
+
+          {{ blocs
+             | selectattr('label', 'equalto', 'S_ADV_13eme_mois')
+             | list
+             | length }}
+
+      # ========================================================
+      # BLOCS GREGORY
+      # ========================================================
+
+      - name: "Horaires Pro Blocs Gregory"
+        unique_id: horaires_pro_blocs_gregory
+        icon: mdi:account-hard-hat
+        state: >-
+          {% set tasks = state_attr('sensor.horaires_pro_taches', 'results')
+             | default([], true) %}
+
+          {% set ns = namespace(total=0) %}
+
+          {% for task in tasks %}
+            {% set labels = task.labels | default([], true) %}
+
+            {% if labels | select('match', '^G_') | list | length > 0 %}
+              {% set ns.total = ns.total + 1 %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.total }}
+
+        attributes:
+          blocs: >-
+            {% set tasks = state_attr('sensor.horaires_pro_taches', 'results')
+               | default([], true) %}
+
+            {% set ns = namespace(blocs=[]) %}
+
+            {% set labels_map = {
+              'G_Jour_Normal': 'Jour normal',
+              'G_Journee_Reduite': 'Journée réduite',
+              'G_Heures_Supp_Prestees': 'Heures supplémentaires',
+              'G_Heures_Supp_Deduites': 'Récupération heures supplémentaires',
+              'G_Vac_ONVA': 'Congé ONVA',
+              'G_ADV_Mois': 'ADV',
+              'G_ADV_Samedi': 'ADV samedi',
+              'G_ADV_13eme_mois': 'ADV 13ᵉ mois',
+              'G_Jour_Ferie': 'Jour férié',
+              'G_Recup_Jour_Ferie': 'Récupération jour férié',
+              'G_Chomage_Technique': 'Chômage technique',
+              'G_Maladie': 'Maladie',
+              'G_Maladie_Enfant': 'Maladie enfant',
+              'G_Visite_Medicale': 'Visite médicale',
+              'G_Formation': 'Formation',
+              'G_Syndicat': 'Syndicat',
+              'G_Meeting': 'Réunion',
+              'G_Jour_Imperieux': 'Jour impérieux',
+              'G_Absence_Justifiee': 'Absence justifiée',
+              'G_Absence_Injustifiee': 'Absence injustifiée',
+              'G_Conge_Sans_Solde': 'Congé sans solde',
+              'G_Repos_Weekend': 'Repos weekend',
+              'G_Greve': 'Grève'
+            } %}
+
+            {% set emoji_map = {
+              'G_Jour_Normal': '💼',
+              'G_Journee_Reduite': '⏳',
+              'G_Heures_Supp_Prestees': '⏱️',
+              'G_Heures_Supp_Deduites': '🔄',
+              'G_Vac_ONVA': '🚐',
+              'G_ADV_Mois': '📅',
+              'G_ADV_Samedi': '📅',
+              'G_ADV_13eme_mois': '📅',
+              'G_Jour_Ferie': '🏖️',
+              'G_Recup_Jour_Ferie': '🔄',
+              'G_Chomage_Technique': '🏠',
+              'G_Maladie': '🏥',
+              'G_Maladie_Enfant': '🏥',
+              'G_Visite_Medicale': '🩺',
+              'G_Formation': '🎓',
+              'G_Syndicat': '📋',
+              'G_Meeting': '🤝',
+              'G_Jour_Imperieux': '⚠️',
+              'G_Absence_Justifiee': '🚫',
+              'G_Absence_Injustifiee': '🚫',
+              'G_Conge_Sans_Solde': '🚫',
+              'G_Repos_Weekend': '🛌',
+              'G_Greve': '🚫'
+            } %}
+
+            {% set couleur_map = {
+              'G_Jour_Normal': '#66BB6A',
+              'G_Journee_Reduite': '#FDD835',
+              'G_Heures_Supp_Prestees': '#FFA726',
+              'G_Heures_Supp_Deduites': '#AB47BC',
+              'G_Vac_ONVA': '#42A5F5',
+              'G_ADV_Mois': '#26A69A',
+              'G_ADV_Samedi': '#26A69A',
+              'G_ADV_13eme_mois': '#26A69A',
+              'G_Jour_Ferie': '#EC407A',
+              'G_Recup_Jour_Ferie': '#AB47BC',
+              'G_Chomage_Technique': '#78909C',
+              'G_Maladie': '#EF5350',
+              'G_Maladie_Enfant': '#EF5350',
+              'G_Visite_Medicale': '#26C6DA',
+              'G_Formation': '#26C6DA',
+              'G_Syndicat': '#7E57C2',
+              'G_Meeting': '#5C6BC0',
+              'G_Jour_Imperieux': '#FF7043',
+              'G_Absence_Justifiee': '#EF5350',
+              'G_Absence_Injustifiee': '#C62828',
+              'G_Conge_Sans_Solde': '#C62828',
+              'G_Repos_Weekend': '#90A4AE',
+              'G_Greve': '#C62828'
+            } %}
+
+            {% set types_travail = [
+              'G_Jour_Normal',
+              'G_Journee_Reduite',
+              'G_Heures_Supp_Prestees',
+              'G_Visite_Medicale',
+              'G_Formation',
+              'G_Meeting'
+            ] %}
+
+            {% for task in tasks %}
+              {% set labels = task.labels | default([], true) %}
+              {% set label = labels[0] if labels | length > 0 else '' %}
+
+              {% if label.startswith('G_') %}
+                {% set due = task.due | default({}, true) %}
+                {% set raw_date = due.date | default('', true) %}
+                {% set has_time = 'T' in raw_date %}
+
+                {% if has_time %}
+                  {% set date_value = raw_date[:10] %}
+                  {% set start_value = raw_date[11:16] %}
+                {% else %}
+                  {% set date_value = raw_date[:10] %}
+                  {% set start_value = '' %}
+                {% endif %}
+
+                {% set duration = task.duration | default({}, true) %}
+                {% set duration_minutes = duration.amount | default(0, true) | int %}
+
+                {% if duration.unit | default('', true) == 'hour' %}
+                  {% set duration_minutes = duration_minutes * 60 %}
+                {% endif %}
+
+                {% set end_value = '' %}
+
+                {% if has_time and duration_minutes > 0 %}
+                  {% set start_dt = as_datetime(raw_date) %}
+                  {% set end_dt = start_dt + timedelta(minutes=duration_minutes) %}
+                  {% set end_value = as_local(end_dt).strftime('%H:%M') %}
+                {% endif %}
+
+                {% set description = task.description | default('', true) %}
+
+                {% set pause_match =
+                   description | regex_findall('Pause:\s*(\d{2}:\d{2})') %}
+
+                {% set planned_match =
+                   description | regex_findall('Heures prévues:\s*(\d{2}:\d{2})') %}
+
+                {% set pause_minutes = 0 %}
+
+                {% if pause_match %}
+                  {% set pause_parts = pause_match[0].split(':') %}
+                  {% set pause_minutes =
+                     (pause_parts[0] | int * 60) + (pause_parts[1] | int) %}
+                {% endif %}
+
+                {% set planned_minutes = 0 %}
+
+                {% if planned_match %}
+                  {% set planned_parts = planned_match[0].split(':') %}
+                  {% set planned_minutes =
+                     (planned_parts[0] | int * 60) + (planned_parts[1] | int) %}
+                {% endif %}
+
+                {% if label in types_travail %}
+                  {% if planned_minutes > 0 %}
+                    {% set effective_minutes = planned_minutes %}
+                  {% elif duration_minutes > 0 %}
+                    {% set effective_minutes =
+                       [duration_minutes - pause_minutes, 0] | max %}
+                  {% else %}
+                    {% set effective_minutes = 0 %}
+                  {% endif %}
+                {% else %}
+                  {% set effective_minutes = 0 %}
+                {% endif %}
+
+                {% set full_day = not has_time %}
+
+                {% set bloc = {
+                  'id': task.id,
+                  'personne': 'Gregory',
+                  'content': task.content,
+                  'label': label,
+                  'nom': labels_map.get(label, label),
+                  'emoji': emoji_map.get(label, '📌'),
+                  'couleur': couleur_map.get(label, '#78909C'),
+                  'labels': labels,
+                  'section_id': task.section_id | default('', true),
+                  'date': raw_date,
+                  'start': start_value,
+                  'end': end_value,
+                  'duration_minutes': duration_minutes,
+                  'effective_minutes': effective_minutes,
+                  'pause_minutes': pause_minutes,
+                  'planned_minutes': planned_minutes,
+                  'journee_entiere': full_day,
+                  'description': description,
+                  'priority': task.priority | default(1)
+                } %}
+
+                {% set ns.blocs = ns.blocs + [bloc] %}
+              {% endif %}
+            {% endfor %}
+
+            {{ ns.blocs }}
+
+      # ========================================================
+      # BLOCS SANDRINE
+      # ========================================================
+
+      - name: "Horaires Pro Blocs Sandrine"
+        unique_id: horaires_pro_blocs_sandrine
+        icon: mdi:account
+        state: >-
+          {% set tasks = state_attr('sensor.horaires_pro_taches', 'results')
+             | default([], true) %}
+
+          {% set ns = namespace(total=0) %}
+
+          {% for task in tasks %}
+            {% set labels = task.labels | default([], true) %}
+
+            {% if labels | select('match', '^S_') | list | length > 0 %}
+              {% set ns.total = ns.total + 1 %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.total }}
+
+        attributes:
+          blocs: >-
+            {% set tasks = state_attr('sensor.horaires_pro_taches', 'results')
+               | default([], true) %}
+
+            {% set ns = namespace(blocs=[]) %}
+
+            {% set labels_map = {
+              'S_Jour_Normal': 'Jour normal',
+              'S_Journee_Reduite': 'Journée réduite',
+              'S_Vac_ONVA': 'Congé ONVA',
+              'S_ADV_Mois': 'ADV',
+              'S_ADV_13eme_mois': 'ADV 13ᵉ mois',
+              'S_CSU': 'CSU',
+              'S_Jour_Ferie': 'Jour férié',
+              'S_Recup_Jour_Ferie': 'Récupération jour férié',
+              'S_Chaleur': 'Heure chaleur',
+              'S_Maladie': 'Maladie',
+              'S_Maladie_Enfant': 'Maladie enfant',
+              'S_Visite_Medicale': 'Visite médicale',
+              'S_Formation': 'Formation',
+              'S_Syndicat': 'Syndicat',
+              'S_Jour_Imperieux': 'Jour impérieux',
+              'S_Absence_Justifiee': 'Absence justifiée',
+              'S_Absence_Injustifiee': 'Absence injustifiée',
+              'S_Repos_Weekend': 'Repos weekend',
+              'S_Greve': 'Grève'
+            } %}
+
+            {% set emoji_map = {
+              'S_Jour_Normal': '💼',
+              'S_Journee_Reduite': '⏳',
+              'S_Vac_ONVA': '🚐',
+              'S_ADV_Mois': '📅',
+              'S_ADV_13eme_mois': '📅',
+              'S_CSU': '🔄',
+              'S_Jour_Ferie': '🏖️',
+              'S_Recup_Jour_Ferie': '🔄',
+              'S_Chaleur': '🌡️',
+              'S_Maladie': '🏥',
+              'S_Maladie_Enfant': '🏥',
+              'S_Visite_Medicale': '🩺',
+              'S_Formation': '🎓',
+              'S_Syndicat': '📋',
+              'S_Jour_Imperieux': '⚠️',
+              'S_Absence_Justifiee': '🚫',
+              'S_Absence_Injustifiee': '🚫',
+              'S_Repos_Weekend': '🛌',
+              'S_Greve': '🚫'
+            } %}
+
+            {% set couleur_map = {
+              'S_Jour_Normal': '#66BB6A',
+              'S_Journee_Reduite': '#FDD835',
+              'S_Vac_ONVA': '#42A5F5',
+              'S_ADV_Mois': '#26A69A',
+              'S_ADV_13eme_mois': '#26A69A',
+              'S_CSU': '#AB47BC',
+              'S_Jour_Ferie': '#EC407A',
+              'S_Recup_Jour_Ferie': '#AB47BC',
+              'S_Chaleur': '#FF7043',
+              'S_Maladie': '#EF5350',
+              'S_Maladie_Enfant': '#EF5350',
+              'S_Visite_Medicale': '#26C6DA',
+              'S_Formation': '#26C6DA',
+              'S_Syndicat': '#7E57C2',
+              'S_Jour_Imperieux': '#FF7043',
+              'S_Absence_Justifiee': '#EF5350',
+              'S_Absence_Injustifiee': '#C62828',
+              'S_Repos_Weekend': '#90A4AE',
+              'S_Greve': '#C62828'
+            } %}
+
+            {% set types_travail = [
+              'S_Jour_Normal',
+              'S_Journee_Reduite',
+              'S_Visite_Medicale',
+              'S_Formation'
+            ] %}
+
+            {% for task in tasks %}
+              {% set labels = task.labels | default([], true) %}
+              {% set label = labels[0] if labels | length > 0 else '' %}
+
+              {% if label.startswith('S_') %}
+                {% set due = task.due | default({}, true) %}
+                {% set raw_date = due.date | default('', true) %}
+                {% set has_time = 'T' in raw_date %}
+
+                {% if has_time %}
+                  {% set date_value = raw_date[:10] %}
+                  {% set start_value = raw_date[11:16] %}
+                {% else %}
+                  {% set date_value = raw_date[:10] %}
+                  {% set start_value = '' %}
+                {% endif %}
+
+                {% set duration = task.duration | default({}, true) %}
+                {% set duration_minutes = duration.amount | default(0, true) | int %}
+
+                {% if duration.unit | default('', true) == 'hour' %}
+                  {% set duration_minutes = duration_minutes * 60 %}
+                {% endif %}
+
+                {% set end_value = '' %}
+
+                {% if has_time and duration_minutes > 0 %}
+                  {% set start_dt = as_datetime(raw_date) %}
+                  {% set end_dt = start_dt + timedelta(minutes=duration_minutes) %}
+                  {% set end_value = as_local(end_dt).strftime('%H:%M') %}
+                {% endif %}
+
+                {% set description = task.description | default('', true) %}
+
+                {% set pause_match =
+                   description | regex_findall('Pause:\s*(\d{2}:\d{2})') %}
+
+                {% set planned_match =
+                   description | regex_findall('Heures prévues:\s*(\d{2}:\d{2})') %}
+
+                {% set pause_minutes = 0 %}
+
+                {% if pause_match %}
+                  {% set pause_parts = pause_match[0].split(':') %}
+                  {% set pause_minutes =
+                     (pause_parts[0] | int * 60) + (pause_parts[1] | int) %}
+                {% endif %}
+
+                {% set planned_minutes = 0 %}
+
+                {% if planned_match %}
+                  {% set planned_parts = planned_match[0].split(':') %}
+                  {% set planned_minutes =
+                     (planned_parts[0] | int * 60) + (planned_parts[1] | int) %}
+                {% endif %}
+
+                {% if label in types_travail %}
+                  {% if planned_minutes > 0 %}
+                    {% set effective_minutes = planned_minutes %}
+                  {% elif duration_minutes > 0 %}
+                    {% set effective_minutes =
+                       [duration_minutes - pause_minutes, 0] | max %}
+                  {% else %}
+                    {% set effective_minutes = 0 %}
+                  {% endif %}
+                {% else %}
+                  {% set effective_minutes = 0 %}
+                {% endif %}
+
+                {% set full_day = not has_time %}
+
+                {% set bloc = {
+                  'id': task.id,
+                  'personne': 'Sandrine',
+                  'content': task.content,
+                  'label': label,
+                  'nom': labels_map.get(label, label),
+                  'emoji': emoji_map.get(label, '📌'),
+                  'couleur': couleur_map.get(label, '#78909C'),
+                  'labels': labels,
+                  'section_id': task.section_id | default('', true),
+                  'date': raw_date,
+                  'start': start_value,
+                  'end': end_value,
+                  'duration_minutes': duration_minutes,
+                  'effective_minutes': effective_minutes,
+                  'pause_minutes': pause_minutes,
+                  'planned_minutes': planned_minutes,
+                  'journee_entiere': full_day,
+                  'description': description,
+                  'priority': task.priority | default(1)
+                } %}
+
+                {% set ns.blocs = ns.blocs + [bloc] %}
+              {% endif %}
+            {% endfor %}
+
+            {{ ns.blocs }}
