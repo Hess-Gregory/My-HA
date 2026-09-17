@@ -100,9 +100,9 @@
     "version": "0.0.1"
   },
   "packages/dashboard_versions.yaml": {
-    "last_change": "migre vers la cle command_line dediee (breaking change HA)",
-    "last_update": "2026-09-17T12:47:12.671474+02:00",
-    "version": "0.0.2"
+    "last_change": "capteur consolide versions_config_ha, bump par fichier et footer avec dependances",
+    "last_update": "2026-09-17T14:06:11.426840+02:00",
+    "version": "0.1.0"
   },
   "packages/horaires_pro.yaml": {
     "last_change": "initialisation du versionning par fichier",
