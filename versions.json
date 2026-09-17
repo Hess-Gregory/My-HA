@@ -1,12 +1,157 @@
 {
-  "1_streaming": {
+  ".storage/lovelace.1_accueil": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_courses": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_eclairage": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_energie": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_flight_radar": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_ma_maison": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_meteo_belgique": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_mon_confort": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_pollution": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_reseau_infra": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_securite": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.1_streaming": {
     "last_change": "ajoute le footer de versionning avec credit auteur",
     "last_update": "2026-09-17T12:36:06.838061+02:00",
     "version": "0.2.0"
   },
-  "dashboard_versions": {
+  ".storage/lovelace.1_taches": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.boite_a_outils": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_transversal": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "automations.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "configuration.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "packages/chaudiere.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "packages/chauffage.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "packages/dashboard_versions.yaml": {
     "last_change": "migre vers la cle command_line dediee (breaking change HA)",
     "last_update": "2026-09-17T12:47:12.671474+02:00",
     "version": "0.0.2"
+  },
+  "packages/horaires_pro.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "packages/horaires_pro_editeur.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "packages/taches_counters.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "packages/taches_kanban.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "scenes.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "scripts.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "themes/Alpine-night.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "themes/amethyst-glow.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "themes/large-sections.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
+  },
+  "themes/maison.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "version": "0.0.1"
   }
 }
