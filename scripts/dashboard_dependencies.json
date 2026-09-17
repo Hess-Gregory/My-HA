@@ -1,0 +1,6 @@
+{
+  "dashboard_calendrier": [
+    "packages/horaires_pro.yaml",
+    "packages/horaires_pro_editeur.yaml"
+  ]
+}

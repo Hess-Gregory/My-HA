@@ -1,28 +1,50 @@
-# Capteurs de versionning des dashboards (package HA)
-# Lisent versions.json, mis a jour automatiquement par le hook git post-commit.
-# Format command_line moderne (cle dediee, plus supporte sous "sensor:").
+# Capteur consolide de versionning (package HA)
+# Lit versions.json, mis a jour automatiquement par le hook git post-commit.
+# Un seul capteur ("Versions Config HA"), un attribut par fichier suivi
+# (cle = chemin relatif du fichier dans le depot). Chaque attribut est un
+# objet {version, last_change, last_update}.
+#
+# Utilise dans les footers des dashboards via, par exemple :
+#   {{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_streaming').version }}
 
 command_line:
   - sensor:
-      name: "Version Dashboard Streaming"
-      unique_id: version_dashboard_1_streaming
+      name: "Versions Config HA"
+      unique_id: versions_config_ha
       command: "cat /config/versions.json"
       value_template: >-
-        {{ (value_json['1_streaming'].version) if '1_streaming' in value_json else '0.0.0' }}
-      json_attributes_path: "$.1_streaming"
+        {{ value_json | length }}
+      json_attributes_path: "$"
       json_attributes:
-        - last_change
-        - last_update
-      scan_interval: 30
-
-  - sensor:
-      name: "Version Dashboard Boite a Outils"
-      unique_id: version_dashboard_boite_a_outils
-      command: "cat /config/versions.json"
-      value_template: >-
-        {{ (value_json['boite_a_outils'].version) if 'boite_a_outils' in value_json else '0.0.0' }}
-      json_attributes_path: "$.boite_a_outils"
-      json_attributes:
-        - last_change
-        - last_update
+        - ".storage/lovelace.1_accueil"
+        - ".storage/lovelace.1_courses"
+        - ".storage/lovelace.1_eclairage"
+        - ".storage/lovelace.1_energie"
+        - ".storage/lovelace.1_flight_radar"
+        - ".storage/lovelace.1_ma_maison"
+        - ".storage/lovelace.1_meteo_belgique"
+        - ".storage/lovelace.1_mon_confort"
+        - ".storage/lovelace.1_pollution"
+        - ".storage/lovelace.1_reseau_infra"
+        - ".storage/lovelace.1_securite"
+        - ".storage/lovelace.1_streaming"
+        - ".storage/lovelace.1_taches"
+        - ".storage/lovelace.boite_a_outils"
+        - ".storage/lovelace.dashboard_calendrier"
+        - ".storage/lovelace.dashboard_transversal"
+        - "packages/chaudiere.yaml"
+        - "packages/chauffage.yaml"
+        - "packages/dashboard_versions.yaml"
+        - "packages/horaires_pro_editeur.yaml"
+        - "packages/horaires_pro.yaml"
+        - "packages/taches_counters.yaml"
+        - "packages/taches_kanban.yaml"
+        - "automations.yaml"
+        - "configuration.yaml"
+        - "scenes.yaml"
+        - "scripts.yaml"
+        - "themes/Alpine-night.yaml"
+        - "themes/large-sections.yaml"
+        - "themes/amethyst-glow.yaml"
+        - "themes/maison.yaml"
       scan_interval: 30
