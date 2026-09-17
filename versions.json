@@ -5,8 +5,8 @@
     "version": "0.2.0"
   },
   "dashboard_versions": {
-    "last_change": "corrige l'indentation YAML invalide",
-    "last_update": "2026-09-17T12:34:57.616515+02:00",
-    "version": "0.0.1"
+    "last_change": "migre vers la cle command_line dediee (breaking change HA)",
+    "last_update": "2026-09-17T12:47:12.671474+02:00",
+    "version": "0.0.2"
   }
 }
