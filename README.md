@@ -121,17 +121,26 @@ Chaque fichier suivi (`packages/*.yaml`, `automations.yaml`, `configuration.yaml
 ### Modifier un fichier de configuration (packages, automatisations, scenes, scripts, themes...)
 
 1. Modifier le fichier normalement.
-2. `ha core check` pour valider la configuration.
-3. `git add <chemin_du_fichier>` (jamais `git add -A` ni `git add .`).
-4. `git commit -m "type(scope): description"` :
+2. Si ce fichier a un `.md` compagnon (voir "Documentation compagnon" ci-dessous), le mettre a jour pour refleter le changement (nouvelle entite, nouveau piege, comportement modifie...). Une IA qui edite le `.yaml` DOIT editer aussi son `.md` dans le meme commit.
+3. `ha core check` pour valider la configuration.
+4. `git add <chemin_du_fichier> [<chemin_du_.md_associe>]` (jamais `git add -A` ni `git add .`).
+5. `git commit -m "type(scope): description"` :
    - `fix: ...` -> incremente le patch (0.0.x)
    - `feat: ...` -> incremente le mineur (0.x.0)
    - `feat!: ...` ou `fix!: ...` -> incremente le majeur (x.0.0)
    - tout autre prefixe (`chore`, `refactor`, `docs`...) -> patch par defaut
 
    Le hook post-commit bump automatiquement la version du/des fichier(s) modifie(s), met a jour l'en-tete `# [AUTO-VERSION]` et `versions.json`, puis cree lui-meme un commit `chore(version): ...`.
-5. `git push`.
-6. Redemarrer si necessaire (`ha core restart`) - pas systematique : les automatisations/scenes/scripts se rechargent souvent sans coupure via Parametres -> Systeme -> Actions -> "Recharger la configuration YAML" ; un package qui ajoute de nouvelles entites (ex. `command_line`) demande un restart complet.
+6. `git push`.
+7. Redemarrer si necessaire (`ha core restart`) - pas systematique : les automatisations/scenes/scripts se rechargent souvent sans coupure via Parametres -> Systeme -> Actions -> "Recharger la configuration YAML" ; un package qui ajoute de nouvelles entites (ex. `command_line`) demande un restart complet.
+
+#### Documentation compagnon (un fichier `.md` par fichier `.yaml`)
+
+Chaque fichier de configuration important a un fichier `.md` compagnon, **meme nom, meme dossier** (ex. `packages/chauffage.yaml` -> `packages/chauffage.md`, `themes/maison.yaml` -> `themes/maison.md`, `automations.yaml` -> `automations.md`). Ce `.md` explique : le role du fichier, l'inventaire de ses entites/sections, un tableau "comment modifier" pour les demandes courantes, et les pieges connus.
+
+**Regle imperative : toute modification d'un fichier `.yaml` documente doit s'accompagner de la mise a jour de son `.md`, dans le meme commit.** Cela vaut pour une modification humaine comme pour une modification faite par une IA (Claude ou autre) : si vous editez `packages/chauffage.yaml`, editez aussi `packages/chauffage.md` en consequence avant de committer. Un `.md` qui ne reflete plus le `.yaml` est pire qu'une absence de documentation.
+
+Fichiers actuellement documentes : `packages/*.yaml` (un `.md` par package), `automations.yaml`, `configuration.yaml`, `scenes.yaml`, `scripts.yaml`, `themes/*.yaml`. Tout nouveau fichier `.yaml` ajoute dans ces emplacements doit recevoir son propre `.md` des sa creation.
 
 #### Exemple concret
 
@@ -140,19 +149,21 @@ Je veux ajuster un seuil dans `packages/chauffage.yaml` :
 ```bash
 # 1. Editer packages/chauffage.yaml avec l'editeur
 
-# 2. Valider
+# 2. Mettre a jour packages/chauffage.md en consequence
+
+# 3. Valider
 ha core check
 
-# 3. Indexer uniquement ce fichier
-git add packages/chauffage.yaml
+# 4. Indexer uniquement ce fichier
+git add packages/chauffage.yaml packages/chauffage.md
 
-# 4. Committer (ici un simple correctif -> patch)
+# 5. Committer (ici un simple correctif -> patch)
 git commit -m "fix(chauffage): corrige le seuil de declenchement du mode absence"
 
-# 5. Pousser (le hook a deja cree son propre commit de bump automatiquement)
+# 6. Pousser (le hook a deja cree son propre commit de bump automatiquement)
 git push
 
-# 6. Recharger ou redemarrer selon le besoin
+# 7. Recharger ou redemarrer selon le besoin
 ha core restart
 ```
 
