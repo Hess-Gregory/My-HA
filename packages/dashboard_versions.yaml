@@ -1,30 +1,27 @@
-# Versioning automatique des dashboards Lovelace.
-# Chaque commit "feat/fix/major/minor/patch(<scope>): ..." met a jour
-# versions.json via scripts/bump_version.py (hook post-commit).
-# Ajoute un bloc "sensor" par dashboard a suivre (meme <scope> que dans versions.json).
+# Capteurs de versionning des dashboards (package HA)
+# Lisent versions.json, mis a jour automatiquement par le hook git post-commit.
 
 sensor:
   - platform: command_line
-      name: "Version Dashboard Streaming"
-          unique_id: version_dashboard_1_streaming
-              command: "cat /config/versions.json"
-                  value_template: >-
-                        {{ (value_json['1_streaming'].version) if '1_streaming' in value_json else '0.0.0' }}
-                            json_attributes_path: "$.1_streaming"
-                                json_attributes:
-                                      - last_change
-                                            - last_update
-                                                scan_interval: 30
+    name: "Version Dashboard Streaming"
+    unique_id: version_dashboard_1_streaming
+    command: "cat /config/versions.json"
+    value_template: >-
+      {{ (value_json['1_streaming'].version) if '1_streaming' in value_json else '0.0.0' }}
+    json_attributes_path: "$.1_streaming"
+    json_attributes:
+      - last_change
+      - last_update
+    scan_interval: 30
 
-                                                  - platform: command_line
-                                                      name: "Version Dashboard Boite a outils"
-                                                          unique_id: version_dashboard_boite_a_outils
-                                                              command: "cat /config/versions.json"
-                                                                  value_template: >-
-                                                                        {{ (value_json.boite_a_outils.version) if 'boite_a_outils' in value_json else '0.0.0' }}
-                                                                            json_attributes_path: "$.boite_a_outils"
-                                                                                json_attributes:
-                                                                                      - last_change
-                                                                                            - last_update
-                                                                                                scan_interval: 30
-                                                                                                
+  - platform: command_line
+    name: "Version Dashboard Boite a Outils"
+    unique_id: version_dashboard_boite_a_outils
+    command: "cat /config/versions.json"
+    value_template: >-
+      {{ (value_json['boite_a_outils'].version) if 'boite_a_outils' in value_json else '0.0.0' }}
+    json_attributes_path: "$.boite_a_outils"
+    json_attributes:
+      - last_change
+      - last_update
+    scan_interval: 30
