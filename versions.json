@@ -3,5 +3,10 @@
     "last_change": "test du systeme de versioning",
     "last_update": "2026-09-17T11:37:17.455362+02:00",
     "version": "0.1.0"
+  },
+  "dashboard_versions": {
+    "last_change": "corrige l'indentation YAML invalide",
+    "last_update": "2026-09-17T12:34:57.616515+02:00",
+    "version": "0.0.1"
   }
 }
