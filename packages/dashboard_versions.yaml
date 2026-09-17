@@ -1,27 +1,28 @@
 # Capteurs de versionning des dashboards (package HA)
 # Lisent versions.json, mis a jour automatiquement par le hook git post-commit.
+# Format command_line moderne (cle dediee, plus supporte sous "sensor:").
 
-sensor:
-  - platform: command_line
-    name: "Version Dashboard Streaming"
-    unique_id: version_dashboard_1_streaming
-    command: "cat /config/versions.json"
-    value_template: >-
-      {{ (value_json['1_streaming'].version) if '1_streaming' in value_json else '0.0.0' }}
-    json_attributes_path: "$.1_streaming"
-    json_attributes:
-      - last_change
-      - last_update
-    scan_interval: 30
+command_line:
+  - sensor:
+      name: "Version Dashboard Streaming"
+      unique_id: version_dashboard_1_streaming
+      command: "cat /config/versions.json"
+      value_template: >-
+        {{ (value_json['1_streaming'].version) if '1_streaming' in value_json else '0.0.0' }}
+      json_attributes_path: "$.1_streaming"
+      json_attributes:
+        - last_change
+        - last_update
+      scan_interval: 30
 
-  - platform: command_line
-    name: "Version Dashboard Boite a Outils"
-    unique_id: version_dashboard_boite_a_outils
-    command: "cat /config/versions.json"
-    value_template: >-
-      {{ (value_json['boite_a_outils'].version) if 'boite_a_outils' in value_json else '0.0.0' }}
-    json_attributes_path: "$.boite_a_outils"
-    json_attributes:
-      - last_change
-      - last_update
-    scan_interval: 30
+  - sensor:
+      name: "Version Dashboard Boite a Outils"
+      unique_id: version_dashboard_boite_a_outils
+      command: "cat /config/versions.json"
+      value_template: >-
+        {{ (value_json['boite_a_outils'].version) if 'boite_a_outils' in value_json else '0.0.0' }}
+      json_attributes_path: "$.boite_a_outils"
+      json_attributes:
+        - last_change
+        - last_update
+      scan_interval: 30
