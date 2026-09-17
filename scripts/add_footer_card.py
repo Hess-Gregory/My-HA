@@ -4,14 +4,13 @@
 Gere les deux types de vues Lovelace :
   - vues classiques (masonry/sidebar/panel) -> carte ajoutee dans view['cards']
   - vues "sections" (nouveau format HA)     -> carte ajoutee dans une section dediee,
-                                                en derniere position (effet "footer")
+                                                en pleine largeur, en derniere position
 
-Le footer affiche :
+Le footer affiche uniquement :
   - la version du dashboard lui-meme (capteur sensor.versions_config_ha,
     attribut = ".storage/lovelace.<slug>")
   - la version (et date/heure) de chaque fichier "dependance" declare pour ce
-    dashboard dans scripts/dashboard_dependencies.json (ex: dashboard_calendrier
-    depend de packages/horaires_pro.yaml)
+    dashboard dans scripts/dashboard_dependencies.json
 
 Usage: python3 scripts/add_footer_card.py <slug>
 Exemple: python3 scripts/add_footer_card.py dashboard_calendrier
@@ -24,6 +23,7 @@ MARKER = "versioning-footer"
 SENSOR = "sensor.versions_config_ha"
 ROOT = Path(__file__).resolve().parent.parent
 DEPENDENCIES_FILE = ROOT / "scripts" / "dashboard_dependencies.json"
+FULL_WIDTH_GRID_OPTIONS = {"columns": 36, "rows": "auto"}
 
 
 def dashboard_path(slug: str) -> str:
@@ -41,8 +41,6 @@ def load_dependencies(slug: str) -> list:
 
 
 def version_line(path: str, label: str, icon: str) -> str:
-    # state_attr(...) renvoie un dict {version, last_change, last_update} ou None
-    # tant que le fichier n'a pas encore ete versionne.
     return (
         f"{icon} <b>{label}</b> &middot; "
         f"v{{{{ state_attr('{SENSOR}', '{path}').version "
@@ -69,12 +67,7 @@ def build_card(slug: str) -> dict:
         dep_label = Path(dep).stem
         lines.append(version_line(dep, dep_label, "\U0001F4E6") + "<br>")
 
-    own_change = (
-        f"<i>{{{{ state_attr('{SENSOR}', '{own_path}').last_change "
-        f"if state_attr('{SENSOR}', '{own_path}') else '' }}}}</i><br>"
-    )
-    lines.append(own_change)
-    lines.append("Conçu et maintenu par <b>Gregory</b>")
+    lines.append("Con\u00e7u et maintenu par <b>Gregory</b> via Claude AI")
     lines.append("</div>")
 
     return {"type": "markdown", "content": "\n".join(lines)}
@@ -96,11 +89,13 @@ def apply_to_view(view: dict, card: dict) -> None:
             del view["cards"]
         sections = view.setdefault("sections", [])
         sections[:] = [s for s in sections if not is_footer_section(s)]
-        sections.append({"type": "grid", "cards": [card]})
+        full_width_card = dict(card)
+        full_width_card["grid_options"] = dict(FULL_WIDTH_GRID_OPTIONS)
+        sections.append({"type": "grid", "cards": [full_width_card]})
     else:
         cards = view.setdefault("cards", [])
         cards[:] = [c for c in cards if not is_footer_card(c)]
-        cards.append(card)
+        cards.append(dict(card))
 
 
 def main():

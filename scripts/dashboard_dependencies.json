@@ -1,6 +1,23 @@
 {
+  "1_accueil": [
+    "packages/chauffage.yaml"
+  ],
+  "1_ma_maison": [
+    "packages/chaudiere.yaml",
+    "packages/chauffage.yaml"
+  ],
+  "1_mon_confort": [
+    "packages/chaudiere.yaml",
+    "packages/chauffage.yaml"
+  ],
+  "1_taches": [
+    "packages/taches_kanban.yaml"
+  ],
   "dashboard_calendrier": [
     "packages/horaires_pro.yaml",
     "packages/horaires_pro_editeur.yaml"
+  ],
+  "dashboard_transversal": [
+    "packages/chauffage.yaml"
   ]
 }
