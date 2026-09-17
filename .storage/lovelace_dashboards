@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_dashboards",
+  "data": {
+    "items": [
+      {
+        "id": "1_accueil",
+        "show_in_sidebar": true,
+        "title": "Accueil",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-accueil",
+        "icon": "mdi:monitor-dashboard"
+      },
+      {
+        "id": "1_ma_maison",
+        "show_in_sidebar": true,
+        "title": "Ma Maison",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-ma-maison",
+        "icon": "mdi:home-assistant"
+      },
+      {
+        "id": "1_eclairage",
+        "show_in_sidebar": true,
+        "title": "Éclairage",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-eclairage",
+        "icon": "mdi:lamps"
+      },
+      {
+        "id": "1_mon_confort",
+        "show_in_sidebar": true,
+        "title": "Mon Confort",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-mon-confort",
+        "icon": "mdi:home-thermometer"
+      },
+      {
+        "id": "1_energie",
+        "show_in_sidebar": true,
+        "title": "Énergie",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-energie",
+        "icon": "mdi:flash"
+      },
+      {
+        "id": "1_reseau_infra",
+        "show_in_sidebar": true,
+        "title": "Réseau & Infra",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-reseau-infra",
+        "icon": "mdi:access-point-network"
+      },
+      {
+        "id": "1_securite",
+        "show_in_sidebar": true,
+        "title": "Sécurité",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-securite",
+        "icon": "mdi:security"
+      },
+      {
+        "id": "1_streaming",
+        "show_in_sidebar": true,
+        "title": "Streaming",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-streaming",
+        "icon": "mdi:television-play"
+      },
+      {
+        "id": "1_courses",
+        "show_in_sidebar": true,
+        "title": "Courses",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-courses",
+        "icon": "mdi:cart-outline"
+      },
+      {
+        "id": "1_flight_radar",
+        "show_in_sidebar": true,
+        "title": "Flight Radar",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-flight-radar",
+        "icon": "mdi:airplane"
+      },
+      {
+        "id": "1_taches",
+        "show_in_sidebar": true,
+        "title": "Taches",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "1-taches",
+        "icon": "mdi:broom"
+      },
+      {
+        "id": "1_meteo_belgique",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "title": "Météo Belgique",
+        "url_path": "1-meteo-belgique",
+        "mode": "storage",
+        "icon": "mdi:weather-partly-cloudy"
+      },
+      {
+        "id": "1_pollution",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "title": "Pollution & Qualité de l'Air (Engis)",
+        "url_path": "1-pollution",
+        "mode": "storage",
+        "icon": "mdi:weather-dust"
+      },
+      {
+        "id": "dashboard_calendrier",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "icon": "mdi:calendar",
+        "title": "Calendrier",
+        "url_path": "dashboard-calendrier",
+        "mode": "storage"
+      },
+      {
+        "id": "boite_a_outils",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "icon": "mdi:toolbox",
+        "title": "Boîte à Outils",
+        "url_path": "boite-a-outils",
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_transversal",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "title": "Transversal",
+        "url_path": "dashboard-transversal",
+        "mode": "storage"
+      }
+    ]
+  }
+}

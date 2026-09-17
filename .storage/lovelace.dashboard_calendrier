@@ -1,0 +1,1540 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_calendrier",
+  "data": {
+    "config": {
+      "title": "Calendrier",
+      "background": {
+        "image": "/local/images/wallpaper/calendrier.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Vue d'Ensemble",
+          "path": "vue-ensemble",
+          "icon": "mdi:calendar-today",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "calendar.calendrier"
+            }
+          ],
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 📅 Calendrier\nRendez-vous, événements et anniversaires en un coup d'œil",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Aujourd'hui en un coup d'œil",
+                  "subtitle": "Prochain événement · planning garde Matteo",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "calendar.calendrier",
+                  "layout": "vertical",
+                  "primary": "{% set msg = state_attr(entity,'message') %} {{ msg if msg else 'Aucun événement à venir' }}",
+                  "secondary": "{% set start = state_attr(entity,'start_time') %}\n{% if start %}\n  {{ as_timestamp(start) | timestamp_custom('%A %d/%m à %H:%M') }}\n{% else %}\n  Rien de prévu pour l'instant\n{% endif %}",
+                  "icon": "mdi:calendar-star",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.semaine_matteo",
+                  "layout": "vertical",
+                  "primary": "Semaine {{ state_attr(entity, 'numero_semaine') }} — {{ states(entity) }}",
+                  "secondary": "{{ state_attr(entity, 'resume') }}",
+                  "icon": "mdi:account-child",
+                  "icon_color": "{{ 'blue' if states(entity) == 'Présent' else 'grey' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "7 prochains jours",
+                  "subtitle": "Toute la famille — un calendrier par personne",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:calendar-card-pro",
+                  "entities": [
+                    {
+                      "entity": "calendar.calendrier",
+                      "label": "📅 Calendrier",
+                      "color": "#7ed321",
+                      "accent_color": "#50c878"
+                    },
+                    {
+                      "entity": "calendar.greg",
+                      "label": "🧑 Grégory",
+                      "color": "#f6d68a",
+                      "accent_color": "#e0a72e"
+                    },
+                    {
+                      "entity": "calendar.sandrine",
+                      "label": "👩 Sandrine",
+                      "color": "#c39bd3",
+                      "accent_color": "#9b59b6"
+                    },
+                    {
+                      "entity": "calendar.matteo",
+                      "label": "👦 Matteo",
+                      "color": "#5dade2",
+                      "accent_color": "#2e86c1"
+                    },
+                    {
+                      "entity": "calendar.hugo",
+                      "label": "🧒 Hugo",
+                      "color": "#76d7c4",
+                      "accent_color": "#17a589"
+                    }
+                  ],
+                  "days_to_show": 7,
+                  "show_time": true,
+                  "show_location": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 8
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Semaine / Mois",
+          "path": "semaine-mois",
+          "icon": "mdi:calendar-month",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🗓️ Semaine / Mois\n14 prochains jours (toute la famille) et vue mensuelle complète",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "14 prochains jours",
+                  "subtitle": "Toute la famille",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:calendar-card-pro",
+                  "entities": [
+                    {
+                      "entity": "calendar.calendrier",
+                      "label": "📅 Calendrier",
+                      "color": "#7ed321",
+                      "accent_color": "#50c878"
+                    },
+                    {
+                      "entity": "calendar.greg",
+                      "label": "🧑 Grégory",
+                      "color": "#f6d68a",
+                      "accent_color": "#e0a72e"
+                    },
+                    {
+                      "entity": "calendar.sandrine",
+                      "label": "👩 Sandrine",
+                      "color": "#c39bd3",
+                      "accent_color": "#9b59b6"
+                    },
+                    {
+                      "entity": "calendar.matteo",
+                      "label": "👦 Matteo",
+                      "color": "#5dade2",
+                      "accent_color": "#2e86c1"
+                    },
+                    {
+                      "entity": "calendar.hugo",
+                      "label": "🧒 Hugo",
+                      "color": "#76d7c4",
+                      "accent_color": "#17a589"
+                    }
+                  ],
+                  "days_to_show": 14,
+                  "show_time": true,
+                  "show_location": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 10
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Vue Mois",
+                  "subtitle": "Une couleur par calendrier",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "calendar",
+                  "entities": [
+                    "calendar.calendrier",
+                    "calendar.greg",
+                    "calendar.sandrine",
+                    "calendar.matteo",
+                    "calendar.hugo"
+                  ],
+                  "initial_view": "dayGridMonth",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 10
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Anniversaires & dates récurrentes",
+          "path": "anniversaires",
+          "icon": "mdi:cake-variant",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🎂 Anniversaires & dates récurrentes\nCalculé à partir des input_datetime — voir prérequis en haut du fichier",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Prochain anniversaire dans la famille",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% macro bissextile(y) %}{{ y % 4 == 0 and (y % 100 != 0 or y % 400 == 0) }}{% endmacro %}\n{% macro date_sure(y, m, d) %}\n  {% if m == 2 and d == 29 and bissextile(y) | trim != 'True' %}\n    {{ '%04d-%02d-%02d' | format(y, 2, 28) }}\n  {% else %}\n    {{ '%04d-%02d-%02d' | format(y, m, d) }}\n  {% endif %}\n{% endmacro %}\n{% set personnes = [\n  ('Grégory', 'input_datetime.anniversaire_gregory'),\n  ('Sandrine', 'input_datetime.anniversaire_sandrine'),\n  ('Matteo', 'input_datetime.anniversaire_matteo'),\n  ('Hugo', 'input_datetime.anniversaire_hugo')\n] %}\n{% set today = now().date() %} {% set ns = namespace(liste=[]) %}\n{% for nom, ent in personnes %}\n  {% if states(ent) not in ['unknown','unavailable',''] %}\n    {% set d = strptime(states(ent), '%Y-%m-%d').date() %}\n    {% set prochain = strptime(date_sure(today.year, d.month, d.day) | trim, '%Y-%m-%d').date() %}\n    {% set prochain = prochain if prochain >= today else strptime(date_sure(today.year + 1, d.month, d.day) | trim, '%Y-%m-%d').date() %}\n    {% set jours = (prochain - today).days %}\n    {% set age = prochain.year - d.year %}\n    {% set ns.liste = ns.liste + [(jours, nom, prochain, age)] %}\n  {% endif %}\n{% endfor %}\n{% if ns.liste | count == 0 %}\n  ℹ️ Aucun input_datetime d'anniversaire configuré pour l'instant.\n{% else %}\n  {% for jours, nom, prochain, age in ns.liste | sort %}\n    {% if jours == 0 %}\n      🎉 **{{ nom }}** fête ses **{{ age }} ans** aujourd'hui !\n    {% else %}\n      🎂 **{{ nom }}** — {{ age }} ans dans **{{ jours }} jour(s)** ({{ prochain.strftime('%d/%m') }})\n    {% endif %}\n  {% endfor %}\n{% endif %}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Détail par personne",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_gregory",
+                  "layout": "vertical",
+                  "primary": "Grégory",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Né le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_sandrine",
+                  "layout": "vertical",
+                  "primary": "Sandrine",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Née le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_matteo",
+                  "layout": "vertical",
+                  "primary": "Matteo",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Né le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_hugo",
+                  "layout": "vertical",
+                  "primary": "Hugo",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Né le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "cyan",
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 3
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Ajout rapide",
+          "path": "ajout-rapide",
+          "icon": "mdi:calendar-plus",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# ➕ Ajout rapide\nOuvre le calendrier natif HA pour ajouter/modifier/supprimer",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Ajouter, modifier ou supprimer un événement",
+                  "subtitle": "Calendrier familial",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Ouvrir le calendrier natif",
+                  "secondary": "Ajouter / modifier / supprimer",
+                  "icon": "mdi:calendar-edit",
+                  "icon_color": "amber",
+                  "layout": "vertical",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/calendar"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Ajouter à l'oral",
+                  "secondary": "Assistant Assist",
+                  "icon": "mdi:microphone",
+                  "icon_color": "blue",
+                  "tap_action": {
+                    "action": "assist",
+                    "pipeline": "preferred",
+                    "start_listening": true
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "ℹ️ L'ajout à l'oral fonctionne bien seulement si ton agent de conversation Assist est basé sur un LLM avec accès aux calendriers. Sinon, utilise le calendrier natif.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Horaires Pro",
+          "path": "horaires-pro",
+          "icon": "mdi:briefcase-clock",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 💼 Horaires Pro — Vue Mois\nTodoist = source de vérité · calculs métiers conservés · détail des blocs ci-dessous",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📅 Horaires Pro",
+                  "subtitle": "Grille mensuelle · Gregory et Sandrine · Todoist",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:family-calendar-card",
+                  "locale": "fr",
+                  "defaultView": "Month",
+                  "startingDay": "monday",
+                  "showHeader": true,
+                  "showHeaderDate": false,
+                  "showHeaderClock": false,
+                  "showNavigation": true,
+                  "swipeNavigation": true,
+                  "showWeekDayText": true,
+                  "showTime": true,
+                  "showDate": true,
+                  "showCalendarName": true,
+                  "showLocation": false,
+                  "showDescription": true,
+                  "showWeather": false,
+                  "showCurrentWeather": false,
+                  "compact": false,
+                  "fillHeight": true,
+                  "highlightWeekend": true,
+                  "weekendDays": [
+                    6,
+                    7
+                  ],
+                  "weekendColor": "rgba(130, 130, 145, 0.18)",
+                  "multiDayMode": "single",
+                  "updateInterval": 60,
+                  "slotStartHour": 6,
+                  "slotEndHour": 22,
+                  "aiQuickAdd": true,
+                  "aiTaskEntity": "ai_task.claude_ai_task",
+                  "defaultCalendar": "calendar.horaires_pro",
+                  "theme": "familial",
+                  "colorFullEvent": true,
+                  "calendars": [
+                    {
+                      "entity": "calendar.horaires_pro",
+                      "name": "Grégory",
+                      "color": "#66BB6A",
+                      "icon": "mdi:account-hard-hat",
+                      "titleEmoji": "🧑",
+                      "filter": "^(?!— Gregory(?: —.*)?$).*$"
+                    },
+                    {
+                      "entity": "calendar.horaires_pro",
+                      "name": "Sandrine",
+                      "color": "#C39BD3",
+                      "icon": "mdi:account",
+                      "titleEmoji": "👩",
+                      "filter": "^(?!— Sandrine(?: —.*)?$).*$"
+                    }
+                  ],
+                  "materialSymbols": true,
+                  "grid_options": {
+                    "columns": 24,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n  overflow: hidden !important;\n  color: var(--primary-text-color) !important;\n  min-height: 620px !important;\n  height: 620px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "<div style=\"text-align:left; opacity:0.5; font-size:11px; padding:2px 8px 4px 8px;\"> {{ state_attr('sensor.horaires_pro_version', 'affichage') }} </div>",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: -8px !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\nha-markdown {\n  padding: 0 !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🔎 Choisir une tâche existante",
+                  "subtitle": "Personne + date → tâches de ce jour",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "entities",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "entities": [
+                    {
+                      "entity": "input_select.hp_editeur_personne",
+                      "name": "Personne"
+                    },
+                    {
+                      "entity": "input_datetime.hp_editeur_date",
+                      "name": "Date"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "sensor.horaires_pro_taches_du_jour",
+                      "below": 1
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "ℹ️ Aucune tâche ce jour-là pour cette personne."
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "sensor.horaires_pro_taches_du_jour",
+                      "above": 0
+                    }
+                  ],
+                  "card": {
+                    "type": "horizontal-stack",
+                    "cards": [
+                      {
+                        "type": "markdown",
+                        "content": "{% set l = state_attr('sensor.horaires_pro_taches_du_jour', 'liste') | default([], true) %} {% if l | length > 0 %} {% set t = l[0] %} {{ t.emoji }} **{{ t.nom }}** — {% if t.start %}{{ t.start }}{% if t.end %}–{{ t.end }}{% endif %}{% else %}journée entière{% endif %} {% endif %}"
+                      },
+                      {
+                        "type": "button",
+                        "icon": "mdi:cursor-default-click",
+                        "name": "Choisir",
+                        "show_state": false,
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "script.horaires_pro_selectionner_tache_par_index",
+                          "data": {
+                            "index": 0
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "sensor.horaires_pro_taches_du_jour",
+                      "above": 1
+                    }
+                  ],
+                  "card": {
+                    "type": "horizontal-stack",
+                    "cards": [
+                      {
+                        "type": "markdown",
+                        "content": "{% set l = state_attr('sensor.horaires_pro_taches_du_jour', 'liste') | default([], true) %} {% if l | length > 1 %} {% set t = l[1] %} {{ t.emoji }} **{{ t.nom }}** — {% if t.start %}{{ t.start }}{% if t.end %}–{{ t.end }}{% endif %}{% else %}journée entière{% endif %} {% endif %}"
+                      },
+                      {
+                        "type": "button",
+                        "icon": "mdi:cursor-default-click",
+                        "name": "Choisir",
+                        "show_state": false,
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "script.horaires_pro_selectionner_tache_par_index",
+                          "data": {
+                            "index": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "sensor.horaires_pro_taches_du_jour",
+                      "above": 2
+                    }
+                  ],
+                  "card": {
+                    "type": "horizontal-stack",
+                    "cards": [
+                      {
+                        "type": "markdown",
+                        "content": "{% set l = state_attr('sensor.horaires_pro_taches_du_jour', 'liste') | default([], true) %} {% if l | length > 2 %} {% set t = l[2] %} {{ t.emoji }} **{{ t.nom }}** — {% if t.start %}{{ t.start }}{% if t.end %}–{{ t.end }}{% endif %}{% else %}journée entière{% endif %} {% endif %}"
+                      },
+                      {
+                        "type": "button",
+                        "icon": "mdi:cursor-default-click",
+                        "name": "Choisir",
+                        "show_state": false,
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "script.horaires_pro_selectionner_tache_par_index",
+                          "data": {
+                            "index": 2
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "sensor.horaires_pro_taches_du_jour",
+                      "above": 3
+                    }
+                  ],
+                  "card": {
+                    "type": "horizontal-stack",
+                    "cards": [
+                      {
+                        "type": "markdown",
+                        "content": "{% set l = state_attr('sensor.horaires_pro_taches_du_jour', 'liste') | default([], true) %} {% if l | length > 3 %} {% set t = l[3] %} {{ t.emoji }} **{{ t.nom }}** — {% if t.start %}{{ t.start }}{% if t.end %}–{{ t.end }}{% endif %}{% else %}journée entière{% endif %} {% endif %}"
+                      },
+                      {
+                        "type": "button",
+                        "icon": "mdi:cursor-default-click",
+                        "name": "Choisir",
+                        "show_state": false,
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "script.horaires_pro_selectionner_tache_par_index",
+                          "data": {
+                            "index": 3
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_boolean.hp_a_une_selection",
+                      "state": "on"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "input_boolean.hp_editeur_mode_edition",
+                      "state": "off"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "custom:mushroom-title-card",
+                        "alignment": "center",
+                        "title": "📄 Détails de la tâche",
+                        "subtitle": "Sélectionnée ci-dessus",
+                        "card_mod": {
+                          "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                        }
+                      },
+                      {
+                        "type": "markdown",
+                        "content": "{% set b = state_attr('sensor.horaires_pro_tache_selectionnee', 'bloc') | default({}, true) %} {% if b == {} %} ℹ️ Aucune tâche sélectionnée. {% else %} {% set d = b.date[:10] %} {% set date_fr = d[8:10] ~ '/' ~ d[5:7] ~ '/' ~ d[0:4] %} {% set eff = b.effective_minutes | int(0) %} <div style=\"border-left: 6px solid {{ b.couleur }}; padding: 10px 16px; border-radius: 10px; background: rgba(255,255,255,0.06);\"> <h2 style=\"margin:0 0 6px 0;\">{{ b.emoji }} {{ b.nom }} — {{ 'Grégory' if b.personne == 'Gregory' else 'Sandrine' }}</h2> <p style=\"margin:2px 0;\">📅 {{ date_fr }}{% if b.start %} · ⏰ {{ b.start }}{% if b.end %} → {{ b.end }}{% endif %}{% endif %}</p> <p style=\"margin:2px 0;\">⏱️ Durée : {{ (b.duration_minutes / 60) | round(2) }} h{% if b.pause_minutes and b.pause_minutes > 0 %} · ☕ Pause : {{ '%02d:%02d' | format(b.pause_minutes // 60, b.pause_minutes % 60) }}{% endif %}{% if eff > 0 %} · ✅ Effectif : {{ (eff / 60) | round(2) }} h{% endif %}</p> </div> {% endif %}",
+                        "card_mod": {
+                          "style": "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                        }
+                      },
+                      {
+                        "type": "horizontal-stack",
+                        "cards": [
+                          {
+                            "type": "button",
+                            "icon": "mdi:close",
+                            "name": "Fermer",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.horaires_pro_fermer_selection"
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "icon": "mdi:pencil",
+                            "name": "Modifier",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.horaires_pro_charger_pour_edition"
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "icon": "mdi:delete",
+                            "name": "Supprimer",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.horaires_pro_supprimer_tache",
+                              "confirmation": {
+                                "text": "Supprimer définitivement cette tâche dans Todoist ?"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_boolean.hp_a_une_selection",
+                      "state": "on"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "input_boolean.hp_editeur_mode_edition",
+                      "state": "on"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "custom:mushroom-title-card",
+                        "alignment": "center",
+                        "title": "✏️ Modifier la tâche",
+                        "subtitle": "Les mêmes champs que la création, pré-remplis",
+                        "card_mod": {
+                          "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                        }
+                      },
+                      {
+                        "type": "entities",
+                        "entities": [
+                          {
+                            "entity": "input_select.hp_editeur_personne",
+                            "name": "Personne"
+                          },
+                          {
+                            "type": "conditional",
+                            "conditions": [
+                              {
+                                "entity": "input_select.hp_editeur_personne",
+                                "state": "Grégory"
+                              }
+                            ],
+                            "row": {
+                              "entity": "input_select.hp_editeur_type_gregory",
+                              "name": "Type"
+                            }
+                          },
+                          {
+                            "type": "conditional",
+                            "conditions": [
+                              {
+                                "entity": "input_select.hp_editeur_personne",
+                                "state": "Sandrine"
+                              }
+                            ],
+                            "row": {
+                              "entity": "input_select.hp_editeur_type_sandrine",
+                              "name": "Type"
+                            }
+                          },
+                          {
+                            "entity": "input_datetime.hp_editeur_date",
+                            "name": "Date"
+                          },
+                          {
+                            "entity": "input_datetime.hp_editeur_heure",
+                            "name": "Heure de début"
+                          },
+                          {
+                            "entity": "input_text.hp_editeur_duree",
+                            "name": "Durée (libre — ex. 7h30, 07:30, 450)"
+                          },
+                          {
+                            "entity": "input_text.hp_editeur_pause",
+                            "name": "Pause (libre, optionnel)"
+                          }
+                        ],
+                        "card_mod": {
+                          "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
+                        }
+                      },
+                      {
+                        "type": "markdown",
+                        "content": "<div style=\"text-align:center; opacity:0.75; font-size:12px;\"> Préréglages durée : </div>"
+                      },
+                      {
+                        "type": "horizontal-stack",
+                        "cards": [
+                          {
+                            "type": "button",
+                            "name": "4h",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "04:00"
+                              }
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "name": "7h30",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "07:30"
+                              }
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "name": "8h",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "08:00"
+                              }
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "name": "Journée",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "08:30"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "horizontal-stack",
+                        "cards": [
+                          {
+                            "type": "button",
+                            "icon": "mdi:content-save",
+                            "name": "Enregistrer",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.horaires_pro_modifier_tache"
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "icon": "mdi:close",
+                            "name": "Annuler",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "script.horaires_pro_annuler_edition"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "markdown",
+                        "content": "{{ states('input_text.hp_editeur_resultat') }}"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "conditional",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_boolean.hp_a_une_selection",
+                      "state": "off"
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "custom:mushroom-title-card",
+                        "alignment": "center",
+                        "title": "➕ Créer une tâche",
+                        "subtitle": "Durée 100% libre — les boutons ne font que pré-remplir le champ",
+                        "card_mod": {
+                          "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                        }
+                      },
+                      {
+                        "type": "entities",
+                        "entities": [
+                          {
+                            "entity": "input_select.hp_editeur_personne",
+                            "name": "Personne"
+                          },
+                          {
+                            "type": "conditional",
+                            "conditions": [
+                              {
+                                "entity": "input_select.hp_editeur_personne",
+                                "state": "Grégory"
+                              }
+                            ],
+                            "row": {
+                              "entity": "input_select.hp_editeur_type_gregory",
+                              "name": "Type"
+                            }
+                          },
+                          {
+                            "type": "conditional",
+                            "conditions": [
+                              {
+                                "entity": "input_select.hp_editeur_personne",
+                                "state": "Sandrine"
+                              }
+                            ],
+                            "row": {
+                              "entity": "input_select.hp_editeur_type_sandrine",
+                              "name": "Type"
+                            }
+                          },
+                          {
+                            "entity": "input_datetime.hp_editeur_date",
+                            "name": "Date"
+                          },
+                          {
+                            "entity": "input_datetime.hp_editeur_heure",
+                            "name": "Heure de début"
+                          },
+                          {
+                            "entity": "input_text.hp_editeur_duree",
+                            "name": "Durée (libre — ex. 7h30, 07:30, 450, 45min)"
+                          },
+                          {
+                            "entity": "input_text.hp_editeur_pause",
+                            "name": "Pause (libre, optionnel)"
+                          }
+                        ],
+                        "card_mod": {
+                          "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
+                        }
+                      },
+                      {
+                        "type": "markdown",
+                        "content": "<div style=\"text-align:center; opacity:0.75; font-size:12px;\"> Préréglages durée : </div>"
+                      },
+                      {
+                        "type": "horizontal-stack",
+                        "cards": [
+                          {
+                            "type": "button",
+                            "name": "4h",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "04:00"
+                              }
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "name": "7h30",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "07:30"
+                              }
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "name": "8h",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "08:00"
+                              }
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "name": "Journée",
+                            "show_state": false,
+                            "tap_action": {
+                              "action": "perform-action",
+                              "perform_action": "input_text.set_value",
+                              "target": {
+                                "entity_id": "input_text.hp_editeur_duree"
+                              },
+                              "data": {
+                                "value": "08:30"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "button",
+                        "icon": "mdi:calendar-plus",
+                        "name": "Créer",
+                        "show_state": false,
+                        "tap_action": {
+                          "action": "perform-action",
+                          "perform_action": "script.horaires_pro_creer_tache"
+                        }
+                      },
+                      {
+                        "type": "markdown",
+                        "content": "{{ states('input_text.hp_editeur_resultat') }}"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📋 Blocs Gregory",
+                  "subtitle": "Type réel · emoji · horaires · durée",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs') or [] %}\n{% if blocs | count == 0 %}\n  ℹ️ Aucun bloc Gregory.\n{% else %}\n  {% for bloc in blocs %}\n  **{{ bloc.emoji }} {{ bloc.nom }}**\n  — {{ bloc.date[:10] if bloc.date else 'Date non définie' }}\n  {% if bloc.start and bloc.end %} · {{ bloc.start }}–{{ bloc.end }}{% endif %}\n  {% if bloc.duration_minutes is defined and bloc.duration_minutes > 0 %} · {{ (bloc.duration_minutes / 60) | round(2) }} h{% endif %}\n\n  {% endfor %}\n{% endif %}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📋 Blocs Sandrine",
+                  "subtitle": "Type réel · emoji · horaires · durée",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs') or [] %}\n{% if blocs | count == 0 %}\n  ℹ️ Aucun bloc Sandrine.\n{% else %}\n  {% for bloc in blocs %}\n  **{{ bloc.emoji }} {{ bloc.nom }}**\n  — {{ bloc.date[:10] if bloc.date else 'Date non définie' }}\n  {% if bloc.start and bloc.end %} · {{ bloc.start }}–{{ bloc.end }}{% endif %}\n  {% if bloc.duration_minutes is defined and bloc.duration_minutes > 0 %} · {{ (bloc.duration_minutes / 60) | round(2) }} h{% endif %}\n\n  {% endfor %}\n{% endif %}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📝 Todoist — Horaires Pro",
+                  "subtitle": "Source de vérité · tâches modifiables directement depuis Home Assistant",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.horaires_pro",
+                  "title": "Horaires Pro",
+                  "hide_completed": true,
+                  "hide_create": false,
+                  "hide_section_headers": false,
+                  "display_order": "duedate_asc",
+                  "item_tap_action": "edit",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 20px !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "<div style=\"text-align:left; opacity:0.5; font-size:11px; padding:2px 8px 4px 8px;\"> {{ state_attr('sensor.horaires_pro_version', 'affichage') }} </div>",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  padding: 0 !important;\n  margin-top: -6px !important;\n}\nha-markdown {\n  padding: 0 !important;\n}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Horaires Pro — Statistiques",
+          "path": "horaires-pro-stats",
+          "icon": "mdi:chart-box-outline",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 📊 Horaires Pro — Statistiques\nCompteurs calculés depuis les blocs Todoist",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "alignment": "center",
+                  "title": "🧑 Grégory",
+                  "subtitle": "Compteurs horaires",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_heures_travail_gregory",
+                  "primary": "Heures de travail",
+                  "secondary": "{{ states(entity) }} h",
+                  "icon": "mdi:clock-check-outline",
+                  "icon_color": "green",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_solde_heures_supplementaires",
+                  "primary": "Solde heures supplémentaires",
+                  "secondary": "{{ state_attr(entity, 'formatted') or states(entity) }}",
+                  "icon": "mdi:clock-plus-outline",
+                  "icon_color": "amber",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_onva_gregory",
+                  "primary": "Congés ONVA",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:beach",
+                  "icon_color": "blue",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_adv_mensuels_gregory",
+                  "primary": "ADV mensuels",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:calendar-check",
+                  "icon_color": "purple",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_adv_samedi_gregory",
+                  "primary": "ADV samedi",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:calendar-week",
+                  "icon_color": "purple",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_adv_13eme_mois_gregory",
+                  "primary": "ADV 13ᵉ mois",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:calendar-star",
+                  "icon_color": "purple",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "alignment": "center",
+                  "title": "👩 Sandrine",
+                  "subtitle": "Compteurs horaires",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_heures_travail_sandrine",
+                  "primary": "Heures de travail",
+                  "secondary": "{{ states(entity) }} h",
+                  "icon": "mdi:clock-check-outline",
+                  "icon_color": "green",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_csu_sandrine",
+                  "primary": "CSU",
+                  "secondary": "{{ state_attr(entity, 'affichage') or states(entity) }}",
+                  "icon": "mdi:clock-minus-outline",
+                  "icon_color": "purple",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_onva_sandrine",
+                  "primary": "Congés ONVA",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:beach",
+                  "icon_color": "blue",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_adv_mensuels_sandrine",
+                  "primary": "ADV mensuels",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:calendar-check",
+                  "icon_color": "purple",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_adv_13eme_mois_sandrine",
+                  "primary": "ADV 13ᵉ mois",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:calendar-star",
+                  "icon_color": "purple",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.horaires_pro_nombre_de_blocs",
+                  "primary": "Blocs enregistrés",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:view-list",
+                  "icon_color": "amber",
+                  "layout": "vertical",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "<div style=\"text-align:left; opacity:0.5; font-size:11px; padding:2px 8px 4px 8px;\"> {{ state_attr('sensor.horaires_pro_version', 'affichage') }} </div>",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  padding: 0 !important;\n}\nha-markdown {\n  padding: 0 !important;\n}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

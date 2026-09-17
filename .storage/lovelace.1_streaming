@@ -1,0 +1,1035 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.1_streaming",
+  "data": {
+    "config": {
+      "title": "Streaming",
+      "background": {
+        "image": "/local/images/wallpaper/streaming.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "type": "sections",
+          "title": "Streaming",
+          "path": "streaming",
+          "icon": "mdi:television-play",
+          "max_columns": 3,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🎬 Streaming\nUn seul lecteur pour basculer entre YouTube et Spotify, la recherche\nSpotify complète, et Netflix juste en dessous.",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Lecteur multimédia",
+                  "subtitle": "Téléviseur (YouTube) · Spotify · Netflix",
+                  "alignment": "center",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:yet-another-media-player",
+                  "template": "large_modern",
+                  "details_alignment": "left",
+                  "show_chip_row": "always",
+                  "card_height": 620,
+                  "entities": [
+                    {
+                      "entity_id": "media_player.televiseur_du_salon",
+                      "name": "Téléviseur (YouTube)"
+                    },
+                    {
+                      "entity_id": "media_player.spotifyplus_gregory_hess",
+                      "name": "Spotify"
+                    }
+                  ],
+                  "media_artwork_overrides": [
+                    {
+                      "image_url": "{{ state_attr('media_player.orange_stb2', 'entity_picture') }}",
+                      "entity_id": "media_player.televiseur_du_salon"
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "name": "Rechercher",
+                      "icon": "mdi:magnify",
+                      "service": "remote.send_command",
+                      "service_data": {
+                        "entity_id": "remote.orange_tv_box",
+                        "command": "SEARCH"
+                      }
+                    },
+                    {
+                      "name": "Netflix",
+                      "icon": "phu:netflix",
+                      "service": "remote.turn_on",
+                      "service_data": {
+                        "entity_id": "remote.orange_tv_box",
+                        "activity": "com.netflix.ninja"
+                      }
+                    },
+                    {
+                      "name": "YouTube",
+                      "icon": "phu:youtube",
+                      "service": "remote.turn_on",
+                      "service_data": {
+                        "entity_id": "remote.orange_tv_box",
+                        "activity": "com.google.android.youtube.tv"
+                      }
+                    }
+                  ],
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 24
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n/* FIX responsive mobile : sur petit écran (< ~400px), la rangée des chips sources (\"Téléviseur\", \"Spotify\") et celle des actions (\"Rechercher\", \"Netflix\", \"YouTube\") ne passaient pas à la ligne — le dernier bouton (YouTube) se retrouvait coupé/inaccessible hors écran. On force le retour à la ligne des deux rangées. Testé et vérifié en direct sur le dashboard avant application. */\n.chip-row { flex-wrap: wrap !important; height: auto !important; }\n.action-chip-row { flex-wrap: wrap !important; height: auto !important; overflow: visible !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:universal-remote-card",
+                  "remote_id": "remote.orange_tv_box",
+                  "media_player_id": "media_player.orange_tv_box",
+                  "platform": "Android TV",
+                  "rows": [
+                    [
+                      "power",
+                      "guide",
+                      "search"
+                    ],
+                    [
+                      "nav"
+                    ],
+                    [
+                      "back",
+                      "home"
+                    ],
+                    [
+                      "volume_down",
+                      "volume_up"
+                    ],
+                    [
+                      "channel_down",
+                      "channel_up"
+                    ],
+                    [
+                      "rewind",
+                      "play_pause",
+                      "fast_forward",
+                      "stop",
+                      "record"
+                    ],
+                    [
+                      "one",
+                      "two",
+                      "three"
+                    ],
+                    [
+                      "four",
+                      "five",
+                      "six"
+                    ],
+                    [
+                      "seven",
+                      "eight",
+                      "nine"
+                    ],
+                    [
+                      "zero"
+                    ],
+                    [
+                      "netflix",
+                      "youtube"
+                    ]
+                  ],
+                  "custom_actions": [
+                    {
+                      "name": "power",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "POWER"
+                      },
+                      "icon": "mdi:power",
+                      "type": "button",
+                      "hold_action": {
+                        "action": "key",
+                        "key": "POWER"
+                      }
+                    },
+                    {
+                      "name": "search",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "SEARCH"
+                      },
+                      "icon": "mdi:magnify",
+                      "type": "button"
+                    },
+                    {
+                      "name": "guide",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "GUIDE"
+                      },
+                      "icon": "mdi:view-grid",
+                      "type": "button"
+                    },
+                    {
+                      "name": "back",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "BACK"
+                      },
+                      "icon": "mdi:arrow-left",
+                      "type": "button"
+                    },
+                    {
+                      "name": "home",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "HOME"
+                      },
+                      "icon": "mdi:home",
+                      "type": "button"
+                    },
+                    {
+                      "name": "volume_down",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "VOLUME_DOWN"
+                      },
+                      "hold_action": {
+                        "action": "repeat"
+                      },
+                      "icon": "mdi:volume-minus",
+                      "type": "button"
+                    },
+                    {
+                      "name": "volume_up",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "VOLUME_UP"
+                      },
+                      "hold_action": {
+                        "action": "repeat"
+                      },
+                      "icon": "mdi:volume-plus",
+                      "type": "button"
+                    },
+                    {
+                      "name": "channel_down",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "CHANNEL_DOWN"
+                      },
+                      "icon": "mdi:chevron-down",
+                      "type": "button",
+                      "label": "CH",
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "name": "channel_up",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "CHANNEL_UP"
+                      },
+                      "icon": "mdi:chevron-up",
+                      "type": "button",
+                      "label": "CH",
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "name": "rewind",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "MEDIA_REWIND"
+                      },
+                      "icon": "mdi:rewind",
+                      "type": "button",
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "name": "play_pause",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "MEDIA_PLAY_PAUSE"
+                      },
+                      "icon": "mdi:play-pause",
+                      "type": "button"
+                    },
+                    {
+                      "name": "fast_forward",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "MEDIA_FAST_FORWARD"
+                      },
+                      "icon": "mdi:fast-forward",
+                      "type": "button",
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "name": "stop",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "MEDIA_STOP"
+                      },
+                      "icon": "mdi:stop",
+                      "type": "button"
+                    },
+                    {
+                      "name": "record",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "MEDIA_RECORD"
+                      },
+                      "icon": "mdi:record-circle",
+                      "type": "button"
+                    },
+                    {
+                      "type": "button",
+                      "name": "one",
+                      "label": "1",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "1"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "two",
+                      "label": "2",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "2"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "three",
+                      "label": "3",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "3"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "four",
+                      "label": "4",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "4"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "five",
+                      "label": "5",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "5"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "six",
+                      "label": "6",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "6"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "seven",
+                      "label": "7",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "7"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "eight",
+                      "label": "8",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "8"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "nine",
+                      "label": "9",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "9"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "zero",
+                      "label": "0",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "0"
+                      }
+                    },
+                    {
+                      "name": "netflix",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "remote.turn_on",
+                        "target": {
+                          "entity_id": "remote.orange_tv_box"
+                        },
+                        "data": {
+                          "activity": "com.netflix.ninja"
+                        }
+                      },
+                      "icon": "phu:netflix",
+                      "type": "button"
+                    },
+                    {
+                      "name": "youtube",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "remote.turn_on",
+                        "target": {
+                          "entity_id": "remote.orange_tv_box"
+                        },
+                        "data": {
+                          "activity": "com.google.android.youtube.tv"
+                        }
+                      },
+                      "icon": "phu:youtube",
+                      "type": "button"
+                    },
+                    {
+                      "type": "circlepad",
+                      "name": "nav",
+                      "icon": "mdi:circle-medium",
+                      "tap_action": {
+                        "action": "key",
+                        "key": "DPAD_CENTER"
+                      },
+                      "up": {
+                        "icon": "mdi:chevron-up",
+                        "tap_action": {
+                          "action": "key",
+                          "key": "DPAD_UP"
+                        },
+                        "hold_action": {
+                          "action": "repeat"
+                        }
+                      },
+                      "down": {
+                        "icon": "mdi:chevron-down",
+                        "tap_action": {
+                          "action": "key",
+                          "key": "DPAD_DOWN"
+                        },
+                        "hold_action": {
+                          "action": "repeat"
+                        }
+                      },
+                      "left": {
+                        "icon": "mdi:chevron-left",
+                        "tap_action": {
+                          "action": "key",
+                          "key": "DPAD_LEFT"
+                        },
+                        "hold_action": {
+                          "action": "repeat"
+                        }
+                      },
+                      "right": {
+                        "icon": "mdi:chevron-right",
+                        "tap_action": {
+                          "action": "key",
+                          "key": "DPAD_RIGHT"
+                        },
+                        "hold_action": {
+                          "action": "repeat"
+                        }
+                      },
+                      "center": {
+                        "label": "OK",
+                        "tap_action": {
+                          "action": "key",
+                          "key": "DPAD_CENTER"
+                        }
+                      },
+                      "styles": ":host {\n  width: 150px;\n  margin: 2px auto 4px;\n}\n.circlepad {\n  background: radial-gradient(circle at 35% 30%, #3a3350 0%, #170f22 72%);\n  border: 2px solid rgba(246, 214, 138, 0.25);\n  border-radius: 50%;\n  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.08);\n}\n#up, #down, #left, #right {\n  --icon-color: #cfc4e3;\n  --icon-size: 18px;\n}\n#center::part(button) {\n  background: radial-gradient(circle at 35% 30%, #f6d68a 0%, #b98f3f 100%);\n  border-radius: 50%;\n  width: 46px;\n  height: 46px;\n  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);\n}\n#center {\n  --icon-color: #241a33;\n}\n#center .label {\n  color: #241a33;\n  font-size: 13px;\n  font-weight: 700;\n  letter-spacing: 0.5px;\n  font-family: inherit;\n}"
+                    }
+                  ],
+                  "styles": ":host {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  max-width: 296px;\n  margin: 0 auto;\n  padding: 16px 18px 18px;\n  /* 1. Coque Blanche Laquée Brillante */\n  background: linear-gradient(180deg, #ffffff 0%, #f5f5f9 45%, #e6e6ee 100%);\n  border-radius: 34px;\n  border: 1px solid rgba(255, 255, 255, 0.8);\n  box-shadow:\n    0 14px 35px rgba(0, 0, 0, 0.15),\n    inset 0 3px 4px rgba(255, 255, 255, 1),\n    inset 0 -4px 6px rgba(0, 0, 0, 0.05);\n  gap: 9px;\n}\n.row {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  gap: 9px;\n  width: 100%;\n}\n/* 2. Style de base de TOUTES les touches en Silicone Blanc */ remote-button {\n  /* Forcer la couleur par défaut */\n  --icon-color: #4a4a5a !important;\n  color: #4a4a5a !important;\n  --icon-size: 18px;\n\n  /* Aspect silicone mat en relief */\n  background: linear-gradient(145deg, #ffffff 0%, #f6f6f9 100%) !important;\n  box-shadow:\n    2px 2px 4px rgba(0, 0, 0, 0.12),\n    -1px -1px 3px rgba(255, 255, 255, 0.9),\n    inset 1px 1px 2px rgba(255, 255, 255, 1) !important;\n  border: none !important;\n  transition: all 0.1s ease;\n}\n/* CIBLAGE GLOBAL DU CLAVIER NUMÉRIQUE & TEXTES : Force TOUT le contenu des boutons à devenir gris foncé */ remote-button *, remote-button div, remote-button span, remote-button p, remote-button ha-icon, remote-button ha-svg-icon, remote-button svg, remote-button .icon, remote-button .label {\n  color: #4a4a5a !important;\n  fill: #4a4a5a !important;\n}\n/* Effet mécanique de clic */ remote-button:active {\n  transform: scale(0.96);\n  box-shadow:\n    inset 2px 2px 4px rgba(0, 0, 0, 0.12),\n    inset -1px -1px 3px rgba(255, 255, 255, 0.6) !important;\n}\nremote-button .label {\n  font-weight: 600;\n  font-size: 13px;\n  font-family: inherit;\n}\n/* FIX chiffres invisibles : le label (\"1\", \"2\", ... \"CH\") est rendu dans le shadow DOM du composant remote-button en tant que shadow part, donc les sélecteurs classiques ci-dessus ne l'atteignent pas et il restait blanc sur fond blanc. Seul ::part() traverse cette frontière. */ remote-button::part(label) {\n  color: #4a4a5a !important;\n  font-weight: 600;\n  font-family: inherit;\n}\n/* --- TOUCHES SPÉCIFIQUES --- */\n#power {\n  border-radius: 50%;\n  width: 44px;\n  height: 44px;\n  background: linear-gradient(145deg, #ff6b6b 0%, #e63946 100%) !important;\n  box-shadow:\n    2px 2px 4px rgba(0, 0, 0, 0.15),\n    inset 1px 1px 2px rgba(255, 255, 255, 0.4) !important;\n  --icon-color: #ffffff !important;\n  --icon-size: 20px;\n} /* Exception pour que le Power reste blanc */ #power *, #power ha-icon, #power ha-svg-icon, #power svg {\n  color: #ffffff !important;\n  fill: #ffffff !important;\n} #power:active {\n  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3) !important;\n}\n#search {\n  border-radius: 50%;\n  width: 44px;\n  height: 44px;\n  --icon-color: #dca000 !important;\n  --icon-size: 18px;\n} /* Exception pour l'icône loupe dorée */ #search *, #search ha-icon, #search ha-svg-icon, #search svg {\n  color: #dca000 !important;\n  fill: #dca000 !important;\n}\n#guide {\n  border-radius: 50%;\n  width: 44px;\n  height: 44px;\n  --icon-size: 17px;\n}\n#back {\n  border-radius: 20px;\n  padding: 6px 18px;\n  --icon-size: 17px;\n}\n#home {\n  border-radius: 50%;\n  width: 48px;\n  height: 48px;\n  padding: 0;\n  background-color: #ff7900 !important;\n  background-image: url(\"/local/images/logos/orange.png\") !important;\n  background-size: 80%;\n  background-position: center;\n  background-repeat: no-repeat;\n  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15) !important;\n  --icon-size: 0px;\n}\n#netflix, #youtube {\n  border-radius: 12px;\n  width: 48px;\n  height: 34px;\n  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15) !important;\n}\n#netflix {\n  background: #a30f16 !important;\n}\n#youtube {\n  background: #1c1c1c !important;\n}\n/* Barrettes doubles (Volume & Chaînes) */ #volume_down, #volume_up, #channel_down, #channel_up {\n  width: 68px;\n  height: 34px;\n  --icon-size: 16px;\n} #volume_down {\n  border-radius: 17px 4px 4px 17px;\n} #volume_up {\n  border-radius: 4px 17px 17px 4px;\n  margin-right: 8px;\n} #channel_down {\n  border-radius: 17px 4px 4px 17px;\n} #channel_up {\n  border-radius: 4px 17px 17px 4px;\n}\n#rewind, #fast_forward, #stop {\n  border-radius: 50%;\n  width: 36px;\n  height: 36px;\n  --icon-size: 15px;\n}\n#play_pause {\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  --icon-size: 18px;\n}\n#record {\n  border-radius: 50%;\n  width: 40px;\n  height: 40px;\n  background: linear-gradient(145deg, #ff4d4d 0%, #cc0000 100%) !important;\n  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15) !important;\n  --icon-color: #ffffff !important;\n  --icon-size: 18px;\n} /* Exception pour Record blanc */ #record *, #record ha-icon, #record ha-svg-icon, #record svg {\n  color: #ffffff !important;\n  fill: #ffffff !important;\n}\n/* Clavier numérique */ #one, #two, #three, #four, #five, #six, #seven, #eight, #nine, #zero {\n  border-radius: 50%;\n  width: 36px;\n  height: 36px;\n}\n",
+                  "grid_options": {
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Spotify",
+                  "subtitle": "Recherche musicale, playlists et favoris",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:spotifyplus-card",
+                  "entity": "media_player.spotifyplus_gregory_hess",
+                  "sections": [
+                    "searchmedia",
+                    "playlistfavorites",
+                    "trackfavorites",
+                    "artistfavorites",
+                    "albumfavorites",
+                    "recents",
+                    "devices",
+                    "userpresets"
+                  ],
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Ampli ciné",
+                  "subtitle": "Lecture en cours, commandes de base et radios",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.ampli_cine",
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { --primary-color: #251c33 !important; background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } .color-block, .color-gradient { background-color: #251c33 !important; background-image: none !important; }\n"
+                  }
+                },
+                {
+                  "square": true,
+                  "type": "grid",
+                  "columns": 3,
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "entity": "media_player.ampli_cine",
+                      "name": "NRJ Belgique",
+                      "icon": "mdi:radio",
+                      "tap_action": {
+                        "action": "call-service",
+                        "service": "media_player.play_media",
+                        "service_data": {
+                          "entity_id": "media_player.ampli_cine",
+                          "media_content_id": "presets:1",
+                          "media_content_type": "music"
+                        }
+                      },
+                      "card_mod": {
+                        "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "media_player.ampli_cine",
+                      "name": "Fun Radio Belgique",
+                      "icon": "mdi:radio",
+                      "tap_action": {
+                        "action": "call-service",
+                        "service": "media_player.play_media",
+                        "service_data": {
+                          "entity_id": "media_player.ampli_cine",
+                          "media_content_id": "list:net_radio:3:3",
+                          "media_content_type": "music"
+                        }
+                      },
+                      "card_mod": {
+                        "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "media_player.ampli_cine",
+                      "name": "LFM Liège",
+                      "icon": "mdi:radio",
+                      "tap_action": {
+                        "action": "call-service",
+                        "service": "media_player.play_media",
+                        "service_data": {
+                          "entity_id": "media_player.ampli_cine",
+                          "media_content_id": "list:net_radio:3:5",
+                          "media_content_type": "music"
+                        }
+                      },
+                      "card_mod": {
+                        "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "media_player.ampli_cine",
+                      "name": "GalaxieFM",
+                      "icon": "mdi:radio",
+                      "tap_action": {
+                        "action": "call-service",
+                        "service": "media_player.play_media",
+                        "service_data": {
+                          "entity_id": "media_player.ampli_cine",
+                          "media_content_id": "list:net_radio:3:4",
+                          "media_content_type": "music"
+                        }
+                      },
+                      "card_mod": {
+                        "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "media_player.ampli_cine",
+                      "name": "Contact FM",
+                      "icon": "mdi:radio",
+                      "tap_action": {
+                        "action": "call-service",
+                        "service": "media_player.play_media",
+                        "service_data": {
+                          "entity_id": "media_player.ampli_cine",
+                          "media_content_id": "list:net_radio:3:7",
+                          "media_content_type": "music"
+                        }
+                      },
+                      "card_mod": {
+                        "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                      }
+                    }
+                  ],
+                  "grid_options": {
+                    "rows": 1,
+                    "columns": 18
+                  },
+                  "card_mod": {
+                    "style": "#root { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important; }"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Ampli ciné — Télécommande",
+                  "subtitle": "A6A MusicCast — Salon (+ Zone 2) · réglages avancés (dialogue, tonalité, réseau)",
+                  "alignment": "center",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:universal-remote-card",
+                  "media_player_id": "media_player.ampli_cine",
+                  "rows": [
+                    [
+                      "power",
+                      "source",
+                      "drc"
+                    ],
+                    [
+                      "volume_down",
+                      "volume_up"
+                    ],
+                    [
+                      "mute"
+                    ],
+                    [
+                      "divider_sound"
+                    ],
+                    [
+                      "pure_direct",
+                      "enhancer"
+                    ],
+                    [
+                      "extra_bass",
+                      "party_mode"
+                    ],
+                    [
+                      "divider_zone2"
+                    ],
+                    [
+                      "zone2_power"
+                    ],
+                    [
+                      "zone2_volume_down",
+                      "zone2_volume_up"
+                    ]
+                  ],
+                  "custom_actions": [
+                    {
+                      "type": "button",
+                      "name": "divider_sound",
+                      "label": "SON",
+                      "tap_action": {
+                        "action": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "divider_zone2",
+                      "label": "ZONE 2",
+                      "tap_action": {
+                        "action": "none"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "power",
+                      "icon": "mdi:power",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "homeassistant.toggle",
+                        "target": {
+                          "entity_id": "media_player.ampli_cine"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "source",
+                      "icon": "mdi:video-input-hdmi",
+                      "label": "Source",
+                      "tap_action": {
+                        "action": "more-info",
+                        "entity": "media_player.ampli_cine"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "drc",
+                      "label": "DRC",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "switch.toggle",
+                        "target": {
+                          "entity_id": "switch.ampli_cine_adaptive_drc"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "volume_down",
+                      "icon": "mdi:volume-minus",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "media_player.volume_down",
+                        "target": {
+                          "entity_id": "media_player.ampli_cine"
+                        }
+                      },
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "volume_up",
+                      "icon": "mdi:volume-plus",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "media_player.volume_up",
+                        "target": {
+                          "entity_id": "media_player.ampli_cine"
+                        }
+                      },
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "mute",
+                      "icon": "mdi:volume-mute",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "media_player.volume_mute",
+                        "target": {
+                          "entity_id": "media_player.ampli_cine"
+                        },
+                        "data": {
+                          "is_volume_muted": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "pure_direct",
+                      "label": "Pure Direct",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "switch.toggle",
+                        "target": {
+                          "entity_id": "switch.ampli_cine_pure_direct"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "enhancer",
+                      "label": "Enhancer",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "switch.toggle",
+                        "target": {
+                          "entity_id": "switch.ampli_cine_enhancer"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "extra_bass",
+                      "label": "Bass+",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "switch.toggle",
+                        "target": {
+                          "entity_id": "switch.ampli_cine_extra_bass"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "party_mode",
+                      "icon": "mdi:party-popper",
+                      "label": "Party",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "switch.toggle",
+                        "target": {
+                          "entity_id": "switch.ampli_cine_party_mode"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "zone2_power",
+                      "icon": "mdi:power",
+                      "label": "Salon",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "homeassistant.toggle",
+                        "target": {
+                          "entity_id": "media_player.room_ampli_cine_zone2"
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "zone2_volume_down",
+                      "icon": "mdi:volume-minus",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "media_player.volume_down",
+                        "target": {
+                          "entity_id": "media_player.room_ampli_cine_zone2"
+                        }
+                      },
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "zone2_volume_up",
+                      "icon": "mdi:volume-plus",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "media_player.volume_up",
+                        "target": {
+                          "entity_id": "media_player.room_ampli_cine_zone2"
+                        }
+                      },
+                      "hold_action": {
+                        "action": "repeat"
+                      }
+                    }
+                  ],
+                  "styles": ":host {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  max-width: 262px;\n  margin: 0 auto;\n  padding: 14px 16px 16px;\n  background: linear-gradient(180deg, #48484d 0%, #2e2e32 10%, #1d1d20 65%, #131315 100%);\n  border-radius: 28px;\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55), inset 0 2px 2px rgba(255, 255, 255, 0.07), inset 0 -3px 6px rgba(0, 0, 0, 0.5);\n  gap: 7px;\n}\n:host::before {\n  content: \"\";\n  width: 34px;\n  height: 5px;\n  border-radius: 3px;\n  background: linear-gradient(180deg, #050506 0%, #1c1c1f 100%);\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.85);\n  margin-bottom: 3px;\n}\n.row {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  gap: 7px;\n  width: 100%;\n}\nremote-button {\n  --icon-color: #d6d6dc;\n  --icon-size: 18px;\n  background: linear-gradient(145deg, #3a3a3f 0%, #202023 100%);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);\n}\nremote-button .label {\n  color: #d6d6dc;\n  font-weight: 600;\n  font-size: 12px;\n  font-family: inherit;\n}\n#divider_sound, #divider_zone2 {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;\n  border-radius: 0 !important;\n  width: 100%;\n  height: auto;\n  padding: 6px 0 0 !important;\n  margin-top: 2px;\n}\n#divider_sound .label, #divider_zone2 .label {\n  color: rgba(214, 214, 220, 0.4);\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 2px;\n}\n#power {\n  border-radius: 50%;\n  width: 46px;\n  height: 46px;\n  background: radial-gradient(circle at 35% 30%, #4a3a3a 0%, #201414 75%);\n  border: 1px solid rgba(255, 130, 120, 0.3);\n  --icon-color: #ff8f7a;\n  --icon-size: 20px;\n}\n#source, #drc {\n  border-radius: 18px;\n  padding: 7px 14px;\n  height: 34px;\n}\n#drc {\n  --icon-color: #8fd0e8;\n}\n#source .label, #drc .label {\n  color: #d6d6dc;\n}\n#volume_down, #volume_up {\n  width: 90px;\n  height: 38px;\n}\n#volume_down {\n  border-radius: 19px 4px 4px 19px;\n}\n#volume_up {\n  border-radius: 4px 19px 19px 4px;\n}\n#mute {\n  border-radius: 20px;\n  width: 60px;\n  height: 34px;\n  --icon-color: #e89a8f;\n}\n#pure_direct, #enhancer, #extra_bass {\n  border-radius: 18px;\n  padding: 7px 14px;\n  height: 34px;\n  min-width: 96px;\n}\n#party_mode {\n  border-radius: 18px;\n  padding: 7px 14px;\n  height: 34px;\n  min-width: 96px;\n  --icon-color: #d9a4f0;\n}\n#zone2_power {\n  border-radius: 18px;\n  padding: 7px 16px;\n  height: 34px;\n  background: linear-gradient(145deg, #2e3a44 0%, #1a2228 100%);\n  border: 1px solid rgba(143, 208, 232, 0.25);\n  --icon-color: #8fd0e8;\n}\n#zone2_power .label {\n  color: #8fd0e8;\n}\n#zone2_volume_down, #zone2_volume_up {\n  width: 72px;\n  height: 34px;\n  background: linear-gradient(145deg, #2e3a44 0%, #1a2228 100%);\n  border: 1px solid rgba(143, 208, 232, 0.2);\n  --icon-color: #8fd0e8;\n}\n#zone2_volume_down {\n  border-radius: 17px 4px 4px 17px;\n}\n#zone2_volume_up {\n  border-radius: 4px 17px 17px 4px;\n}",
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                },
+                {
+                  "type": "entities",
+                  "title": "Son / Dialogue",
+                  "entities": [
+                    {
+                      "entity": "number.ampli_cine_dialogue_level",
+                      "name": "Dialogue Level",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "number.ampli_cine_dialogue_lift",
+                      "name": "Dialogue Lift",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "number.ampli_cine_dts_dialogue_control",
+                      "name": "DTS Dialogue Control",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "number.ampli_cine_tone_control_bass",
+                      "name": "Tone Control Bass",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "number.ampli_cine_tone_control_treble",
+                      "name": "Tone Control Treble",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "select.ampli_cine_tone_control_mode",
+                      "name": "Tone Control Mode",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "number.ampli_cine_subwoofer_volume",
+                      "name": "Subwoofer Volume",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } .card-header { color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "entities",
+                  "title": "Système / Réseau MusicCast",
+                  "entities": [
+                    {
+                      "entity": "select.ampli_cine_surround_decoder_device",
+                      "name": "Surround Decoder Device",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "select.ampli_cine_link_control",
+                      "name": "Link Control",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "select.ampli_cine_link_audio_delay",
+                      "name": "Link Audio Delay",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    },
+                    {
+                      "entity": "select.ampli_cine_sleep_timer",
+                      "name": "Sleep Timer",
+                      "card_mod": {
+                        "style": "ha-slider { min-width: 56px !important; width: 56px !important; } .state { min-width: 26px !important; text-align: right; }"
+                      }
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } .card-header { color: #f6d68a !important; }\n"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

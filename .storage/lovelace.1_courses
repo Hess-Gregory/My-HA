@@ -1,0 +1,470 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.1_courses",
+  "data": {
+    "config": {
+      "title": "Courses",
+      "background": {
+        "image": "/local/images/wallpaper/courses.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Courses",
+          "path": "courses",
+          "icon": "mdi:cart-outline",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 3,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🛒 Courses\nToutes tes listes, une par magasin, avec le nombre d'articles\nrestants en un coup d'œil.",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Résumé",
+                  "subtitle": "Vue d'ensemble de toutes tes listes",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "alignment": "center",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "{{ states.todo | map(attribute='state') | map('int', 0) | sum }}",
+                  "secondary": "Articles à acheter",
+                  "icon": "mdi:cart-check",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "{{ states.todo | list | count }}",
+                  "secondary": "Listes actives",
+                  "icon": "mdi:format-list-bulleted",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "{{ states.todo | selectattr('state', 'eq', '0') | list | count }}",
+                  "secondary": "Listes terminées",
+                  "icon": "mdi:check-all",
+                  "icon_color": "green",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Ajouter à l'oral",
+                  "secondary": "Assistant Assist",
+                  "icon": "mdi:microphone",
+                  "icon_color": "blue",
+                  "tap_action": {
+                    "action": "assist",
+                    "pipeline": "preferred",
+                    "start_listening": true
+                  },
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "alignment": "center",
+                  "title": "🛒 Supermarché",
+                  "subtitle": "Liste de courses",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 14px 20px !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.liste_de_courses') }} article(s) restant(s)",
+                  "secondary": "À acheter",
+                  "icon": "{{ 'mdi:cart-off' if states('todo.liste_de_courses') in ['0','unavailable','unknown'] else 'mdi:cart-arrow-right' }}",
+                  "icon_color": "{{ 'green' if states('todo.liste_de_courses') == '0' else 'amber' }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.liste_de_courses') }} / 20",
+                  "secondary": "Supermarché",
+                  "icon": "mdi:cart",
+                  "icon_color": "{% set v = states('todo.liste_de_courses') | int(0) %} {{ 'red' if v >= 13 else ('amber' if v >= 6 else 'green') }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "{% set v = states('todo.liste_de_courses') | int(0) %} {% set pct = [(v / 20 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 13 else ('#f6d68a' if v >= 6 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.liste_de_courses",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-card.type-todo-list p.empty { display: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "visibility": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "todo.liste_de_courses",
+                      "above": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "markdown",
+                  "content": "🎉 **Rien à acheter !** Le frigo et les placards sont au complet.",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(60, 40, 90, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 16px !important; } ha-markdown { text-align: center !important; color: var(--primary-text-color) !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  },
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.liste_de_courses",
+                      "state": "0"
+                    }
+                  ]
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.liste_de_courses",
+                  "hide_completed": true,
+                  "hide_section_headers": true,
+                  "display_order": "none",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-card.type-todo-list p.empty { display: none !important; } ha-card.type-todo-list mwc-list, ha-card.type-todo-list .mdc-deprecated-list { display: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.liste_de_courses",
+                      "state": "0"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "alignment": "center",
+                  "title": "💊 Pharmacie",
+                  "subtitle": "Médicaments",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 14px 20px !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.pharmacie') }} article(s) restant(s)",
+                  "secondary": "À acheter",
+                  "icon": "{{ 'mdi:cart-off' if states('todo.pharmacie') in ['0','unavailable','unknown'] else 'mdi:cart-arrow-right' }}",
+                  "icon_color": "{{ 'green' if states('todo.pharmacie') == '0' else 'amber' }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.pharmacie') }} / 8",
+                  "secondary": "Pharmacie",
+                  "icon": "mdi:cart",
+                  "icon_color": "{% set v = states('todo.pharmacie') | int(0) %} {{ 'red' if v >= 6 else ('amber' if v >= 3 else 'green') }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "{% set v = states('todo.pharmacie') | int(0) %} {% set pct = [(v / 8 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 6 else ('#f6d68a' if v >= 3 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.pharmacie",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-card.type-todo-list p.empty { display: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "visibility": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "todo.pharmacie",
+                      "above": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "markdown",
+                  "content": "✅ **Pharmacie à jour.** Aucun médicament ni produit à racheter pour l'instant.",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(60, 40, 90, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 16px !important; } ha-markdown { text-align: center !important; color: var(--primary-text-color) !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  },
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.pharmacie",
+                      "state": "0"
+                    }
+                  ]
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.pharmacie",
+                  "hide_completed": true,
+                  "hide_section_headers": true,
+                  "display_order": "none",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-card.type-todo-list p.empty { display: none !important; } ha-card.type-todo-list mwc-list, ha-card.type-todo-list .mdc-deprecated-list { display: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.pharmacie",
+                      "state": "0"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "alignment": "center",
+                  "title": "🍺🚬 Luxembourg",
+                  "subtitle": "Alcools, tabacs, carburants",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 14px 20px !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.luxembourg_alcool_tabac') }} article(s) restant(s)",
+                  "secondary": "À acheter",
+                  "icon": "{{ 'mdi:cart-off' if states('todo.luxembourg_alcool_tabac') in ['0','unavailable','unknown'] else 'mdi:cart-arrow-right' }}",
+                  "icon_color": "{{ 'green' if states('todo.luxembourg_alcool_tabac') == '0' else 'amber' }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.luxembourg_alcool_tabac') }} / 6",
+                  "secondary": "Luxembourg",
+                  "icon": "mdi:cart",
+                  "icon_color": "{% set v = states('todo.luxembourg_alcool_tabac') | int(0) %} {{ 'red' if v >= 5 else ('amber' if v >= 2 else 'green') }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "{% set v = states('todo.luxembourg_alcool_tabac') | int(0) %} {% set pct = [(v / 6 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 5 else ('#f6d68a' if v >= 2 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.luxembourg_alcool_tabac",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-card.type-todo-list p.empty { display: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "visibility": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "todo.luxembourg_alcool_tabac",
+                      "above": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "markdown",
+                  "content": "🥂 **Réserve complète.** Alcool, tabac et carburant : tout est prévu pour le prochain passage.",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(60, 40, 90, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 16px !important; } ha-markdown { text-align: center !important; color: var(--primary-text-color) !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  },
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.luxembourg_alcool_tabac",
+                      "state": "0"
+                    }
+                  ]
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.luxembourg_alcool_tabac",
+                  "hide_completed": true,
+                  "hide_section_headers": true,
+                  "display_order": "none",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-card.type-todo-list p.empty { display: none !important; } ha-card.type-todo-list mwc-list, ha-card.type-todo-list .mdc-deprecated-list { display: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.luxembourg_alcool_tabac",
+                      "state": "0"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Tâches ménagères",
+                  "secondary": "Voir le dashboard dédié",
+                  "icon": "mdi:broom",
+                  "icon_color": "blue",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-taches/taches"
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

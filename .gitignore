@@ -1,4 +1,7 @@
-.storage/
+# Tout .storage est bloque par defaut, sauf les dashboards Lovelace
+.storage/*
+!.storage/lovelace*
+
 .cloud/
 secrets.yaml
 known_devices.yaml

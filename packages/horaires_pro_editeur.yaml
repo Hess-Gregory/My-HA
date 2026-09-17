@@ -1,0 +1,728 @@
+# ============================================================
+# HORAIRES PRO — ÉDITEUR (Chantier A complet : Créer + Modifier +
+# Supprimer, avec panneau de détail structuré et coloré)
+# ============================================================
+# VERSION 2 — réécrit en réponse à :
+#   "le popup [natif] fonctionne, mais je n'ai pas les informations
+#   sur le fait si c'est journée normal, congé onva etc, ça manque
+#   de détail... fait moi ça correctement bien structuré, bien
+#   détaillé, avec la couleur dédiée etc, un bouton fermer, bouton
+#   modifier... et revoie aussi côté création d'événement, il n'y a
+#   pas beaucoup de choix de durée, il faudrait mettre une durée
+#   personnalisée."
+#
+# POURQUOI ON NE PEUT PAS AMÉLIORER LE POPUP NATIF DE
+# family-calendar-card :
+#   - Ce popup ("Voir") est un template FIXE de la carte tierce :
+#     il n'affiche que le nom du calendrier, la date/heure, et
+#     éventuellement location/description SI non vides — aucune
+#     couleur par type, aucun bouton personnalisé n'est possible
+#     via la config YAML (vérifié dans le code source de la carte).
+#   - Le type réel (Jour normal, Congé ONVA, ...) vient du LABEL
+#     Todoist de la tâche. L'entité calendar.horaires_pro (issue de
+#     l'intégration Todoist) n'expose PAS les labels dans l'objet
+#     événement du calendrier — seulement summary/description/
+#     location/start/end. Beaucoup de tâches (créées à la main dans
+#     l'app Todoist) n'ont même pas de description. Résultat : même
+#     avec showDescription activé, le popup natif reste pauvre.
+#
+# SOLUTION RETENUE : un panneau "Détails & Édition" séparé, sous le
+# calendrier, dans l'onglet Horaires Pro. Il ne remplace pas le clic
+# sur le calendrier (qui reste tel quel, limitation acceptée), mais
+# offre un vrai flux complet :
+#   1. On choisit Personne + Date -> la liste des tâches de ce jour
+#      s'affiche (jusqu'à 4), construites depuis les capteurs de
+#      blocs (qui EUX connaissent le vrai type/couleur/emoji, car
+#      calculés à partir des labels Todoist bruts).
+#   2. On sélectionne une tâche -> panneau "Détails" structuré et
+#      coloré (bordure de la couleur du type, emoji, nom du type,
+#      personne, date, horaires, pause, durée effective) avec
+#      3 boutons : Fermer / Modifier / Supprimer (avec confirmation).
+#   3. "Modifier" charge la tâche dans le même formulaire que la
+#      création (pré-rempli) -> Enregistrer (PATCH Todoist) ou
+#      Annuler.
+#   4. Quand rien n'est sélectionné, le formulaire de CRÉATION est
+#      affiché par défaut, avec une durée 100% libre (texte : "7h30",
+#      "07:30", "450", "45min") + des boutons de préréglage rapide
+#      (qui ne font que pré-remplir le champ texte — on garde la
+#      liberté totale de taper autre chose).
+#
+# Tout passe par l'API Todoist (POST création, POST modification,
+# DELETE suppression sur /api/v1/tasks/{id}) via rest_command, avec
+# le même token que les capteurs REST existants (voir
+# horaires_pro.yaml). Le champ "content" n'est JAMAIS réécrit lors
+# d'une modification, pour ne pas effacer un texte personnalisé
+# ("— Gregory — Travail" etc.) que tu aurais ajouté à la main dans
+# Todoist.
+#
+# IMPORTANT : le endpoint de modification (POST /api/v1/tasks/{id})
+# n'a pas encore été testé en conditions réelles au moment de
+# l'écriture de ce fichier — à vérifier au premier "Enregistrer".
+# S'il échoue, le message d'erreur apparaîtra dans
+# input_text.hp_editeur_resultat et dans les logs HA.
+# ============================================================
+
+input_select:
+  hp_editeur_personne:
+    name: "Horaires Pro — Personne"
+    icon: mdi:account-switch
+    options:
+      - "Grégory"
+      - "Sandrine"
+
+  hp_editeur_type_gregory:
+    name: "Horaires Pro — Type (Grégory)"
+    icon: mdi:briefcase-clock
+    options:
+      - "Jour normal"
+      - "Journée réduite"
+      - "Heures supplémentaires prestées"
+      - "Heures supplémentaires déduites"
+      - "Congé ONVA"
+      - "ADV mensuel"
+      - "ADV samedi"
+      - "ADV 13ᵉ mois"
+      - "Jour férié"
+      - "Récupération jour férié"
+      - "Chômage technique"
+      - "Maladie"
+      - "Maladie enfant"
+      - "Visite médicale"
+      - "Formation"
+      - "Syndicat"
+      - "Réunion"
+      - "Jour impérieux"
+      - "Absence justifiée"
+      - "Absence injustifiée"
+      - "Congé sans solde"
+      - "Repos weekend"
+      - "Grève"
+
+  hp_editeur_type_sandrine:
+    name: "Horaires Pro — Type (Sandrine)"
+    icon: mdi:briefcase-clock
+    options:
+      - "Jour normal"
+      - "Journée réduite"
+      - "Congé ONVA"
+      - "ADV mensuel"
+      - "ADV 13ᵉ mois"
+      - "CSU"
+      - "Jour férié"
+      - "Récupération jour férié"
+      - "Heure chaleur"
+      - "Maladie"
+      - "Maladie enfant"
+      - "Visite médicale"
+      - "Formation"
+      - "Syndicat"
+      - "Jour impérieux"
+      - "Absence justifiée"
+      - "Absence injustifiée"
+      - "Repos weekend"
+      - "Grève"
+
+input_datetime:
+  hp_editeur_date:
+    name: "Horaires Pro — Date"
+    has_date: true
+    has_time: false
+    icon: mdi:calendar
+
+  hp_editeur_heure:
+    name: "Horaires Pro — Heure de début"
+    has_date: false
+    has_time: true
+    icon: mdi:clock-start
+
+input_text:
+  hp_editeur_duree:
+    name: "Horaires Pro — Durée (libre)"
+    icon: mdi:timer-outline
+    initial: "08:00"
+    # Formats acceptés : "7h30", "7h", "07:30", "450" (minutes), "45min"
+    # -> 100% libre, les boutons de préréglage dans le dashboard ne
+    #    font que pré-remplir ce champ, ils ne le limitent pas.
+
+  hp_editeur_pause:
+    name: "Horaires Pro — Pause (libre, optionnel)"
+    icon: mdi:coffee-outline
+    initial: "00:30"
+
+  hp_editeur_resultat:
+    name: "Horaires Pro — Dernier résultat"
+    icon: mdi:message-text-outline
+    initial: ""
+
+  hp_selection_id:
+    name: "Horaires Pro — ID de la tâche sélectionnée"
+    icon: mdi:identifier
+    initial: ""
+
+  hp_editeur_task_id_en_cours:
+    name: "Horaires Pro — ID de la tâche en cours d'édition"
+    icon: mdi:identifier
+    initial: ""
+
+input_boolean:
+  hp_editeur_mode_edition:
+    name: "Horaires Pro — Mode édition actif"
+    icon: mdi:pencil
+
+  hp_a_une_selection:
+    name: "Horaires Pro — Une tâche est sélectionnée"
+    icon: mdi:checkbox-marked-circle-outline
+    initial: false
+    # Reflet, en input_boolean, de "hp_selection_id != ''" — utilisé
+    # pour la visibilité des panneaux du dashboard : le composant
+    # `conditional` de ce HA n'accepte pas les conditions de type
+    # `template` ("Conditions are invalid"), donc on ne peut tester
+    # que des égalités d'état simples (state/numeric_state). Ce
+    # booléen est mis à jour explicitement par les scripts
+    # ci-dessous à chaque sélection/désélection/suppression.
+
+rest_command:
+  # ------------------------------------------------------------
+  # CRÉATION (POST sur la collection /tasks)
+  # ------------------------------------------------------------
+  horaires_pro_todoist_create_task:
+    url: "https://api.todoist.com/api/v1/tasks"
+    method: POST
+    headers:
+      Authorization: !secret todoist_api_token
+      Content-Type: application/json
+    content_type: "application/json"
+    payload: >-
+      {{ {
+        "content": content,
+        "description": description,
+        "project_id": "6hWVvMpjWrXvrCRm",
+        "labels": [label],
+        "due_datetime": due_datetime,
+        "duration": duration | int,
+        "duration_unit": "minute"
+      } | tojson }}
+
+  # ------------------------------------------------------------
+  # MODIFICATION (POST sur la ressource /tasks/{id})
+  # "content" n'est jamais envoyé : on ne touche pas au texte de
+  # la tâche, seulement à son type (label), sa description
+  # structurée, sa date/heure et sa durée.
+  # ------------------------------------------------------------
+  horaires_pro_todoist_update_task:
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}"
+    method: POST
+    headers:
+      Authorization: !secret todoist_api_token
+      Content-Type: application/json
+    content_type: "application/json"
+    payload: >-
+      {{ {
+        "description": description,
+        "labels": [label],
+        "due_datetime": due_datetime,
+        "duration": duration | int,
+        "duration_unit": "minute"
+      } | tojson }}
+
+  # ------------------------------------------------------------
+  # SUPPRESSION
+  # ------------------------------------------------------------
+  horaires_pro_todoist_delete_task:
+    url: "https://api.todoist.com/api/v1/tasks/{{ task_id }}"
+    method: DELETE
+    headers:
+      Authorization: !secret todoist_api_token
+
+template:
+  - sensor:
+      # ========================================================
+      # TÂCHES DU JOUR (pour la personne + la date choisies dans
+      # le formulaire) — sert à retrouver une tâche à sélectionner
+      # sans devoir cliquer sur le calendrier.
+      # ========================================================
+
+      - name: "Horaires Pro Taches Du Jour"
+        unique_id: horaires_pro_taches_du_jour
+        icon: mdi:calendar-search
+        state: >-
+          {% set p = states('input_select.hp_editeur_personne') %}
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             if p == 'Grégory'
+             else state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs') %}
+          {% set blocs = blocs | default([], true) %}
+          {% set d = states('input_datetime.hp_editeur_date') %}
+          {{ blocs | selectattr('date', 'match', '^' ~ d) | list | length }}
+        attributes:
+          liste: >-
+            {% set p = states('input_select.hp_editeur_personne') %}
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               if p == 'Grégory'
+               else state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs') %}
+            {% set blocs = blocs | default([], true) %}
+            {% set d = states('input_datetime.hp_editeur_date') %}
+            {% set trouves = blocs | selectattr('date', 'match', '^' ~ d) | list %}
+            {{ trouves | sort(attribute='start') }}
+
+      # ========================================================
+      # TÂCHE SÉLECTIONNÉE (détail complet pour l'affichage et
+      # comme source pour le chargement en édition)
+      # ========================================================
+
+      - name: "Horaires Pro Tache Selectionnee"
+        unique_id: horaires_pro_tache_selectionnee
+        icon: mdi:calendar-text
+        state: >-
+          {% set sel = states('input_text.hp_selection_id') %}
+          {{ 'trouvee' if sel not in ['', 'unknown', 'unavailable'] else 'aucune' }}
+        attributes:
+          bloc: >-
+            {% set sel = states('input_text.hp_selection_id') %}
+            {% set g = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs') | default([], true) %}
+            {% set s = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs') | default([], true) %}
+            {% set tous = g + s %}
+            {% set trouve = tous | selectattr('id', 'equalto', sel) | list %}
+            {{ trouve[0] if trouve | length > 0 else {} }}
+
+script:
+  # ==============================================================
+  # CRÉATION
+  # ==============================================================
+  horaires_pro_creer_tache:
+    alias: "Horaires Pro - Créer une tâche"
+    icon: mdi:calendar-plus
+    sequence:
+      - variables:
+          labels_gregory:
+            "Jour normal": "G_Jour_Normal"
+            "Journée réduite": "G_Journee_Reduite"
+            "Heures supplémentaires prestées": "G_Heures_Supp_Prestees"
+            "Heures supplémentaires déduites": "G_Heures_Supp_Deduites"
+            "Congé ONVA": "G_Vac_ONVA"
+            "ADV mensuel": "G_ADV_Mois"
+            "ADV samedi": "G_ADV_Samedi"
+            "ADV 13ᵉ mois": "G_ADV_13eme_mois"
+            "Jour férié": "G_Jour_Ferie"
+            "Récupération jour férié": "G_Recup_Jour_Ferie"
+            "Chômage technique": "G_Chomage_Technique"
+            "Maladie": "G_Maladie"
+            "Maladie enfant": "G_Maladie_Enfant"
+            "Visite médicale": "G_Visite_Medicale"
+            "Formation": "G_Formation"
+            "Syndicat": "G_Syndicat"
+            "Réunion": "G_Meeting"
+            "Jour impérieux": "G_Jour_Imperieux"
+            "Absence justifiée": "G_Absence_Justifiee"
+            "Absence injustifiée": "G_Absence_Injustifiee"
+            "Congé sans solde": "G_Conge_Sans_Solde"
+            "Repos weekend": "G_Repos_Weekend"
+            "Grève": "G_Greve"
+          labels_sandrine:
+            "Jour normal": "S_Jour_Normal"
+            "Journée réduite": "S_Journee_Reduite"
+            "Congé ONVA": "S_Vac_ONVA"
+            "ADV mensuel": "S_ADV_Mois"
+            "ADV 13ᵉ mois": "S_ADV_13eme_mois"
+            "CSU": "S_CSU"
+            "Jour férié": "S_Jour_Ferie"
+            "Récupération jour férié": "S_Recup_Jour_Ferie"
+            "Heure chaleur": "S_Chaleur"
+            "Maladie": "S_Maladie"
+            "Maladie enfant": "S_Maladie_Enfant"
+            "Visite médicale": "S_Visite_Medicale"
+            "Formation": "S_Formation"
+            "Syndicat": "S_Syndicat"
+            "Jour impérieux": "S_Jour_Imperieux"
+            "Absence justifiée": "S_Absence_Justifiee"
+            "Absence injustifiée": "S_Absence_Injustifiee"
+            "Repos weekend": "S_Repos_Weekend"
+            "Grève": "S_Greve"
+          personne: "{{ states('input_select.hp_editeur_personne') }}"
+          type_nom: >-
+            {{ states('input_select.hp_editeur_type_gregory')
+               if personne == 'Grégory'
+               else states('input_select.hp_editeur_type_sandrine') }}
+          label_code: >-
+            {{ (labels_gregory if personne == 'Grégory' else labels_sandrine).get(type_nom, '') }}
+          prefix: "{{ '— Gregory' if personne == 'Grégory' else '— Sandrine' }}"
+          date: "{{ states('input_datetime.hp_editeur_date') }}"
+          heure: "{{ states('input_datetime.hp_editeur_heure') }}"
+          duree: "{{ states('input_text.hp_editeur_duree') }}"
+          pause: "{{ states('input_text.hp_editeur_pause') }}"
+          duree_min: >-
+            {% set d = duree | trim | lower | replace(' ', '') %}
+            {% if 'h' in d %}
+              {% set parts = d.split('h') %}
+              {{ (parts[0] | int(0)) * 60 + ((parts[1] if parts[1] else '0') | int(0)) }}
+            {% elif ':' in d %}
+              {% set parts = d.split(':') %}
+              {{ (parts[0] | int(0)) * 60 + (parts[1] | int(0)) }}
+            {% elif 'min' in d %}
+              {{ d | replace('min', '') | int(0) }}
+            {% else %}
+              {{ d | int(0) }}
+            {% endif %}
+          pause_min: >-
+            {% set p = (pause | default('00:00', true)) | trim | lower | replace(' ', '') %}
+            {% if p == '' %}
+              0
+            {% elif 'h' in p %}
+              {% set parts = p.split('h') %}
+              {{ (parts[0] | int(0)) * 60 + ((parts[1] if parts[1] else '0') | int(0)) }}
+            {% elif ':' in p %}
+              {% set parts = p.split(':') %}
+              {{ (parts[0] | int(0)) * 60 + (parts[1] | int(0)) }}
+            {% elif 'min' in p %}
+              {{ p | replace('min', '') | int(0) }}
+            {% else %}
+              {{ p | int(0) }}
+            {% endif %}
+          pause_hhmm: "{{ '%02d:%02d' | format(pause_min | int // 60, pause_min | int % 60) }}"
+          due_datetime_utc: >-
+            {{ as_datetime(date ~ ' ' ~ heure)
+               | as_timestamp
+               | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', true) }}
+      - if:
+          - condition: template
+            value_template: "{{ label_code == '' }}"
+        then:
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_resultat
+            data:
+              value: "❌ Erreur : type '{{ type_nom }}' introuvable pour {{ personne }}."
+        else:
+          - service: rest_command.horaires_pro_todoist_create_task
+            data:
+              content: "{{ prefix }}"
+              description: "Type: {{ type_nom }}\nPause: {{ pause_hhmm }}"
+              label: "{{ label_code }}"
+              due_datetime: "{{ due_datetime_utc }}"
+              duration: "{{ duree_min }}"
+          - delay: "00:00:02"
+          - service: homeassistant.update_entity
+            target:
+              entity_id:
+                - sensor.horaires_pro_taches
+                - sensor.horaires_pro_projet
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_resultat
+            data:
+              value: >-
+                ✅ Tâche créée : {{ prefix }} — {{ type_nom }} — {{ date }}
+                {{ heure[:5] }} ({{ duree }})
+
+  # ==============================================================
+  # CHARGER UNE TÂCHE EXISTANTE DANS LE FORMULAIRE (bouton "Modifier")
+  # ==============================================================
+  horaires_pro_charger_pour_edition:
+    alias: "Horaires Pro - Charger la tâche sélectionnée pour édition"
+    icon: mdi:pencil
+    sequence:
+      - variables:
+          bloc: "{{ state_attr('sensor.horaires_pro_tache_selectionnee', 'bloc') | default({}, true) }}"
+      - if:
+          - condition: template
+            value_template: "{{ bloc == {} }}"
+        then:
+          - stop: "Aucune tâche sélectionnée"
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.hp_editeur_personne
+        data:
+          option: "{{ 'Grégory' if bloc.personne == 'Gregory' else 'Sandrine' }}"
+      - choose:
+          - conditions: "{{ bloc.personne == 'Gregory' }}"
+            sequence:
+              - service: input_select.select_option
+                target:
+                  entity_id: input_select.hp_editeur_type_gregory
+                data:
+                  option: "{{ bloc.nom }}"
+        default:
+          - service: input_select.select_option
+            target:
+              entity_id: input_select.hp_editeur_type_sandrine
+            data:
+              option: "{{ bloc.nom }}"
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.hp_editeur_date
+        data:
+          date: "{{ bloc.date[:10] }}"
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.hp_editeur_heure
+        data:
+          time: "{{ bloc.start if bloc.start else '00:00' }}"
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_duree
+        data:
+          value: >-
+            {{ '%02d:%02d' | format((bloc.duration_minutes | int(0)) // 60, (bloc.duration_minutes | int(0)) % 60) }}
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_pause
+        data:
+          value: >-
+            {{ '%02d:%02d' | format((bloc.pause_minutes | int(0)) // 60, (bloc.pause_minutes | int(0)) % 60) }}
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_task_id_en_cours
+        data:
+          value: "{{ bloc.id }}"
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_resultat
+        data:
+          value: ""
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.hp_editeur_mode_edition
+
+  # ==============================================================
+  # ENREGISTRER LES MODIFICATIONS (bouton "Enregistrer")
+  # ==============================================================
+  horaires_pro_modifier_tache:
+    alias: "Horaires Pro - Enregistrer les modifications"
+    icon: mdi:content-save
+    sequence:
+      - variables:
+          labels_gregory:
+            "Jour normal": "G_Jour_Normal"
+            "Journée réduite": "G_Journee_Reduite"
+            "Heures supplémentaires prestées": "G_Heures_Supp_Prestees"
+            "Heures supplémentaires déduites": "G_Heures_Supp_Deduites"
+            "Congé ONVA": "G_Vac_ONVA"
+            "ADV mensuel": "G_ADV_Mois"
+            "ADV samedi": "G_ADV_Samedi"
+            "ADV 13ᵉ mois": "G_ADV_13eme_mois"
+            "Jour férié": "G_Jour_Ferie"
+            "Récupération jour férié": "G_Recup_Jour_Ferie"
+            "Chômage technique": "G_Chomage_Technique"
+            "Maladie": "G_Maladie"
+            "Maladie enfant": "G_Maladie_Enfant"
+            "Visite médicale": "G_Visite_Medicale"
+            "Formation": "G_Formation"
+            "Syndicat": "G_Syndicat"
+            "Réunion": "G_Meeting"
+            "Jour impérieux": "G_Jour_Imperieux"
+            "Absence justifiée": "G_Absence_Justifiee"
+            "Absence injustifiée": "G_Absence_Injustifiee"
+            "Congé sans solde": "G_Conge_Sans_Solde"
+            "Repos weekend": "G_Repos_Weekend"
+            "Grève": "G_Greve"
+          labels_sandrine:
+            "Jour normal": "S_Jour_Normal"
+            "Journée réduite": "S_Journee_Reduite"
+            "Congé ONVA": "S_Vac_ONVA"
+            "ADV mensuel": "S_ADV_Mois"
+            "ADV 13ᵉ mois": "S_ADV_13eme_mois"
+            "CSU": "S_CSU"
+            "Jour férié": "S_Jour_Ferie"
+            "Récupération jour férié": "S_Recup_Jour_Ferie"
+            "Heure chaleur": "S_Chaleur"
+            "Maladie": "S_Maladie"
+            "Maladie enfant": "S_Maladie_Enfant"
+            "Visite médicale": "S_Visite_Medicale"
+            "Formation": "S_Formation"
+            "Syndicat": "S_Syndicat"
+            "Jour impérieux": "S_Jour_Imperieux"
+            "Absence justifiée": "S_Absence_Justifiee"
+            "Absence injustifiée": "S_Absence_Injustifiee"
+            "Repos weekend": "S_Repos_Weekend"
+            "Grève": "S_Greve"
+          personne: "{{ states('input_select.hp_editeur_personne') }}"
+          type_nom: >-
+            {{ states('input_select.hp_editeur_type_gregory')
+               if personne == 'Grégory'
+               else states('input_select.hp_editeur_type_sandrine') }}
+          label_code: >-
+            {{ (labels_gregory if personne == 'Grégory' else labels_sandrine).get(type_nom, '') }}
+          task_id: "{{ states('input_text.hp_editeur_task_id_en_cours') }}"
+          date: "{{ states('input_datetime.hp_editeur_date') }}"
+          heure: "{{ states('input_datetime.hp_editeur_heure') }}"
+          duree: "{{ states('input_text.hp_editeur_duree') }}"
+          pause: "{{ states('input_text.hp_editeur_pause') }}"
+          duree_min: >-
+            {% set d = duree | trim | lower | replace(' ', '') %}
+            {% if 'h' in d %}
+              {% set parts = d.split('h') %}
+              {{ (parts[0] | int(0)) * 60 + ((parts[1] if parts[1] else '0') | int(0)) }}
+            {% elif ':' in d %}
+              {% set parts = d.split(':') %}
+              {{ (parts[0] | int(0)) * 60 + (parts[1] | int(0)) }}
+            {% elif 'min' in d %}
+              {{ d | replace('min', '') | int(0) }}
+            {% else %}
+              {{ d | int(0) }}
+            {% endif %}
+          pause_min: >-
+            {% set p = (pause | default('00:00', true)) | trim | lower | replace(' ', '') %}
+            {% if p == '' %}
+              0
+            {% elif 'h' in p %}
+              {% set parts = p.split('h') %}
+              {{ (parts[0] | int(0)) * 60 + ((parts[1] if parts[1] else '0') | int(0)) }}
+            {% elif ':' in p %}
+              {% set parts = p.split(':') %}
+              {{ (parts[0] | int(0)) * 60 + (parts[1] | int(0)) }}
+            {% elif 'min' in p %}
+              {{ p | replace('min', '') | int(0) }}
+            {% else %}
+              {{ p | int(0) }}
+            {% endif %}
+          pause_hhmm: "{{ '%02d:%02d' | format(pause_min | int // 60, pause_min | int % 60) }}"
+          due_datetime_utc: >-
+            {{ as_datetime(date ~ ' ' ~ heure)
+               | as_timestamp
+               | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', true) }}
+      - if:
+          - condition: template
+            value_template: "{{ label_code == '' or task_id == '' }}"
+        then:
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_resultat
+            data:
+              value: "❌ Erreur : type ou identifiant de tâche manquant, modification annulée."
+        else:
+          - service: rest_command.horaires_pro_todoist_update_task
+            data:
+              task_id: "{{ task_id }}"
+              description: "Type: {{ type_nom }}\nPause: {{ pause_hhmm }}"
+              label: "{{ label_code }}"
+              due_datetime: "{{ due_datetime_utc }}"
+              duration: "{{ duree_min }}"
+          - delay: "00:00:02"
+          - service: homeassistant.update_entity
+            target:
+              entity_id:
+                - sensor.horaires_pro_taches
+                - sensor.horaires_pro_projet
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_resultat
+            data:
+              value: >-
+                ✅ Tâche modifiée : {{ type_nom }} — {{ date }} {{ heure[:5] }}
+                ({{ duree }})
+          - service: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.hp_editeur_mode_edition
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_task_id_en_cours
+            data:
+              value: ""
+
+  # ==============================================================
+  # ANNULER L'ÉDITION (sans enregistrer)
+  # ==============================================================
+  horaires_pro_annuler_edition:
+    alias: "Horaires Pro - Annuler l'édition"
+    icon: mdi:close
+    sequence:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.hp_editeur_mode_edition
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_task_id_en_cours
+        data:
+          value: ""
+
+  # ==============================================================
+  # FERMER LE PANNEAU DE DÉTAIL (retour au formulaire de création)
+  # ==============================================================
+  horaires_pro_fermer_selection:
+    alias: "Horaires Pro - Fermer la sélection"
+    icon: mdi:close-circle
+    sequence:
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_selection_id
+        data:
+          value: ""
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.hp_editeur_mode_edition
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.hp_a_une_selection
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_task_id_en_cours
+        data:
+          value: ""
+
+  # ==============================================================
+  # SÉLECTIONNER UNE TÂCHE DE LA LISTE DU JOUR (0 = première, etc.)
+  # ==============================================================
+  horaires_pro_selectionner_tache_par_index:
+    alias: "Horaires Pro - Sélectionner une tâche du jour"
+    icon: mdi:cursor-default-click
+    fields:
+      index:
+        description: "Position dans la liste des tâches du jour (0 = première)"
+        example: 0
+    sequence:
+      - variables:
+          liste: "{{ state_attr('sensor.horaires_pro_taches_du_jour', 'liste') | default([], true) }}"
+      - if:
+          - condition: template
+            value_template: "{{ index | int(0) < (liste | length) }}"
+        then:
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_selection_id
+            data:
+              value: "{{ liste[index | int(0)].id }}"
+          - service: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.hp_editeur_mode_edition
+          - service: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.hp_a_une_selection
+
+  # ==============================================================
+  # SUPPRIMER LA TÂCHE SÉLECTIONNÉE
+  # ==============================================================
+  horaires_pro_supprimer_tache:
+    alias: "Horaires Pro - Supprimer la tâche sélectionnée"
+    icon: mdi:delete
+    sequence:
+      - variables:
+          task_id: "{{ states('input_text.hp_selection_id') }}"
+      - if:
+          - condition: template
+            value_template: "{{ task_id == '' }}"
+        then:
+          - stop: "Aucune tâche sélectionnée"
+      - service: rest_command.horaires_pro_todoist_delete_task
+        data:
+          task_id: "{{ task_id }}"
+      - delay: "00:00:01"
+      - service: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.horaires_pro_taches
+            - sensor.horaires_pro_projet
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_selection_id
+        data:
+          value: ""
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.hp_editeur_mode_edition
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.hp_a_une_selection
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.hp_editeur_task_id_en_cours
+        data:
+          value: ""

@@ -1,0 +1,673 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.1_energie",
+  "data": {
+    "config": {
+      "title": "Énergie",
+      "background": {
+        "image": "/local/images/wallpaper/energie.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "type": "sections",
+          "title": "Énergie",
+          "path": "energie",
+          "icon": "mdi:flash",
+          "max_columns": 4,
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "select.consommation_maison"
+            },
+            {
+              "type": "entity",
+              "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance"
+            },
+            {
+              "type": "entity",
+              "entity": "sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui"
+            }
+          ],
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# ⚡ Énergie\nTarif actif, consommation en direct, coûts depuis votre dernier\nrelevé et tendances de consommation.",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Tarif en cours",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "<img src=\"https://luna.be/wp-content/uploads/2025/08/2025-Mega-logo.png\" alt=\"Mega Energie\" style=\"max-height:36px; display:block; margin:0 auto;\">",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(60, 40, 90, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 8px !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "select.consommation_maison",
+                  "primary": "{{ 'Heures Pleines ☀️' if states(entity) == 'heures_pleines' else 'Heures Creuses 🌙' }}",
+                  "secondary": "{% set prix_p = states('input_number.prix_heures_pleines') | float(0) %} {% set prix_c = states('input_number.prix_heures_creuses') | float(0) %} {{ 'Tarif jour · ' ~ prix_p ~ ' €/kWh' if states(entity) == 'heures_pleines' else 'Tarif nuit · ' ~ prix_c ~ ' €/kWh' }}",
+                  "icon": "{{ 'mdi:weather-sunny' if states(entity) == 'heures_pleines' else 'mdi:weather-night' }}",
+                  "icon_color": "{{ 'amber' if states(entity) == 'heures_pleines' else 'green' }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Consommation en direct",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                  "primary": "Puissance instantanée",
+                  "secondary": "{{ states(entity) | float(0) | round(2) }} kW",
+                  "icon": "mdi:flash",
+                  "icon_color": "{% set p = states(entity) | float(0) %}{% if p > 12 %}red{% elif p > 9 %}amber{% else %}green{% endif %}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Estimation du mois",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "{% set kwh = states('sensor.buanderie_local_tech_compteur_general_maison_ce_mois') | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {{ (kwh * prix_moyen) | round(2) }} € estimés",
+                  "secondary": "{% set kwh = states('sensor.buanderie_local_tech_compteur_general_maison_ce_mois') | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {% set acompte = states('input_number.acompte_mensuel') | float(214.02) %} {% set cout = kwh * prix_moyen %} {% set pct = (cout / acompte * 100) | round(0) %} {{ kwh | round(2) }} kWh · {{ pct }}% de l'acompte",
+                  "icon": "mdi:receipt-text",
+                  "icon_color": "{% set kwh = states('sensor.buanderie_local_tech_compteur_general_maison_ce_mois') | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {% set acompte = states('input_number.acompte_mensuel') | float(214.02) %} {% set pct = (kwh * prix_moyen) / acompte * 100 %} {% if pct > 100 %}red{% elif pct > 80 %}amber{% else %}green{% endif %}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Surveillance du disjoncteur",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "gauge",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                  "name": "Charge disjoncteur",
+                  "min": 0,
+                  "max": 15,
+                  "needle": true,
+                  "severity": {
+                    "green": 0,
+                    "yellow": 9,
+                    "red": 12
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Tendances",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "header": {
+                    "show": true,
+                    "title": "Consommation quotidienne (14 jours)",
+                    "show_states": true
+                  },
+                  "graph_span": "14d",
+                  "series": [
+                    {
+                      "entity": "sensor.buanderie_local_tech_compteur_general_maison_energie",
+                      "name": "Énergie",
+                      "type": "column",
+                      "color": "#f6d68a",
+                      "group_by": {
+                        "func": "diff",
+                        "duration": "1d"
+                      }
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "header": {
+                    "show": true,
+                    "title": "Puissance instantanée (24h)",
+                    "show_states": true
+                  },
+                  "graph_span": "24h",
+                  "series": [
+                    {
+                      "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                      "name": "Puissance",
+                      "type": "area",
+                      "curve": "smooth",
+                      "color": "#84d1fd"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Consommation par période",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui",
+                  "primary": "Aujourd'hui",
+                  "secondary": "{% set kwh = states(entity) | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {{ kwh | round(2) }} kWh · {{ (kwh * prix_moyen) | round(2) }} € (est.)",
+                  "icon": "mdi:calendar-today",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_cette_semaine",
+                  "primary": "Cette semaine",
+                  "secondary": "{% set kwh = states(entity) | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {{ kwh | round(2) }} kWh · {{ (kwh * prix_moyen) | round(2) }} € (est.)",
+                  "icon": "mdi:calendar-week",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_ce_mois",
+                  "primary": "Ce mois",
+                  "secondary": "{% set kwh = states(entity) | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {{ kwh | round(2) }} kWh · {{ (kwh * prix_moyen) | round(2) }} € (est.)",
+                  "icon": "mdi:calendar-month",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Détails techniques",
+                  "subtitle": "Tension, courant, puissance apparente",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_tension",
+                  "name": "Tension",
+                  "icon": "mdi:flash-triangle",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_courant",
+                  "name": "Courant",
+                  "icon": "mdi:current-ac",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance_apparente",
+                  "name": "Puiss. apparente",
+                  "icon": "mdi:sine-wave",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_facteur_de_puissance",
+                  "name": "Facteur puiss.",
+                  "icon": "mdi:angle-acute",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Depuis le dernier relevé Mega",
+                  "subtitle": "{% set d = states('input_datetime.date_dernier_releve') %} {% set dt = strptime(d, '%Y-%m-%d') %} {% set mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'] %} Relevé effectué le {{ dt.day }} {{ mois[dt.month - 1] }} {{ dt.year }}",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_heures_pleines_depuis_dernier_releve",
+                  "primary": "Heures Pleines",
+                  "secondary": "{% set kwh = states(entity) | float(0) %} {% set prix = states('input_number.prix_heures_pleines') | float(0) %} {{ kwh | round(2) }} kWh · {{ (kwh * prix) | round(2) }} €",
+                  "icon": "mdi:weather-sunny",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_heures_creuses_depuis_dernier_releve",
+                  "primary": "Heures Creuses",
+                  "secondary": "{% set kwh = states(entity) | float(0) %} {% set prix = states('input_number.prix_heures_creuses') | float(0) %} {{ kwh | round(2) }} kWh · {{ (kwh * prix) | round(2) }} €",
+                  "icon": "mdi:weather-night",
+                  "icon_color": "green",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Total depuis le dernier relevé",
+                  "secondary": "{% set kwh_p = states('sensor.buanderie_local_tech_compteur_general_maison_heures_pleines_depuis_dernier_releve') | float(0) %} {% set kwh_c = states('sensor.buanderie_local_tech_compteur_general_maison_heures_creuses_depuis_dernier_releve') | float(0) %} {% set prix_p = states('input_number.prix_heures_pleines') | float(0) %} {% set prix_c = states('input_number.prix_heures_creuses') | float(0) %} {% set kwh = kwh_p + kwh_c %} {% set cost = (kwh_p * prix_p) + (kwh_c * prix_c) %} {{ kwh | round(2) }} kWh · {{ cost | round(2) }} €",
+                  "icon": "mdi:cash-multiple",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Index du compteur",
+                  "subtitle": "Référence physique",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_heures_pleines_calibrees",
+                  "primary": "Jour (compteur)",
+                  "secondary": "{{ states(entity) | float(0) | round(2) }} kWh",
+                  "icon": "mdi:counter",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_heures_creuses_calibrees",
+                  "primary": "Nuit (compteur)",
+                  "secondary": "{{ states(entity) | float(0) | round(2) }} kWh",
+                  "icon": "mdi:counter",
+                  "icon_color": "green",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Réglages tarifs & horaires",
+                  "subtitle": "Touchez une carte pour la modifier",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "input_number.prix_heures_pleines",
+                  "name": "Prix Heures Pleines",
+                  "icon": "mdi:cash-plus",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "input_number.prix_heures_creuses",
+                  "name": "Prix Heures Creuses",
+                  "icon": "mdi:cash-minus",
+                  "icon_color": "green",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "schedule.heures_pleines",
+                  "name": "Horaires Heures Pleines",
+                  "icon": "mdi:clock-edit",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "input_datetime.date_dernier_releve",
+                  "name": "Date dernier relevé",
+                  "icon": "mdi:calendar-check",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "input_number.index_reference_jour",
+                  "name": "Jour (référence)",
+                  "icon": "mdi:weather-sunny",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "input_number.index_reference_nuit",
+                  "name": "Nuit (référence)",
+                  "icon": "mdi:weather-night",
+                  "icon_color": "green",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "layout": "vertical",
+                  "entity": "input_number.acompte_mensuel",
+                  "name": "Acompte mensuel",
+                  "icon": "mdi:cash-sync",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "Aller plus loin",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Voir le détail complet (Énergie native)",
+                  "secondary": "Historique des coûts et répartition jour/nuit",
+                  "icon": "mdi:chart-line",
+                  "icon_color": "blue",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/energy"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

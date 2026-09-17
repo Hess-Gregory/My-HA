@@ -5,26 +5,61 @@
 #
 # VERSION
 # ------------------------------------------------------------
-# Version : 2.3.0
+# Version : 2.4.0
 # Date    : 2026-09-17
 # Heure   : (à ajuster à l'heure réelle de déploiement)
 # Fuseau  : Europe/Brussels
 #
-# MODIFICATIONS — VERSION 2.3.0
+# MODIFICATIONS — VERSION 2.4.0
 # ------------------------------------------------------------
-# - Ajout de 2 calendriers agrégés "Global" (un par personne) :
-#     HP Gregory - Global  (tous les labels G_*)
-#     HP Sandrine - Global (tous les labels S_*)
-#   -> corrige l'inversion de couleurs/étiquettes dans
-#      family-calendar-card, causée par l'utilisation de la
-#      même entité calendar.horaires_pro pour les deux personnes
-#      (collision dans this._calByEntity côté carte + sémantique
-#      d'exclusion du paramètre "filter").
-#   -> permet d'afficher 2 calendriers côte à côte (1 entité par
-#      personne, sans regex de filtrage nécessaire côté carte).
-# - Conservation intégrale des ~40 calendriers par type existants
-#   (HP Gregory - G_xxx / HP Sandrine - S_xxx), toujours utiles
-#   pour un filtrage fin si besoin ailleurs.
+# - Alignement des libellés "nom" des blocs (Blocs Gregory / Blocs
+#   Sandrine, ci-dessous) sur les libellés du formulaire d'édition
+#   (horaires_pro_editeur.yaml) : 'ADV' -> 'ADV mensuel',
+#   'Heures supplémentaires' -> 'Heures supplémentaires prestées',
+#   'Récupération heures supplémentaires' -> 'Heures supplémentaires
+#   déduites'. Nécessaire pour que le bouton "Modifier" du nouveau
+#   panneau Détails & Édition puisse pré-remplir correctement le
+#   menu déroulant du type (sinon l'option n'existait pas et la
+#   sélection échouait silencieusement).
+# - Voir horaires_pro_editeur.yaml pour le panneau complet
+#   Créer / Modifier / Supprimer avec détail structuré et coloré.
+#
+# MODIFICATIONS — VERSION 2.3.1
+# ------------------------------------------------------------
+# - RETOUR EN ARRIÈRE sur l'approche "2 calendriers Global" de la
+#   v2.3.0 : le bloc `calendar: - platform: todoist` (ci-dessous)
+#   échoue entièrement au démarrage de HA avec :
+#     "Error while setting up todoist platform for calendar:
+#      403 Client Error: Forbidden for url:
+#      https://api.todoist.com/api/v1/projects"
+#   -> confirmé dans les logs HA après redémarrage : AUCUN calendrier
+#      de ce bloc ne se crée (ni les nouveaux HP*-Global, ni les ~40
+#      calendriers par type déjà présents avant). Cause indépendante
+#      du token (les capteurs REST plus bas, qui interrogent des
+#      ressources précises par ID, fonctionnent avec le même secret) :
+#      le blocage touche spécifiquement l'appel qui liste TOUS les
+#      projets Todoist (GET /api/v1/projects), nécessaire même pour
+#      résoudre "Horaires Pro" par son nom dans include_projects.
+#   -> Cause exacte non confirmée (bug possible côté bibliothèque
+#      todoist_api_python / API Todoist, ou restriction spécifique à
+#      cet appel) — non réparable depuis la config YAML seule.
+# - Les blocs custom_projects ci-dessous (HP Gregory/Sandrine -
+#   Global + les ~40 par type) sont CONSERVÉS tels quels dans ce
+#   fichier (inertes, sans effet néfaste) au cas où le 403 se
+#   résolve plus tard (mise à jour HA, correctif upstream...) — pas
+#   besoin de les retaper si ça se débloque un jour.
+# - Le correctif réel pour l'inversion de couleurs Gregory/Sandrine
+#   est appliqué UNIQUEMENT côté dashboard (family-calendar-card),
+#   pas ici : retour à calendar.horaires_pro (qui fonctionne, lui,
+#   car issu de l'intégration Todoist moderne) avec un regex `filter`
+#   corrigé. Voir dashboard-calendrier.yaml pour le détail.
+#
+# MODIFICATIONS — VERSION 2.3.0 (abandonnée, voir 2.3.1)
+# ------------------------------------------------------------
+# - Tentative d'ajout de 2 calendriers agrégés "Global" (un par
+#   personne) via custom_projects, pour contourner la collision
+#   this._calByEntity de family-calendar-card. Non fonctionnelle :
+#   voir raison ci-dessus (403 sur le bloc calendar:platform:todoist).
 #
 # MODIFICATIONS — VERSION 2.2.0
 # ------------------------------------------------------------
@@ -420,14 +455,14 @@ template:
       - name: "Horaires Pro Version"
         unique_id: horaires_pro_version
         icon: mdi:source-branch
-        state: "2.3.0"
+        state: "2.4.0"
         attributes:
-          version: "2.3.0"
+          version: "2.4.0"
           date: "2026-09-17"
           heure: "00:00"
           fuseau: "Europe/Brussels"
-          affichage: "v2.3.0 · 17/09/2026"
-          modification: "Calendriers Global Gregory/Sandrine (fix inversion couleurs + côte à côte)"
+          affichage: "v2.4.0 · 17/09/2026"
+          modification: "Panneau Détails & Édition complet (voir/modifier/supprimer une tâche, durée libre à la création) + libellés de type alignés entre blocs et formulaire"
 
       # ========================================================
       # NOMBRE TOTAL DE BLOCS
@@ -866,10 +901,10 @@ template:
             {% set labels_map = {
               'G_Jour_Normal': 'Jour normal',
               'G_Journee_Reduite': 'Journée réduite',
-              'G_Heures_Supp_Prestees': 'Heures supplémentaires',
-              'G_Heures_Supp_Deduites': 'Récupération heures supplémentaires',
+              'G_Heures_Supp_Prestees': 'Heures supplémentaires prestées',
+              'G_Heures_Supp_Deduites': 'Heures supplémentaires déduites',
               'G_Vac_ONVA': 'Congé ONVA',
-              'G_ADV_Mois': 'ADV',
+              'G_ADV_Mois': 'ADV mensuel',
               'G_ADV_Samedi': 'ADV samedi',
               'G_ADV_13eme_mois': 'ADV 13ᵉ mois',
               'G_Jour_Ferie': 'Jour férié',
@@ -1083,7 +1118,7 @@ template:
               'S_Jour_Normal': 'Jour normal',
               'S_Journee_Reduite': 'Journée réduite',
               'S_Vac_ONVA': 'Congé ONVA',
-              'S_ADV_Mois': 'ADV',
+              'S_ADV_Mois': 'ADV mensuel',
               'S_ADV_13eme_mois': 'ADV 13ᵉ mois',
               'S_CSU': 'CSU',
               'S_Jour_Ferie': 'Jour férié',

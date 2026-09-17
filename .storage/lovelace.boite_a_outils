@@ -1,0 +1,636 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.boite_a_outils",
+  "data": {
+    "config": {
+      "title": "Boîte à Outils",
+      "background": {
+        "image": "/local/images/wallpaper/outils.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Post-it",
+          "path": "notes",
+          "icon": "mdi:note-multiple",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# <img src=\"/local/images/wallpaper/post-it.png\" style=\"height:30px;vertical-align:middle;margin-right:6px;\"> Post-it\nNotes éditables directement sur la carte",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(-1deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**🧑 Grégory**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.note_gregory",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(0deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**👩 Sandrine**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.note_sandrine",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(1deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**👪 Famille**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.note_famille_2",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(-1deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**👦 Matteo**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.note_matteo",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(0deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**🧒 Hugo**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.note_hugo",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(1deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**💡 Idées / Courses**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.idees_courses",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/aea5643ace139b352e17944440717935",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "outils.jpg",
+                "thumbnail": "/api/image/serve/aea5643ace139b352e17944440717935/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Minuteurs",
+          "path": "minuteurs",
+          "icon": "mdi:timer-outline",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# ⏱️ Minuteurs\nDémarre, mets en pause ou annule d'un clic",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "timer.minuteur_cuisine",
+                  "name": "Cuisine",
+                  "icon": "mdi:pot-steam",
+                  "color": "amber",
+                  "features": [
+                    {
+                      "type": "timer-actions",
+                      "start_button": true,
+                      "pause_button": true,
+                      "cancel_button": true
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "timer.minuteur_lessive",
+                  "name": "Lessive",
+                  "icon": "mdi:washing-machine",
+                  "color": "blue",
+                  "features": [
+                    {
+                      "type": "timer-actions",
+                      "start_button": true,
+                      "pause_button": true,
+                      "cancel_button": true
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "timer.minuteur_sieste",
+                  "name": "Sieste",
+                  "icon": "mdi:power-sleep",
+                  "color": "purple",
+                  "features": [
+                    {
+                      "type": "timer-actions",
+                      "start_button": true,
+                      "pause_button": true,
+                      "cancel_button": true
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "timer.minuteur_douche",
+                  "name": "Douche",
+                  "icon": "mdi:shower",
+                  "color": "cyan",
+                  "features": [
+                    {
+                      "type": "timer-actions",
+                      "start_button": true,
+                      "pause_button": true,
+                      "cancel_button": true
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "ℹ️ La durée par défaut de chaque minuteur se règle dans Paramètres > Appareils et services > Aides > (le minuteur) > modifier. Dis-moi si tu veux un 5e minuteur \"durée personnalisable au clic\" — ça demande un petit script en plus.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(60, 40, 90, 0.5) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 18px !important; } ha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/0abed2d5c707597a870c48bdd7651dd9",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "outils.jpg",
+                "thumbnail": "/api/image/serve/0abed2d5c707597a870c48bdd7651dd9/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Calculatrice",
+          "path": "calculatrice",
+          "icon": "mdi:calculator-variant",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🧮 Calculatrice\nCalculs rapides, sans quitter le dashboard",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "iframe",
+                  "url": "data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KPG1ldGEgY2hhcnNldD0iVVRGLTgiPgo8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEiPgo8c3R5bGU+CiAgKiB7IGJveC1zaXppbmc6IGJvcmRlci1ib3g7IH0KICBib2R5e21hcmdpbjowO2JhY2tncm91bmQ6IzFhMTIyODtkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXI7bWluLWhlaWdodDoxMDB2aDtmb250LWZhbWlseTonU2Vnb2UgVUknLFJvYm90byxzYW5zLXNlcmlmO30KICAuY2FsY3t3aWR0aDoxMDAlO21heC13aWR0aDozNDBweDtwYWRkaW5nOjE0cHg7fQogIC5kaXNwbGF5e2JhY2tncm91bmQ6cmdiYSgzOCwyOCw1OCwwLjcpO2JvcmRlci1yYWRpdXM6MTJweDtwYWRkaW5nOjE2cHg7bWFyZ2luLWJvdHRvbToxMnB4O3RleHQtYWxpZ246cmlnaHQ7fQogIC5kaXNwbGF5IC5leHBye2NvbG9yOiM5ZDkwYjM7Zm9udC1zaXplOjE0cHg7bWluLWhlaWdodDoxOHB4O292ZXJmbG93OmhpZGRlbjt3aGl0ZS1zcGFjZTpub3dyYXA7fQogIC5kaXNwbGF5IC5yZXN1bHR7Y29sb3I6I2ZmZjtmb250LXNpemU6MzZweDtmb250LXdlaWdodDo2MDA7b3ZlcmZsb3c6aGlkZGVuO3doaXRlLXNwYWNlOm5vd3JhcDt9CiAgLmdyaWR7ZGlzcGxheTpncmlkO2dyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoNCwxZnIpO2dhcDo4cHg7fQogIGJ1dHRvbntib3JkZXI6bm9uZTtib3JkZXItcmFkaXVzOjEwcHg7cGFkZGluZzoxOHB4IDA7Zm9udC1zaXplOjIwcHg7YmFja2dyb3VuZDojMmYyMTQ1O2NvbG9yOiNlZWU7Y3Vyc29yOnBvaW50ZXI7dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIDAuMTVzO30KICBidXR0b246YWN0aXZle2JhY2tncm91bmQ6IzQ0MzI2MDt9CiAgYnV0dG9uLm9we2JhY2tncm91bmQ6IzNkMmI1Yztjb2xvcjojZjZkNjhhO30KICBidXR0b24uZXF7YmFja2dyb3VuZDojZjZkNjhhO2NvbG9yOiMxYTEyMjg7Zm9udC13ZWlnaHQ6NzAwO30KICBidXR0b24uY2xlYXJ7YmFja2dyb3VuZDojNWMyYjJiO2NvbG9yOiNmZmIzYjM7fQogIGJ1dHRvbi56ZXJve2dyaWQtY29sdW1uOnNwYW4gMjt9Cjwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CjxkaXYgY2xhc3M9ImNhbGMiPgogIDxkaXYgY2xhc3M9ImRpc3BsYXkiPgogICAgPGRpdiBjbGFzcz0iZXhwciIgaWQ9ImV4cHIiPiZuYnNwOzwvZGl2PgogICAgPGRpdiBjbGFzcz0icmVzdWx0IiBpZD0icmVzdWx0Ij4wPC9kaXY+CiAgPC9kaXY+CiAgPGRpdiBjbGFzcz0iZ3JpZCI+CiAgICA8YnV0dG9uIGNsYXNzPSJjbGVhciIgb25jbGljaz0iY2xlYXJBbGwoKSI+QzwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0iY2xlYXIiIG9uY2xpY2s9ImJhY2tzcGFjZSgpIj7ijKs8L2J1dHRvbj4KICAgIDxidXR0b24gY2xhc3M9Im9wIiBvbmNsaWNrPSJhcHBlbmQoJyUnKSI+JTwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0ib3AiIG9uY2xpY2s9ImFwcGVuZCgnLycpIj7DtzwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzcnKSI+NzwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzgnKSI+ODwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzknKSI+OTwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0ib3AiIG9uY2xpY2s9ImFwcGVuZCgnKicpIj7DlzwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzQnKSI+NDwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzUnKSI+NTwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzYnKSI+NjwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0ib3AiIG9uY2xpY2s9ImFwcGVuZCgnLScpIj7iiJI8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCcxJykiPjE8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCcyJykiPjI8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCczJykiPjM8L2J1dHRvbj4KICAgIDxidXR0b24gY2xhc3M9Im9wIiBvbmNsaWNrPSJhcHBlbmQoJysnKSI+KzwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0iemVybyIgb25jbGljaz0iYXBwZW5kKCcwJykiPjA8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCcuJykiPi48L2J1dHRvbj4KICAgIDxidXR0b24gY2xhc3M9ImVxIiBvbmNsaWNrPSJjYWxjdWxhdGUoKSI+PTwvYnV0dG9uPgogIDwvZGl2Pgo8L2Rpdj4KPHNjcmlwdD4KbGV0IGV4cHIgPSAnJzsKZnVuY3Rpb24gYXBwZW5kKHYpewogIGV4cHIgKz0gdjsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZXhwcicpLnRleHRDb250ZW50ID0gZXhwcjsKfQpmdW5jdGlvbiBjbGVhckFsbCgpewogIGV4cHIgPSAnJzsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZXhwcicpLnRleHRDb250ZW50ID0gJ8KgJzsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmVzdWx0JykudGV4dENvbnRlbnQgPSAnMCc7Cn0KZnVuY3Rpb24gYmFja3NwYWNlKCl7CiAgZXhwciA9IGV4cHIuc2xpY2UoMCwtMSk7CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2V4cHInKS50ZXh0Q29udGVudCA9IGV4cHIgfHwgJ8KgJzsKfQpmdW5jdGlvbiBjYWxjdWxhdGUoKXsKICBpZighZXhwcikgcmV0dXJuOwogIHRyeXsKICAgIGxldCBzYWZlID0gZXhwci5yZXBsYWNlKC9bXi0oKVxkLyorLiVdL2csICcnKTsKICAgIGxldCB2YWwgPSBGdW5jdGlvbignInVzZSBzdHJpY3QiO3JldHVybiAoJyArIHNhZmUgKyAnKScpKCk7CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmVzdWx0JykudGV4dENvbnRlbnQgPSBOdW1iZXIuaXNGaW5pdGUodmFsKSA/IChNYXRoLnJvdW5kKHZhbCoxMDAwMDApLzEwMDAwMCkudG9TdHJpbmcoKSA6ICdFcnJldXInOwogIH1jYXRjaChlKXsKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdyZXN1bHQnKS50ZXh0Q29udGVudCA9ICdFcnJldXInOwogIH0KfQpkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdrZXlkb3duJywgZnVuY3Rpb24oZSl7CiAgaWYoL1swLTkuK1wtKi8lXS8udGVzdChlLmtleSkpIGFwcGVuZChlLmtleSk7CiAgZWxzZSBpZihlLmtleSA9PT0gJ0VudGVyJykgY2FsY3VsYXRlKCk7CiAgZWxzZSBpZihlLmtleSA9PT0gJ0JhY2tzcGFjZScpIGJhY2tzcGFjZSgpOwogIGVsc2UgaWYoZS5rZXkgPT09ICdFc2NhcGUnKSBjbGVhckFsbCgpOwp9KTsKPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPgo=",
+                  "aspect_ratio": "140%",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; overflow: hidden !important; border-radius: 16px !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "cards": []
+        },
+        {
+          "title": "QR Codes",
+          "path": "qr-codes",
+          "icon": "mdi:qrcode",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 📱 QR Codes\nÀ scanner avec un téléphone — pratique pour le Wi-Fi",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📶 Wi-Fi invité",
+                  "subtitle": "Greg&Sandrine - WiFiGuest\nMot de passe : CafeEtWiFi",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:qr-code-card",
+                  "source": "wifi",
+                  "auth_type": "WPA",
+                  "ssid": "Greg&Sandrine - WiFiGuest",
+                  "password": "CafeEtWiFi",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 10
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🏠 Wi-Fi maison",
+                  "subtitle": "Greg&Sandrine - WiFiHouse \nMot de passe : HappyGSMH!2024",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:qr-code-card",
+                  "source": "wifi",
+                  "auth_type": "WPA",
+                  "ssid": "Greg&Sandrine - WiFiHouse",
+                  "password": "HappyGSMH!2024",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 10
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🔗 Lien rapide",
+                  "subtitle": "Partage un lien sans avoir à le retaper sur un téléphone",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "input_text.qr_lien_rapide",
+                      "state_not": "unavailable"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "input_text.qr_lien_rapide",
+                      "state_not": "unknown"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "input_text.qr_lien_rapide",
+                      "state_not": ""
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:qr-code-card",
+                    "source": "text",
+                    "text": {
+                      "entity": "input_text.qr_lien_rapide"
+                    },
+                    "grid_options": {
+                      "columns": 6,
+                      "rows": 6
+                    },
+                    "card_mod": {
+                      "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                    }
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "or",
+                      "conditions": [
+                        {
+                          "condition": "state",
+                          "entity": "input_text.qr_lien_rapide",
+                          "state": "unavailable"
+                        },
+                        {
+                          "condition": "state",
+                          "entity": "input_text.qr_lien_rapide",
+                          "state": "unknown"
+                        },
+                        {
+                          "condition": "state",
+                          "entity": "input_text.qr_lien_rapide",
+                          "state": ""
+                        }
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✏️ **Entre un lien ou un texte** dans le champ à droite pour générer ici son QR code.",
+                    "grid_options": {
+                      "columns": 6,
+                      "rows": 6
+                    },
+                    "card_mod": {
+                      "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; display: flex !important; align-items: center !important; padding: 16px 20px !important; }\nha-markdown { color: #e8dff5 !important; }\n"
+                    }
+                  }
+                },
+                {
+                  "type": "entities",
+                  "title": "Modifier le lien",
+                  "entities": [
+                    {
+                      "entity": "input_text.qr_lien_rapide",
+                      "name": "URL ou texte"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.card-header { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; height: auto !important; line-height: 1.2 !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/1447b27fe9830611852cdf3053bccd62",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "outils.jpg",
+                "thumbnail": "/api/image/serve/1447b27fe9830611852cdf3053bccd62/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        }
+      ]
+    }
+  }
+}

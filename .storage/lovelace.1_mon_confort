@@ -1,0 +1,2767 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.1_mon_confort",
+  "data": {
+    "config": {
+      "title": "Mon Confort",
+      "background": {
+        "image": "/local/images/wallpaper/mon-confort.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Vue d'Ensemble",
+          "path": "vue-ensemble",
+          "icon": "mdi:view-dashboard",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🌡️ Mon Confort › Vue d'Ensemble\nChauffage · climatisation · humidité · chaudière",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "📊 Résumé rapide",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.boiler_burngas",
+                  "primary": "Chaudière",
+                  "secondary": "{{ 'Brûleur actif' if is_state(entity,'on') else 'Au repos' }} · {{ states('sensor.boiler_curflowtemp') | float(0) | round(1) }} °C",
+                  "icon": "mdi:water-boiler",
+                  "icon_color": "{{ 'orange' if is_state(entity,'on') else 'grey' }}",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_boolean.routine_activee",
+                  "primary": "Routine chauffage",
+                  "secondary": "{{ 'Active' if is_state(entity,'on') else 'Vacances / hors-gel' }}",
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "{{ 'green' if is_state(entity,'on') else 'blue' }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/modes-presence"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_boolean.presence_exceptionnelle",
+                  "primary": "Présence exceptionnelle",
+                  "secondary": "{{ 'Active' if is_state(entity,'on') else 'Inactive' }}",
+                  "icon": "mdi:home-clock",
+                  "icon_color": "{{ 'amber' if is_state(entity,'on') else 'grey' }}",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🏠 Pièces",
+                  "subtitle": "Appuyez sur une pièce pour accéder à ses commandes",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
+                  "primary": "Couloir & Entrée",
+                  "secondary": "{{ states(entity) }} °C · {{ states('sensor.temp_couloir_sonoff_a480146b60_humidity') }} %",
+                  "icon": "mdi:door-closed",
+                  "icon_color": "{{ 'orange' if states('sensor.temp_couloir_sonoff_a480146b60_humidity')|float(50) > 65 else 'amber' }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/couloir-entree"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                  "primary": "Pièce de Vie & Cuisine",
+                  "secondary": "{{ states(entity) }} °C · {{ states('sensor.temp_piece_de_vie_sonoff_a480146b56_humidity') }} %",
+                  "icon": "mdi:sofa",
+                  "icon_color": "amber",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/piece-de-vie"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
+                  "primary": "Chambre Enfants",
+                  "secondary": "{{ states(entity) }} °C · {{ states('sensor.temp_chambre_enfants_sonoff_a480146b58_humidity') }} %",
+                  "icon": "mdi:toy-brick",
+                  "icon_color": "amber",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/chambre-enfants"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
+                  "primary": "Chambre Parents",
+                  "secondary": "{{ states(entity) }} °C · {{ states('sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity') }} %",
+                  "icon": "mdi:bed-double",
+                  "icon_color": "amber",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/chambre-parents"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                  "primary": "Salle de Bain",
+                  "secondary": "{{ states(entity) }} °C · {{ states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity') }} %",
+                  "icon": "mdi:shower",
+                  "icon_color": "{{ 'blue' if states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity')|float(50) > 70 else 'amber' }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/salle-de-bain"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🔥 Chaudière",
+                  "secondary": "Contrôle et diagnostic EMS-ESP",
+                  "icon": "mdi:water-boiler",
+                  "icon_color": "orange",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/chaudiere"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "⚡ Actions rapides",
+                  "subtitle": "Les automatismes restent prioritaires",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Départ temporaire",
+                  "secondary": "Passage en mode absence",
+                  "icon": "mdi:home-export-outline",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_depart_temporaire"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Retour temporaire",
+                  "secondary": "Retour au confort",
+                  "icon": "mdi:home-import-outline",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_retour_temporaire"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🛏️ Sieste enfant",
+                  "secondary": "Début / fin sur la page dédiée",
+                  "icon": "mdi:bed",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/chambre-enfants"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🚿 Salle de bain",
+                  "secondary": "Confort avant / après douche",
+                  "icon": "mdi:shower",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/salle-de-bain"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Couloir & Entrée",
+          "path": "couloir-entree",
+          "icon": "mdi:door-closed",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🚪 Mon Confort › Couloir & Entrée",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌡️ Mesures & état",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
+                      "min": 10,
+                      "max": 30,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 10,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 16,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 18,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 20,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 22,
+                          "color": "#8BC34A"
+                        },
+                        {
+                          "from": 24,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 27,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Température",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "°C"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_couloir_sonoff_a480146b60_humidity",
+                      "min": 20,
+                      "max": 80,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 20,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 40,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 50,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 60,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 70,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 80,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Humidité",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "%"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "État & recommandation",
+                  "secondary": "{% set t=states('sensor.temp_couloir_sonoff_a480146b60_temperature')|float(20) %} {% set h=states('sensor.temp_couloir_sonoff_a480146b60_humidity')|float(50) %} {% set c=states('sensor.consigne_couloir')|float(20) %} {% if t < c-0.5 %}🔥 Chauffage recommandé · {{ t }} → {{ c }} °C {% elif h > 65 %}💧 Air humide · ouvre la porte du couloir commun ou une porte voisine {% elif h < 35 %}🏜️ Air sec {% elif t > c+1.5 %}🚪 Pas de fenêtre ici — ouvre la porte du couloir commun, ou les portes des chambres/salon {% else %}✅ Confort optimal{% endif %}",
+                  "icon": "mdi:thermostat-auto",
+                  "icon_color": "{% set t=states('sensor.temp_couloir_sonoff_a480146b60_temperature')|float(20) %} {% set h=states('sensor.temp_couloir_sonoff_a480146b60_humidity')|float(50) %} {% set c=states('sensor.consigne_couloir')|float(20) %} {% if t < c-0.5 %}amber{% elif h > 65 %}blue{% elif h < 35 %}orange{% elif t > c+1.5 %}blue{% else %}green{% endif %}",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "ℹ️ **Pas de fenêtre ni de ventilation dans le hall** : seuls le chauffage par vanne thermostatique et l'ouverture de la porte du couloir commun ou des pièces voisines permettent d'agir ici.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 16px !important; } ha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔥 Chauffage",
+                  "subtitle": "Vanne thermostatique",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_couloir",
+                  "name": "Mode",
+                  "icon": "mdi:thermostat",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_couloir",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_couloir",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Objectif actuel",
+                  "secondary": "{% set c = states('sensor.consigne_couloir') %} {% if c == 'off' %}Mode Été — chauffage coupé {% else %}Mode {{ states('input_select.mode_couloir') }} activé — objectif {{ c }} °C{% endif %}",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.prochain_changement_couloir",
+                  "primary": "Prochain changement",
+                  "secondary": "{{ states(entity) }}",
+                  "multiline_secondary": true,
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": "full"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Pièce de Vie",
+          "path": "piece-de-vie",
+          "icon": "mdi:sofa",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🛋️ Mon Confort › Pièce de Vie & Cuisine\nChauffage 3 zones · climatisation Salon · humidité",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌡️ Mesures & état",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                      "min": 16,
+                      "max": 28,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 16,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 18,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 19,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 20,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 22,
+                          "color": "#8BC34A"
+                        },
+                        {
+                          "from": 23,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 25,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 28,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Température",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "°C"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_humidity",
+                      "min": 20,
+                      "max": 80,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 20,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 40,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 50,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 60,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 70,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 80,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Humidité",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "%"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "État & recommandation",
+                  "secondary": "{% set t=states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature')|float(20) %} {% set h=states('sensor.temp_piece_de_vie_sonoff_a480146b56_humidity')|float(50) %} {% set c=states('sensor.consigne_piece_de_vie')|float(20) %} {% if t < c-0.5 %}🔥 Chauffage · {{ t }} → {{ c }} °C {% elif h > 65 %}💧 Humidité élevée · clim en déshumidification, ou trappe d'aération {% elif t > c+1.5 %}❄️ Climatisation Salon, ou fenêtre en bascule · {{ t }} → {{ c }} °C {% elif h < 35 %}🏜️ Air sec · humidifier, ou trappe d'aération brièvement {% else %}✅ Confort optimal{% endif %}",
+                  "icon": "mdi:thermostat-auto",
+                  "icon_color": "{% set t=states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature')|float(20) %} {% set h=states('sensor.temp_piece_de_vie_sonoff_a480146b56_humidity')|float(50) %} {% set c=states('sensor.consigne_piece_de_vie')|float(20) %} {% if t < c-0.5 %}amber{% elif h > 65 %}blue{% elif t > c+1.5 %}blue{% elif h < 35 %}orange{% else %}green{% endif %}",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔥 Chauffage — 3 radiateurs, 1 zone Bosch",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_piece_de_vie",
+                  "name": "Mode",
+                  "icon": "mdi:thermostat",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_piece_de_vie",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_piece_de_vie",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Objectif actuel",
+                  "secondary": "{% set c = states('sensor.consigne_piece_de_vie') %} {% if c == 'off' %}Mode Été — chauffage coupé {% else %}Mode {{ states('input_select.mode_piece_de_vie') }} activé — objectif {{ c }} °C{% endif %}",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.prochain_changement_piece_de_vie",
+                  "primary": "Prochain changement",
+                  "secondary": "{{ states(entity) }}",
+                  "multiline_secondary": true,
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "❄️ Climatisation Salon",
+                  "subtitle": "Commandes IR",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "ON / OFF",
+                  "secondary": "Télécommande IR",
+                  "icon": "mdi:air-conditioner",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.allumer_eteindre_clim_salon"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Vitesse",
+                  "secondary": "Cycle de vitesse",
+                  "icon": "mdi:fan",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "button.press",
+                    "target": {
+                      "entity_id": "button.clim_salon_vitesse"
+                    }
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Chambre Enfants",
+          "path": "chambre-enfants",
+          "icon": "mdi:toy-brick",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🧸 Mon Confort › Chambre Enfants",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌡️ Mesures & état",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
+                      "min": 15,
+                      "max": 27,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 15,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 17,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 18,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 20,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 22,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 23,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 25,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 27,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Température",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "°C"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_humidity",
+                      "min": 25,
+                      "max": 75,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 25,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 40,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 50,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 60,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 65,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 70,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 75,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Humidité",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "%"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "État & recommandation",
+                  "secondary": "{% set t=states('sensor.temp_chambre_enfants_sonoff_a480146b58_temperature')|float(20) %} {% set h=states('sensor.temp_chambre_enfants_sonoff_a480146b58_humidity')|float(50) %} {% set c=states('sensor.consigne_chambre_enfants')|float(20) %} {% if t < c-0.5 %}🔥 Chauffage · {{ t }} → {{ c }} °C {% elif h > 65 %}💧 Humidité élevée · trappe d'aération ou fenêtre en bascule {% elif t > c+1.5 %}🌬️ Fenêtre en bascule ou trappe d'aération (pas de clim) · {{ t }} °C {% elif h < 35 %}🏜️ Air sec · humidifier, ou trappe d'aération brièvement {% else %}✅ Confort optimal{% endif %}",
+                  "icon": "mdi:thermostat-auto",
+                  "icon_color": "{% set t=states('sensor.temp_chambre_enfants_sonoff_a480146b58_temperature')|float(20) %} {% set h=states('sensor.temp_chambre_enfants_sonoff_a480146b58_humidity')|float(50) %} {% set c=states('sensor.consigne_chambre_enfants')|float(20) %} {% if t < c-0.5 %}amber{% elif h > 65 %}blue{% elif t > c+1.5 %}blue{% elif h < 35 %}orange{% else %}green{% endif %}",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔥 Chauffage",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_chambre_enfants",
+                  "name": "Mode",
+                  "icon": "mdi:thermostat",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_chambre_enfants",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_chambre_enfants",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Objectif actuel",
+                  "secondary": "{% set c = states('sensor.consigne_chambre_enfants') %} {% if c == 'off' %}Mode Été — chauffage coupé {% else %}Mode {{ states('input_select.mode_chambre_enfants') }} activé — objectif {{ c }} °C{% endif %}",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Sieste — début",
+                  "icon": "mdi:bed",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_sieste_enfant_debut"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Sieste — fin",
+                  "icon": "mdi:bed-outline",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_sieste_enfant_fin"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.prochain_changement_chambre_enfants",
+                  "primary": "Prochain changement",
+                  "secondary": "{{ states(entity) }}",
+                  "multiline_secondary": true,
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌬️ Ventilation",
+                  "subtitle": "Brassage d'air — pas de déshumidification",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "ON / OFF",
+                  "icon": "mdi:fan",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.allumer_eteindre_ventilateur_chambre_enfants"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Vitesse",
+                  "icon": "mdi:fan-speed-2",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "button.press",
+                    "target": {
+                      "entity_id": "button.ventilateur_chambre_enfants_vitesse"
+                    }
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Chambre Parents",
+          "path": "chambre-parents",
+          "icon": "mdi:bed-double",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🛏️ Mon Confort › Chambre Parents",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌡️ Mesures & état",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
+                      "min": 15,
+                      "max": 27,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 15,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 17,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 18,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 19,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 21,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 22,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 24,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 27,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Température",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "°C"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity",
+                      "min": 25,
+                      "max": 75,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 25,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 40,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 50,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 60,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 65,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 70,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 75,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Humidité",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "%"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "État & recommandation",
+                  "secondary": "{% set t=states('sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature')|float(20) %} {% set h=states('sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity')|float(50) %} {% set c=states('sensor.consigne_chambre_adulte')|float(20) %} {% if t < c-0.5 %}🔥 Chauffage · {{ t }} → {{ c }} °C {% elif h > 65 %}💧 Humidité élevée · clim en déshumidification, ou trappe d'aération {% elif t > c+1.5 %}❄️ Climatisation, ou fenêtre en bascule · {{ t }} → {{ c }} °C {% elif h < 35 %}🏜️ Air sec · humidifier, ou trappe d'aération brièvement {% else %}✅ Confort optimal{% endif %}",
+                  "icon": "mdi:thermostat-auto",
+                  "icon_color": "{% set t=states('sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature')|float(20) %} {% set h=states('sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity')|float(50) %} {% set c=states('sensor.consigne_chambre_adulte')|float(20) %} {% if t < c-0.5 %}amber{% elif h > 65 %}blue{% elif t > c+1.5 %}blue{% elif h < 35 %}orange{% else %}green{% endif %}",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔥 Chauffage",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_chambre_adulte",
+                  "name": "Mode",
+                  "icon": "mdi:thermostat",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_chambre_adulte",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_chambre_adulte",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Objectif actuel",
+                  "secondary": "{% set c = states('sensor.consigne_chambre_adulte') %} {% if c == 'off' %}Mode Été — chauffage coupé {% else %}Mode {{ states('input_select.mode_chambre_adulte') }} activé — objectif {{ c }} °C{% endif %}",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Sieste — début",
+                  "icon": "mdi:bed",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_sieste_adulte_debut"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Sieste — fin",
+                  "icon": "mdi:bed-outline",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_sieste_adulte_fin"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.prochain_changement_chambre_adulte",
+                  "primary": "Prochain changement",
+                  "secondary": "{{ states(entity) }}",
+                  "multiline_secondary": true,
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "❄️ Climatisation",
+                  "subtitle": "Entité climate · modes cool / dry / fan",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-climate-card",
+                  "entity": "climate.climatisation_chambre_parents",
+                  "name": "Climatisation Chambre Parents",
+                  "show_temperature_control": true,
+                  "hvac_modes": [
+                    "cool",
+                    "dry",
+                    "fan_only",
+                    "off"
+                  ],
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Salle de Bain",
+          "path": "salle-de-bain",
+          "icon": "mdi:shower",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🚿 Mon Confort › Salle de Bain",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌡️ Mesures & état",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                      "min": 15,
+                      "max": 32,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 15,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 18,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 20,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 22,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 24,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 26,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 29,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 32,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Température",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "°C"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    },
+                    {
+                      "type": "custom:gauge-card-pro",
+                      "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity",
+                      "min": 30,
+                      "max": 90,
+                      "needle": true,
+                      "needle_color": "#FFFFFF",
+                      "gradient": true,
+                      "gradient_resolution": "auto",
+                      "segments": [
+                        {
+                          "from": 30,
+                          "color": "#1565C0"
+                        },
+                        {
+                          "from": 40,
+                          "color": "#42A5F5"
+                        },
+                        {
+                          "from": 50,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 60,
+                          "color": "#43A047"
+                        },
+                        {
+                          "from": 65,
+                          "color": "#66BB6A"
+                        },
+                        {
+                          "from": 70,
+                          "color": "#FFB300"
+                        },
+                        {
+                          "from": 80,
+                          "color": "#F4511E"
+                        },
+                        {
+                          "from": 90,
+                          "color": "#D32F2F"
+                        }
+                      ],
+                      "round": "full",
+                      "titles": {
+                        "primary": {
+                          "value": "Humidité",
+                          "color": "#FFFFFF"
+                        }
+                      },
+                      "value_texts": {
+                        "primary": {
+                          "color": "#FFFFFF",
+                          "unit_of_measurement": "%"
+                        }
+                      },
+                      "hide_background": false,
+                      "card_mod": {
+                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                      },
+                      "tap_action": {
+                        "action": "more-info"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "État & recommandation",
+                  "secondary": "{% set t=states('sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature')|float(20) %} {% set h=states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity')|float(50) %} {% set c=states('sensor.consigne_salle_de_bain')|float(20) %} {% if t < c-0.5 %}🔥 Chauffage · {{ t }} → {{ c }} °C {% elif h > 70 %}💨 Humidité post-douche · le ventilateur (VMC) devrait s'en charger, vérifie qu'il tourne bien {% elif h < 35 %}🏜️ Air sec {% else %}✅ Confort optimal{% endif %}",
+                  "icon": "mdi:thermostat-auto",
+                  "icon_color": "{% set t=states('sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature')|float(20) %} {% set h=states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity')|float(50) %} {% set c=states('sensor.consigne_salle_de_bain')|float(20) %} {% if t < c-0.5 %}amber{% elif h > 70 %}blue{% elif h < 35 %}orange{% else %}green{% endif %}",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "🔧 **À vérifier** : la salle de bain a une VMC qui s'allume avec la lumière et s'arrête seule une fois l'humidité redescendue. Elle n'est pas connue de Home Assistant. Pour vérifier son étalonnage, compare son temps de fonctionnement à la sonde Sonoff ci-dessus — seuil fixé à 70 % ici (au lieu de 65 % ailleurs) car une salle de bain dépasse souvent ce niveau juste après une douche sans que ce soit anormal.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 16px !important; } ha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                  "primary": "Température",
+                  "secondary": "{{ states(entity) }} °C",
+                  "icon": "mdi:thermometer",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔥 Chauffage",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_salle_de_bain",
+                  "name": "Mode",
+                  "icon": "mdi:thermostat",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_salle_de_bain",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_salle_de_bain",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Objectif actuel",
+                  "secondary": "{% set c = states('sensor.consigne_salle_de_bain') %} {% if c == 'off' %}Mode Été — chauffage coupé {% else %}Mode {{ states('input_select.mode_salle_de_bain') }} activé — objectif {{ c }} °C{% endif %}",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "multiline_secondary": true,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Activer confort",
+                  "secondary": "Avant utilisation",
+                  "icon": "mdi:shower",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_sdb_activer_confort"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Désactiver confort",
+                  "secondary": "Après utilisation",
+                  "icon": "mdi:shower-head",
+                  "icon_color": "teal",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.chauffage_sdb_desactiver_confort"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.prochain_changement_salle_de_bain",
+                  "primary": "Prochain changement",
+                  "secondary": "{{ states(entity) }}",
+                  "multiline_secondary": true,
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Chaudière",
+          "path": "chaudiere",
+          "icon": "mdi:water-boiler",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🔥 Mon Confort › Chaudière EMS-ESP\nChauffage central · ECS · diagnostic",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔥 État général",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.boiler_heatingactive",
+                  "primary": "État",
+                  "secondary": "{% if is_state('binary_sensor.boiler_burngas','on') %}Brûleur actif {% elif is_state('binary_sensor.boiler_dhw_active','on') %}Production ECS {% elif is_state('binary_sensor.boiler_heatingactive','on') %}Chauffage actif {% else %}Au repos{% endif %}",
+                  "icon": "mdi:radiator",
+                  "icon_color": "{{ 'orange' if is_state('binary_sensor.boiler_burngas','on') else 'grey' }}",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "switch.boiler_heatingactivated",
+                  "name": "Chauffage central",
+                  "icon": "mdi:radiator",
+                  "icon_color": "orange",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.boiler_burngas",
+                  "primary": "Brûleur",
+                  "secondary": "{{ 'Actif' if is_state(entity,'on') else 'Au repos' }}",
+                  "icon": "mdi:fire",
+                  "icon_color": "{{ 'orange' if is_state(entity,'on') else 'grey' }}",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🌡️ Circuit chauffage",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_curflowtemp",
+                  "primary": "Départ",
+                  "secondary": "{{ states(entity)|float(0)|round(1) }} °C",
+                  "icon": "mdi:thermometer-water",
+                  "icon_color": "orange",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "number.boiler_selflowtemp",
+                  "name": "Consigne départ",
+                  "display_mode": "slider",
+                  "icon": "mdi:thermometer-lines",
+                  "icon_color": "orange",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_heatingpumpmod",
+                  "primary": "Pompe chauffage",
+                  "secondary": "{{ states(entity)|float(0)|round(0) }} %",
+                  "icon": "mdi:pump",
+                  "icon_color": "blue",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🚿 Eau Chaude Sanitaire",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_dhw_curtemp",
+                  "primary": "Température actuelle",
+                  "secondary": "{{ states(entity)|float(0)|round(1) }} °C",
+                  "icon": "mdi:water-thermometer",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "number.boiler_dhw_seltemp",
+                  "name": "Consigne ECS",
+                  "display_mode": "slider",
+                  "icon": "mdi:water-thermometer-outline",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "select.boiler_dhw_comfort",
+                  "name": "Mode ECS",
+                  "icon": "mdi:water-boiler",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "switch.boiler_dhw_activated",
+                  "name": "ECS activée",
+                  "icon": "mdi:water-check",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-entity-card",
+                  "entity": "switch.boiler_dhw_onetime",
+                  "name": "Douche express",
+                  "icon": "mdi:shower-head",
+                  "icon_color": "teal",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "📊 Combustion — Compteurs",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_curburnpow",
+                  "primary": "Modulation brûleur",
+                  "secondary": "{{ states(entity)|float(0)|round(0) }} %",
+                  "icon": "mdi:gauge",
+                  "icon_color": "orange",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_burnstarts",
+                  "primary": "Démarrages",
+                  "secondary": "{{ states(entity)|float(0)|round(0) }}",
+                  "icon": "mdi:restart",
+                  "icon_color": "blue",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_burnworkmin",
+                  "primary": "Heures brûleur",
+                  "secondary": "{{ (states(entity)|float(0)/60)|round(0) }} h",
+                  "icon": "mdi:clock-outline",
+                  "icon_color": "blue",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_maintenancemessage",
+                  "primary": "Maintenance EMS-ESP",
+                  "secondary": "{{ states(entity) if states(entity) not in ['unknown','unavailable',''] else 'Aucun message' }}",
+                  "icon": "mdi:wrench-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "ℹ️ Diagnostic — Code service",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.boiler_servicecodenumber",
+                  "primary": "Code service EMS-ESP",
+                  "secondary": "{% set services = {200:'-H',201:'=H',202:'0A',203:'0H',204:'0Y',207:'2E',208:'-A',214:'',224:'',260:'2F',265:'0E',270:'0U',276:'0Y',283:'0C',284:'0L',285:'0Y',306:'FA'} %} {% set n = states(entity) | int(0) %} {{ services.get(n, '?') }} · n° {{ n }}",
+                  "icon": "mdi:information-outline",
+                  "icon_color": "{% set n = states(entity) | int(0) %} {{ 'green' if n in [200,201,203,204,208,265,270,283,284] else 'amber' }}",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": 1,
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% set n = states('sensor.boiler_servicecodenumber') | int(0) %} {% set services = {\n  200: ('-H', 'Chaudière en fonctionnement chauffage', 'Fonctionnement normal. Aucune action requise.'),\n  201: ('=H', 'Chaudière en fonctionnement Eau Chaude Sanitaire', 'Fonctionnement normal. Aucune action requise.'),\n  202: ('0A', 'Optimisation du redémarrage / Temporisation brûleur', 'Fonctionnement normal. La chaudière attend la fin de la temporisation pour redémarrer.'),\n  203: ('0H', 'Chaudière en veille (pas de demande de chaleur)', 'Fonctionnement normal. Aucune action requise.'),\n  204: ('0Y', 'Température de départ supérieure à la consigne', 'Fonctionnement normal. Attendre la baisse de température du circuit.'),\n  207: ('2E', 'Pression d eau chauffage trop basse (< 0.8 bar)', 'Procédure : Ouvrir les robinets de remplissage sous la chaudière jusqu à atteindre 1.5 bar puis bien refermer.'),\n  208: ('-A', 'Mode ramoneur / test de combustion actif', 'Test en cours. S éteint automatiquement après 15 minutes.'),\n  214: ('', 'Ventilateur arrêté en phase de sécurité', 'Attendre le redémarrage automatique. Si répétitif, faire vérifier par le chauffagiste.'),\n  224: ('', 'Limiteur de sécurité déclenché temporairement', 'Attendre le refroidissement. Si la chaudière se bloque sur E9, appliquer la procédure E9.'),\n  260: ('2F', 'Écart de température anormal entre départ et retour', 'Purger les radiateurs et vérifier que les vannes du circuit sont ouvertes.'),\n  265: ('0E', 'Demande de chaleur inférieure à la puissance minimale', 'Fonctionnement normal en modulation basse. Aucune action requise.'),\n  270: ('0U', 'Chaudière en phase de pré-démarrage', 'Fonctionnement normal. Attendre l allumage.'),\n  276: ('0Y', 'Température départ mesurée très élevée', 'Attendre la circulation de l eau. Si persistant, vérifier la pompe de circulation.'),\n  283: ('0C', 'Préparation du brûleur à l allumage', 'Fonctionnement normal. Attendre l allumage.'),\n  284: ('0L', 'Ouverture du bloc gaz', 'Fonctionnement normal pendant la phase d allumage.'),\n  285: ('0Y', 'Surchauffe interne temporaire', 'Attendre le refroidissement complet du corps de chauffe.'),\n  306: ('FA', 'Flamme résiduelle après coupure gaz', 'Défaut de sécurité. Si la chaudière se bloque, appeler le chauffagiste.')\n} %} **{{ services[n][0] if n in services else '?' }} (N° {{ n }})** — {% if n in services %}{{ services[n][1] }}. 👉 **Que faire :** {{ services[n][2] }}{% else %}Code non répertorié. Si la chaudière fonctionne correctement, aucune action n est requise.{% endif %}",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🔧 Entretien technicien",
+                  "subtitle": "Réservé aux interventions professionnelles",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "select.boiler_maintenance",
+                  "name": "Mode maintenance",
+                  "icon": "mdi:account-wrench",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "number.boiler_maintenancetime",
+                  "primary": "Prochaine maintenance",
+                  "secondary": "{{ states(entity)|float(0)|round(0) }} h avant échéance",
+                  "icon": "mdi:calendar-clock",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "select.boiler_chimneysweeper",
+                  "name": "Test ramoneur",
+                  "icon": "mdi:chimney",
+                  "icon_color": "grey",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "select.boiler_reset",
+                  "name": "Reset chaudière",
+                  "icon": "mdi:restart-alert",
+                  "icon_color": "red",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "**📖 Table de référence — codes défaut Junkers Heatronic 3** (le gateway EMS-ESP ne remonte pas de code défaut en direct sur ce modèle — relever le code affiché sur l'écran de la chaudière et le chercher ci-dessous)\n\n| Code | Signification | Niveau |\n|---|---|---|\n| A7 | CTN eau chaude défectueux | 📞 Chauffagiste |\n| Ad | Sonde CTN ballon non détectée | 📞 Chauffagiste |\n| b1 | Fiche de codification non détectée | 📞 Chauffagiste |\n| b2 / b3 / F1 | Erreur interne des données | 🔄 1 reset max / 📞 Chauffagiste |\n| C6 | Ventilateur ne tourne pas / défaut d'air | 📞 Chauffagiste |\n| CC | Sonde extérieure non détectée | 👁️ Contrôle visuel / 📞 Chauffagiste |\n| d3 | Limiteur de température externe (TB1) ouvert | 📞 Chauffagiste |\n| d5 | Sonde de départ externe défectueuse | 📞 Chauffagiste |\n| E2 | Sonde CTN départ défectueuse | 📞 Chauffagiste |\n| E9 | Limiteur de sécurité (STB) ou fumées déclenché | 🛠️ Vérifier pression 1.2-1.5 bar + 🔄 reset / 📞 Chauffagiste |\n| EA | Absence de flamme / ionisation | 🛠️ Vérifier vanne gaz + 🔄 1 reset / 📞 Chauffagiste |\n| F0 | Erreur interne de la carte | 🔄 1 reset max / 📞 Chauffagiste |\n| F7 | Flamme détectée chaudière à l'arrêt | 📞 Chauffagiste |\n| FA | Flamme détectée après coupure gaz | 📞 Chauffagiste (sécurité) |\n| Fd | Touche Reset maintenue trop longtemps | 🔌 Reboot électrique |\n\n⚠️ Seuls le remplissage en eau, la vérification des robinets gaz et 1 seul reset sont autorisés. Toute intervention gaz/combustion/électrique doit être réalisée par un professionnel.",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "📅 Entretien & obligations légales",
+                  "subtitle": "🔴 Statut — URGENT / DÉPASSÉ",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "**Dernier entretien réalisé :** 10/02/2023\n**1. Obligation légale** (Wallonie — AGW du 29/01/2009) : fréquence requise tous les **3 ans** pour une chaudière gaz ≤ 100 kW. Échéance légale maximale : **10/02/2026**.\n**2. Assurance habitation** : un défaut d'attestation valide peut entraîner un refus d'indemnisation ou une franchise majorée en cas de sinistre.\n**3. Recommandation constructeur** (Junkers/Bosch) : tous les **1 à 2 ans**. Échéance constructeur dépassée (recommandée au plus tard le 10/02/2025).",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🛠️ Historique & informations chaudière",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "**Modèle :** Junkers / Bosch ZWB 28-3 CE 23 S 3600 (installation 2015)\n**Dernier entretien :** 10/02/2023 — nettoyage chambre de combustion, brûleur, injecteurs, siphon, bac à condensation, électrodes.\n**Dernier dépannage :** 10/02/2023 — remplacement ventouse à condensation, vanne 3 voies et soupape de sécurité.\n**Chauffagiste référent :** [Ets. Dubois — Contact & Dépannage](https://dubois-ets.be/contact) · 📞 +32 (0)4 343 25 59",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        },
+        {
+          "title": "Modes & Présence",
+          "path": "modes-presence",
+          "icon": "mdi:home-thermometer",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🎚️ Mon Confort › Modes & Présence\nLes automatismes horaires peuvent reprendre la main",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🛏️ Chambre Parents",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_chambre_adulte",
+                  "name": "Chambre Parents",
+                  "icon": "mdi:bed-double",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🎯 Objectif",
+                  "secondary": "{{ states('input_select.mode_chambre_adulte') }} → {{ states('sensor.consigne_chambre_adulte') }} °C",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_chambre_adulte",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_chambre_adulte",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🧸 Chambre Enfants",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_chambre_enfants",
+                  "name": "Chambre Enfants",
+                  "icon": "mdi:toy-brick",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🎯 Objectif",
+                  "secondary": "{{ states('input_select.mode_chambre_enfants') }} → {{ states('sensor.consigne_chambre_enfants') }} °C",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_chambre_enfants",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_chambre_enfants",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🛋️ Pièce de Vie",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_piece_de_vie",
+                  "name": "Pièce de Vie",
+                  "icon": "mdi:sofa",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🎯 Objectif",
+                  "secondary": "{{ states('input_select.mode_piece_de_vie') }} → {{ states('sensor.consigne_piece_de_vie') }} °C",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_piece_de_vie",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_piece_de_vie",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🚿 Salle de Bain",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_salle_de_bain",
+                  "name": "Salle de Bain",
+                  "icon": "mdi:shower",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🎯 Objectif",
+                  "secondary": "{{ states('input_select.mode_salle_de_bain') }} → {{ states('sensor.consigne_salle_de_bain') }} °C",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_salle_de_bain",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_salle_de_bain",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🚪 Couloir & Entrée",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-select-card",
+                  "entity": "input_select.mode_couloir",
+                  "name": "Couloir & Entrée",
+                  "icon": "mdi:door-closed",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "🎯 Objectif",
+                  "secondary": "{{ states('input_select.mode_couloir') }} → {{ states('sensor.consigne_couloir') }} °C",
+                  "icon": "mdi:target",
+                  "icon_color": "amber",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-number-card",
+                  "entity": "input_number.temp_manuel_couloir",
+                  "name": "Température manuelle",
+                  "display_mode": "slider",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "input_select.mode_couloir",
+                      "state": "Manuel"
+                    }
+                  ],
+                  "card_mod": {
+                    "style": {
+                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
+                      "mushroom-state-info": {
+                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "rows": "auto",
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "title": "🏠 Présence & exceptions",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_boolean.presence_exceptionnelle",
+                  "primary": "Présence exceptionnelle",
+                  "secondary": "{{ 'Active — confort renforcé' if is_state(entity,'on') else 'Inactive' }}",
+                  "icon": "mdi:home-clock",
+                  "icon_color": "{{ 'amber' if is_state(entity,'on') else 'grey' }}",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_boolean.routine_activee",
+                  "primary": "Routine chauffage",
+                  "secondary": "{{ 'Active' if is_state(entity,'on') else 'Désactivée — hors-gel' }}",
+                  "icon": "mdi:calendar-check",
+                  "icon_color": "{{ 'green' if is_state(entity,'on') else 'blue' }}",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_boolean.retour_maison_gregory",
+                  "primary": "Retour maison — Gregory",
+                  "secondary": "{{ '🚗 En route' if is_state(entity,'on') else 'Inactif' }}",
+                  "icon": "mdi:map-marker-account",
+                  "icon_color": "{{ 'amber' if is_state(entity,'on') else 'grey' }}",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_boolean.retour_maison_sandrine",
+                  "primary": "Retour maison — Sandrine",
+                  "secondary": "{{ '🚗 En route' if is_state(entity,'on') else 'Inactif' }}",
+                  "icon": "mdi:map-marker-account",
+                  "icon_color": "{{ 'amber' if is_state(entity,'on') else 'grey' }}",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "rows": "auto"
+                  }
+                }
+              ]
+            }
+          ],
+          "show_icon_and_title": true,
+          "cards": []
+        }
+      ]
+    }
+  }
+}

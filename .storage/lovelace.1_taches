@@ -1,0 +1,580 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.1_taches",
+  "data": {
+    "config": {
+      "title": "Tâches",
+      "background": {
+        "image": "/local/images/wallpaper/taches.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Tâches",
+          "path": "taches",
+          "icon": "mdi:broom",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🧹 Tâches ménagères\nUne liste Todoist par personne — pour voir la liste de courses,\ndirection le dashboard Courses.",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Résumé",
+                  "subtitle": "Vue d'ensemble des 3 listes",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "{% set s = states('todo.taches_famille') %} {{ 'Liste non configurée' if s in ['unavailable','unknown'] else s ~ ' tâche(s) restante(s)' }}",
+                  "secondary": "Tâches restantes",
+                  "icon": "{% set s = states('todo.taches_famille') %} {{\n  'mdi:playlist-remove'\n  if s in ['unavailable','unknown']\n  else 'mdi:check-circle'\n  if s == '0'\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{% set s = states('todo.taches_famille') %} {{\n  'grey'\n  if s in ['unavailable','unknown']\n  else 'green'\n  if s == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Courses",
+                  "secondary": "Voir la liste de courses",
+                  "icon": "mdi:cart-outline",
+                  "icon_color": "purple",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-courses/courses"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Ajouter à l'oral",
+                  "secondary": "Assistant Assist",
+                  "icon": "mdi:microphone",
+                  "icon_color": "blue",
+                  "tap_action": {
+                    "action": "assist",
+                    "pipeline": "preferred",
+                    "start_listening": true
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🏆 Classement de la semaine",
+                  "subtitle": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %}\n{% if g == m and m == s %}\n  🤝 Égalité parfaite ({{ g }} tâche(s) chacun)\n{% elif g > m and g > s %}\n  Grégory en tête avec {{ g }} tâche(s)\n{% elif m > g and m > s %}\n  Matteo en tête avec {{ m }} tâche(s)\n{% else %}\n  Sandrine en tête avec {{ s }} tâche(s)\n{% endif %}",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "🧑 Grégory",
+                  "secondary": "{{ states('counter.taches_completees_gregory') }} tâche(s)",
+                  "icon": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'mdi:trophy' if g == top and top > 0 else 'mdi:trophy-outline' }}",
+                  "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if g == top and top > 0 else 'grey' }}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "🧒 Matteo",
+                  "secondary": "{{ states('counter.taches_completees_matteo') }} tâche(s)",
+                  "icon": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'mdi:trophy' if m == top and top > 0 else 'mdi:trophy-outline' }}",
+                  "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if m == top and top > 0 else 'grey' }}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "👩 Sandrine",
+                  "secondary": "{{ states('counter.taches_completees_sandrine') }} tâche(s)",
+                  "icon": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'mdi:trophy' if s == top and top > 0 else 'mdi:trophy-outline' }}",
+                  "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if s == top and top > 0 else 'grey' }}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🧑 Grégory",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 14px 20px !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_gregory') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_gregory') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_gregory') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "🏆 {{ states('counter.taches_completees_gregory') }} tâche(s) complétée(s)",
+                  "secondary": "Cette semaine",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.taches_gregory",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_gregory",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches de Grégory sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🧒 Matteo",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 14px 20px !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_matteo') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_matteo') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_matteo') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "🏆 {{ states('counter.taches_completees_matteo') }} tâche(s) complétée(s)",
+                  "secondary": "Cette semaine",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.taches_matteo",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_matteo",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches de Matteo sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "👩 Sandrine",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 14px 20px !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_sandrine') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_sandrine') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_sandrine') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "🏆 {{ states('counter.taches_completees_sandrine') }} tâche(s) complétée(s)",
+                  "secondary": "Cette semaine",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.taches_sandrine",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_sandrine",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches de Sandrine sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "👪 Famille",
+                  "subtitle": "Tâches communes, non liées à une personne",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 14px 20px !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_famille') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_famille') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_famille') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_famille",
+                      "state_not": "unavailable"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_famille",
+                      "state_not": "unknown"
+                    }
+                  ],
+                  "card": {
+                    "type": "todo-list",
+                    "entity": "todo.taches_famille",
+                    "hide_completed": true,
+                    "display_order": "none",
+                    "grid_options": {
+                      "columns": 12,
+                      "rows": 6
+                    },
+                    "card_mod": {
+                      "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                    }
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "or",
+                      "conditions": [
+                        {
+                          "condition": "state",
+                          "entity": "todo.taches_famille",
+                          "state": "unavailable"
+                        },
+                        {
+                          "condition": "state",
+                          "entity": "todo.taches_famille",
+                          "state": "unknown"
+                        }
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "⚠️ **Liste « Tâches Famille » pas encore configurée.**\n\nCette liste partagée n'existe pas encore côté Todoist ni dans Home Assistant. Demande à Grégory de créer soit un projet Todoist « Famille », soit une liste locale via l'intégration *Local To-do*.",
+                    "grid_options": {
+                      "columns": 12,
+                      "rows": 3
+                    },
+                    "card_mod": {
+                      "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  padding: 16px 20px !important;\n}\nha-markdown {\n  color: #e8dff5 !important;\n}\n"
+                    }
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_famille",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches communes sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 0,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/a3b64414c8ecf3947264414b0d70175e",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "taches.jpg",
+                "thumbnail": "/api/image/serve/a3b64414c8ecf3947264414b0d70175e/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "Kanban",
+          "path": "kanban",
+          "icon": "mdi:view-column-outline",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:todoist-kanban-familial-card",
+                  "entity": "sensor.kanban_familial",
+                  "show_header": true,
+                  "show_item_add": true,
+                  "show_item_delete": true,
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 4
+            }
+          ],
+          "background": {
+            "opacity": 0,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/a3b64414c8ecf3947264414b0d70175e",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "taches.jpg",
+                "thumbnail": "/api/image/serve/a3b64414c8ecf3947264414b0d70175e/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "show_icon_and_title": true,
+          "cards": []
+        }
+      ]
+    }
+  }
+}

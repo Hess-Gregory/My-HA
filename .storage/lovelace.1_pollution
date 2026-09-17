@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.1_pollution",
+  "data": {
+    "config": {
+      "title": "Pollution & Qualité de l'Air",
+      "background": {
+        "image": "/local/images/wallpaper/pollution.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Vue d'Ensemble",
+          "path": "vue-ensemble",
+          "icon": "mdi:weather-hazy",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "sensor.engis_belgium_indice_de_qualite_de_l_air",
+              "name": "AQI Engis"
+            }
+          ],
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🏭 Pollution & Qualité de l'Air — Engis\nStation Rue du Marly (ISSeP/AwAC) via le réseau WAQI (données IRCEL-CELINE)",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Indice de qualité de l'air (AQI, échelle EPA 0-500)",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_indice_de_qualite_de_l_air",
+                  "layout": "vertical",
+                  "primary": "{{ states(entity) }}",
+                  "secondary": "{% set v = states(entity) | int(0) %} {% if v <= 50 %}Bon {% elif v <= 100 %}Modéré {% elif v <= 150 %}Mauvais pour groupes sensibles {% elif v <= 200 %}Mauvais {% elif v <= 300 %}Très mauvais {% else %}Dangereux {% endif %}",
+                  "icon": "mdi:weather-hazy",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_indice_de_qualite_de_l_air') | int(0) %} {% if v <= 50 %}green {% elif v <= 100 %}yellow {% elif v <= 150 %}orange {% elif v <= 200 %}red {% elif v <= 300 %}purple {% else %}deep-purple {% endif %}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_polluant_dominant",
+                  "layout": "vertical",
+                  "primary": "Polluant dominant",
+                  "secondary": "{{ states(entity) | upper }}",
+                  "icon": "mdi:molecule",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "Dernière mise à jour",
+                  "secondary": "{{ states.sensor.engis_belgium_indice_de_qualite_de_l_air.last_updated\n   | as_timestamp | timestamp_custom('%d/%m/%Y à %H:%M') }}",
+                  "icon": "mdi:clock-outline",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "ℹ️ **À lire avant d'interpréter ces chiffres** : l'indice ci-dessus est l'**AQI américain** (échelle EPA 0-500), pas une concentration en µg/m³. Il donne une bonne indication de tendance et déclenche les alertes ci-dessous, mais ne correspond pas directement aux seuils réglementaires wallons (qui sont en µg/m³ — voir l'onglet **Contexte local Engis**). Pour l'alerte officielle basée sur les vraies concentrations, reste abonné aux emails/SMS de l'AwAC en parallèle.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(60, 40, 90, 0.5) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 18px !important; }\nha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "no-repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/308d7edf26cc1cb3f12dc853b3279ab5",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/308d7edf26cc1cb3f12dc853b3279ab5/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Détail par polluant",
+          "path": "polluants",
+          "icon": "mdi:chart-bubble",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 3,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🧪 Détail par polluant\nSous-indices AQI (0-500) — chaque polluant a sa propre courbe de conversion",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_pm2_5",
+                  "primary": "PM2.5",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:blur",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_pm2_5') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_pm10",
+                  "primary": "PM10",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:blur-linear",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_pm10') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_dioxyde_d_azote",
+                  "primary": "Dioxyde d'azote (NO₂)",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:factory",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_dioxyde_d_azote') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_dioxyde_de_soufre",
+                  "primary": "Dioxyde de soufre (SO₂)",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:factory",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_dioxyde_de_soufre') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_ozone",
+                  "primary": "Ozone (O₃)",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:weather-sunny-alert",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_ozone') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Conditions à la station (bonus)",
+                  "subtitle": "Pas de capteur CO sur la station d'Engis — non affiché",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_temperature",
+                  "primary": "Température station",
+                  "secondary": "{{ states(entity) }} °C",
+                  "icon": "mdi:thermometer",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_humidite",
+                  "primary": "Humidité station",
+                  "secondary": "{{ states(entity) }} %",
+                  "icon": "mdi:water-percent",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_pression",
+                  "primary": "Pression station",
+                  "secondary": "{{ states(entity) }} hPa",
+                  "icon": "mdi:gauge",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/0dbd042decb34b9b6cc77af7a9f0b429",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/0dbd042decb34b9b6cc77af7a9f0b429/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Historique & tendances",
+          "path": "historique",
+          "icon": "mdi:chart-line",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 📈 Historique & tendances\nRepérer les pics — utile pour croiser avec le vent et l'activité industrielle",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "AQI global — 24 dernières heures",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "entities": [
+                    {
+                      "entity": "sensor.engis_belgium_indice_de_qualite_de_l_air",
+                      "name": "AQI"
+                    }
+                  ],
+                  "hours_to_show": 24,
+                  "points_per_hour": 4,
+                  "line_width": 3,
+                  "show": {
+                    "labels": true,
+                    "points": false
+                  },
+                  "color_thresholds": [
+                    {
+                      "value": 0,
+                      "color": "#4caf50"
+                    },
+                    {
+                      "value": 51,
+                      "color": "#ffeb3b"
+                    },
+                    {
+                      "value": 101,
+                      "color": "#ff9800"
+                    },
+                    {
+                      "value": 151,
+                      "color": "#f44336"
+                    },
+                    {
+                      "value": 201,
+                      "color": "#9c27b0"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "PM10 & PM2.5 — 7 derniers jours",
+                  "subtitle": "Les deux polluants historiquement les plus problématiques à Engis",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "entities": [
+                    {
+                      "entity": "sensor.engis_belgium_pm10",
+                      "name": "PM10",
+                      "color": "#f6d68a"
+                    },
+                    {
+                      "entity": "sensor.engis_belgium_pm2_5",
+                      "name": "PM2.5",
+                      "color": "#84d1fd"
+                    }
+                  ],
+                  "hours_to_show": 168,
+                  "points_per_hour": 0.25,
+                  "line_width": 3,
+                  "show": {
+                    "labels": true,
+                    "points": false
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/5e9b0d437046107a5a4beace0a0a09b5",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/5e9b0d437046107a5a4beace0a0a09b5/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Contexte local Engis",
+          "path": "contexte",
+          "icon": "mdi:factory",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🏘️ Contexte local — Engis\nStation, seuils officiels, alertes, et origine connue de la pollution",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📍 Station de mesure",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "**Station officielle** : Rue du Marly, Engis — gérée conjointement par l'**AwAC** (Agence wallonne de l'Air et du Climat), l'**ISSeP** (Institut Scientifique de Service Public), le **SPW** et la **commune d'Engis**.\n\nElle mesure en continu les **PM10** (particules fines), le polluant historiquement le plus problématique dans la vallée. Un **comité de concertation \"Qualité de l'air Engis\"** réunit depuis 2015 les autorités et les industriels locaux.\n\nPortail officiel de consultation (données en direct et archives) : **wallonair.be** — la commune renvoie aussi vers airquality.issep.be pour le détail par station.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--primary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🚨 Alerte officielle AwAC (email/SMS, hors Home Assistant)",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "L'AwAC propose un **abonnement gratuit** aux alertes de dépassement PM10 pour Engis, en complément de ce dashboard :\n\n- 📧 **Email** : envoyé toutes les 30 min tant que le PM10\n  dépasse 100 µg/m³, jusqu'à repasser sous 70 µg/m³.\n\n- 📱 **SMS** : un seul message dès que le PM10 dépasse\n  100 µg/m³, jusqu'à repasser sous 50 µg/m³.\n\n\nInscription via le formulaire de contact de l'AwAC (voir la page \"Qualité de l'air\" du site **engis.be**, ou directement **wallonair.be**). C'est aujourd'hui la source la plus fiable pour une alerte basée sur les vraies concentrations en µg/m³.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(120, 90, 30, 0.35) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--primary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "📏 Seuils réglementaires officiels (µg/m³)",
+                  "subtitle": "Pour référence — pas directement comparables à l'AQI WAQI ci-dessus",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "| Polluant | Info | Alerte | Alerte renforcée | |---|---|---|---| | **PM10** (moy. 24h) | 50 µg/m³ | 70 µg/m³ | 150 µg/m³ | | **PM2.5** (moy. 24h) | 35 µg/m³ | 50 µg/m³ | — | | **Ozone O₃** (moy. 1h) | 180 µg/m³ | 240 µg/m³ | — | | **NO₂** (moy. 1h, directive UE) | 200 µg/m³ | 400 µg/m³ | — | | **SO₂** (moy. 1h sur 3h, directive UE) | — | 500 µg/m³ | — |\n\nSources : SPW/Wallonie (\"Connaître les obligations en cas de pics de pollution de l'air\") pour PM10/PM2.5/O₃ ; directive européenne 2008/50/CE pour NO₂/SO₂ (valeurs non détaillées sur la page wallonne consultée — à reconfirmer auprès de la SPW si tu veux les utiliser pour une alerte officielle).",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--primary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🏭 Origine connue de la pollution",
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "Une analyse officielle wallonne a identifié le **gypse** (sous-produit du traitement de l'acide phosphorique) comme principale composante des PM10 mesurées à Engis, provenant de deux sites industriels voisins :\n\n- **Prayon** (chimie, acide phosphorique — le gypse est un\n  sous-produit de sa fabrication)\n\n- **Knauf** (matériaux de construction à base de plâtre/gypse)\n\nLe gypse en lui-même n'est pas classé comme particulièrement toxique, mais une exposition prolongée aux particules fines peut irriter les voies respiratoires. Un plan d'action concerté avec les deux entreprises est suivi par le comité de concertation local.\n\nℹ️ La vallée de la Meuse liégeoise (dont Engis) porte aussi une contamination historique des **sols** au cadmium, liée à d'anciennes activités métallurgiques — un sujet distinct de la qualité de l'air mesurée ici, mais qui explique le suivi environnemental renforcé de la zone.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/0f1c38af4b81eaf90225014a55253ec1",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/0f1c38af4b81eaf90225014a55253ec1/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        }
+      ]
+    }
+  }
+}
