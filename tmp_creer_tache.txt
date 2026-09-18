@@ -1,0 +1,128 @@
+  horaires_pro_creer_tache:
+    alias: "Horaires Pro - Créer une tâche"
+    icon: mdi:calendar-plus
+    sequence:
+      - variables:
+          labels_gregory:
+            "Jour normal": "G_Jour_Normal"
+            "Journée réduite": "G_Journee_Reduite"
+            "Heures supplémentaires prestées": "G_Heures_Supp_Prestees"
+            "Heures supplémentaires déduites": "G_Heures_Supp_Deduites"
+            "Congé ONVA": "G_Vac_ONVA"
+            "ADV mensuel": "G_ADV_Mois"
+            "ADV samedi": "G_ADV_Samedi"
+            "ADV 13ᵉ mois": "G_ADV_13eme_mois"
+            "Jour férié": "G_Jour_Ferie"
+            "Récupération jour férié": "G_Recup_Jour_Ferie"
+            "Chômage technique": "G_Chomage_Technique"
+            "Maladie": "G_Maladie"
+            "Maladie enfant": "G_Maladie_Enfant"
+            "Visite médicale": "G_Visite_Medicale"
+            "Formation": "G_Formation"
+            "Syndicat": "G_Syndicat"
+            "Réunion": "G_Meeting"
+            "Jour impérieux": "G_Jour_Imperieux"
+            "Absence justifiée": "G_Absence_Justifiee"
+            "Absence injustifiée": "G_Absence_Injustifiee"
+            "Congé sans solde": "G_Conge_Sans_Solde"
+            "Repos weekend": "G_Repos_Weekend"
+            "Grève": "G_Greve"
+          labels_sandrine:
+            "Jour normal": "S_Jour_Normal"
+            "Journée réduite": "S_Journee_Reduite"
+            "Congé ONVA": "S_Vac_ONVA"
+            "ADV mensuel": "S_ADV_Mois"
+            "ADV 13ᵉ mois": "S_ADV_13eme_mois"
+            "CSU": "S_CSU"
+            "Jour férié": "S_Jour_Ferie"
+            "Récupération jour férié": "S_Recup_Jour_Ferie"
+            "Heure chaleur": "S_Chaleur"
+            "Maladie": "S_Maladie"
+            "Maladie enfant": "S_Maladie_Enfant"
+            "Visite médicale": "S_Visite_Medicale"
+            "Formation": "S_Formation"
+            "Syndicat": "S_Syndicat"
+            "Jour impérieux": "S_Jour_Imperieux"
+            "Absence justifiée": "S_Absence_Justifiee"
+            "Absence injustifiée": "S_Absence_Injustifiee"
+            "Repos weekend": "S_Repos_Weekend"
+            "Grève": "S_Greve"
+          personne: "{{ states('input_select.hp_editeur_personne') }}"
+          type_nom: >-
+            {{ states('input_select.hp_editeur_type_gregory')
+               if personne == 'Grégory'
+               else states('input_select.hp_editeur_type_sandrine') }}
+          label_code: >-
+            {{ (labels_gregory if personne == 'Grégory' else labels_sandrine).get(type_nom, '') }}
+          prefix: "{{ '— Gregory' if personne == 'Grégory' else '— Sandrine' }}"
+          date: "{{ states('input_datetime.hp_editeur_date') }}"
+          heure: "{{ states('input_datetime.hp_editeur_heure') }}"
+          duree: "{{ states('input_text.hp_editeur_duree') }}"
+          pause: "{{ states('input_text.hp_editeur_pause') }}"
+          duree_min: >-
+            {% set d = duree | trim | lower | replace(' ', '') %}
+            {% if 'h' in d %}
+              {% set parts = d.split('h') %}
+              {{ (parts[0] | int(0)) * 60 + ((parts[1] if parts[1] else '0') | int(0)) }}
+            {% elif ':' in d %}
+              {% set parts = d.split(':') %}
+              {{ (parts[0] | int(0)) * 60 + (parts[1] | int(0)) }}
+            {% elif 'min' in d %}
+              {{ d | replace('min', '') | int(0) }}
+            {% else %}
+              {{ d | int(0) }}
+            {% endif %}
+          pause_min: >-
+            {% set p = (pause | default('00:00', true)) | trim | lower | replace(' ', '') %}
+            {% if p == '' %}
+              0
+            {% elif 'h' in p %}
+              {% set parts = p.split('h') %}
+              {{ (parts[0] | int(0)) * 60 + ((parts[1] if parts[1] else '0') | int(0)) }}
+            {% elif ':' in p %}
+              {% set parts = p.split(':') %}
+              {{ (parts[0] | int(0)) * 60 + (parts[1] | int(0)) }}
+            {% elif 'min' in p %}
+              {{ p | replace('min', '') | int(0) }}
+            {% else %}
+              {{ p | int(0) }}
+            {% endif %}
+          pause_hhmm: "{{ '%02d:%02d' | format(pause_min | int // 60, pause_min | int % 60) }}"
+          due_datetime_utc: >-
+            {{ as_datetime(date ~ ' ' ~ heure)
+               | as_timestamp
+               | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', true) }}
+      - if:
+          - condition: template
+            value_template: "{{ label_code == '' }}"
+        then:
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_resultat
+            data:
+              value: "❌ Erreur : type '{{ type_nom }}' introuvable pour {{ personne }}."
+        else:
+          - service: rest_command.horaires_pro_todoist_create_task
+            data:
+              content: "{{ prefix }}"
+              description: "Type: {{ type_nom }}\nPause: {{ pause_hhmm }}"
+              label: "{{ label_code }}"
+              due_datetime: "{{ due_datetime_utc }}"
+              duration: "{{ duree_min }}"
+          - delay: "00:00:02"
+          - service: homeassistant.update_entity
+            target:
+              entity_id:
+                - sensor.horaires_pro_taches
+                - sensor.horaires_pro_projet
+          - service: input_text.set_value
+            target:
+              entity_id: input_text.hp_editeur_resultat
+            data:
+              value: >-
+                ✅ Tâche créée : {{ prefix }} — {{ type_nom }} — {{ date }}
+                {{ heure[:5] }} ({{ duree }})
+
+  # ==============================================================
+  # CHARGER UNE TÂCHE EXISTANTE DANS LE FORMULAIRE (bouton "Modifier")
+  # ==============================================================

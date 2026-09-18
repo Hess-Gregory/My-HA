@@ -1,0 +1,114 @@
+systeme_popup_universel:
+  default:
+    - titre_element: "Élément sans nom"
+    - description: "Aucune description fournie"
+    - etiquette: "Général"
+    - icone: "mdi:bookmark-outline"
+    - couleur_etiquette: "var(--primary-color)"
+  card:
+    type: custom:button-card
+    name: "[[titre_element]]"
+    icon: "[[icone]]"
+    layout: icon_name_state
+    styles:
+      card:
+        - padding: "12px"
+        - border-radius: "8px"
+      grid:
+        - grid-template-columns: "min-content 1fr min-content"
+    
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          title: "Détail : [[titre_element]]"
+          content:
+            type: vertical-stack
+            cards:
+              - type: markdown
+                content: |
+                  ## [[titre_element]]
+                  
+                  **Description :**  
+                  [[description]]
+                  
+                  **Étiquette :** `[[etiquette]]`
+              
+              - type: horizontal-stack
+                cards:
+                  - type: custom:button-card
+                    name: "Fermer"
+                    icon: "mdi:close"
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.close_popup
+
+                  - type: custom:button-card
+                    name: "Modifier"
+                    icon: "mdi:pencil"
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.popup
+                        data:
+                          title: "Modifier : [[titre_element]]"
+                          content:
+                            type: vertical-stack
+                            cards:
+                              - type: entities
+                                entities:
+                                  - entity: [[entity_id]]
+                                    name: "Titre / Valeur"
+                              - type: horizontal-stack
+                                cards:
+                                  - type: custom:button-card
+                                    name: "Annuler"
+                                    tap_action:
+                                      action: fire-dom-event
+                                      browser_mod:
+                                        service: browser_mod.close_popup
+                                  - type: custom:button-card
+                                    name: "Valider"
+                                    color: green
+                                    tap_action:
+                                      action: call-service
+                                      service: [[service_modification]]
+                                      service_data:
+                                        entity_id: [[entity_id]]
+                                      target: {}
+
+                  - type: custom:button-card
+                    name: "Supprimer"
+                    icon: "mdi:delete"
+                    color: red
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        service: browser_mod.popup
+                        data:
+                          title: "⚠️ Confirmation requise"
+                          content:
+                            type: vertical-stack
+                            cards:
+                              - type: markdown
+                                content: |
+                                  ### Êtes-vous sûr de vouloir supprimer cet élément ?
+                                  Cette action est irréversible.
+                              - type: horizontal-stack
+                                cards:
+                                  - type: custom:button-card
+                                    name: "Annuler"
+                                    tap_action:
+                                      action: fire-dom-event
+                                      browser_mod:
+                                        service: browser_mod.close_popup
+                                  - type: custom:button-card
+                                    name: "Confirmer"
+                                    color: red
+                                    tap_action:
+                                      action: call-service
+                                      service: [[service_suppression]]
+                                      service_data:
+                                        [[cle_parametre_suppression]]: [[valeur_parametre_suppression]]
