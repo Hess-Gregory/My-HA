@@ -105,9 +105,9 @@
     "version": "0.1.0"
   },
   "packages/horaires_pro.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "ajoute les compteurs Maladie manquants",
+    "last_update": "2026-09-18T07:49:47.305496+02:00",
+    "version": "0.1.0"
   },
   "packages/horaires_pro_editeur.yaml": {
     "last_change": "initialisation du versionning par fichier",
