@@ -70,9 +70,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
-    "last_update": "2026-09-17T18:18:24.960660+02:00",
-    "version": "0.2.0"
+    "last_change": "ajout et validation du template systeme_popup_universel.md",
+    "last_update": "2026-09-18T12:01:47.315242+02:00",
+    "version": "0.2.1"
   },
   ".storage/lovelace.dashboard_transversal": {
     "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
