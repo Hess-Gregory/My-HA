@@ -6,10 +6,21 @@
 #
 # VERSION
 # ------------------------------------------------------------
-# Version : 2.4.0
-# Date    : 2026-09-17
+# Version : 2.5.0
+# Date    : 2026-09-18
 # Heure   : (à ajuster à l'heure réelle de déploiement)
 # Fuseau  : Europe/Brussels
+#
+# MODIFICATIONS — VERSION 2.5.0
+# ------------------------------------------------------------
+# - Ajout des compteurs Maladie manquants sur la page Statistiques :
+#   sensor.horaires_pro_maladie_gregory (labels G_Maladie et
+#   G_Maladie_Enfant) et sensor.horaires_pro_maladie_sandrine
+#   (labels S_Maladie et S_Maladie_Enfant). Somme sur
+#   duration_minutes (et non effective_minutes, qui est forcé à 0
+#   pour ces labels puisqu'ils ne font pas partie de types_travail).
+#   Attributs exposés : jours (nombre de blocs), heures (float),
+#   affichage ("XhYY").
 #
 # MODIFICATIONS — VERSION 2.4.0
 # ------------------------------------------------------------
@@ -456,14 +467,14 @@ template:
       - name: "Horaires Pro Version"
         unique_id: horaires_pro_version
         icon: mdi:source-branch
-        state: "2.4.0"
+        state: "2.5.0"
         attributes:
-          version: "2.4.0"
-          date: "2026-09-17"
+          version: "2.5.0"
+          date: "2026-09-18"
           heure: "00:00"
           fuseau: "Europe/Brussels"
-          affichage: "v2.4.0 · 17/09/2026"
-          modification: "Panneau Détails & Édition complet (voir/modifier/supprimer une tâche, durée libre à la création) + libellés de type alignés entre blocs et formulaire"
+          affichage: "v2.5.0 · 18/09/2026"
+          modification: "Ajout des compteurs Maladie (Gregory/Sandrine) manquants sur la page Statistiques"
 
       # ========================================================
       # NOMBRE TOTAL DE BLOCS
@@ -667,6 +678,64 @@ template:
              | length }}
 
       # ========================================================
+      # GREGORY — MALADIE
+      # ========================================================
+
+      - name: "Horaires Pro Maladie Gregory"
+        unique_id: horaires_pro_maladie_gregory
+        icon: mdi:hospital-box-outline
+        unit_of_measurement: "min"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+             | default([], true) %}
+
+          {% set ns = namespace(total=0) %}
+
+          {% for bloc in blocs %}
+            {% if bloc.label in ['G_Maladie', 'G_Maladie_Enfant'] %}
+              {% set ns.total = ns.total + (bloc.duration_minutes | int(0)) %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.total }}
+
+        attributes:
+          jours: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+
+            {{ blocs
+               | selectattr('label', 'in', ['G_Maladie', 'G_Maladie_Enfant'])
+               | list
+               | length }}
+
+          heures: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label in ['G_Maladie', 'G_Maladie_Enfant'] %}
+                {% set ns.total = ns.total + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.total / 60) | round(2) }}
+
+          affichage: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label in ['G_Maladie', 'G_Maladie_Enfant'] %}
+                {% set ns.total = ns.total + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.total // 60) | int }}h{{ '%02d' | format(ns.total % 60) }}
+
+      # ========================================================
       # SANDRINE — TRAVAIL EFFECTIF
       # ========================================================
 
@@ -868,6 +937,64 @@ template:
              | selectattr('label', 'equalto', 'S_ADV_13eme_mois')
              | list
              | length }}
+
+      # ========================================================
+      # SANDRINE — MALADIE
+      # ========================================================
+
+      - name: "Horaires Pro Maladie Sandrine"
+        unique_id: horaires_pro_maladie_sandrine
+        icon: mdi:hospital-box-outline
+        unit_of_measurement: "min"
+        state: >-
+          {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+             | default([], true) %}
+
+          {% set ns = namespace(total=0) %}
+
+          {% for bloc in blocs %}
+            {% if bloc.label in ['S_Maladie', 'S_Maladie_Enfant'] %}
+              {% set ns.total = ns.total + (bloc.duration_minutes | int(0)) %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.total }}
+
+        attributes:
+          jours: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+
+            {{ blocs
+               | selectattr('label', 'in', ['S_Maladie', 'S_Maladie_Enfant'])
+               | list
+               | length }}
+
+          heures: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label in ['S_Maladie', 'S_Maladie_Enfant'] %}
+                {% set ns.total = ns.total + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.total / 60) | round(2) }}
+
+          affichage: >-
+            {% set blocs = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs')
+               | default([], true) %}
+            {% set ns = namespace(total=0) %}
+
+            {% for bloc in blocs %}
+              {% if bloc.label in ['S_Maladie', 'S_Maladie_Enfant'] %}
+                {% set ns.total = ns.total + (bloc.duration_minutes | int(0)) %}
+              {% endif %}
+            {% endfor %}
+
+            {{ (ns.total // 60) | int }}h{{ '%02d' | format(ns.total % 60) }}
 
       # ========================================================
       # BLOCS GREGORY
