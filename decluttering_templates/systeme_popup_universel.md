@@ -16,7 +16,7 @@ Il implémente un **flux guidé en 3 étapes (3-Step Modal Workflow)** :
 2. **Étape 2 : Édition (Modify)** ➔ Ouvre un sous-dialogue dédié à la mise à jour des paramètres de l'entité.
 3. **Étape 3 : Confirmation (Delete/Action)** ➔ Intercepte l'action critique par une modale de confirmation explicite avec focus visuel rouge pour prévenir les suppressions accidentelles.
 
-![Texte alternatif](/www/images/logos/orange.png "Le titre de mon image")
+![Diagram du fonctionnement](www/images/Event Management Modal Flow-2026-09-18-102342.png "Diagramme")
 ---
 
 ## 🧰 2. Prérequis & Dépendances HACS
