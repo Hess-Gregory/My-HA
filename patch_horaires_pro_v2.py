@@ -92,6 +92,18 @@ BRIDGE_JS = """[[[
   };
   if (!window.__hpCalWatcher) {
     window.__hpCalWatcher = true;
+    var hpHideDayModal = function() {
+      findAll(document, 'family-calendar-card', []).forEach(function(cal) {
+        if (!cal.shadowRoot) return;
+        if (cal.shadowRoot.getElementById('hp-hide-daymodal')) return;
+        var st = document.createElement('style');
+        st.id = 'hp-hide-daymodal';
+        st.textContent = '.day-events-modal, .hw-overlay { display: none !important; pointer-events: none !important; }';
+        cal.shadowRoot.appendChild(st);
+      });
+    };
+    hpHideDayModal();
+    setInterval(hpHideDayModal, 2000);
     document.addEventListener('click', function(ev) {
       var path = ev.composedPath ? ev.composedPath() : [];
       var cell = path.find(function(el){
