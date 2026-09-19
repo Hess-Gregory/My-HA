@@ -145,14 +145,14 @@
     "version": "0.0.2"
   },
   "configuration.yaml": {
-    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
-    "last_update": "2026-09-19T21:53:13.219425+02:00",
-    "version": "0.0.2"
+    "last_change": "met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries",
+    "last_update": "2026-09-19T22:02:24.003062+02:00",
+    "version": "0.0.3"
   },
   "packages/Horaires_pro_feries.yaml": {
-    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
-    "last_update": "2026-09-19T21:53:13.219425+02:00",
-    "version": "0.0.1"
+    "last_change": "met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries",
+    "last_update": "2026-09-19T22:02:24.003062+02:00",
+    "version": "0.0.2"
   },
   "packages/chaudiere.yaml": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -178,6 +178,11 @@
     "last_change": "selectionne la tache creee pour basculer sur le detail et rafraichit le calendrier apres chaque action",
     "last_update": "2026-09-19T11:44:30.313180+02:00",
     "version": "0.1.0"
+  },
+  "packages/horaires_pro_feries.yaml": {
+    "last_change": "met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries",
+    "last_update": "2026-09-19T22:02:24.003062+02:00",
+    "version": "0.0.1"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",

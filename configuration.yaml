@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.0.2 | 19/09/2026 21:53 | recorder allege, bticino silencieux, speedtest 30min
+# [AUTO-VERSION] v0.0.3 | 19/09/2026 22:02 | met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries
 # Loads default set of integrations. Do not remove.
 default_config:
 homeassistant:

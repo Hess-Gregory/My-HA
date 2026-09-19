@@ -147,7 +147,7 @@ input_number:
     name: Température manuelle - Chambre adulte
     icon: mdi:thumb
     min: 10
-    max: 30
+    max: 24
     step: 0.5
     unit_of_measurement: "°C"
     initial: 19
@@ -157,7 +157,7 @@ input_number:
     name: Température manuelle - Chambre enfants
     icon: mdi:thumb
     min: 10
-    max: 30
+    max: 24
     step: 0.5
     unit_of_measurement: "°C"
     initial: 20
@@ -167,7 +167,7 @@ input_number:
     name: Température manuelle - Pièce de vie
     icon: mdi:thumb
     min: 10
-    max: 30
+    max: 24
     step: 0.5
     unit_of_measurement: "°C"
     initial: 20
@@ -177,7 +177,7 @@ input_number:
     name: Température manuelle - Salle de bain
     icon: mdi:thumb
     min: 10
-    max: 30
+    max: 24
     step: 0.5
     unit_of_measurement: "°C"
     initial: 21
@@ -199,7 +199,7 @@ input_number:
     name: Température manuelle - Couloir
     icon: mdi:thumb
     min: 10
-    max: 30
+    max: 24
     step: 0.5
     unit_of_measurement: "°C"
     initial: 18
