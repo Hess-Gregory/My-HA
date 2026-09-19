@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.0.1 | 17/09/2026 14:01 | initialisation du versionning par fichier
+# [AUTO-VERSION] v0.1.0 | 19/09/2026 11:44 | selectionne la tache creee pour basculer sur le detail et rafraichit le calendrier apres chaque action
 # ============================================================
 # HORAIRES PRO — ÉDITEUR (Chantier A complet : Créer + Modifier +
 # Supprimer, avec panneau de détail structuré et coloré)

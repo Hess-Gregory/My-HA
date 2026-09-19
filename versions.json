@@ -110,9 +110,9 @@
     "version": "0.1.0"
   },
   "packages/horaires_pro_editeur.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "selectionne la tache creee pour basculer sur le detail et rafraichit le calendrier apres chaque action",
+    "last_update": "2026-09-19T11:44:30.313180+02:00",
+    "version": "0.1.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
