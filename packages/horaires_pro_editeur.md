@@ -12,12 +12,30 @@ Le clic sur le calendrier lui-même n'est pas remplacé (limitation acceptée) �
 
 ## Flux d'utilisation
 
-1. On choisit **Personne + Date** → la liste des tâches de ce jour s'affiche (jusqu'à 4), via `sensor.horaires_pro_taches_du_jour`.
-2. On sélectionne une tâche (bouton "Sélectionner une tâche du jour", script `horaires_pro_selectionner_tache_par_index`) → panneau "Détails" structuré et coloré (bordure couleur du type, emoji, nom, personne, date, horaires, pause, durée effective), avec 3 boutons : **Fermer** / **Modifier** / **Supprimer**.
-3. **Modifier** (`horaires_pro_charger_pour_edition`) charge la tâche dans le même formulaire que la création (pré-rempli) → **Enregistrer** (`horaires_pro_modifier_tache`, PATCH Todoist) ou **Annuler** (`horaires_pro_annuler_edition`).
+1. On choisit **Personne + Date** → la liste des tâches de ce jour s'affiche, via `sensor.horaires_pro_taches_du_jour`.
+2. On sélectionne une tâche (script `horaires_pro_selectionner_tache_par_index`) → panneau "Détails" structuré et coloré (bordure couleur du type, emoji, nom, personne, date, horaires, pause, durée effective), avec 3 boutons : **Fermer** / **Modifier** / **Supprimer**.
+3. **Modifier** (`horaires_pro_charger_pour_edition`) charge la tâche dans le même formulaire que la création (pré-rempli) → **Enregistrer** (`horaires_pro_modifier_tache`), **Annuler** (`horaires_pro_annuler_edition`) ou **Supprimer**.
 4. Quand rien n'est sélectionné, le formulaire de **création** (`horaires_pro_creer_tache`) est affiché par défaut, avec une durée libre en texte (ex. "7h30", "07:30", "450", "45min") — les boutons de préréglage rapide du dashboard ne font que pré-remplir ce champ, sans le limiter.
+5. Après une création réussie, le script **retrouve la tâche qu'il vient de créer et la sélectionne** : le panneau bascule donc tout seul sur "Détails". Voir la section "Sélection automatique après création" ci-dessous.
 
-⚠️ **Point de vigilance signalé dans le fichier** : le endpoint de modification (`POST /api/v1/tasks/{id}`) n'était pas encore testé en conditions réelles à l'écriture de ce fichier. En cas d'échec, le message d'erreur apparaît dans `input_text.hp_editeur_resultat` et dans les logs HA.
+## Sélection automatique après création
+
+À la fin de `horaires_pro_creer_tache`, la tâche créée est retrouvée dans `sensor.horaires_pro_taches_du_jour` par **`label` + `start`** — deux valeurs que le script connaît déjà, l'API Todoist ne lui renvoyant pas l'identifiant de la tâche créée. Si elle est trouvée, le script applique les trois gestes de sélection du système (`hp_selection_id`, `hp_editeur_mode_edition` à `off`, `hp_a_une_selection` à `on`).
+
+Ce repérage est encadré par un `if` : si la tâche n'est pas retrouvée, le script n'échoue pas, il affiche simplement le message de confirmation sans basculer. Un `delay` d'une seconde précède la recherche, le temps que les capteurs template se recalculent après le rafraîchissement.
+
+**Limite connue** : si deux tâches du même type démarrent à la même heure le même jour, c'est la dernière de la liste qui est sélectionnée. Cas jugé improbable en usage réel.
+
+## Rafraîchissement des données après action
+
+Les trois scripts qui modifient Todoist (`creer`, `modifier`, `supprimer`) rafraîchissent **trois** entités, pas deux :
+
+- `sensor.horaires_pro_taches` et `sensor.horaires_pro_projet` — ils alimentent, via `horaires_pro.yaml`, les capteurs de blocs dont dépend la **liste** du dashboard.
+- `calendar.horaires_pro` — c'est une entité **distincte**, et c'est elle que lit `family-calendar-card` pour la **grille mensuelle**.
+
+Oublier la troisième est un piège classique : la liste se met à jour correctement pendant que le calendrier continue d'afficher des événements fantômes, ce qui donne l'impression que la suppression n'a pas fonctionné.
+
+À noter que `family-calendar-card` ne réagit de toute façon pas aux changements d'entité : elle va chercher ses événements elle-même, sur son propre minuteur (`updateInterval` dans la config de la carte). Rafraîchir l'entité garantit que la donnée est fraîche quand la carte la redemande, mais le délai d'affichage reste celui de la carte.
 
 ## Entités créées
 
@@ -41,6 +59,8 @@ Chaque script (`horaires_pro_creer_tache` et `horaires_pro_modifier_tache`) cont
 
 **Pour ajouter un nouveau type de journée : il faut le déclarer à 3 endroits simultanément** — options de l'`input_select` correspondant (ici), dictionnaire `labels_gregory`/`labels_sandrine` dans les DEUX scripts `horaires_pro_creer_tache` et `horaires_pro_modifier_tache` (ici), et `labels_map`/`emoji_map`/`couleur_map` dans `horaires_pro.yaml`.
 
+Attention également : `horaires_pro_creer_tache` utilise `label_code` pour retrouver la tâche créée (voir "Sélection automatique après création"). Une désynchronisation casse donc aussi la bascule vers l'écran Détails, en plus de la création elle-même.
+
 ## Parsing de la durée et de la pause (format libre)
 
 `duree_min` et `pause_min` (variables des scripts création/modification) acceptent plusieurs formats et les convertissent en minutes :
@@ -57,12 +77,20 @@ Chaque script (`horaires_pro_creer_tache` et `horaires_pro_modifier_tache`) cont
 |---|---|
 | Ajouter un type de journée | Voir section "Dictionnaires de labels" ci-dessus (3 endroits, dont `horaires_pro.yaml`) |
 | Changer la durée ou la pause par défaut du formulaire | `initial:` de `input_text.hp_editeur_duree` / `hp_editeur_pause` |
-| Changer le nombre max de tâches affichées dans "tâches du jour" | Le dashboard (pas ce fichier) limite l'affichage à 4 ; `sensor.horaires_pro_taches_du_jour` liste, lui, TOUTES les tâches du jour sans limite |
+| Changer le nombre max de tâches affichées dans "tâches du jour" | Le dashboard limite l'affichage à 8 lignes ; `sensor.horaires_pro_taches_du_jour` liste, lui, TOUTES les tâches du jour sans limite |
 | Ajouter un champ au formulaire (ex. lieu) | Ajouter un `input_text`/`input_select` ici, l'inclure dans le payload des rest_command et dans `horaires_pro_charger_pour_edition` pour le pré-remplissage |
 | Changer le projet Todoist cible | L'ID `"6hWVvMpjWrXvrCRm"` dans `rest_command.horaires_pro_todoist_create_task` (payload `project_id`) |
+| Ajouter une entité au rafraîchissement après action | Les trois blocs `homeassistant.update_entity` des scripts créer / modifier / supprimer (voir "Rafraîchissement des données après action") |
 
 ## Pièges connus
 
-- Le endpoint de modification Todoist n'était pas confirmé fonctionnel à l'écriture du fichier — vérifier `input_text.hp_editeur_resultat` après le premier "Enregistrer" réel.
 - `input_boolean.hp_a_une_selection` doit être maintenu à la main par chaque script qui touche à la sélection — un nouveau script de sélection qui l'oublierait casserait l'affichage conditionnel du dashboard sans erreur visible dans les logs.
-- Toute désynchronisation entre les dictionnaires de labels de ce fichier et de `horaires_pro.yaml` casse silencieusement soit la création (erreur "type introuvable"), soit le préremplissage du bouton "Modifier".
+- Toute désynchronisation entre les dictionnaires de labels de ce fichier et de `horaires_pro.yaml` casse silencieusement soit la création (erreur "type introuvable"), soit le préremplissage du bouton "Modifier", soit la bascule automatique vers Détails après création.
+- **Oublier `calendar.horaires_pro` dans un `update_entity`** laisse la grille mensuelle afficher des événements fantômes alors que la liste, elle, est correcte. Symptôme trompeur : on croit que la suppression a échoué.
+- **Un bouton de popup qui appelle un de ces scripts par `call-service` ne referme pas le popup.** Côté dashboard, seuls les boutons natifs de `browser_mod.popup` (`left_button` / `right_button` avec leur `*_action`) referment en exécutant leur action. C'est pour cette raison que la confirmation de suppression utilise ces boutons natifs et non des `button-card` imbriqués dans le contenu. Voir `decluttering_templates/systeme_popup_universel.md` pour le détail du comportement de browser_mod.
+- Si un script de ce fichier doit un jour refermer lui-même un popup, il lui faut une étape `browser_mod.close_popup` — aucun des scripts actuels ne le fait, la fermeture est entièrement gérée côté dashboard.
+
+## Historique de validation
+
+- **19/09/2026** — L'endpoint de modification Todoist (`POST /api/v1/tasks/{id}`), signalé comme non testé à l'écriture du fichier, a été validé en conditions réelles : modification d'une durée de 450 à 480 minutes correctement répercutée dans Todoist, dans les capteurs et dans l'affichage. L'avertissement correspondant a été retiré de cette documentation.
+- **19/09/2026** — Flux complet testé de bout en bout : sélection de date, ouverture du détail, les trois boutons du panneau Détails, les boutons de l'écran Modifier, les préréglages de durée, les boutons de ligne (crayon et corbeille), la confirmation de suppression, et le rafraîchissement de la liste et du calendrier.

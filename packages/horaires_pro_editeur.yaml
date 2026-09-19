@@ -406,6 +406,33 @@ script:
               entity_id:
                 - sensor.horaires_pro_taches
                 - sensor.horaires_pro_projet
+                - calendar.horaires_pro
+          - delay: "00:00:01"
+          - variables:
+              liste_jour: >-
+                {{ state_attr('sensor.horaires_pro_taches_du_jour', 'liste')
+                   | default([], true) }}
+              id_creee: >-
+                {% set m = liste_jour
+                     | selectattr('label', 'eq', label_code)
+                     | selectattr('start', 'eq', heure[:5])
+                     | list %}
+                {{ m[-1].id if m | count > 0 else '' }}
+          - if:
+              - condition: template
+                value_template: "{{ id_creee != '' }}"
+            then:
+              - service: input_text.set_value
+                target:
+                  entity_id: input_text.hp_selection_id
+                data:
+                  value: "{{ id_creee }}"
+              - service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.hp_editeur_mode_edition
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.hp_a_une_selection
           - service: input_text.set_value
             target:
               entity_id: input_text.hp_editeur_resultat
@@ -603,6 +630,7 @@ script:
               entity_id:
                 - sensor.horaires_pro_taches
                 - sensor.horaires_pro_projet
+                - calendar.horaires_pro
           - service: input_text.set_value
             target:
               entity_id: input_text.hp_editeur_resultat
@@ -711,6 +739,7 @@ script:
           entity_id:
             - sensor.horaires_pro_taches
             - sensor.horaires_pro_projet
+            - calendar.horaires_pro
       - service: input_text.set_value
         target:
           entity_id: input_text.hp_selection_id
