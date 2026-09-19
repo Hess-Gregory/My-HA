@@ -15,9 +15,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.1_energie": {
-    "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
-    "last_update": "2026-09-17T18:18:24.960660+02:00",
-    "version": "0.2.0"
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.2.1"
   },
   ".storage/lovelace.1_flight_radar": {
     "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
@@ -70,9 +70,69 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "corrige les popups ouverts depuis la liste, ajoute la suppression dans la fenetre modifier et harmonise le visuel de la vue horaires pro",
-    "last_update": "2026-09-19T03:32:15.341627+02:00",
-    "version": "1.0.0"
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "1.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260918_232141": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_001545": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_004951": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_005514": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_010020": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_010743": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_012325": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_013054": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_013122": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_020923": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_calendrier.backup_20260919_024412": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
+  },
+  ".storage/lovelace.dashboard_test": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.1"
   },
   ".storage/lovelace.dashboard_transversal": {
     "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
@@ -80,19 +140,24 @@
     "version": "0.2.0"
   },
   "automations.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.2"
   },
   "configuration.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.2"
+  },
+  "packages/Horaires_pro_feries.yaml": {
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
     "version": "0.0.1"
   },
   "packages/chaudiere.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
+    "last_update": "2026-09-19T21:53:13.219425+02:00",
+    "version": "0.0.2"
   },
   "packages/chauffage.yaml": {
     "last_change": "initialisation du versionning par fichier",
