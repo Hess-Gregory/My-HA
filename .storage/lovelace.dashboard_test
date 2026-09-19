@@ -1,0 +1,365 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_test",
+  "data": {
+    "config": {
+      "title": "Dashboard Test - Popup Universel",
+      "views": [
+        {
+          "title": "Test Popups",
+          "path": "test-popups",
+          "icon": "mdi:test-tube",
+          "cards": [
+            {
+              "type": "markdown",
+              "title": "🧪 Zone de Test - Système de Popup Universel",
+              "content": "Voici votre liste unifiée. Chaque élément intègre  votre flux à 3 étapes (Détail, Modifier, Supprimer).\n"
+            },
+            {
+              "type": "custom:button-card",
+              "name": "Ajouter une tâche",
+              "icon": "mdi:plus-circle-outline",
+              "styles": {
+                "card": [
+                  {
+                    "background-color": "var(--primary-color)"
+                  },
+                  {
+                    "color": "white"
+                  },
+                  {
+                    "border-radius": "12px"
+                  },
+                  {
+                    "padding": "8px"
+                  },
+                  {
+                    "margin-bottom": "12px"
+                  }
+                ]
+              },
+              "tap_action": {
+                "action": "fire-dom-event",
+                "browser_mod": {
+                  "service": "browser_mod.popup",
+                  "data": {
+                    "title": "Créer une nouvelle tâche",
+                    "content": {
+                      "type": "markdown",
+                      "content": "Formulaire d'ajout pour `todo.liste_courses`."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:decluttering-card",
+                  "template": "systeme_popup_universel",
+                  "variables": [
+                    {
+                      "entity_id": "todo.liste_courses"
+                    },
+                    {
+                      "titre_element": "Acheter du pain"
+                    },
+                    {
+                      "description": "Prendre 2 baguettes tradition bien cuites."
+                    },
+                    {
+                      "etiquette": "Boulangerie"
+                    },
+                    {
+                      "icone": "mdi:baguette"
+                    },
+                    {
+                      "service_modification": "todo.update_item"
+                    },
+                    {
+                      "service_suppression": "todo.remove_item"
+                    },
+                    {
+                      "cle_parametre_suppression": "item"
+                    },
+                    {
+                      "valeur_parametre_suppression": "Acheter du pain"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:decluttering-card",
+                  "template": "systeme_popup_universel",
+                  "variables": [
+                    {
+                      "entity_id": "todo.liste_courses"
+                    },
+                    {
+                      "titre_element": "Lait demi-écrémé"
+                    },
+                    {
+                      "description": "Pack de 6 bouteilles de 1L."
+                    },
+                    {
+                      "etiquette": "Supermarché"
+                    },
+                    {
+                      "icone": "mdi:cup"
+                    },
+                    {
+                      "service_modification": "todo.update_item"
+                    },
+                    {
+                      "service_suppression": "todo.remove_item"
+                    },
+                    {
+                      "cle_parametre_suppression": "item"
+                    },
+                    {
+                      "valeur_parametre_suppression": "Lait demi-écrémé"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:decluttering-card",
+                  "template": "systeme_popup_universel",
+                  "variables": [
+                    {
+                      "entity_id": "todo.liste_courses"
+                    },
+                    {
+                      "titre_element": "Café en grains"
+                    },
+                    {
+                      "description": "Sachet de 1kg arabica intense."
+                    },
+                    {
+                      "etiquette": "Épicerie"
+                    },
+                    {
+                      "icone": "mdi:coffee"
+                    },
+                    {
+                      "service_modification": "todo.update_item"
+                    },
+                    {
+                      "service_suppression": "todo.remove_item"
+                    },
+                    {
+                      "cle_parametre_suppression": "item"
+                    },
+                    {
+                      "valeur_parametre_suppression": "Café en grains"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:decluttering-card",
+                  "template": "systeme_popup_universel",
+                  "variables": [
+                    {
+                      "entity_id": "todo.liste_courses"
+                    },
+                    {
+                      "titre_element": "Tomates cerises"
+                    },
+                    {
+                      "description": "Une barquette pour les salades."
+                    },
+                    {
+                      "etiquette": "Fruits & Légumes"
+                    },
+                    {
+                      "icone": "mdi:food-apple"
+                    },
+                    {
+                      "service_modification": "todo.update_item"
+                    },
+                    {
+                      "service_suppression": "todo.remove_item"
+                    },
+                    {
+                      "cle_parametre_suppression": "item"
+                    },
+                    {
+                      "valeur_parametre_suppression": "Tomates cerises"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:decluttering-card",
+                  "template": "systeme_popup_universel",
+                  "variables": [
+                    {
+                      "entity_id": "todo.liste_courses"
+                    },
+                    {
+                      "titre_element": "Papier toilette"
+                    },
+                    {
+                      "description": "Paquet de 12 rouleaux extra-doux."
+                    },
+                    {
+                      "etiquette": "Entretien"
+                    },
+                    {
+                      "icone": "mdi:home-outline"
+                    },
+                    {
+                      "service_modification": "todo.update_item"
+                    },
+                    {
+                      "service_suppression": "todo.remove_item"
+                    },
+                    {
+                      "cle_parametre_suppression": "item"
+                    },
+                    {
+                      "valeur_parametre_suppression": "Papier toilette"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "decluttering_templates": {
+        "systeme_popup_universel": {
+          "card": {
+            "type": "horizontal-stack",
+            "cards": [
+              {
+                "type": "custom:button-card",
+                "name": "[[titre_element]]",
+                "icon": "[[icone]]",
+                "show_icon": true,
+                "show_name": true,
+                "styles": {
+                  "card": [
+                    {
+                      "background-color": "var(--card-background-color)"
+                    },
+                    {
+                      "border-radius": "12px 0 0 12px"
+                    },
+                    {
+                      "padding": "8px"
+                    },
+                    {
+                      "justify-content": "flex-start"
+                    },
+                    {
+                      "box-shadow": "var(--ha-card-box-shadow, 0 2px 4px 0 rgba(0,0,0,0.1))"
+                    }
+                  ],
+                  "name": [
+                    {
+                      "font-weight": "bold"
+                    },
+                    {
+                      "text-align": "left"
+                    }
+                  ]
+                },
+                "tap_action": {
+                  "action": "fire-dom-event",
+                  "browser_mod": {
+                    "service": "browser_mod.popup",
+                    "data": {
+                      "title": "[[titre_element]]",
+                      "content": {
+                        "type": "markdown",
+                        "content": "### 📄 Détails de la tâche\n* **Étiquette :** `[[etiquette]]`\n* **Description :** [[description]]\n"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "custom:button-card",
+                "name": "",
+                "icon": "mdi:pencil",
+                "show_name": false,
+                "show_icon": true,
+                "styles": {
+                  "card": [
+                    {
+                      "background-color": "var(--primary-color)"
+                    },
+                    {
+                      "color": "white"
+                    },
+                    {
+                      "border-radius": 0
+                    },
+                    {
+                      "padding": "8px"
+                    },
+                    {
+                      "height": "50px"
+                    }
+                  ]
+                },
+                "tap_action": {
+                  "action": "fire-dom-event",
+                  "browser_mod": {
+                    "service": "browser_mod.popup",
+                    "data": {
+                      "title": "Modifier : [[titre_element]]",
+                      "content": {
+                        "type": "markdown",
+                        "content": "Mode édition de l'élément."
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "custom:button-card",
+                "name": "",
+                "icon": "mdi:delete",
+                "show_name": false,
+                "show_icon": true,
+                "styles": {
+                  "card": [
+                    {
+                      "background-color": "var(--error-color)"
+                    },
+                    {
+                      "color": "white"
+                    },
+                    {
+                      "border-radius": "0 12px 12px 0"
+                    },
+                    {
+                      "padding": "8px"
+                    },
+                    {
+                      "height": "50px"
+                    }
+                  ]
+                },
+                "tap_action": {
+                  "action": "fire-dom-event",
+                  "browser_mod": {
+                    "service": "browser_mod.popup",
+                    "data": {
+                      "title": "⚠️ Supprimer",
+                      "content": {
+                        "type": "markdown",
+                        "content": "Voulez-vous supprimer [[titre_element]] ?"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

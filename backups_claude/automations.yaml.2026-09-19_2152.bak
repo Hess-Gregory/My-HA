@@ -1,10 +1,10 @@
 # [AUTO-VERSION] v0.0.1 | 17/09/2026 14:01 | initialisation du versionning par fichier
 - id: '1786571826109'
-  alias: Speedtest 30min
+  alias: Speedtest 15min
   description: ''
   triggers:
   - trigger: time_pattern
-    minutes: /30
+    minutes: /15
   conditions: []
   actions:
   - action: homeassistant.update_entity

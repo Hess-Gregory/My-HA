@@ -1,0 +1,185 @@
+# ============================================================
+# HORAIRES PRO — JOURS FÉRIÉS (Belgique)
+# ============================================================
+# Automatise le traitement des jours fériés belges, lus depuis
+# l'entité calendar.belgique (intégration Holiday).
+#
+# RÈGLE MÉTIER (décidée avec Gregory) :
+#   - Férié du lundi au vendredi  -> une tâche "Jour férié" de 8h00
+#     est créée dans Todoist pour Grégory ET pour Sandrine.
+#   - Férié tombant un samedi ou un dimanche -> AUCUNE tâche n'est
+#     créée ; le jour alimente un compteur de jours à récupérer.
+#
+# PORTÉE : l'année civile en cours uniquement (1er janvier au
+# 31 décembre).
+#
+# POURQUOI UN COMPTEUR CALCULÉ ET NON UN counter/input_number :
+#   un compteur incrémenté dérive (double comptage après un
+#   redémarrage, désynchronisation si une tâche est supprimée à la
+#   main dans Todoist). Ici le compteur est RECALCULÉ à chaque fois :
+#     jours à récupérer = fériés tombant un week-end cette année
+#                       - tâches "Récupération jour férié" déjà posées
+#   Il ne peut donc pas dériver, et il se corrige tout seul si tu
+#   ajoutes ou retires une récupération à la main.
+#
+# DÉPENDANCES :
+#   - calendar.belgique (intégration Holiday, pays Belgique)
+#   - rest_command.horaires_pro_todoist_create_task  (packages/horaires_pro_editeur.yaml)
+#   - sensor.horaires_pro_blocs_gregory / _sandrine  (packages/horaires_pro.yaml)
+#   - labels Todoist G_Jour_Ferie / S_Jour_Ferie / G_Recup_Jour_Ferie / S_Recup_Jour_Ferie
+# ============================================================
+
+template:
+  # ------------------------------------------------------------
+  # Compteurs de jours fériés à récupérer (un par personne)
+  # Capteur déclenché : un capteur template classique ne peut pas
+  # appeler calendar.get_events, d'où la forme trigger + action.
+  # ------------------------------------------------------------
+  - trigger:
+      - platform: homeassistant
+        event: start
+      - platform: time
+        at: "03:10:00"
+      - platform: state
+        entity_id:
+          - sensor.horaires_pro_blocs_gregory
+          - sensor.horaires_pro_blocs_sandrine
+    action:
+      - service: calendar.get_events
+        target:
+          entity_id: calendar.belgique
+        data:
+          start_date_time: "{{ now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) }}"
+          end_date_time: "{{ now().replace(month=12, day=31, hour=23, minute=59, second=59, microsecond=0) }}"
+        response_variable: feries_annee
+      - variables:
+          feries_weekend: >-
+            {% set evs = feries_annee['calendar.belgique'].events | default([], true) %}
+            {% set ns = namespace(l=[]) %}
+            {% for e in evs %}
+              {% set d = (e.start | string)[:10] %}
+              {% if as_datetime(d).isoweekday() > 5 %}
+                {% set ns.l = ns.l + [{'date': d, 'nom': e.summary}] %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.l }}
+    sensor:
+      - name: "Horaires Pro Feries A Recuperer Gregory"
+        unique_id: horaires_pro_feries_a_recuperer_gregory
+        icon: mdi:calendar-refresh
+        unit_of_measurement: "j"
+        state: >-
+          {% set an = now().year | string %}
+          {% set pris = state_attr('sensor.horaires_pro_blocs_gregory', 'blocs') | default([], true)
+             | selectattr('label', 'eq', 'G_Recup_Jour_Ferie')
+             | selectattr('date', 'match', '^' ~ an) | list | count %}
+          {{ [ (feries_weekend | count) - pris, 0 ] | max }}
+        attributes:
+          feries_weekend: "{{ feries_weekend }}"
+          deja_recuperes: >-
+            {% set an = now().year | string %}
+            {{ state_attr('sensor.horaires_pro_blocs_gregory', 'blocs') | default([], true)
+               | selectattr('label', 'eq', 'G_Recup_Jour_Ferie')
+               | selectattr('date', 'match', '^' ~ an) | list | count }}
+
+      - name: "Horaires Pro Feries A Recuperer Sandrine"
+        unique_id: horaires_pro_feries_a_recuperer_sandrine
+        icon: mdi:calendar-refresh
+        unit_of_measurement: "j"
+        state: >-
+          {% set an = now().year | string %}
+          {% set pris = state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs') | default([], true)
+             | selectattr('label', 'eq', 'S_Recup_Jour_Ferie')
+             | selectattr('date', 'match', '^' ~ an) | list | count %}
+          {{ [ (feries_weekend | count) - pris, 0 ] | max }}
+        attributes:
+          feries_weekend: "{{ feries_weekend }}"
+          deja_recuperes: >-
+            {% set an = now().year | string %}
+            {{ state_attr('sensor.horaires_pro_blocs_sandrine', 'blocs') | default([], true)
+               | selectattr('label', 'eq', 'S_Recup_Jour_Ferie')
+               | selectattr('date', 'match', '^' ~ an) | list | count }}
+
+automation:
+  # ------------------------------------------------------------
+  # Création des tâches "Jour férié" pour les fériés en semaine
+  # Idempotente : avant chaque création, on vérifie qu'aucune tâche
+  # du même label n'existe déjà à cette date dans les blocs.
+  # ------------------------------------------------------------
+  - id: horaires_pro_generer_jours_feries
+    alias: "Horaires Pro - Genere les jours feries de l'annee"
+    description: >-
+      Cree une tache Jour ferie de 8h pour Gregory et Sandrine pour
+      chaque jour ferie belge tombant du lundi au vendredi dans
+      l'annee en cours. Les feries de week-end sont ignores ici : ils
+      alimentent les capteurs "feries a recuperer".
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: time
+        at: "03:20:00"
+    action:
+      # On repart de donnees fraiches pour que le test d'existence soit fiable
+      - service: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.horaires_pro_taches
+            - sensor.horaires_pro_projet
+      - delay: "00:00:05"
+      - service: calendar.get_events
+        target:
+          entity_id: calendar.belgique
+        data:
+          start_date_time: "{{ now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) }}"
+          end_date_time: "{{ now().replace(month=12, day=31, hour=23, minute=59, second=59, microsecond=0) }}"
+        response_variable: feries_annee
+      - repeat:
+          for_each: "{{ feries_annee['calendar.belgique'].events | default([], true) }}"
+          sequence:
+            # Capture avant la boucle interne : repeat.item y sera redefini
+            - variables:
+                jour: "{{ (repeat.item.start | string)[:10] }}"
+                nom_ferie: "{{ repeat.item.summary }}"
+            - if:
+                - condition: template
+                  value_template: "{{ as_datetime(jour).isoweekday() <= 5 }}"
+              then:
+                - repeat:
+                    for_each:
+                      - personne: "Gregory"
+                        prefix: "— Gregory"
+                        label: "G_Jour_Ferie"
+                        capteur: "sensor.horaires_pro_blocs_gregory"
+                      - personne: "Sandrine"
+                        prefix: "— Sandrine"
+                        label: "S_Jour_Ferie"
+                        capteur: "sensor.horaires_pro_blocs_sandrine"
+                    sequence:
+                      - variables:
+                          existe_deja: >-
+                            {{ (state_attr(repeat.item.capteur, 'blocs') | default([], true)
+                                | selectattr('label', 'eq', repeat.item.label)
+                                | selectattr('date', 'match', '^' ~ jour) | list | count) > 0 }}
+                      - if:
+                          - condition: template
+                            value_template: "{{ not existe_deja }}"
+                        then:
+                          - service: rest_command.horaires_pro_todoist_create_task
+                            data:
+                              content: "{{ repeat.item.prefix }}"
+                              description: "Type: Jour férié ({{ nom_ferie }})\nPause: 00:00"
+                              label: "{{ repeat.item.label }}"
+                              due_datetime: >-
+                                {{ as_datetime(jour ~ ' 08:00')
+                                   | as_timestamp
+                                   | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', true) }}
+                              duration: 480
+                          - delay: "00:00:01"
+      - service: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.horaires_pro_taches
+            - sensor.horaires_pro_projet
+            - calendar.horaires_pro

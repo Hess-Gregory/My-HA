@@ -165,23 +165,13 @@
         "type": "module"
       },
       {
-        "id": "9e5e20616743453ea0600cb2dac111f4",
-        "url": "/local/custom-gauge-card.js",
-        "type": "module"
-      },
-      {
         "id": "5906e717a8f54acfbaf409a2ca627dd9",
         "url": "/hacsfiles/gauge-card-pro/gauge-card-pro.js?hacstag=963750120250",
         "type": "module"
       },
       {
-        "id": "136afa3f310a463aa8dda53e2e4a868f",
-        "url": "/local/gauge-card-pro.js",
-        "type": "module"
-      },
-      {
         "id": "44933912e4dd4d7cab460bdbd1f239c3",
-        "url": "/hacsfiles/Bubble-Card/bubble-card.js?hacstag=680112919330",
+        "url": "/hacsfiles/Bubble-Card/bubble-card.js?hacstag=680112919340",
         "type": "module"
       },
       {
@@ -197,6 +187,11 @@
       {
         "id": "e2e2bb277c234d2ab5e66662acf9f109",
         "url": "/hacsfiles/family-calendar-card/skylight-family-calendar-card.js?hacstag=1175055273222",
+        "type": "module"
+      },
+      {
+        "id": "b01a57ffd32b40a880d96d3e48b3b362",
+        "url": "/hacsfiles/decluttering-card/decluttering-card.js?hacstag=188686483100",
         "type": "module"
       }
     ]

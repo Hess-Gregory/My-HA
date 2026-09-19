@@ -146,6 +146,14 @@
         "title": "Transversal",
         "url_path": "dashboard-transversal",
         "mode": "storage"
+      },
+      {
+        "id": "dashboard_test",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "title": "test",
+        "url_path": "dashboard-test",
+        "mode": "storage"
       }
     ]
   }

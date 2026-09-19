@@ -248,83 +248,32 @@ input_datetime:
 # ==========================================
 # LOGGER - réduction du bruit dans le journal
 # ==========================================
-# Niveau général "warning". Trois intégrations sont réduites au silence parce
-# qu'elles répètent des messages non bloquants qui n'appellent aucune action :
-#   - flightradar24 : erreurs 429 le temps que le quota API se libère.
-#   - bticino_intercom + pybticino.websocket : le websocket vers le cloud
-#     Legrand tombe (code 1006), le coordinateur le déclare périmé après 300 s
-#     de silence, force une reconnexion, que le serveur rejette parfois. La
-#     boucle s'auto-entretient toutes les 30 s et représentait à elle seule
-#     ~75 % du volume du journal. Aucun impact fonctionnel : les 15 entités du
-#     visiophone (serrure, éclairage, caméras, compteur d'appels) fonctionnent
-#     normalement. Bug de l'intégration custom v2.0.2, à remonter en amont.
-# Passer en "critical" plutôt qu'en "error" : ces messages sont déjà émis en
-# warning/error, donc seul "critical" les fait réellement taire.
+# On garde le niveau général à "warning" (comportement par défaut). Les deux
+# intégrations qui remontent des messages répétés non bloquants (FlightRadar24
+# en erreur 429 le temps que le quota API se libère, et Music Assistant en
+# coupure de connexion qui se rétablit seule) émettent déjà leurs messages au
+# niveau "error" — les mettre sur "error" ne changerait donc rien. On les
+# passe à "critical" pour vraiment les faire taire dans le journal, sans
+# toucher au reste : ce ne sont pas des pannes qui nécessitent une action.
 logger:
   default: warning
   logs:
     custom_components.flightradar24: critical
-    custom_components.bticino_intercom: critical
-    pybticino.websocket: critical
 
 # ==========================================
 # RECORDER - allègement de la base de données d'historique
 # ==========================================
-# Contexte : au 19/09/2026 la base atteignait 997 Mo pour 11 jours d'historique
-# (~90 Mo/jour, ~200 000 changements d'état par jour), ce qui pesait sur la
-# réactivité de l'interface — chaque graphe d'historique interroge ce volume —
-# et sur la durée des redémarrages.
-#
-# purge_keep_days: 7      -> une semaine d'historique détaillé suffit ; les
-#                            statistiques long terme (Énergie) ne sont PAS
-#                            concernées, elles sont conservées indéfiniment.
-# commit_interval: 30     -> regroupe les écritures toutes les 30 s au lieu de
-#                            toutes les secondes : moins d'I/O sur l'eMMC de la
-#                            HA Green, donc moins d'usure et moins de CPU.
-# auto_repack: true       -> compacte le fichier SQLite lors de la purge
-#                            automatique nocturne (sinon les pages libérées
-#                            restent allouées et le fichier ne rétrécit jamais).
-#
-# ⚠️ NE JAMAIS exclure les capteurs d'énergie du Shelly EM-50 :
-#    ..._energie, ..._aujourd_hui, ..._cette_semaine, ..._ce_mois,
-#    ..._heures_pleines_depuis_dernier_releve, ..._heures_creuses_depuis_dernier_releve
-#    Les exclure effacerait les statistiques long terme et casserait le
-#    tableau de bord Énergie ainsi que le suivi de coût bihoraire.
+# purge_keep_days réduit l'historique conservé à 10 jours (au lieu des 10
+# jours par défaut de HA en réalité identiques, mais explicite ici pour
+# pouvoir l'ajuster facilement). exclude.entity_globs empêche les capteurs
+# calculés qui changent très souvent (écarts de température, prochains
+# changements, mode horaire) d'être enregistrés dans l'historique long terme :
+# ce sont des valeurs dérivées, pas besoin de les garder, et cela allège
+# fortement la base de données et les requêtes de l'interface.
 recorder:
-  purge_keep_days: 7
-  commit_interval: 30
-  auto_repack: true
+  purge_keep_days: 10
   exclude:
-    entities:
-      # Horloges : historiser l'heure n'a aucun sens (1 ligne/minute chacun).
-      - sensor.time
-      - sensor.date_time
-      - sensor.time_date
-      - sensor.time_utc
-      - sensor.date_time_utc
-      # Compteurs de fonctionnement, monotones et sans intérêt historique.
-      - sensor.boiler_ubauptime
-      - sensor.system_uptime
-      - sensor.system_uptime_sec
-      - sensor.system_rxreceived
-      - sensor.system_txreads
-      # Shelly Pro EM-50 : grandeurs électriques instantanées. On garde
-      # ..._puissance (graphe utile) et tous les compteurs d'énergie ;
-      # ces quatre-là représentaient ~1 800 écritures toutes les 2 h pour
-      # un intérêt quasi nul.
-      - sensor.buanderie_local_tech_compteur_general_maison_puissance_apparente
-      - sensor.buanderie_local_tech_compteur_general_maison_courant
-      - sensor.buanderie_local_tech_compteur_general_maison_tension
-      - sensor.buanderie_local_tech_compteur_general_maison_facteur_de_puissance
     entity_globs:
-      # Capteurs calculés du package chauffage : valeurs dérivées, recalculées
-      # en permanence, reconstituables à tout moment.
       - sensor.prochain_changement_*
       - sensor.mode_horaire_*
       - sensor.ecart_*
-      # FlightRadar24 : affichage temps réel uniquement.
-      - sensor.flightradar24_*
-      # Détections IA Reolink redondantes avec les binary_sensor _personne
-      # et _vehicule déjà conservés.
-      - binary_sensor.*_intrusion_area_1_*
-      - binary_sensor.*_franchissement_de_ligne_*
