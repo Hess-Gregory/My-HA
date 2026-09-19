@@ -1,0 +1,989 @@
+# [AUTO-VERSION] v0.0.2 | 19/09/2026 21:53 | recorder allege, bticino silencieux, speedtest 30min
+- id: '1786571826109'
+  alias: Speedtest 30min
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    minutes: /30
+  conditions: []
+  actions:
+  - action: homeassistant.update_entity
+    metadata: {}
+    data:
+      entity_id:
+      - sensor.ookla_speedtest_download
+      - sensor.ookla_speedtest_upload
+      - sensor.ookla_speedtest_ping
+  mode: single
+- id: '1786869727670'
+  alias: 'Sono switch automatisation '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.sono
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.sono
+      state:
+      - 'on'
+    then:
+    - action: script.turn_on
+      metadata: {}
+      target:
+        entity_id: script.demarrage_mixer
+      data: {}
+    else:
+    - action: script.turn_on
+      metadata: {}
+      target:
+        entity_id: script.1786831774432
+      data: {}
+  mode: single
+- id: '1787048799736'
+  alias: Bascule tarif bi-horaire Mega Energie
+  description: Change le tarif du compteur "Consommation Maison" selon le planning
+    "Heures Pleines" (7h-11h et 17h-22h, tous les jours).
+  triggers:
+  - trigger: state
+    entity_id: schedule.heures_pleines
+    to: 'on'
+    id: debut_heures_pleines
+  - trigger: state
+    entity_id: schedule.heures_pleines
+    to: 'off'
+    id: debut_heures_creuses
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: debut_heures_pleines
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id: select.consommation_maison
+        data:
+          option: heures_pleines
+    - conditions:
+      - condition: trigger
+        id: debut_heures_creuses
+      sequence:
+      - action: select.select_option
+        target:
+          entity_id: select.consommation_maison
+        data:
+          option: heures_creuses
+  mode: single
+# ==========================================================================
+# AJOUTS - SIMULATION DE PRÉSENCE (bouton du dashboard Accueil)
+# ==========================================================================
+# ⚠️ Le chauffage n'a pas de thermostat global unique : il fonctionne par
+# pièce via les input_select.mode_* (package chauffage.yaml). L'action
+# ci-dessous passe donc les 5 pièces en mode "Éco" plutôt que de cibler une
+# entité climate.set_preset_mode qui n'a jamais existé dans cette install.
+# Le spot caméra couloir est réglé : light.e1_outdoor_se_poe_projecteur.
+# ⚠️ Ce fichier utilise !secret alarm_code (défini dans secrets.yaml).
+# Conséquence connue de Home Assistant : l'éditeur graphique des
+# automatisations (Paramètres > Automatisations > crayon) ne supporte PAS
+# les !secret et renverra une erreur 500 "Secrets not supported in this
+# YAML file" si vous essayez d'ouvrir N'IMPORTE QUELLE automatisation de ce
+# fichier dans cet éditeur. Ce n'est pas un bug : c'est une limitation du
+# composant qui lit ce fichier directement, sans résoudre les secrets.
+# → Toute modification de automations.yaml doit désormais se faire via un
+#   éditeur de texte (File editor / Studio Code Server / SSH), jamais via
+#   le bouton crayon de l'interface. Les automatisations elles-mêmes
+#   continuent de fonctionner normalement (démarrage, activation/
+#   désactivation depuis la liste), seule l'édition graphique est bloquée.
+# ==========================================================================
+- id: 'simulation_presence_activation'
+  alias: Simulation de présence - activation
+  description: >-
+    Démarre la simulation de présence quand le bouton du dashboard est activé
+    : arme l'alarme, passe le chauffage en éco (toutes les pièces), lance la
+    rotation de lumières.
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.simulation_presence
+    to: 'on'
+  conditions: []
+  actions:
+  - action: alarm_control_panel.alarm_arm_away
+    metadata: {}
+    target:
+      entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+    data:
+      code: !secret alarm_code
+  - action: input_select.select_option
+    metadata: {}
+    target:
+      entity_id:
+        - input_select.mode_couloir
+        - input_select.mode_piece_de_vie
+        - input_select.mode_chambre_enfants
+        - input_select.mode_chambre_adulte
+        - input_select.mode_salle_de_bain
+    data:
+      option: Éco
+  - action: script.turn_on
+    metadata: {}
+    target:
+      entity_id: script.simulation_presence_rotation
+    data: {}
+  mode: single
+- id: 'simulation_presence_desactivation'
+  alias: Simulation de présence - désactivation
+  description: >-
+    Arrête la simulation de présence quand le bouton du dashboard est
+    désactivé : coupe la rotation et éteint toutes les lumières utilisées.
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.simulation_presence
+    to: 'off'
+  conditions: []
+  actions:
+  - action: script.turn_off
+    metadata: {}
+    target:
+      entity_id: script.simulation_presence_rotation
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id:
+      - light.lustre_salon
+      - light.cuisine_cuisine
+      - light.spot_cuisine
+      - light.evier
+      - light.salon_panneau_mural
+      - light.salon_ambilight_tv
+      - light.lustre_salle_a_manger
+      - light.e1_outdoor_se_poe_projecteur
+    data: {}
+  mode: single
+# ==========================================================================
+# AJOUT - RÉARMEMENT AUTO ZONE CAVE
+# ==========================================================================
+# Réarme automatiquement la zone alarme de la cave si la porte de la cave
+# est fermée depuis plus de 5 minutes et que la zone est désarmée (oubli ou
+# désactivation involontaire).
+# ==========================================================================
+- id: 'cave_rearmement_auto'
+  alias: Cave - Réarmement auto si porte fermée et zone désarmée
+  description: >-
+    Réarme automatiquement l'alarme de la zone cave si la porte de la cave
+    est fermée depuis plus de 5 minutes et que la zone est désarmée.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.cave_sous_sol_cave_porte
+    to: 'off'
+    for:
+      minutes: 5
+  - trigger: state
+    entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+    to: disarmed
+    for:
+      minutes: 5
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.cave_sous_sol_cave_porte
+    state: 'off'
+  - condition: state
+    entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+    state: disarmed
+  actions:
+  - action: alarm_control_panel.alarm_arm_away
+    metadata: {}
+    target:
+      entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+    data:
+      code: !secret alarm_code
+  mode: single
+# ==========================================================================
+# AJOUT - "JE PARS" : ARMEMENT DE L'ALARME DIFFÉRÉ DE 60 SECONDES
+# ==========================================================================
+# Le script "je_pars" (scripts.yaml) ne fait plus qu'un timer.start sur
+# timer.compte_a_rebours_depart (60s) au lieu d'armer l'alarme tout de
+# suite. Cette automation se déclenche sur l'événement timer.finished
+# (PAS sur un changement d'état) : c'est important, car un timer annulé
+# (timer.cancel, fait par le script "Retour" si vous revenez avant la fin)
+# déclenche l'événement timer.cancelled, pas timer.finished — donc si vous
+# rentrez à temps, l'alarme ne s'arme jamais toute seule.
+# Ce délai HA s'ajoute à la temporisation de sortie propre à la centrale
+# Ajax : la commande d'armement n'est envoyée qu'après ces 60s, puis Ajax
+# applique en plus son propre délai de sortie habituel.
+# ==========================================================================
+- id: 'je_pars_armement_alarme_differe'
+  alias: "Je pars - armement alarme après délai de 60s"
+  description: >-
+    Arme l'alarme et met la tablette en veille 60 secondes après le
+    lancement de la scène "Je pars", une fois la minuterie
+    timer.compte_a_rebours_depart arrivée à zéro.
+  triggers:
+  - trigger: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.compte_a_rebours_depart
+  conditions: []
+  actions:
+  - action: alarm_control_panel.alarm_arm_away
+    metadata: {}
+    target:
+      entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+    data:
+      code: !secret alarm_code
+  - action: number.set_value
+    metadata: {}
+    target:
+      entity_id: number.salon_sam_tablette_luminosite_de_l_economiseur_d_ecran
+    data:
+      value: 30
+  - action: switch.turn_on
+    metadata: {}
+    target:
+      entity_id: switch.salon_sam_tablette_economiseur_d_ecran
+  mode: single
+# ==========================================================================
+# AJOUT - POPUP COMPTE À REBOURS SUR LA TABLETTE ("Je pars")
+# ==========================================================================
+# ⚠️ NÉCESSITE L'INTÉGRATION CUSTOM "BROWSER MOD" (via HACS), à installer :
+# 1) HACS > Intégrations > "+ Explorer & télécharger des dépôts" > cherchez
+#    "Browser Mod" > Télécharger, puis redémarrez Home Assistant.
+# 2) `browser_mod:` a déjà été ajouté dans configuration.yaml (voir plus
+#    haut) pour l'activer.
+# 3) Ouvrez le dashboard Accueil DEPUIS LA TABLETTE ELLE-MÊME (pas le PC) :
+#    une petite fenêtre apparaît en bas de l'écran pour "enregistrer" ce
+#    navigateur — donnez-lui un nom du style "Sam Tablette" et confirmez.
+# 4) Un panneau "Browser Mod" apparaît dans le menu latéral de Home
+#    Assistant : ouvrez-le, retrouvez "Sam Tablette" dans la liste des
+#    navigateurs enregistrés et copiez son identifiant (browser_id).
+# Browser ID de la tablette confirmé et déjà en place ci-dessous :
+#   browser_mod_59a39768_1e3bd7e4
+#
+# Fonctionnement : à l'ouverture, une popup plein écran apparaît sur la
+# tablette dès que le compte à rebours démarre (script "Je pars"), avec le
+# minuteur en direct. Elle se ferme automatiquement dès que la minuterie
+# repasse à "idle" — que ce soit parce qu'elle est arrivée à zéro OU parce
+# qu'elle a été annulée (script "Retour", si vous revenez à temps).
+# ==========================================================================
+- id: 'je_pars_popup_decompte_ouverture'
+  alias: "Je pars - popup compte à rebours (ouverture)"
+  description: >-
+    Ouvre une popup plein écran sur la tablette avec le compte à rebours
+    avant armement de l'alarme.
+  triggers:
+  - trigger: state
+    entity_id: timer.compte_a_rebours_depart
+    to: active
+  conditions: []
+  actions:
+  - action: browser_mod.popup
+    metadata: {}
+    data:
+      browser_id:
+      - browser_mod_59a39768_1e3bd7e4
+      dismissable: false
+      size: wide
+      title: 🚪 Départ en cours
+      content:
+        type: vertical-stack
+        cards:
+        - type: custom:mushroom-title-card
+          title: L'alarme va s'armer
+          subtitle: Vous avez le temps de sortir tranquillement
+          alignment: center
+          card_mod:
+            style: |
+              :host {
+                --primary-text-color: #f6d68a !important;
+                --secondary-text-color: #d9c4f0 !important;
+              }
+              ha-card {
+                text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important;
+                background: rgba(25, 18, 38, 0.85) !important;
+                box-shadow: none !important;
+              }
+        - type: entities
+          entities:
+          - entity: timer.compte_a_rebours_depart
+            name: Temps restant
+            icon: mdi:timer-alert
+          card_mod:
+            style: |
+              ha-card { background: rgba(38, 28, 58, 0.75) !important; }
+  mode: single
+- id: 'je_pars_popup_decompte_fermeture'
+  alias: "Je pars - popup compte à rebours (fermeture)"
+  description: >-
+    Ferme automatiquement la popup dès que la minuterie se termine ou est
+    annulée.
+  triggers:
+  - trigger: state
+    entity_id: timer.compte_a_rebours_depart
+    to: idle
+  conditions: []
+  actions:
+  - action: browser_mod.close_popup
+    metadata: {}
+    data:
+      browser_id:
+      - browser_mod_59a39768_1e3bd7e4
+  mode: single
+- id: 'tablette_sam_mode_sombre_auto'
+  alias: "Tablette Sam - Mode sombre auto (nuit + lustre living éteint)"
+  description: >-
+    Passe la tablette en mode sombre quand il fait nuit dehors ET que le
+    lustre du living (salle à manger) est éteint.
+  triggers:
+  - trigger: state
+    entity_id: sun.sun
+  - trigger: state
+    entity_id: light.lustre_salle_a_manger
+  - trigger: time_pattern
+    minutes: /15
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: state
+    entity_id: light.lustre_salle_a_manger
+    state: 'off'
+  actions:
+  - action: browser_mod.set_theme
+    metadata: {}
+    data:
+      dark: dark
+      browser_id:
+      - browser_mod_59a39768_1e3bd7e4
+  mode: single
+- id: 'tablette_sam_mode_clair_auto'
+  alias: "Tablette Sam - Mode clair auto (jour, ou lustre living allumé)"
+  description: >-
+    Repasse la tablette en mode clair dès qu'il fait jour, ou dès que le
+    lustre du living (salle à manger) est rallumé même la nuit.
+  triggers:
+  - trigger: state
+    entity_id: sun.sun
+  - trigger: state
+    entity_id: light.lustre_salle_a_manger
+  - trigger: time_pattern
+    minutes: /15
+  conditions:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: sun.sun
+      state: above_horizon
+    - condition: state
+      entity_id: light.lustre_salle_a_manger
+      state: 'on'
+  actions:
+  - action: browser_mod.set_theme
+    metadata: {}
+    data:
+      dark: light
+      browser_id:
+      - browser_mod_59a39768_1e3bd7e4
+  mode: restart
+# ==========================================================================
+# AJOUT - ÉNERGIE : ALERTE AVANT DISJONCTION
+# ==========================================================================
+# Prévient quand la puissance instantanée reste au-dessus de 12 kW pendant
+# 30 secondes soutenues (pas juste un pic d'une seconde), pour éviter une
+# coupure surprise du disjoncteur général. Seuils repris de la gauge du
+# dashboard Énergie (vert 0-9 kW, orange 9-12 kW, rouge 12-15 kW).
+# Par défaut : notification persistante Home Assistant (la cloche en haut
+# à droite). Pour recevoir un push sur ton téléphone en plus, ajoute une
+# action "notify.mobile_app_<nom_de_ton_telephone>" (visible dans
+# Paramètres > Appareils et services > Mobile App) — dis-le-moi et je
+# l'ajoute pour toi.
+# ==========================================================================
+- id: 'alerte_disjoncteur_puissance_elevee'
+  alias: "Énergie - Alerte avant disjonction"
+  description: >-
+    Prévient quand la puissance instantanée reste au-dessus de 12 kW pendant
+    30 secondes, pour éviter une coupure surprise du disjoncteur général.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.buanderie_local_tech_compteur_general_maison_puissance
+    above: 12
+    for:
+      seconds: 30
+  conditions: []
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: "⚡ Puissance élevée"
+      message: >-
+        La consommation instantanée dépasse 12 kW depuis 30 secondes
+        ({{ states('sensor.buanderie_local_tech_compteur_general_maison_puissance') }} kW).
+        Le disjoncteur général risque de sauter — pense à éteindre un
+        appareil non essentiel (four, sèche-linge, chauffage d'appoint...).
+      notification_id: alerte_disjoncteur
+  mode: single
+# ==========================================================================
+# AJOUT - FLIGHT RADAR : ALERTE DE REPÉRAGE (SPOTTING)
+# ==========================================================================
+# Prévient quand un avion militaire OU un vol à très basse altitude (moins
+# de 3000 ft) entre dans la zone Domicile/Liège, pour ne rien rater sans
+# garder le dashboard ouvert en permanence.
+# ⚠️ Suppose que sensor.flightradar24_current_in_area expose bien un
+# attribut "flights" (liste avec au moins callsign et altitude) — déjà
+# utilisé tel quel par l'onglet Militaire du dashboard Flight Radar.
+# Se déclenche à chaque changement du nombre de vols dans la zone ; si un
+# avion intéressant reste longtemps pendant que d'autres vols entrent/
+# sortent autour de lui, plusieurs notifications sont possibles (compromis
+# simple assumé).
+# CORRIGÉ : le test Jinja HA s'appelle "search", pas "regex_search" (qui
+# n'existe que sous forme de FILTRE "| regex_search(...)", pas de test
+# "is regex_search(...)" ni utilisable dans select(...)). C'était la cause
+# de "TemplateRuntimeError: No test named 'regex_search'" dans le journal.
+# ==========================================================================
+- id: 'flight_radar_alerte_reperage'
+  alias: "Flight Radar - Alerte de repérage (militaire / basse altitude)"
+  description: >-
+    Notifie quand un avion militaire ou un vol à moins de 3000 ft est présent
+    dans la zone Domicile/Liège.
+  triggers:
+  - trigger: state
+    entity_id: sensor.flightradar24_current_in_area
+  conditions:
+  - condition: template
+    value_template: >-
+      {% set MIL_PREFIXES = ['BAF','RCH','NATO','CTM','FAF','GAF','GAM','ASCOT','SPAR','CNV'] %}
+      {% set flights = state_attr('sensor.flightradar24_current_in_area', 'flights') or [] %}
+      {% set militaires = flights | selectattr('callsign', 'string') | select('search', '^(' ~ MIL_PREFIXES | join('|') ~ ')') | list %}
+      {% set bas = flights | selectattr('altitude', 'defined') | rejectattr('altitude', 'none') | selectattr('altitude', 'lt', 3000) | list %}
+      {{ (militaires | count > 0) or (bas | count > 0) }}
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: "✈️ Repérage intéressant"
+      message: >-
+        {% set MIL_PREFIXES = ['BAF','RCH','NATO','CTM','FAF','GAF','GAM','ASCOT','SPAR','CNV'] %}
+        {% set flights = state_attr('sensor.flightradar24_current_in_area', 'flights') or [] %}
+        {% set militaires = flights | selectattr('callsign', 'string') | select('search', '^(' ~ MIL_PREFIXES | join('|') ~ ')') | list %}
+        {% set bas = flights | selectattr('altitude', 'defined') | rejectattr('altitude', 'none') | selectattr('altitude', 'lt', 3000) | list %}
+        {% for f in militaires %}🪖 {{ f.callsign }} (militaire) — {{ f.altitude | default('?') }} ft
+        {% endfor %}
+        {% for f in bas %}🔻 {{ f.callsign | default('Vol inconnu') }} — {{ f.altitude }} ft
+        {% endfor %}
+      notification_id: flight_radar_reperage
+  mode: single
+# ==========================================================================
+# AJOUT - FOUR : ALERTE FIN DE CUISSON
+# ==========================================================================
+# ⚠️ Je ne connais pas la valeur exacte que prend sensor.four_etat une fois
+# le programme terminé (dépend du texte renvoyé par Home Connect Siemens).
+# Se déclenche à chaque changement et vérifie si le texte contient "termin"
+# (insensible à la casse) — couvre "Terminé", "terminé", "Programme
+# terminé", etc. Si ça ne se déclenche pas au bon moment, vérifie le texte
+# exact dans Outils de développement > États et dis-le-moi.
+# ==========================================================================
+- id: 'four_alerte_fin_cuisson'
+  alias: "Four - Alerte fin de cuisson"
+  description: >-
+    Notifie quand le programme du four Siemens se termine.
+  triggers:
+  - trigger: state
+    entity_id: sensor.four_etat
+  conditions:
+  - condition: template
+    value_template: >-
+      {{ 'termin' in (states('sensor.four_etat') | lower) }}
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: "🍽️ Four terminé"
+      message: "Le programme du four est terminé — pense à retirer le plat."
+      notification_id: four_fin_cuisson
+  mode: single
+# ==========================================================================
+# AJOUT - CHAUDIÈRE : ALERTE ENTRETIEN LÉGAL & CONSTRUCTEUR
+# ==========================================================================
+# Échéances reprises de la carte "📅 Entretien & obligations légales" du
+# dashboard Mon Confort > Chaudière : dernier entretien 10/02/2023,
+# recommandation constructeur dépassée depuis le 10/02/2025, échéance
+# légale wallonne (AGW 29/01/2009, tous les 3 ans max) au 10/02/2026.
+# Se déclenche tous les jours à 8h, ne notifie qu'à partir de l'échéance
+# constructeur, et passe en ton "urgent" une fois l'échéance légale aussi
+# dépassée.
+# ⚠️ Le jour du prochain entretien réel : mettre à jour les 2 dates
+# ('2025-02-10' et '2026-02-10') ici ET la carte correspondante dans
+# mon_confort.yaml, sinon l'alerte continue sur les anciennes échéances.
+# ==========================================================================
+- id: 'chaudiere_alerte_entretien'
+  alias: "Chaudière - Alerte entretien légal & constructeur"
+  description: >-
+    Rappelle chaque jour à 8h que l'entretien de la chaudière est en retard,
+    tant que les dates ci-dessous n'ont pas été mises à jour après un
+    nouvel entretien.
+  triggers:
+  - trigger: time
+    at: "08:00:00"
+  conditions:
+  - condition: template
+    value_template: >-
+      {% set today = now().date() %}
+      {% set constructeur = strptime('2025-02-10', '%Y-%m-%d').date() %}
+      {{ today > constructeur }}
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: >-
+        {% set today = now().date() %}
+        {% set legal = strptime('2026-02-10', '%Y-%m-%d').date() %}
+        {{ '🚨 Entretien chaudière — délai légal dépassé' if today > legal else '⚠️ Entretien chaudière en retard' }}
+      message: >-
+        {% set today = now().date() %}
+        {% set legal = strptime('2026-02-10', '%Y-%m-%d').date() %}
+        {% if today > legal %}
+        Le délai légal wallon (AGW du 29/01/2009, entretien tous les 3 ans
+        max pour une chaudière gaz ≤100 kW) est dépassé depuis le
+        10/02/2026 — dernier entretien réalisé le 10/02/2023. Un défaut
+        d'attestation peut entraîner un refus d'indemnisation ou une
+        franchise majorée en cas de sinistre. Contacte Ets. Dubois
+        (+32 (0)4 343 25 59) pour planifier l'entretien au plus vite.
+        {% else %}
+        La recommandation du constructeur (Junkers/Bosch, tous les 1 à 2
+        ans) est dépassée depuis le 10/02/2025 — dernier entretien réalisé
+        le 10/02/2023. Il reste {{ (legal - today).days }} jour(s) avant
+        l'échéance légale du 10/02/2026. Pense à contacter Ets. Dubois
+        (+32 (0)4 343 25 59).
+        {% endif %}
+      notification_id: chaudiere_entretien
+  mode: single
+# ==========================================================================
+# AJOUT - RÉSEAU : ALERTE BASCULE LIGNE DE SECOURS (4G)
+# ==========================================================================
+# Reprend la logique de la carte "Connexion active" du dashboard Réseau &
+# Infra : binary_sensor.r_wan2_core_liaison_internet_du_port_2 à 'on' =
+# ligne principale VOO/Orange, à 'off' = bascule sur la carte SIM Digi de
+# secours. Notifie dans les deux sens (bascule + retour à la normale).
+# ==========================================================================
+- id: 'reseau_alerte_bascule_secours'
+  alias: "Réseau - Alerte bascule ligne de secours (4G)"
+  description: >-
+    Notifie quand la connexion Internet bascule sur la carte SIM de secours,
+    et quand elle revient sur la ligne principale VOO/Orange.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.r_wan2_core_liaison_internet_du_port_2
+    to: "off"
+  - trigger: state
+    entity_id: binary_sensor.r_wan2_core_liaison_internet_du_port_2
+    to: "on"
+  conditions: []
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: >-
+        {{ '🟠 Bascule sur la ligne de secours (4G)' if trigger.to_state.state == 'off' else '🟢 Retour sur la ligne principale' }}
+      message: >-
+        {% if trigger.to_state.state == 'off' %}
+        La ligne principale VOO/Orange est coupée — le trafic passe
+        maintenant par la carte SIM Digi de secours.
+        {% else %}
+        La ligne principale VOO/Orange est de nouveau active.
+        {% endif %}
+      notification_id: reseau_bascule_secours
+  mode: single
+# ==========================================================================
+# AJOUT - RÉSEAU : ALERTE APPAREIL HORS-LIGNE
+# ==========================================================================
+# Surveille les 7 capteurs "état de l'appareil" de la section "🖥️
+# Appareils réseau" du dashboard (mêmes valeurs hors-ligne que la logique
+# de couleur des cartes). Notifie dans les deux sens (hors-ligne + retour
+# en ligne), avec un notification_id propre à chaque appareil pour que la
+# notif "de retour en ligne" remplace celle "hors-ligne" du même appareil
+# au lieu de s'empiler.
+# ==========================================================================
+- id: 'reseau_alerte_appareil_hors_ligne'
+  alias: "Réseau - Alerte appareil hors-ligne"
+  description: >-
+    Notifie quand le routeur, un point d'accès ou un switch passe
+    hors-ligne, et quand il revient en ligne.
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.r_wan2_core_etat_de_l_appareil
+    - sensor.ap_buanderie_etat_de_l_appareil
+    - sensor.ap_chambre_etat_de_l_appareil
+    - sensor.ap_salon_etat_de_l_appareil
+    - sensor.sw_core_etat_de_l_appareil
+    - sensor.sw_salon_etat_de_l_appareil
+    - sensor.sw_sono_etat_de_l_appareil
+  conditions:
+  - condition: template
+    value_template: >-
+      {% set offline = ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] %}
+      {{ (trigger.to_state.state in offline) != (trigger.from_state.state in offline) }}
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: >-
+        {% set offline = ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] %}
+        {{ '🔴 Appareil réseau hors-ligne' if trigger.to_state.state in offline else '🟢 Appareil réseau de nouveau en ligne' }}
+      message: >-
+        {% set offline = ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] %}
+        {% set noms = {
+          'sensor.r_wan2_core_etat_de_l_appareil': 'R WAN2 - Core',
+          'sensor.ap_buanderie_etat_de_l_appareil': 'AP Buanderie',
+          'sensor.ap_chambre_etat_de_l_appareil': 'AP Chambre',
+          'sensor.ap_salon_etat_de_l_appareil': 'AP Salon',
+          'sensor.sw_core_etat_de_l_appareil': 'SW - Core',
+          'sensor.sw_salon_etat_de_l_appareil': 'SW - Salon',
+          'sensor.sw_sono_etat_de_l_appareil': 'SW - Sono'
+        } %}
+        {% set nom = noms.get(trigger.entity_id, trigger.entity_id) %}
+        {% if trigger.to_state.state in offline %}
+        {{ nom }} est hors-ligne (état : {{ trigger.to_state.state }}).
+        {% else %}
+        {{ nom }} est de nouveau en ligne.
+        {% endif %}
+      notification_id: >-
+        reseau_offline_{{ trigger.entity_id.split('.')[1] }}
+  mode: queued
+# ==========================================================================
+# AJOUT - SÉCURITÉ : ALERTE ÉVÉNEMENTS DE SÉCURITÉ AJAX
+# ==========================================================================
+# Utilise l'entité "event"
+# event.buanderie_local_tech_centrale_alarme_ajax_evenement_de_securite,
+# qui expose explicitement tous les types d'événements de sécurité du hub
+# Ajax (bien plus fiable qu'un état "triggered" qui n'existe en réalité
+# jamais avec cette intégration — les seuls états observés sont
+# armed_home / armed_away / armed_night / disarmed).
+#
+# Deux niveaux de notification :
+#   - CRITIQUE (🚨) : alarm, panic, tamper, glass_break, fire, co_alarm,
+#     flood — nécessite une vérification immédiate.
+#   - MAINTENANCE (⚠️) : malfunction, connection_lost, battery_low — pas
+#     urgent dans l'instant mais à ne pas ignorer (le hub affichait déjà 2
+#     dysfonctionnements actifs au moment de l'écriture de cette
+#     automatisation — vérifie l'app Ajax).
+# Les autres types (arm, disarm, arm_night, disarm_night, motion,
+# door_open, doorbell_pressed) ne déclenchent volontairement pas de
+# notification ici : arm/disarm sont déjà visibles dans le logbook du
+# dashboard, et motion/door_open/doorbell_pressed seraient trop bruyants.
+#
+# Chaque notification a un notification_id unique (horodaté) plutôt qu'un
+# ID fixe, pour qu'un nouvel incident n'efface jamais le précédent.
+# ==========================================================================
+- id: 'securite_alerte_alarme_declenchee'
+  alias: "Sécurité - Alerte événements de sécurité AJAX"
+  description: >-
+    Notifie sur les événements de sécurité critiques et de maintenance
+    remontés par le hub AJAX (alarme, panique, sabotage, bris de vitre,
+    incendie, CO, inondation, dysfonctionnement, perte de connexion,
+    batterie faible).
+  triggers:
+  - trigger: state
+    entity_id: event.buanderie_local_tech_centrale_alarme_ajax_evenement_de_securite
+  conditions:
+  - condition: template
+    value_template: >-
+      {% set critique = ['alarm','panic','tamper','glass_break','fire','co_alarm','flood'] %}
+      {% set maintenance = ['malfunction','connection_lost','battery_low'] %}
+      {{ trigger.to_state.attributes.event_type in (critique + maintenance) }}
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: >-
+        {% set evt = trigger.to_state.attributes.event_type %}
+        {% set noms = {
+          'alarm': '🚨 ALARME DÉCLENCHÉE',
+          'panic': '🆘 Bouton panique activé',
+          'tamper': '🔧 Sabotage détecté',
+          'glass_break': '🪟 Bris de vitre détecté',
+          'fire': '🔥 Détection incendie',
+          'co_alarm': '☠️ Détection monoxyde de carbone',
+          'flood': '💧 Détection inondation',
+          'malfunction': '⚠️ Dysfonctionnement hub AJAX',
+          'connection_lost': '📡 Perte de connexion hub AJAX',
+          'battery_low': '🔋 Batterie faible (appareil AJAX)'
+        } %}
+        {{ noms.get(evt, '⚠️ Événement AJAX : ' ~ evt) }}
+      message: >-
+        {% set evt = trigger.to_state.attributes.event_type %}
+        {% set appareil = trigger.to_state.attributes.get('device_name') %}
+        Événement "{{ evt }}"{% if appareil %} — {{ appareil }}{% endif %}
+        détecté à {{ now().strftime('%H:%M:%S') }}.
+        {% if evt in ['alarm','panic','tamper','glass_break','fire','co_alarm','flood'] %}
+        Vérifie les caméras sur le dashboard Sécurité > Vidéo-surveillance.
+        {% else %}
+        Rien d'urgent, mais à vérifier dans l'app Ajax quand tu as un
+        moment.
+        {% endif %}
+      notification_id: >-
+        securite_evenement_{{ trigger.to_state.attributes.event_type }}_{{ now().strftime('%Y%m%d%H%M%S') }}
+  mode: queued
+# ==========================================================================
+# AJOUT - TÂCHES : RAPPEL QUOTIDIEN (RESTANTES + DUES AUJOURD'HUI/RETARD)
+# ==========================================================================
+# Chaque soir à 19h, appelle todo.get_items sur les 3 listes pour récupérer
+# le détail des tâches non faites, et envoie un résumé par personne — en
+# signalant celles dues aujourd'hui ou en retard SI Todoist a synchronisé
+# une date d'échéance sur la tâche (sinon la mention n'apparaît jamais
+# pour cette personne, ce n'est pas un bug).
+# ==========================================================================
+- id: 'taches_rappel_quotidien'
+  alias: "Tâches - Rappel quotidien (restantes + dues aujourd'hui/retard)"
+  description: >-
+    Résumé chaque soir à 19h des tâches restantes par personne, avec mise
+    en avant de celles dues aujourd'hui ou en retard.
+  triggers:
+  - trigger: time
+    at: "19:00:00"
+  conditions: []
+  actions:
+  - action: todo.get_items
+    metadata: {}
+    target:
+      entity_id:
+      - todo.taches_gregory
+      - todo.taches_matteo
+      - todo.taches_sandrine
+    data:
+      status: needs_action
+    response_variable: items_par_personne
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: "🧹 Rappel tâches du soir"
+      message: >-
+        {% set noms = {
+          'todo.taches_gregory': 'Grégory',
+          'todo.taches_matteo': 'Matteo',
+          'todo.taches_sandrine': 'Sandrine'
+        } %}
+        {% set today = now().strftime('%Y-%m-%d') %}
+        {% set ns = namespace(texte='') %}
+        {% for entity_id, data in items_par_personne.items() %}
+          {% set items = data.items %}
+          {% if items | count > 0 %}
+            {% set retard = namespace(n=0) %}
+            {% set du_jour = namespace(n=0) %}
+            {% for it in items %}
+              {% if it.due is defined and it.due %}
+                {% set d = it.due[:10] %}
+                {% if d < today %}
+                  {% set retard.n = retard.n + 1 %}
+                {% elif d == today %}
+                  {% set du_jour.n = du_jour.n + 1 %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {% set ligne = '**' ~ noms.get(entity_id, entity_id) ~ '** — ' ~ (items | count) ~ ' tâche(s) restante(s)' %}
+            {% if retard.n > 0 %}{% set ligne = ligne ~ ' dont ' ~ retard.n ~ ' en retard ⚠️' %}{% endif %}
+            {% if du_jour.n > 0 %}{% set ligne = ligne ~ ' dont ' ~ du_jour.n ~ ' due(s) aujourd\'hui 📅' %}{% endif %}
+            {% set ns.texte = ns.texte ~ ligne ~ '\n\n' %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.texte if ns.texte else '✅ Tout le monde est à jour, rien en attente ce soir.' }}
+      notification_id: taches_rappel_quotidien
+  mode: single
+# ==========================================================================
+# AJOUT - TÂCHES : SUIVI HEBDOMADAIRE DES TÂCHES COMPLÉTÉES
+# ==========================================================================
+# ⚠️ Approximation assumée : l'entité todo.* n'expose que le NOMBRE de
+# tâches restantes, sans distinguer "complétée" de "supprimée" — ce
+# compteur monte dans les deux cas. Compromis raisonnable pour un
+# compteur "pour le fun", pas une mesure exacte.
+# PRÉREQUIS : crée 3 compteurs via Paramètres > Aides > Créer une aide >
+# Compteur ("Tâches complétées - Grégory/Matteo/Sandrine"), qui donneront
+# normalement counter.taches_completees_gregory/_matteo/_sandrine —
+# vérifie les entity_id exacts et corrige si besoin.
+# ==========================================================================
+- id: 'taches_completees_incrementer'
+  alias: "Tâches - Incrémenter compteur hebdo à la complétion"
+  description: >-
+    Incrémente le compteur hebdomadaire de la personne concernée à chaque
+    fois qu'une tâche disparaît de sa liste (complétion ou suppression).
+  triggers:
+  - trigger: state
+    entity_id:
+    - todo.taches_gregory
+    - todo.taches_matteo
+    - todo.taches_sandrine
+  conditions:
+  - condition: template
+    value_template: >-
+      {{ (trigger.to_state.state | int(0)) < (trigger.from_state.state | int(0)) }}
+  actions:
+  - action: counter.increment
+    metadata: {}
+    data:
+      entity_id: >-
+        {% set noms = {
+          'todo.taches_gregory': 'counter.taches_completees_gregory',
+          'todo.taches_matteo': 'counter.taches_completees_matteo',
+          'todo.taches_sandrine': 'counter.taches_completees_sandrine'
+        } %}
+        {{ noms.get(trigger.entity_id) }}
+  mode: queued
+- id: 'taches_completees_reset_hebdo'
+  alias: "Tâches - Reset hebdomadaire des compteurs"
+  description: >-
+    Remet les 3 compteurs à zéro chaque lundi à minuit pour repartir sur
+    une nouvelle semaine.
+  triggers:
+  - trigger: time
+    at: "00:00:00"
+  conditions:
+  - condition: time
+    weekday:
+    - mon
+  actions:
+  - action: counter.reset
+    metadata: {}
+    target:
+      entity_id:
+      - counter.taches_completees_gregory
+      - counter.taches_completees_matteo
+      - counter.taches_completees_sandrine
+  mode: single
+# POLLUTION — ALERTE PAR CODE COULEUR (CLASSIFICATION AQI ENGIS, WAQI)
+# =============================================================================
+# ⚠️ Rappel : sensor.engis_belgium_indice_de_qualite_de_l_air est un indice
+# AQI américain (échelle EPA 0-500), PAS une concentration officielle en
+# µg/m³. Cette automation prévient d'un CHANGEMENT DE CATÉGORIE (les 6
+# niveaux officiels de la classification AQI, avec leur code couleur), pas
+# d'un simple dépassement de chiffre — elle ne se redéclenche donc pas à
+# chaque petite variation, seulement quand on change réellement de palier
+# (dans un sens ou dans l'autre). Elle ne remplace pas l'abonnement officiel
+# email/SMS de l'AwAC (basé sur les vraies concentrations PM10 en µg/m³),
+# qui reste la référence réglementaire. Entity_id confirmé via Outils de
+# développement > États (device "Engis, Belgium").
+#
+# Le "polluant dominant" (sensor.engis_belgium_polluant_dominant) indique
+# LEQUEL des 5 polluants mesurés (PM2.5, PM10, NO2, SO2, O3) est responsable
+# du niveau affiché — la notification explique de quoi il s'agit à chaque
+# fois, pas seulement son code (ex: "pm25").
+# =============================================================================
+- id: 'pollution_alerte_aqi_engis'
+  alias: "Pollution - Alerte code couleur classification AQI Engis"
+  description: >-
+    Notifie à chaque changement de catégorie AQI (Bon / Modéré / Mauvais pour
+    groupes sensibles / Mauvais / Très mauvais / Dangereux) avec code couleur
+    et explication du polluant dominant.
+  triggers:
+    - trigger: state
+      entity_id: sensor.engis_belgium_indice_de_qualite_de_l_air
+  conditions:
+    - condition: template
+      value_template: >-
+        {% set paliers = [
+          (50, 'Bon'),
+          (100, 'Modéré'),
+          (150, 'Mauvais pour groupes sensibles'),
+          (200, 'Mauvais'),
+          (300, 'Très mauvais'),
+          (999999, 'Dangereux')
+        ] %}
+        {% macro categorie(valeur) %}
+          {% set ns = namespace(nom=none) %}
+          {% for max_v, nom in paliers %}
+            {% if ns.nom is none and valeur <= max_v %}{% set ns.nom = nom %}{% endif %}
+          {% endfor %}
+          {{ ns.nom }}
+        {% endmacro %}
+        {% set avant = trigger.from_state.state | int(-1) if trigger.from_state and trigger.from_state.state not in ['unknown','unavailable', none] else -1 %}
+        {% set apres = trigger.to_state.state | int(-1) if trigger.to_state and trigger.to_state.state not in ['unknown','unavailable', none] else -1 %}
+        {{ apres >= 0 and categorie(avant) | trim != categorie(apres) | trim }}
+  actions:
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        title: >-
+          {% set v = states('sensor.engis_belgium_indice_de_qualite_de_l_air') | int(0) %}
+          {% set paliers = [
+            (50, 'Bon', '🟢'),
+            (100, 'Modéré', '🟡'),
+            (150, 'Mauvais pour groupes sensibles', '🟠'),
+            (200, 'Mauvais', '🔴'),
+            (300, 'Très mauvais', '🟣'),
+            (999999, 'Dangereux', '🟤')
+          ] %}
+          {% set ns = namespace(nom=none, emoji=none) %}
+          {% for max_v, nom, emoji in paliers %}
+            {% if ns.nom is none and v <= max_v %}{% set ns.nom = nom %}{% set ns.emoji = emoji %}{% endif %}
+          {% endfor %}
+          {{ ns.emoji }} Qualité de l'air à Engis : {{ ns.nom }}
+        message: >-
+          {% set v = states('sensor.engis_belgium_indice_de_qualite_de_l_air') | int(0) %}
+          {% set paliers = [
+            (50, 'Bon', '🟢', "Air satisfaisant, aucune précaution nécessaire."),
+            (100, 'Modéré', '🟡', "Les personnes très sensibles (asthme sévère, maladie respiratoire/cardiaque) peuvent limiter les efforts prolongés en extérieur."),
+            (150, 'Mauvais pour groupes sensibles', '🟠', "Enfants, personnes âgées, asthmatiques : limitez les efforts prolongés en extérieur."),
+            (200, 'Mauvais', '🔴', "Tout le monde limite les efforts prolongés en extérieur ; les groupes sensibles les évitent."),
+            (300, 'Très mauvais', '🟣', "Tout le monde évite les efforts prolongés en extérieur ; les groupes sensibles évitent toute sortie."),
+            (999999, 'Dangereux', '🟤', "Évitez toute activité extérieure, même de courte durée, pour tout le monde.")
+          ] %}
+          {% set ns = namespace(nom=none, emoji=none, conseil=none) %}
+          {% for max_v, nom, emoji, conseil in paliers %}
+            {% if ns.nom is none and v <= max_v %}{% set ns.nom = nom %}{% set ns.emoji = emoji %}{% set ns.conseil = conseil %}{% endif %}
+          {% endfor %}
+          {% set descriptions = {
+            'pm25': ("PM2.5 — particules fines (< 2,5 µm)", "Assez petites pour pénétrer profondément dans les poumons et passer dans le sang. Proviennent surtout de la combustion : chauffage au bois, trafic routier, procédés industriels."),
+            'pm10': ("PM10 — particules fines (< 10 µm)", "Irritent le nez, la gorge et les bronches. À Engis, il s'agit historiquement surtout de gypse issu des activités de Prayon et Knauf."),
+            'no2': ("NO₂ — dioxyde d'azote", "Gaz issu de la combustion (trafic routier, chauffage, industrie). Irrite les voies respiratoires et contribue à la formation d'ozone."),
+            'so2': ("SO₂ — dioxyde de soufre", "Gaz issu de la combustion de combustibles soufrés et de procédés chimiques industriels. Irrite les yeux et les voies respiratoires."),
+            'o3': ("O₃ — ozone (troposphérique)", "Polluant secondaire formé par réaction chimique sous l'effet du soleil, surtout en été en fin de journée ensoleillée. Irrite les voies respiratoires.")
+          } %}
+          {% set dominant_code = states('sensor.engis_belgium_polluant_dominant') | lower | trim %}
+          {% set info = descriptions.get(dominant_code, ("Polluant : " ~ dominant_code, "Pas de description disponible pour ce code.")) %}
+          {{ ns.emoji }} **{{ ns.nom }}** — indice AQI actuel : {{ v }} (échelle EPA 0-500, pas des µg/m³).
+          {{ ns.conseil }}
+          🔬 Polluant dominant responsable de ce niveau : **{{ info[0] }}**
+          {{ info[1] }}
+          ℹ️ Rappel : ceci suit une tendance relative, pas la concentration officielle réglementaire. Pour la valeur légale en µg/m³, reste abonné aux alertes email/SMS de l'AwAC.
+        notification_id: pollution_alerte_aqi_engis
+  mode: queued
+# ==============================================================================
+# AUTOMATISATION : POP-UP VIDÉO INTERPHONE SUR TABLETTE
+# ==============================================================================
+# FONCTIONNEMENT GLOBAL :
+# Dès qu'un appel est initié sur la platine de rue BTicino, cette automatisation
+# réveille l'écran de la tablette murale (via Fully Kiosk/Browser Mod) et affiche 
+# immédiatement en plein écran la carte de l'interphone avec la vidéo en direct 
+# et le bouton pour déverrouiller la porte.
+# ==============================================================================
+- id: 'interphone_popup_appel_entrant_tablette'
+  alias: "Interphone : Pop-up Appel Entrant"
+  description: "Affiche le flux vidéo sur la tablette lors d'un appel"
+  trigger:
+    - platform: state
+      entity_id: camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
+      to: "streaming"
+  condition: []
+  action:
+    - action: light.turn_on
+      target:
+        entity_id: light.browser_mod_59a39768_1e3bd7e4_screen
+    - action: browser_mod.popup
+      data:
+        browser_id:
+          - browser_mod_59a39768_1e3bd7e4
+        title: "Quelqu'un sonne à la porte !"
+        size: normal
+        card:
+          type: custom:bticino-intercom-card
+          intercoms:
+            - name: Platine de Rue
+              camera: camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
+              door_entity: lock.hall_dentree_bticino_intercom_greg_et_sandrine_serrure
+              auto_mic: true
+          card_mod:
+            style: "ha-card { background: rgba(38, 28, 58, 0.9) !important; backdrop-filter: blur(16px) !important; border: none !important; }"
+        dismissable: true
+        autoclose: true
+        timeout: 30000
+  mode: single

@@ -266,7 +266,7 @@ logger:
     custom_components.flightradar24: critical
     custom_components.bticino_intercom: critical
     pybticino.websocket: critical
- 
+
 # ==========================================
 # RECORDER - allègement de la base de données d'historique
 # ==========================================
