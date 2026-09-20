@@ -35,6 +35,7 @@ command_line:
         - ".storage/lovelace.dashboard_transversal"
         - "packages/chaudiere.yaml"
         - "packages/chauffage.yaml"
+        - "packages/matteo_logistique.yaml"
         - "packages/dashboard_versions.yaml"
         - "packages/horaires_pro_editeur.yaml"
         - "packages/horaires_pro.yaml"
