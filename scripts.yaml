@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.0.1 | 17/09/2026 14:01 | initialisation du versionning par fichier
+# [AUTO-VERSION] v0.0.2 | 20/09/2026 21:15 | suppression complete de flightradar24 et mise a jour de la doc
 allumer_eteindre_clim_salon:
   sequence:
     - action: remote.send_command

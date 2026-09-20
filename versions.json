@@ -70,9 +70,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "nettoyage des vues en double",
-    "last_update": "2026-09-20T13:01:17.427087+02:00",
-    "version": "1.0.2"
+    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
+    "last_update": "2026-09-20T21:15:29.547315+02:00",
+    "version": "1.0.3"
   },
   ".storage/lovelace.dashboard_calendrier.backup_20260918_232141": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -140,14 +140,14 @@
     "version": "0.2.0"
   },
   "automations.yaml": {
-    "last_change": "suppression complete de flightradar et mise a jour de la doc",
-    "last_update": "2026-09-20T21:12:22.158455+02:00",
-    "version": "0.0.3"
+    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
+    "last_update": "2026-09-20T21:15:29.547315+02:00",
+    "version": "0.0.4"
   },
   "configuration.yaml": {
-    "last_change": "suppression complete de flightradar et mise a jour de la doc",
-    "last_update": "2026-09-20T21:12:22.158455+02:00",
-    "version": "0.1.1"
+    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
+    "last_update": "2026-09-20T21:15:29.547315+02:00",
+    "version": "0.1.2"
   },
   "packages/Horaires_pro_feries.yaml": {
     "last_change": "met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries",
@@ -205,9 +205,9 @@
     "version": "0.0.1"
   },
   "scripts.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-17T14:01:47.050330+02:00",
-    "version": "0.0.1"
+    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
+    "last_update": "2026-09-20T21:15:29.547315+02:00",
+    "version": "0.0.2"
   },
   "themes/Alpine-night.yaml": {
     "last_change": "initialisation du versionning par fichier",
