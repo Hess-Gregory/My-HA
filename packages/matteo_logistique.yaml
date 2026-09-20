@@ -1,0 +1,93 @@
+# ============================================================
+# MATTEO & LOGISTIQUE LOCALE — Package Home Assistant
+# ============================================================
+
+input_select:
+  matteo_rythme_actuel:
+    name: "Matteo — Statut de Garde Actuel"
+    icon: mdi:baby-face-outline
+    options:
+      - "Semaine Maman (Uccle)"
+      - "Weekend Grégory (Engis)"
+      - "Vacances (Partage)"
+      - "Exception / Aménagement"
+
+  exception_matteo_type:
+    name: "Matteo — Type d'Exception en cours"
+    icon: mdi:calendar-alert
+    options:
+      - "Aucun (Rythme normal)"
+      - "Séjour Uccle / Grégory (Inversion)"
+      - "Modification Transport (Olivier / Autre)"
+      - "Maladie / Indisponibilité"
+
+input_number:
+  banque_trajets_gregory:
+    name: "Banque de Trajets — Grégory"
+    icon: mdi:car-multiple
+    min: -20
+    max: 20
+    step: 1
+    unit_of_measurement: "trajets"
+    mode: box
+
+  banque_trajets_maman:
+    name: "Banque de Trajets — Maman"
+    icon: mdi:car-multiple
+    min: -20
+    max: 20
+    step: 1
+    unit_of_measurement: "trajets"
+    mode: box
+
+input_datetime:
+  matteo_editeur_date:
+    name: "Matteo — Date de l'exception"
+    has_date: true
+    has_time: false
+    icon: mdi:calendar
+
+input_text:
+  matteo_editeur_notes:
+    name: "Matteo — Notes / Détails logistiques"
+    icon: mdi:text-box-outline
+    initial: ""
+
+template:
+  - sensor:
+      - name: "Matteo Statut Garde Calculé"
+        unique_id: matteo_statut_garde_calcule
+        icon: mdi:home-heart
+        state: >
+          {% set is_weekend = now().strftime('%u') | int in [6, 7] %}
+          {% set week_number = now().strftime('%V') | int %}
+          {% set grg_weekend = week_number is even %}
+          {% if states('input_select.exception_matteo_type') != 'Aucun (Rythme normal)' %}
+            Exception active
+          {% elif is_weekend and grg_weekend %}
+            Chez Grégory (Engis)
+          {% elif is_weekend %}
+            Chez Maman
+          {% else %}
+            En semaine à Uccle (École - Transport Olivier)
+          {% endif %}
+
+script:
+  banque_trajets_ajuster:
+    alias: "Matteo — Ajuster la Banque de Trajets"
+    icon: mdi:car-arrow-right
+    fields:
+      parent:
+        description: "gregory ou maman"
+      action:
+        description: "increment ou decrement"
+    sequence:
+      - service: "input_number.set_value"
+        target:
+          entity_id: >
+            {{ 'input_number.banque_trajets_gregory' if parent == 'gregory' else 'input_number.banque_trajets_maman' }}
+        data:
+          value: >
+            {% set ent = 'input_number.banque_trajets_gregory' if parent == 'gregory' else 'input_number.banque_trajets_maman' %}
+            {% set current = states(ent) | float(0) %}
+            {{ current + 1 if action == 'increment' else current - 1 }}
