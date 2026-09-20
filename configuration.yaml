@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.0 | 19/09/2026 22:17 | plage mode Manuel 24->30C (plafond reel des vannes Bosch)
+# [AUTO-VERSION] v0.1.2 | 20/09/2026 20:55 | Purge complète Flightradar (inté., HACS, dash) : allègement Recorder/eMMC, gain CPU/RAM, fluidité tablette et nettoyage logs
 # Loads default set of integrations. Do not remove.
 default_config:
 homeassistant:
@@ -248,9 +248,8 @@ input_datetime:
 # ==========================================
 # LOGGER - réduction du bruit dans le journal
 # ==========================================
-# Niveau général "warning". Trois intégrations sont réduites au silence parce
+# Niveau général "warning". Deux intégrations sont réduites au silence parce
 # qu'elles répètent des messages non bloquants qui n'appellent aucune action :
-#   - flightradar24 : erreurs 429 le temps que le quota API se libère.
 #   - bticino_intercom + pybticino.websocket : le websocket vers le cloud
 #     Legrand tombe (code 1006), le coordinateur le déclare périmé après 300 s
 #     de silence, force une reconnexion, que le serveur rejette parfois. La
@@ -263,10 +262,9 @@ input_datetime:
 logger:
   default: warning
   logs:
-    custom_components.flightradar24: critical
     custom_components.bticino_intercom: critical
     pybticino.websocket: critical
- 
+
 # ==========================================
 # RECORDER - allègement de la base de données d'historique
 # ==========================================
@@ -275,15 +273,15 @@ logger:
 # réactivité de l'interface — chaque graphe d'historique interroge ce volume —
 # et sur la durée des redémarrages.
 #
-# purge_keep_days: 7      -> une semaine d'historique détaillé suffit ; les
-#                            statistiques long terme (Énergie) ne sont PAS
-#                            concernées, elles sont conservées indéfiniment.
+# purge_keep_days: 7       -> une semaine d'historique détaillé suffit ; les
+#                             statistiques long terme (Énergie) ne sont PAS
+#                             concernées, elles sont conservées indéfiniment.
 # commit_interval: 30     -> regroupe les écritures toutes les 30 s au lieu de
-#                            toutes les secondes : moins d'I/O sur l'eMMC de la
-#                            HA Green, donc moins d'usure et moins de CPU.
+#                             toutes les secondes : moins d'I/O sur l'eMMC de la
+#                             HA Green, donc moins d'usure et moins de CPU.
 # auto_repack: true       -> compacte le fichier SQLite lors de la purge
-#                            automatique nocturne (sinon les pages libérées
-#                            restent allouées et le fichier ne rétrécit jamais).
+#                             automatique nocturne (sinon les pages libérées
+#                             restent allouées et le fichier ne rétrécit jamais).
 #
 # ⚠️ NE JAMAIS exclure les capteurs d'énergie du Shelly EM-50 :
 #    ..._energie, ..._aujourd_hui, ..._cette_semaine, ..._ce_mois,
@@ -322,8 +320,6 @@ recorder:
       - sensor.prochain_changement_*
       - sensor.mode_horaire_*
       - sensor.ecart_*
-      # FlightRadar24 : affichage temps réel uniquement.
-      - sensor.flightradar24_*
       # Détections IA Reolink redondantes avec les binary_sensor _personne
       # et _vehicule déjà conservés.
       - binary_sensor.*_intrusion_area_1_*
