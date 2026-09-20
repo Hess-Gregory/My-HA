@@ -20,9 +20,9 @@
     "version": "0.2.1"
   },
   ".storage/lovelace.1_flight_radar": {
-    "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
-    "last_update": "2026-09-17T18:18:24.960660+02:00",
-    "version": "0.2.0"
+    "last_change": "suppression complete de flightradar et mise a jour de la doc",
+    "last_update": "2026-09-20T21:12:22.158455+02:00",
+    "version": "0.2.1"
   },
   ".storage/lovelace.1_ma_maison": {
     "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
@@ -140,14 +140,14 @@
     "version": "0.2.0"
   },
   "automations.yaml": {
-    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
-    "last_update": "2026-09-19T21:53:13.219425+02:00",
-    "version": "0.0.2"
+    "last_change": "suppression complete de flightradar et mise a jour de la doc",
+    "last_update": "2026-09-20T21:12:22.158455+02:00",
+    "version": "0.0.3"
   },
   "configuration.yaml": {
-    "last_change": "plage mode Manuel 24->30C (plafond reel des vannes Bosch)",
-    "last_update": "2026-09-19T22:17:32.080787+02:00",
-    "version": "0.1.0"
+    "last_change": "suppression complete de flightradar et mise a jour de la doc",
+    "last_update": "2026-09-20T21:12:22.158455+02:00",
+    "version": "0.1.1"
   },
   "packages/Horaires_pro_feries.yaml": {
     "last_change": "met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries",
@@ -183,6 +183,11 @@
     "last_change": "plage mode Manuel 24->30C (plafond reel des vannes Bosch)",
     "last_update": "2026-09-19T22:17:32.080787+02:00",
     "version": "0.1.0"
+  },
+  "packages/matteo_logistique.yaml": {
+    "last_change": "initialisation du versionning par fichier",
+    "last_update": "2026-09-20T13:35:20.910073",
+    "version": "1.0.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -223,10 +228,5 @@
     "last_change": "initialisation du versionning par fichier",
     "last_update": "2026-09-17T14:01:47.050330+02:00",
     "version": "0.0.1"
-  },
-  "packages/matteo_logistique.yaml": {
-    "version": "1.0.0",
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-20T13:35:20.910073"
   }
 }

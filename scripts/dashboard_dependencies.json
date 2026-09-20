@@ -15,7 +15,8 @@
   ],
   "dashboard_calendrier": [
     "packages/horaires_pro.yaml",
-    "packages/horaires_pro_editeur.yaml"
+    "packages/horaires_pro_editeur.yaml",
+    "packages/matteo_logistique.yaml"
   ],
   "dashboard_transversal": [
     "packages/chauffage.yaml"

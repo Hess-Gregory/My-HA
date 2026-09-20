@@ -86,15 +86,6 @@
         "icon": "mdi:cart-outline"
       },
       {
-        "id": "1_flight_radar",
-        "show_in_sidebar": true,
-        "title": "Flight Radar",
-        "require_admin": false,
-        "mode": "storage",
-        "url_path": "1-flight-radar",
-        "icon": "mdi:airplane"
-      },
-      {
         "id": "1_taches",
         "show_in_sidebar": true,
         "title": "Taches",

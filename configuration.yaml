@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.2 | 20/09/2026 20:55 | Purge complète Flightradar (inté., HACS, dash) : allègement Recorder/eMMC, gain CPU/RAM, fluidité tablette et nettoyage logs
+# [AUTO-VERSION] v0.1.1 | 20/09/2026 21:12 | suppression complete de flightradar et mise a jour de la doc
 # Loads default set of integrations. Do not remove.
 default_config:
 homeassistant:

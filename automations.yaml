@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.0.3 | 20/09/2026 21:05 | Purge complète Flightradar (intégration, HACS, dashboard & automatisation alerte)
+# [AUTO-VERSION] v0.0.3 | 20/09/2026 21:12 | suppression complete de flightradar et mise a jour de la doc
 - id: "1786571826109"
   alias: Speedtest 30min
   description: ""
