@@ -70,9 +70,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
-    "last_update": "2026-09-19T21:53:13.219425+02:00",
-    "version": "1.0.1"
+    "last_change": "nettoyage des vues en double",
+    "last_update": "2026-09-20T13:01:17.427087+02:00",
+    "version": "1.0.2"
   },
   ".storage/lovelace.dashboard_calendrier.backup_20260918_232141": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
