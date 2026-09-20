@@ -165,9 +165,9 @@
     "version": "0.1.0"
   },
   "packages/dashboard_versions.yaml": {
-    "last_change": "capteur consolide versions_config_ha, bump par fichier et footer avec dependances",
-    "last_update": "2026-09-17T14:06:11.426840+02:00",
-    "version": "0.1.0"
+    "last_change": "ajout de packages/matteo_logistique.yaml au suivi de versioning",
+    "last_update": "2026-09-20T13:25:35.144187+02:00",
+    "version": "0.2.0"
   },
   "packages/horaires_pro.yaml": {
     "last_change": "ajoute les compteurs Maladie manquants",
