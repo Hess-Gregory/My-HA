@@ -185,9 +185,9 @@
     "version": "0.1.0"
   },
   "packages/matteo_logistique.yaml": {
-    "last_change": "initialisation du versionning par fichier",
-    "last_update": "2026-09-20T13:35:20.910073",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "last_change": "Création du package logistique Home Assistant (helpers, sélecteurs, moteur de calcul des plannings de garde et gestion de la banque de trajets)",
+    "last_update": "2026-09-22T13:27:37.553067"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -228,5 +228,10 @@
     "last_change": "initialisation du versionning par fichier",
     "last_update": "2026-09-17T14:01:47.050330+02:00",
     "version": "0.0.1"
+  },
+  ".storage/lovelace.matteo-trajets": {
+    "version": "1.0.0",
+    "last_change": "Initialisation complète de la vue Dashboard Matteo & Trajets (Sections, Planning, Banque de trajets et Footer de versioning)",
+    "last_update": "2026-09-22T13:27:37.553067"
   }
 }
