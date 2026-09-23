@@ -1,12 +1,35 @@
+# packages/dashboard_versions.yaml — Documentation
+#
+# ## Rôle du fichier
+# Fichier d'infrastructure du système de versioning automatique (voir le README.md, section "Versioning automatique").
+# Il ne contient aucune logique métier : il expose simplement le contenu de /config/versions.json (généré et mis à jour tout seul
+# par le hook git post-commit) comme un capteur Home Assistant, pour que les dashboards puissent afficher la version
+# de chaque fichier dont ils dépendent dans leur footer.
+#
+# ## Entité créée
+# - `sensor.versions_config_ha` ("Versions Config HA") : capteur `command_line` qui exécute `cat /config/versions.json`.
+#   - `value_template` : nombre de caractères du JSON.
+#   - `json_attributes_path: "$"` : expose tout le JSON à la racine comme attributs.
+#   - `json_attributes` : liste des clés extraites, une par fichier suivi. Chaque attribut est un objet {version, last_change, last_update}.
+#
+# ## Comment c'est utilisé
+# Dans un dashboard, un footer affiche la version d'un fichier via un template du type :
+# {{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_streaming').version }}
+#
+# ## Comment modifier
+# | Je veux... | Je fais... |
+# | Suivre un nouveau fichier/dashboard | Ajouter son chemin relatif à la liste json_attributes |
+# | Ne plus suivre un fichier | Retirer son chemin de json_attributes |
+# | Changer la source des données | Ne pas éditer ce fichier à la main — versions.json est régénéré par le hook git |
+#
+# ## Piège connu
+# Ce fichier ne doit jamais être édité pour changer une version manuellement.
+#
 # [AUTO-VERSION] v0.2.0 | 20/09/2026 13:25 | ajout de packages/matteo_logistique.yaml au suivi de versioning
+
 # Capteur consolide de versionning (package HA)
 # Lit versions.json, mis a jour automatiquement par le hook git post-commit.
-# Un seul capteur ("Versions Config HA"), un attribut par fichier suivi
-# (cle = chemin relatif du fichier dans le depot). Chaque attribut est un
-# objet {version, last_change, last_update}.
-#
-# Utilise dans les footers des dashboards via, par exemple :
-#   {{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_streaming').version }}
+# Un seul capteur ("Versions Config HA"), un attribut par fichier suivi.
 
 command_line:
   - sensor:
