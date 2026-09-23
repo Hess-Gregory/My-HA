@@ -139,6 +139,11 @@
     "last_update": "2026-09-17T18:18:24.960660+02:00",
     "version": "0.2.0"
   },
+  ".storage/lovelace.matteo-trajets": {
+    "last_change": "Initialisation complète de la vue Dashboard Matteo & Trajets (Sections, Planning, Banque de trajets et Footer de versioning)",
+    "last_update": "2026-09-22T13:27:37.553067",
+    "version": "1.0.0"
+  },
   "automations.yaml": {
     "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
     "last_update": "2026-09-20T21:15:29.547315+02:00",
@@ -165,9 +170,9 @@
     "version": "0.1.0"
   },
   "packages/dashboard_versions.yaml": {
-    "last_change": "ajout de packages/matteo_logistique.yaml au suivi de versioning",
-    "last_update": "2026-09-20T13:25:35.144187+02:00",
-    "version": "0.2.0"
+    "last_change": "ajout package calendrier, scripts Python, JSON et documentation",
+    "last_update": "2026-09-23T02:57:54.752909+02:00",
+    "version": "0.3.0"
   },
   "packages/horaires_pro.yaml": {
     "last_change": "ajoute les compteurs Maladie manquants",
@@ -185,9 +190,9 @@
     "version": "0.1.0"
   },
   "packages/matteo_logistique.yaml": {
-    "version": "1.0.0",
     "last_change": "Création du package logistique Home Assistant (helpers, sélecteurs, moteur de calcul des plannings de garde et gestion de la banque de trajets)",
-    "last_update": "2026-09-22T13:27:37.553067"
+    "last_update": "2026-09-22T13:27:37.553067",
+    "version": "1.0.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -228,10 +233,5 @@
     "last_change": "initialisation du versionning par fichier",
     "last_update": "2026-09-17T14:01:47.050330+02:00",
     "version": "0.0.1"
-  },
-  ".storage/lovelace.matteo-trajets": {
-    "version": "1.0.0",
-    "last_change": "Initialisation complète de la vue Dashboard Matteo & Trajets (Sections, Planning, Banque de trajets et Footer de versioning)",
-    "last_update": "2026-09-22T13:27:37.553067"
   }
 }
