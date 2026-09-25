@@ -42,3 +42,6 @@ Point notable dans `kanban_todoist_update_task` : `due_date` n'est inclus que si
 ## Piège connu
 
 Les 6 scripts d'action référencent chacun, en dur, la liste des 4 entités `sensor.kanban_xxx` à rafraîchir en fin de séquence. Ajouter un 5e projet sans mettre à jour ces 6 listes fera que le nouveau projet ne se rafraîchit qu'au bout du `scan_interval` (5 min) après une action, au lieu d'immédiatement.
+
+## Robustesse des capteurs Todoist
+Les `value_template` des capteurs REST Todoist testent l'existence des champs (`value_json.… is defined`) : si l'API répond une erreur (jeton expiré 401/403, réponse vide), le capteur passe à `indisponible` / `0` au lieu de remplir le journal d'avertissements. **Un jeton refusé se corrige en générant un nouveau jeton Todoist** (Paramètres › Intégrations › Jeton API) et en le copiant dans `secrets.yaml` (`todoist_api_token`), puis redémarrer HA.

@@ -16,7 +16,7 @@ rest:
     sensor:
       - name: "Kanban Gregory Projet"
         unique_id: kanban_gregory_projet
-        value_template: "{{ value_json.project.name }}"
+        value_template: "{{ value_json.project.name if value_json is defined and value_json.project is defined else 'indisponible' }}"
         json_attributes:
           - project
           - sections
@@ -29,7 +29,7 @@ rest:
     sensor:
       - name: "Kanban Gregory"
         unique_id: kanban_gregory
-        value_template: "{{ value_json.results | length }}"
+        value_template: "{{ value_json.results | length if value_json is defined and value_json.results is defined else 0 }}"
         json_attributes:
           - results
           - next_cursor
@@ -46,7 +46,7 @@ rest:
     sensor:
       - name: "Kanban Matteo Projet"
         unique_id: kanban_matteo_projet
-        value_template: "{{ value_json.project.name }}"
+        value_template: "{{ value_json.project.name if value_json is defined and value_json.project is defined else 'indisponible' }}"
         json_attributes:
           - project
           - sections
@@ -59,7 +59,7 @@ rest:
     sensor:
       - name: "Kanban Matteo"
         unique_id: kanban_matteo
-        value_template: "{{ value_json.results | length }}"
+        value_template: "{{ value_json.results | length if value_json is defined and value_json.results is defined else 0 }}"
         json_attributes:
           - results
           - next_cursor
@@ -76,7 +76,7 @@ rest:
     sensor:
       - name: "Kanban Sandrine Projet"
         unique_id: kanban_sandrine_projet
-        value_template: "{{ value_json.project.name }}"
+        value_template: "{{ value_json.project.name if value_json is defined and value_json.project is defined else 'indisponible' }}"
         json_attributes:
           - project
           - sections
@@ -89,7 +89,7 @@ rest:
     sensor:
       - name: "Kanban Sandrine"
         unique_id: kanban_sandrine
-        value_template: "{{ value_json.results | length }}"
+        value_template: "{{ value_json.results | length if value_json is defined and value_json.results is defined else 0 }}"
         json_attributes:
           - results
           - next_cursor
@@ -106,7 +106,7 @@ rest:
     sensor:
       - name: "Kanban Famille Projet"
         unique_id: kanban_famille_projet
-        value_template: "{{ value_json.project.name }}"
+        value_template: "{{ value_json.project.name if value_json is defined and value_json.project is defined else 'indisponible' }}"
         json_attributes:
           - project
           - sections
@@ -119,7 +119,7 @@ rest:
     sensor:
       - name: "Kanban Famille"
         unique_id: kanban_famille
-        value_template: "{{ value_json.results | length }}"
+        value_template: "{{ value_json.results | length if value_json is defined and value_json.results is defined else 0 }}"
         json_attributes:
           - results
           - next_cursor

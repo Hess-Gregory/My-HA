@@ -94,7 +94,7 @@ rest:
     sensor:
       - name: "Horaires Pro Projet"
         unique_id: horaires_pro_projet
-        value_template: "{{ value_json.name }}"
+        value_template: "{{ value_json.name if value_json is defined and value_json.name is defined else 'indisponible' }}"
         json_attributes:
           - id
           - name
@@ -109,7 +109,7 @@ rest:
     sensor:
       - name: "Horaires Pro Taches"
         unique_id: horaires_pro_taches
-        value_template: "{{ value_json.results | length }}"
+        value_template: "{{ value_json.results | length if value_json is defined and value_json.results is defined else 0 }}"
         json_attributes:
           - results
           - next_cursor

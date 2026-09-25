@@ -977,7 +977,7 @@
                                                   "type": "custom:mushroom-title-card",
                                                   "alignment": "center",
                                                   "title": "📄 Détails",
-                                                  "subtitle": "{% set k = states('input_text.matteo_form_date_key') %}{% set w = (state_attr('sensor.planning_matteo_engine','weekends') or []) | selectattr('date_key','eq',k) | list | first %}{% if w and k.startswith('VAC_') %}{{ w.vac_nom }} · part {{ w.vac_part }}/{{ w.vac_parts }} — officiel du {{ w.vac_debut[8:10] ~ '/' ~ w.vac_debut[5:7] }} au {{ w.vac_fin[8:10] ~ '/' ~ w.vac_fin[5:7] ~ '/' ~ w.vac_fin[0:4] }}{% elif w %}{{ w.du }} → {{ w.au }}{% else %}{{ k }}{% endif %}",
+                                                  "subtitle": "{% set k = states('input_text.matteo_form_date_key') %}{% set w = (state_attr('sensor.planning_matteo_engine','weekends') or []) | selectattr('date_key','eq',k) | list | first %}{% if w and k.startswith('VAC_') %}{{ w.vac_nom }} · part {{ w.vac_part }}/{{ w.vac_parts }} — officiel du {{ (w.vac_debut or '')[8:10] ~ '/' ~ (w.vac_debut or '')[5:7] }} au {{ (w.vac_fin or '')[8:10] ~ '/' ~ (w.vac_fin or '')[5:7] ~ '/' ~ (w.vac_fin or '')[0:4] }}{% elif w %}{{ w.du }} → {{ w.au }}{% else %}{{ k }}{% endif %}",
                                                   "card_mod": {
                                                     "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
                                                   }
@@ -1135,7 +1135,7 @@
                                                   "type": "custom:mushroom-title-card",
                                                   "alignment": "center",
                                                   "title": "✏️ Modifier",
-                                                  "subtitle": "{% set k = states('input_text.matteo_form_date_key') %}{% set w = (state_attr('sensor.planning_matteo_engine','weekends') or []) | selectattr('date_key','eq',k) | list | first %}{% if w and k.startswith('VAC_') %}{{ w.vac_nom }} · part {{ w.vac_part }}/{{ w.vac_parts }} — officiel du {{ w.vac_debut[8:10] ~ '/' ~ w.vac_debut[5:7] }} au {{ w.vac_fin[8:10] ~ '/' ~ w.vac_fin[5:7] ~ '/' ~ w.vac_fin[0:4] }}{% elif w %}{{ w.du }} → {{ w.au }}{% else %}{{ k }}{% endif %}",
+                                                  "subtitle": "{% set k = states('input_text.matteo_form_date_key') %}{% set w = (state_attr('sensor.planning_matteo_engine','weekends') or []) | selectattr('date_key','eq',k) | list | first %}{% if w and k.startswith('VAC_') %}{{ w.vac_nom }} · part {{ w.vac_part }}/{{ w.vac_parts }} — officiel du {{ (w.vac_debut or '')[8:10] ~ '/' ~ (w.vac_debut or '')[5:7] }} au {{ (w.vac_fin or '')[8:10] ~ '/' ~ (w.vac_fin or '')[5:7] ~ '/' ~ (w.vac_fin or '')[0:4] }}{% elif w %}{{ w.du }} → {{ w.au }}{% else %}{{ k }}{% endif %}",
                                                   "card_mod": {
                                                     "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border-radius: 16px !important;\n  box-shadow: none !important;\n}\n"
                                                   }

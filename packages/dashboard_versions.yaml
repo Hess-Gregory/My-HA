@@ -45,7 +45,6 @@ command_line:
         - ".storage/lovelace.1_courses"
         - ".storage/lovelace.1_eclairage"
         - ".storage/lovelace.1_energie"
-        - ".storage/lovelace.1_flight_radar"
         - ".storage/lovelace.1_ma_maison"
         - ".storage/lovelace.1_meteo_belgique"
         - ".storage/lovelace.1_mon_confort"

@@ -52,3 +52,6 @@ Chaque bloc contient : `id`, `personne`, `content` (texte brut Todoist), `label`
 ## Piège connu
 
 Les libellés affichés (`nom`/`labels_map`) de ce fichier et les dictionnaires `labels_gregory`/`labels_sandrine` de `horaires_pro_editeur.yaml` sont **deux copies indépendantes qui doivent rester identiques mot pour mot**. Une désynchronisation (comme celle corrigée en v2.4.0) casse silencieusement le préremplissage du formulaire d'édition, sans erreur visible ailleurs que par un menu déroulant qui reste sur sa valeur par défaut au lieu du vrai type de la tâche.
+
+## Robustesse des capteurs Todoist
+Les `value_template` des capteurs REST Todoist testent l'existence des champs (`value_json.… is defined`) : si l'API répond une erreur (jeton expiré 401/403, réponse vide), le capteur passe à `indisponible` / `0` au lieu de remplir le journal d'avertissements. **Un jeton refusé se corrige en générant un nouveau jeton Todoist** (Paramètres › Intégrations › Jeton API) et en le copiant dans `secrets.yaml` (`todoist_api_token`), puis redémarrer HA.
