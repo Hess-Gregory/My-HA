@@ -20,6 +20,10 @@ Fichier d'infrastructure du système de versioning automatique. Il ne contient a
 - Après tout ajout dans `json_attributes`, effectuer un `ha core restart` pour charger le capteur mis à jour.
 
 ## Fichiers du planning Matteo suivis
-Les 6 packages `packages/matteo/*.yaml` sont suivis individuellement et affichés dans le footer du dashboard
-Calendrier (dépendances déclarées dans `scripts/dashboard_dependencies.json`). L'ancien `packages/matteo_logistique.yaml`
+Les 6 packages `packages/matteo/*.yaml` sont suivis individuellement. Le footer de l'onglet Matteo & Trajets
+n'affiche que le package maître `packages/matteo/matteo_calendar.yaml` (moteur du planning). L'ancien `packages/matteo_logistique.yaml`
 a été retiré (remplacé par `packages/matteo/`, voir `/config/matteo/README.md`).
+
+## Footer propre à une vue
+`scripts/dashboard_dependencies.json` accepte une clé `"<slug>/<chemin de la vue>"` (ex. `dashboard_calendrier/matteo-trajets`)
+qui remplace, pour cette vue seulement, la liste par défaut `"<slug>"`. Relancer ensuite `python3 scripts/add_footer_card.py <slug>`.

@@ -30,13 +30,17 @@ def dashboard_path(slug: str) -> str:
     return f".storage/lovelace.{slug}"
 
 
-def load_dependencies(slug: str) -> list:
+def load_dependencies(slug: str, view_path: str = "") -> list:
+    """Dependances du footer : cle "<slug>/<chemin de la vue>" si elle existe (footer propre a une vue),
+    sinon cle "<slug>" (valeur par defaut pour toutes les vues du dashboard)."""
     if not DEPENDENCIES_FILE.exists():
         return []
     try:
         data = json.loads(DEPENDENCIES_FILE.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return []
+    if view_path and f"{slug}/{view_path}" in data:
+        return data[f"{slug}/{view_path}"]
     return data.get(slug, [])
 
 
@@ -51,9 +55,9 @@ def version_line(path: str, label: str, icon: str) -> str:
     )
 
 
-def build_card(slug: str) -> dict:
+def build_card(slug: str, view_path: str = "") -> dict:
     own_path = dashboard_path(slug)
-    deps = load_dependencies(slug)
+    deps = load_dependencies(slug, view_path)
 
     lines = [
         f"<!-- {MARKER} -->",
@@ -116,10 +120,9 @@ def main():
     slug = sys.argv[1]
     path = ROOT / f".storage/lovelace.{slug}"
     data = json.loads(path.read_text(encoding="utf-8"))
-    card = build_card(slug)
     views = data["data"]["config"]["views"]
     for view in views:
-        apply_to_view(view, card)
+        apply_to_view(view, build_card(slug, view.get("path", "")))
     path.write_text(
         json.dumps(data, ensure_ascii=False, separators=(",", ":")),
         encoding="utf-8",

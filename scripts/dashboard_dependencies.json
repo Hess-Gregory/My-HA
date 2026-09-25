@@ -13,17 +13,18 @@
   "1_taches": [
     "packages/taches_kanban.yaml"
   ],
-  "dashboard_calendrier": [
-    "packages/horaires_pro.yaml",
-    "packages/horaires_pro_editeur.yaml",
-    "packages/matteo/matteo_calendar.yaml",
-    "packages/matteo/matteo_maintenance.yaml",
-    "packages/matteo/matteo_notifications.yaml",
-    "packages/matteo/matteo_planning_actions.yaml",
-    "packages/matteo/matteo_planning_options.yaml",
-    "packages/matteo/matteo_planning_vue.yaml"
-  ],
+  "dashboard_calendrier": [],
   "dashboard_transversal": [
     "packages/chauffage.yaml"
+  ],
+  "dashboard_calendrier/matteo-trajets": [
+    "packages/matteo/matteo_calendar.yaml"
+  ],
+  "dashboard_calendrier/horaires-pro": [
+    "packages/horaires_pro.yaml",
+    "packages/horaires_pro_editeur.yaml"
+  ],
+  "dashboard_calendrier/horaires-pro-stats": [
+    "packages/horaires_pro.yaml"
   ]
 }
