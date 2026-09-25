@@ -135,9 +135,9 @@
     "version": "1.0.0"
   },
   "packages/matteo/matteo_planning_actions.yaml": {
-    "last_change": "inversion permanente des retours avec trajet de compensation obligatoire",
-    "last_update": "2026-09-25T15:14:18.877395+02:00",
-    "version": "1.1.0"
+    "last_change": "liste des dates de compensation (comparaison de dates en texte)",
+    "last_update": "2026-09-25T15:19:32.253925+02:00",
+    "version": "1.1.1"
   },
   "packages/matteo/matteo_planning_options.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
