@@ -372,7 +372,7 @@ script:
           opts: >-
             {% set nl = namespace(l=[]) %}
             {% for w in ws if w.du and not w.hide and w.visible and not w.masque | default(false) and w.date_key != key
-                  and w.code_retour in ['A', 'B', 'C', 'D'] and (w.du[6:10] ~ w.du[3:5] ~ w.du[0:2]) > du %}
+                  and w.code_retour in ['A', 'B', 'C', 'D'] and (w.du[6:10] ~ w.du[3:5] ~ w.du[0:2]) > (du | string) %}
               {% set nl.l = nl.l + [{'k': w.du[6:10] ~ w.du[3:5] ~ w.du[0:2], 'au': w.au, 'c': w.code_retour, 'ci': w.compense_inversion | default('')}] %}
             {% endfor %}
             {% set ns = namespace(o=[], i=0) %}
