@@ -52,3 +52,11 @@ n'est pas fait par le bon parent ou si le lieu n'est pas Maurage · précision s
 - `input_boolean.matteo_form_inverser_retours` : case « 🔁 Inverser les retours à partir de cette date ».
 - `input_select.matteo_form_compensation` : date du trajet de compensation (obligatoire), remplie par `script.matteo_planning_maj_compensation` (un retour sur deux après la date) ; l'automatisation `matteo_form_maj_compensation` la met à jour quand on coche la case ou change la date.
 - Contrôles : retour A/B = l'autre parent que prévu, date de compensation et motif obligatoires. Arguments 27-28 du script Python : `inversion`, `comp_key`.
+
+## Notes de version
+
+| Version | Date | Commit | Changement |
+|---|---|---|---|
+| 1.1.1 | 25/09/2026 | bfe4a71 | Correctif : la liste « Date du trajet de compensation » ne se remplissait pas (date comparée comme nombre au lieu de texte). |
+| 1.1.0 | 25/09/2026 | 753fe68 | Nouveau : **inversion permanente des retours**. Case `input_boolean.matteo_form_inverser_retours`, liste `input_select.matteo_form_compensation` (obligatoire, un retour sur deux après la date), script `matteo_planning_maj_compensation` + automatisation `matteo_form_maj_compensation`, contrôles (retour opposé à l'alternance, date de compensation et motif obligatoires), arguments 27-28 envoyés au script Python. |
+| 1.0.0 | 25/09/2026 | — | Versionnage initial du package. |

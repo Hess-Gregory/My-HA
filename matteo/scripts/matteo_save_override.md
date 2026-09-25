@@ -27,3 +27,7 @@ Les 7 derniers sont optionnels (compatibilité) : s'ils sont absents, la valeur 
 ## Inversion permanente des retours (args 27-28)
 
 `INVERSION` = on/off, `COMP_KEY` = clé du trajet de compensation. Avec `on`, le retour (A ou B, obligatoirement l'autre parent que celui prévu par l'alternance) reçoit `inversion_retours`, `reprise_alternance` (ancre de l'alternance), `inversion_comp`, `rattrape_par` et un `bank_delta` de ±1 ; la ligne de compensation passe en C (+1) ou D (−1) avec `compense_inversion`. Avec `off` sur une ligne inversée, les champs sont retirés et `nettoyer_inversions()` (appelée par `save()`) remet la compensation à la normale.
+
+## Notes de version
+
+- **25/09/2026 · 753fe68** — Arguments 27-28 (`INVERSION`, `COMP_KEY`) : inversion permanente des retours avec trajet de compensation obligatoire (C +1 ou D −1) ; refus si le retour choisi est celui déjà prévu par l'alternance ; un retour C de compensation ne solde plus une autre dette.

@@ -21,3 +21,7 @@ Chaque ligne de `matteo_vue` contient notamment `aller_c` / `retour_c` au format
 ## Inversion permanente des retours
 
 `matteo_form_erreur` contrôle la case d'inversion (retour A/B opposé à l'alternance, date de compensation et motif obligatoires). La fiche Détails affiche « 🔁 Retours inversés… » sur la ligne d'inversion et « ⚖️ Compensation… » sur le trajet de compensation.
+
+## Notes de version
+
+- **25/09/2026 · 753fe68** — `matteo_form_erreur` : contrôles de l'inversion permanente des retours (retour opposé à l'alternance, date de compensation et motif obligatoires). Fiche Détails : lignes « 🔁 Retours inversés… » et « ⚖️ Compensation… ».

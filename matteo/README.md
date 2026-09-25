@@ -223,3 +223,11 @@ Le calendrier commun (vues *Semaine / Mois* et *Vue d'ensemble*) affiche aussi l
 Les fichiers `packages/matteo/*.yaml` et le dashboard sont suivis par le versioning automatique du dépôt
 (hook git `post-commit` → `versions.json` → footer de chaque onglet). Voir `/config/README.md`.
 Toute modification d'un fichier doit mettre à jour son `.md` compagnon dans le même commit.
+
+### Notes de version du planning Matteo
+
+| Date | Versions | Commit | Changement |
+|---|---|---|---|
+| 25/09/2026 | dashboard 1.2.0 · actions 1.1.0 → 1.1.1 | 753fe68, bfe4a71 | **Inversion permanente des retours** à partir d'une date, avec trajet de compensation obligatoire pour ré-égaliser la banque (voir § 1 quater). |
+| 25/09/2026 | scripts Python (hors versioning automatique) | 969a6fe | Alternance des retours continue à Noël 2026 : 27/12 Grégory, puis 10/01 eux, 24/01 Grégory… ; les retours saisis à la main suivent aussi l'alternance. |
+| 25/09/2026 | 1.0.0 | — | Versionnage initial des 6 packages et du dashboard. |

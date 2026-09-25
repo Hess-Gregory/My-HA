@@ -46,3 +46,8 @@ Tous les retours A/B **futurs** suivent l'alternance stricte (après A ou D → 
 - `compenser_inversion(...)` : passe la ligne de compensation en C (+1) ou D (−1) et la lie à l'inversion.
 - `nettoyer_inversions(data)` : appelée par `save()` avant `aligner_retours` ; remet à la normale une compensation orpheline (inversion annulée, déplacée ou supprimée).
 - Moteur : exporte `inversion_retours`, `inversion_comp`, `compense_inversion`.
+
+## Notes de version
+
+- **25/09/2026 · 753fe68** — Inversion permanente des retours : `retour_attendu_chaine`, `compenser_inversion`, `nettoyer_inversions` (appelée par `save()`) ; le moteur exporte `inversion_retours`, `inversion_comp(_au)`, `compense_inversion(_au)`.
+- **25/09/2026 · 969a6fe** — `aligner_retours` : tout retour A/B futur suit l'alternance stricte, même saisi à la main ; seuls C/D et `reprise_alternance` sont des ancres (correctif Noël 2026 : 27/12 Grégory).
