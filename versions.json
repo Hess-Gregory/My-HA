@@ -65,9 +65,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "statistiques Matteo sans erreur au demarrage de HA",
-    "last_update": "2026-09-25T14:17:33.638058+02:00",
-    "version": "1.1.4"
+    "last_change": "inversion permanente des retours avec trajet de compensation obligatoire",
+    "last_update": "2026-09-25T15:14:18.877395+02:00",
+    "version": "1.2.0"
   },
   ".storage/lovelace.dashboard_test": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -135,9 +135,9 @@
     "version": "1.0.0"
   },
   "packages/matteo/matteo_planning_actions.yaml": {
-    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
-    "last_update": "2026-09-25T11:19:02.979902+02:00",
-    "version": "1.0.0"
+    "last_change": "inversion permanente des retours avec trajet de compensation obligatoire",
+    "last_update": "2026-09-25T15:14:18.877395+02:00",
+    "version": "1.1.0"
   },
   "packages/matteo/matteo_planning_options.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
