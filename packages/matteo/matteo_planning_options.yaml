@@ -1,0 +1,97 @@
+# =====================================================================
+# Matteo — Options des menus (source : /config/matteo/data/matteo_options.json)
+# Les listes ci-dessous sont un secours ; elles sont resynchronisées
+# depuis le JSON au démarrage et à chaque changement du fichier.
+# Doc      : /config/packages/matteo/matteo_planning_options.md · vue d'ensemble : /config/matteo/README.md
+# =====================================================================
+
+command_line:
+  - sensor:
+      name: "Matteo Options Source"
+      unique_id: matteo_options_source
+      icon: mdi:form-dropdown
+      command: "cat /config/matteo/data/matteo_options.json"
+      scan_interval: 600
+      command_timeout: 15
+      value_template: "{{ 'ok' if value_json is defined and value_json.types_action is defined else 'erreur' }}"
+      json_attributes:
+        - types_action
+        - motifs_principaux
+        - motifs_trajet
+        - lieux
+        - acteurs_trajet
+        - codes_couleur
+        - status
+        - users
+
+# Menus de secours (réécrits depuis le JSON par l'automatisation ci-dessous).
+input_select:
+  matteo_form_motif:
+    name: "Motif 1 (raison de la garde hors rythme)"
+    icon: mdi:comment-question
+    options:
+      - "Aucun"
+      - "Anniversaire : Élodie (Maman)"
+      - "Anniversaire : Olivier (Beau-papa)"
+      - "Anniversaire : Noémie (Sœur)"
+      - "Anniversaire : Gino & Catherine (Grands-parents)"
+      - "Anniversaire : Nicolas (Parrain)"
+      - "Anniversaire : Matteo"
+      - "Fête des Mères"
+      - "Fête des Pères"
+      - "Maladie / Confinement (Hugo ou Matteo)"
+      - "Panne de voiture / Incident technique"
+      - "Urgence familiale / Empêchement de dernière minute"
+      - "Voyage scolaire / Classe verte / Colonie"
+      - "Pont / Week-end prolongé"
+      - "Autre (saisir motif libre)"
+
+  matteo_form_motif2:
+    name: "Motif 2 (pourquoi le parent n'a pas fait le trajet)"
+    icon: mdi:car-off
+    options:
+      - "Aucun"
+      - "Maladie / Confinement Elodie"
+      - "Maladie / Confinement Olivier"
+      - "Maladie / Confinement Noemie"
+      - "Fête familiale"
+      - "Olivier est indisponible raison professionnelle"
+      - "Olivier est indisponible raison privée"
+      - "Panne de voiture / Incident technique"
+      - "Urgence familiale / Empêchement de dernière minute"
+      - "Maladie / Confinement Grégory"
+      - "Grégory indisponible raison professionnelle"
+      - "Grégory indisponible raison privée"
+      - "Rattrapage convenu (banque de trajets)"
+      - "Autre (saisir motif libre, remplir champ libre)"
+
+# Synchronise les menus du formulaire avec matteo_options.json.
+automation:
+  - id: matteo_options_synchro_menus
+    alias: "Planning Matteo – Synchroniser les menus depuis matteo_options.json"
+    mode: queued
+    triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: state
+        entity_id: sensor.matteo_options_source
+    actions:
+      - variables:
+          types: "{{ (state_attr('sensor.matteo_options_source', 'types_action') or []) | map(attribute='label') | list }}"
+          motifs: "{{ (state_attr('sensor.matteo_options_source', 'motifs_principaux') or []) | map(attribute='label') | list }}"
+          motifs2: "{{ (state_attr('sensor.matteo_options_source', 'motifs_trajet') or []) | rejectattr('code', 'eq', 'BALANCE BANK') | map(attribute='label') | list }}"
+      - if: "{{ types | count > 0 }}"
+        then:
+          - action: input_select.set_options
+            target: { entity_id: input_select.matteo_form_type }
+            data: { options: "{{ types }}" }
+      - if: "{{ motifs | count > 0 }}"
+        then:
+          - action: input_select.set_options
+            target: { entity_id: input_select.matteo_form_motif }
+            data: { options: "{{ motifs }}" }
+      - if: "{{ motifs2 | count > 0 }}"
+        then:
+          - action: input_select.set_options
+            target: { entity_id: [input_select.matteo_form_motif2, input_select.matteo_form_motif_lieu] }
+            data: { options: "{{ (['Aucun'] + motifs2) | unique | list }}" }

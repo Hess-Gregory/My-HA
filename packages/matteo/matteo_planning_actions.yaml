@@ -1,0 +1,751 @@
+# =====================================================================
+# Matteo — Formulaire & actions (Voir / Créer / Modifier / Suspendre / Supprimer)
+# Popups browser_mod : dashboard Calendrier > Matteo & Trajets
+# Écriture du JSON : /config/matteo/scripts/*.py
+# Doc      : /config/packages/matteo/matteo_planning_actions.md · vue d'ensemble : /config/matteo/README.md
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# Helpers du formulaire (valeurs de la ligne en cours d'édition)
+# ---------------------------------------------------------------------
+input_text:
+  matteo_form_resultat:
+    name: "Planning Matteo – Message formulaire"
+    max: 255
+  matteo_form_date_key:
+    name: "Planning Matteo – Formulaire : clé"
+    max: 30
+  matteo_form_motif_libre:
+    name: "Précision (texte libre)"
+    icon: mdi:text
+    max: 200
+  matteo_form_notes:
+    name: "Notes"
+    icon: mdi:note-text
+    max: 255
+
+input_boolean:
+  matteo_form_actif:
+    name: "Date active"
+    icon: mdi:calendar-check
+  matteo_a_une_selection:
+    name: "Planning Matteo – Une ligne est sélectionnée"
+    icon: mdi:cursor-default-click
+  matteo_mode_edition:
+    name: "Planning Matteo – Mode modification"
+    icon: mdi:pencil
+
+input_datetime:
+  matteo_form_du:
+    name: "Du"
+    icon: mdi:calendar-start
+    has_date: true
+    has_time: false
+  matteo_form_au:
+    name: "Au"
+    icon: mdi:calendar-end
+    has_date: true
+    has_time: false
+
+input_select:
+  matteo_form_type:
+    name: "Type"
+    icon: mdi:calendar-weekend
+    options:
+      - "Weekend Gregory (Engis)"
+      - "Weekend Elodie (Maurage)"
+      - "Vac Gregory (Engis)"
+      - "Vac Elodie (Maurage)"
+      - "Exception / Aménagement"
+      - "Recuperation de date (voir fiche detail)"
+      - "Changement Permanent (Date pivot)"
+      - "Exceptionnel Ponctuel (Inverser ce week-end / Jour)"
+      - "Échange Croisé (Prêt-rendu)"
+      - "Période de Vacances"
+  matteo_form_aller:
+    name: "Aller géré par"
+    icon: mdi:car-arrow-right
+    options:
+      - "A — Grégory"
+      - "B — Élodie / Olivier"
+      - "E — Aucun"
+  matteo_form_retour:
+    name: "Retour géré par"
+    icon: mdi:car-arrow-left
+    options:
+      - "A — Grégory (normal)"
+      - "B — Élodie / Olivier (normal)"
+      - "C — Grégory (+1 Banque)"
+      - "D — Élodie / Olivier (Compensation)"
+      - "E — Aucun (Chez Maman)"
+  matteo_form_rattrapage:
+    name: "Trajet rattrapé"
+    icon: mdi:swap-horizontal
+    options:
+      - "Automatique (plus ancien)"
+  matteo_form_garde:
+    name: "Chez qui ?"
+    icon: mdi:home-account
+    options:
+      - "Chez papa"
+      - "Chez maman"
+  matteo_form_lieu_aller:
+    name: "Lieu où tu vas le chercher"
+    icon: mdi:map-marker
+    options:
+      - "Maurage (Maison Maman)"
+      - "ICPP Uccle (École)"
+      - "Forest National (Grands-parents)"
+  matteo_form_lieu_retour:
+    name: "Lieu où tu le ramènes"
+    icon: mdi:map-marker-outline
+    options:
+      - "Maurage (Maison Maman)"
+      - "ICPP Uccle (École)"
+      - "Forest National (Grands-parents)"
+  matteo_form_motif_lieu:
+    name: "Motif du changement de lieu"
+    icon: mdi:map-marker-question
+    options:
+      - "Aucun"
+      - "Olivier est indisponible raison professionnelle"
+      - "Olivier est indisponible raison privée"
+      - "Autre (saisir motif libre, remplir champ libre)"
+  matteo_form_echange:
+    name: "Échanger avec le week-end du"
+    icon: mdi:swap-horizontal-bold
+    options:
+      - "— choisir —"
+
+# ---------------------------------------------------------------------
+# Appels des scripts Python (écriture du planning)
+# ---------------------------------------------------------------------
+shell_command:
+  matteo_override_enregistrer: >-
+    python3 /config/matteo/scripts/matteo_save_override.py
+    "{{ date_key }}" "{{ type_code }}" "{{ type_action }}" "{{ gardien }}"
+    "{{ acteur_aller }}" "{{ acteur_aller_code }}" "{{ acteur_retour }}" "{{ acteur_retour_code }}"
+    "{{ code_aller }}" "{{ code_retour }}" "{{ motif_code }}" "{{ motif }}" "{{ motif_libre }}"
+    "{{ report_date }}" "false" "ha" "{{ motif2_code }}" "{{ motif2 }}"
+    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}"
+  matteo_override_supprimer: >-
+    python3 /config/matteo/scripts/matteo_delete_override.py "{{ date_key }}"
+  matteo_override_flags: >-
+    python3 /config/matteo/scripts/matteo_set_flags.py "{{ date_key }}" "{{ hide }}" "{{ visible }}" "ha"
+  matteo_planning_generer: >-
+    python3 /config/matteo/scripts/generate_matteo_planning.py
+
+script:
+  # ---------- Chargement / navigation du popup ----------
+  # Remplit tous les helpers du formulaire à partir d'une ligne du moteur (date_key).
+  matteo_planning_charger:
+    alias: "Planning Matteo – Charger le formulaire"
+    icon: mdi:form-select
+    mode: restart
+    fields:
+      date_key:
+        description: "Clé : JJ-MM-AAAA, VAC_AAAA-MM-JJ_n ou PIVOT_JJ-MM-AAAA"
+        example: "25-09-2026"
+    sequence:
+      - variables:
+          w: >-
+            {{ (state_attr('sensor.planning_matteo_engine', 'weekends') or [])
+               | selectattr('date_key', 'eq', date_key) | list | first | default({}) }}
+          is_vac: "{{- date_key.startswith('VAC_') -}}"
+          defini: "{{- (w.du | default('')) != '' -}}"
+          papa: >-
+            {%- if defini -%}{{- w.code_aller | default('E') in ['A', 'B'] or 'GREGORY' in w.type_code | default('') -}}
+            {%- elif is_vac -%}{{- ((w.vac_part | int(1)) % 2 == 1) != ('Noël' in w.vac_nom and (w.vac_debut[0:4] | int(0)) % 2 == 1) -}}
+            {%- else -%}true{%- endif -%}
+          type_code: >-
+            {%- if w.type_code | default('') -%}{{- w.type_code -}}
+            {%- elif is_vac -%}{{- 'VAC_GREGORY' if papa else 'VAC_ELODIE' -}}
+            {%- else -%}WEEKEND_GREGORY{%- endif -%}
+          dates: >-
+            {%- if defini -%}
+              {{- [w.du[6:10] ~ '-' ~ w.du[3:5] ~ '-' ~ w.du[0:2], w.au[6:10] ~ '-' ~ w.au[3:5] ~ '-' ~ w.au[0:2]] -}}
+            {%- elif is_vac and w.vac_debut | default('') -%}
+              {%- set d0 = as_datetime(w.vac_debut) -%}{%- set d1 = as_datetime(w.vac_fin) -%}
+              {%- set n = w.vac_parts | int(2) -%}{%- set i = w.vac_part | int(1) -%}
+              {%- set size = (((d1 - d0).days + 1) / n) | round(0, 'floor') | int -%}
+              {%- set s = d0 + timedelta(days=(i - 1) * size) -%}
+              {%- set e = d1 if i == n else d0 + timedelta(days=i * size - 1) -%}
+              {{- [s.strftime('%Y-%m-%d'), e.strftime('%Y-%m-%d')] -}}
+            {%- else -%}
+              {%- set d = as_datetime(date_key[6:10] ~ '-' ~ date_key[3:5] ~ '-' ~ date_key[0:2]) -%}
+              {{- [d.strftime('%Y-%m-%d'), (d + timedelta(days=2)).strftime('%Y-%m-%d')] -}}
+            {%- endif -%}
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_date_key }
+        data: { value: "{{ date_key }}" }
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.matteo_form_du }
+        data: { date: "{{ dates[0] }}" }
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.matteo_form_au }
+        data: { date: "{{ dates[1] }}" }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_type }
+        data:
+          option: >-
+            {% set opts = state_attr('sensor.matteo_options_source', 'types_action') or [] %}
+            {% set t = opts | selectattr('code', 'eq', type_code) | map(attribute='label') | list %}
+            {{ t[0] if t else state_attr('input_select.matteo_form_type', 'options')[0] }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_motif }
+        data:
+          option: >-
+            {% set opts = state_attr('sensor.matteo_options_source', 'motifs_principaux') or [] %}
+            {% set m = opts | selectattr('code', 'eq', w.motif_code | default('NONE')) | map(attribute='label') | list %}
+            {{ m[0] if m else state_attr('input_select.matteo_form_motif', 'options')[0] }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_aller }
+        data:
+          option: >-
+            {% set c = w.code_aller | default('') or ('A' if papa else 'E') %}
+            {{ {'A': 'A — Grégory', 'B': 'B — Élodie / Olivier'}.get(c, 'E — Aucun') }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_lieu_aller }
+        data:
+          option: >-
+            {% set o = state_attr('input_select.matteo_form_lieu_aller', 'options') or ['Maurage (Maison Maman)'] %}
+            {% set l = (state_attr('sensor.matteo_options_source', 'lieux') or []) | selectattr('code', 'eq', w.lieu_aller_code | default('') or 'MAURAGE') | map(attribute='label') | list %}
+            {{ l[0] if l and l[0] in o else o[0] }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_lieu_retour }
+        data:
+          option: >-
+            {% set o = state_attr('input_select.matteo_form_lieu_retour', 'options') or ['Maurage (Maison Maman)'] %}
+            {% set l = (state_attr('sensor.matteo_options_source', 'lieux') or []) | selectattr('code', 'eq', w.lieu_retour_code | default('') or 'MAURAGE') | map(attribute='label') | list %}
+            {{ l[0] if l and l[0] in o else o[0] }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_motif_lieu }
+        data:
+          option: >-
+            {% set o = state_attr('input_select.matteo_form_motif_lieu', 'options') or ['Aucun'] %}
+            {% set m = (state_attr('sensor.matteo_options_source', 'motifs_trajet') or []) | selectattr('code', 'eq', w.motif_lieu_code | default('NONE')) | map(attribute='label') | list %}
+            {{ m[0] if m and m[0] in o else o[0] }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_retour }
+        data:
+          option: >-
+            {% set c = w.code_retour | default('') or ('A' if papa else 'E') %}
+            {{ state_attr('input_select.matteo_form_retour', 'options')
+               | select('match', c ~ ' ') | list | first | default('E — Aucun (Chez Maman)') }}
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_motif2 }
+        data:
+          option: >-
+            {% set opts = state_attr('sensor.matteo_options_source', 'motifs_trajet') or [] %}
+            {% set m = opts | rejectattr('code', 'eq', 'BALANCE BANK')
+               | selectattr('code', 'eq', w.motif2_code | default('NONE')) | map(attribute='label') | list %}
+            {{ m[0] if m else 'Aucun' }}
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_motif_libre }
+        data: { value: "{{ w.motif_libre | default('') }}" }
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_notes }
+        data: { value: "{{ w.notes | default('') }}" }
+      - action: "input_boolean.turn_{{ 'off' if w.visible is defined and not w.visible else 'on' }}"
+        target: { entity_id: input_boolean.matteo_form_actif }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_garde }
+        data: { option: "{{ 'Chez papa' if papa else 'Chez maman' }}" }
+      - action: script.matteo_planning_maj_echange
+
+  # Ouvre la fiche Détails d'une ligne.
+  matteo_planning_selectionner:
+    alias: "Planning Matteo – Sélectionner une ligne"
+    icon: mdi:cursor-default-click
+    mode: restart
+    fields:
+      date_key:
+        description: "Clé de la ligne"
+        example: "25-09-2026"
+    sequence:
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_resultat }
+        data: { value: "" }
+      - action: script.matteo_planning_charger
+        data: { date_key: "{{ date_key }}" }
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.matteo_mode_edition }
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.matteo_a_une_selection }
+      - action: script.matteo_planning_maj_rattrapage
+
+  # Passe de la fiche Détails au formulaire Modifier.
+  matteo_planning_editer:
+    alias: "Planning Matteo – Passer en modification"
+    icon: mdi:pencil
+    mode: restart
+    sequence:
+      - condition: template
+        value_template: "{{ states('input_text.matteo_form_date_key') not in ['', 'unknown', 'unavailable'] }}"
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_resultat }
+        data: { value: "" }
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.matteo_mode_edition }
+
+  # Revient à la fiche Détails sans enregistrer.
+  matteo_planning_annuler_edition:
+    alias: "Planning Matteo – Annuler la modification"
+    icon: mdi:close
+    mode: restart
+    sequence:
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_resultat }
+        data: { value: "" }
+      - action: script.matteo_planning_charger
+        data: { date_key: "{{ states('input_text.matteo_form_date_key') }}" }
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.matteo_mode_edition }
+      - action: script.matteo_planning_maj_rattrapage
+
+  # Vide le formulaire pour créer une nouvelle date (vendredi prochain par défaut).
+  matteo_planning_nouveau:
+    alias: "Planning Matteo – Préparer une création"
+    icon: mdi:calendar-plus
+    mode: restart
+    sequence:
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_resultat }
+        data: { value: "" }
+      - action: input_boolean.turn_off
+        target: { entity_id: [input_boolean.matteo_mode_edition, input_boolean.matteo_a_une_selection] }
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.matteo_form_actif }
+      - action: input_text.set_value
+        target: { entity_id: [input_text.matteo_form_date_key, input_text.matteo_form_motif_libre, input_text.matteo_form_notes] }
+        data: { value: "" }
+      - action: input_select.select_first
+        target:
+          entity_id:
+            - input_select.matteo_form_type
+            - input_select.matteo_form_motif
+            - input_select.matteo_form_motif2
+            - input_select.matteo_form_aller
+            - input_select.matteo_form_retour
+            - input_select.matteo_form_lieu_aller
+            - input_select.matteo_form_lieu_retour
+            - input_select.matteo_form_motif_lieu
+      - variables:
+          fri: "{{ (now() + timedelta(days=(4 - now().weekday()) % 7)) }}"
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.matteo_form_du }
+        data: { date: "{{ (now() + timedelta(days=(4 - now().weekday()) % 7)).strftime('%Y-%m-%d') }}" }
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.matteo_form_au }
+        data: { date: "{{ (now() + timedelta(days=(4 - now().weekday()) % 7 + 2)).strftime('%Y-%m-%d') }}" }
+      - action: input_select.select_first
+        target: { entity_id: input_select.matteo_form_garde }
+      - action: script.matteo_planning_maj_rattrapage
+      - action: script.matteo_planning_maj_echange
+
+  # Liste des trajets dus qu'un retour D peut solder.
+  matteo_planning_maj_rattrapage:
+    alias: "Planning Matteo – Liste des trajets à rattraper"
+    icon: mdi:swap-horizontal
+    mode: restart
+    sequence:
+      - variables:
+          opts: >-
+            {% set key = states('input_text.matteo_form_date_key') %}
+            {% set ns = namespace(o=[]) %}
+            {% for w in state_attr('sensor.planning_matteo_engine', 'weekends') or [] %}
+              {% if w.code_retour == 'C' and not w.hide and not w.masque | default(false) and not w.solde_dette and w.date_key != key
+                    and (not w.report_agreed or w.rattrape_par == key) %}
+                {% set ns.o = ns.o + [{'k': w.du[6:10] ~ w.du[3:5] ~ w.du[0:2], 'l': w.du ~ ' — retour non fait'}] %}
+              {% endif %}
+            {% endfor %}
+            {{ ['Automatique (plus ancien)'] + (ns.o | sort(attribute='k') | map(attribute='l') | list) }}
+      - action: input_select.set_options
+        target: { entity_id: input_select.matteo_form_rattrapage }
+        data: { options: "{{ opts }}" }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_rattrapage }
+        data:
+          option: >-
+            {% set key = states('input_text.matteo_form_date_key') %}
+            {% set w = (state_attr('sensor.planning_matteo_engine', 'weekends') or [])
+               | selectattr('date_key', 'eq', key) | list | first | default({}) %}
+            {% set rd = (w.report_date | default('')) | replace('-', '/') %}
+            {% set m = (opts | select('match', rd) | list) if rd else [] %}
+            {{ m[0] if m else opts[0] }}
+
+  # ---------- Enregistrement ----------
+  # Contrôles (garde-fou identique à la macro matteo_form_erreur) puis écriture via matteo_save_override.py.
+  matteo_planning_enregistrer:
+    alias: "Planning Matteo – Enregistrer (avec contrôles)"
+    icon: mdi:content-save
+    mode: queued
+    sequence:
+      - variables:
+          key: "{{ states('input_text.matteo_form_date_key') }}"
+          type_action: "{{ states('input_select.matteo_form_type') }}"
+          type_code: >-
+            {% set t = (state_attr('sensor.matteo_options_source', 'types_action') or [])
+               | selectattr('label', 'eq', states('input_select.matteo_form_type')) | map(attribute='code') | list %}
+            {{ t[0] if t else 'EXCEPTION' }}
+          m_label: "{{ states('input_select.matteo_form_motif') }}"
+          m_code: >-
+            {% set m = (state_attr('sensor.matteo_options_source', 'motifs_principaux') or [])
+               | selectattr('label', 'eq', states('input_select.matteo_form_motif')) | map(attribute='code') | list %}
+            {{ m[0] if m else 'NONE' }}
+          m2_label: "{{ states('input_select.matteo_form_motif2') }}"
+          m2_code: >-
+            {% set m = (state_attr('sensor.matteo_options_source', 'motifs_trajet') or [])
+               | selectattr('label', 'eq', states('input_select.matteo_form_motif2')) | map(attribute='code') | list %}
+            {{ m[0] if m else 'NONE' }}
+          ca: "{{ states('input_select.matteo_form_aller')[0:1] }}"
+          cr: "{{ states('input_select.matteo_form_retour')[0:1] }}"
+          du: "{{ states('input_datetime.matteo_form_du') }}"
+          au: "{{ states('input_datetime.matteo_form_au') }}"
+          libre: >-
+            {% set m = states('input_text.matteo_form_motif_libre') | trim %}
+            {{ '' if m in ['unknown', 'unavailable'] else m | replace('"', '') }}
+          prevus: "{{ ['WEEKEND_GREGORY', 'WEEKEND_ELODIE', 'VAC_GREGORY', 'VAC_ELODIE', 'PERIODE_VAC'] }}"
+          ws: "{{ state_attr('sensor.planning_matteo_engine', 'weekends') or [] }}"
+      - variables:
+          chez_maman: >-
+            {{ type_code in ['WEEKEND_ELODIE', 'VAC_ELODIE'] or (type_code not in prevus and is_state('input_select.matteo_form_garde', 'Chez maman')) }}
+          ca: "{{ 'E' if chez_maman else ca }}"
+          cr: "{{ 'E' if chez_maman else cr }}"
+          ml_label: "{{ states('input_select.matteo_form_motif_lieu') }}"
+          ml_code: >-
+            {% set m = (state_attr('sensor.matteo_options_source', 'motifs_trajet') or []) | selectattr('label', 'eq', states('input_select.matteo_form_motif_lieu')) | map(attribute='code') | list %}{{ m[0] if m else 'NONE' }}
+          lieu_diff: >-
+            {{ (ca == 'A' and not is_state('input_select.matteo_form_lieu_aller', 'Maurage (Maison Maman)')) or (cr in ['A', 'C'] and not is_state('input_select.matteo_form_lieu_retour', 'Maurage (Maison Maman)')) }}
+          ech_sel: "{{ states('input_select.matteo_form_echange') }}"
+          attendu: "{{ states('sensor.matteo_form_retour_attendu') }}"
+          echange_avec: >-
+            {{ (ech_sel[0:2] ~ '-' ~ ech_sel[3:5] ~ '-' ~ ech_sel[6:10]) if type_code == 'ECHANGE' and (ech_sel | regex_match('^\\d{2}/\\d{2}/\\d{4}')) else '' }}
+      - variables:
+          chevauche: >-
+            {%- set w = ws | selectattr('date_key', 'eq', key) | list | first | default({}) -%}
+            {%- set ns = namespace(n=false) -%}
+            {%- if key.startswith('VAC_') -%}
+              {%- for p in ws if p.vac_debut == w.vac_debut | default('x') and p.date_key != key and not p.hide and p.du -%}
+                {%- set pd = p.du[6:10] ~ '-' ~ p.du[3:5] ~ '-' ~ p.du[0:2] -%}
+                {%- set pa = p.au[6:10] ~ '-' ~ p.au[3:5] ~ '-' ~ p.au[0:2] -%}
+                {%- if pd < au and pa > du -%}{%- set ns.n = true -%}{%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {{- ns.n -}}
+      - variables:
+          erreur: >-
+            {% set w = ws | selectattr('date_key', 'eq', key) | list | first | default({}) %}
+            {% if not (key | regex_match('^(\\d{2}-\\d{2}-\\d{4}|VAC_\\d{4}-\\d{2}-\\d{2}_\\d+|PIVOT_\\d{2}-\\d{2}-\\d{4}|PERIODE)$')) %}
+              ⚠️ Aucune date sélectionnée.
+            {% elif not (du | regex_match('^\\d{4}-\\d{2}-\\d{2}$')) or not (au | regex_match('^\\d{4}-\\d{2}-\\d{2}$')) %}
+              ⚠️ Renseigne la date de début et la date de fin.
+            {% elif au < du %}
+              ⚠️ La date de fin doit être après la date de début.
+            {% elif key.startswith('VAC_') and w.vac_debut | default('')
+                  and (du < (as_datetime(w.vac_debut) - timedelta(days=3)).strftime('%Y-%m-%d')
+                       or au > (as_datetime(w.vac_fin) + timedelta(days=3)).strftime('%Y-%m-%d')) %}
+              ⚠️ Les dates doivent rester dans le congé officiel (du {{ w.vac_debut[8:10] ~ '/' ~ w.vac_debut[5:7] }} au {{ w.vac_fin[8:10] ~ '/' ~ w.vac_fin[5:7] }}, ±3 jours).
+            {% elif chevauche %}
+              ⚠️ Ces dates chevauchent une autre part du même congé.
+            {% elif type_code == 'ECHANGE' and echange_avec | trim == '' %}
+              ⚠️ Choisis le week-end avec lequel faire l'échange croisé.
+            {% elif type_code == 'ECHANGE' and (('chez maman' in ech_sel) != chez_maman) %}
+              ⚠️ Échange croisé : choisis un week-end où Matteo est chez l'autre parent.
+            {% elif not chez_maman and ((attendu == 'B' and cr == 'A')) %}
+              ⚠️ C'était au tour d'Élodie / Olivier de faire le retour : si tu l'as fait à leur place, choisis « C — Grégory (+1 Banque) » et indique le motif.
+            {% elif not chez_maman and attendu == 'A' and cr == 'B' %}
+              ⚠️ C'était ton tour de faire le retour : si Élodie / Olivier l'ont fait à ta place, choisis « D — Élodie / Olivier (Compensation) ».
+            {% elif not chez_maman and attendu == 'A' and cr == 'C' %}
+              ⚠️ C'était ton tour de faire le retour : choisis « A — Grégory (normal) » (C = trajet non respecté par Élodie / Olivier).
+            {% elif not chez_maman and attendu == 'B' and cr == 'D' %}
+              ⚠️ C'était au tour d'Élodie / Olivier : choisis « B — Élodie / Olivier (normal) » (D = rattrapage d'un de tes tours).
+            {% elif type_code not in prevus and m_code == 'NONE' %}
+              ⚠️ Choisis un motif de garde : ce type sort du rythme prévu.
+            {% elif not chez_maman and (cr in ['C', 'D'] or ca == 'B') and m2_code == 'NONE' %}
+              ⚠️ Motif obligatoire : un parent n'a pas fait son trajet.
+            {% elif not chez_maman and lieu_diff and ml_code == 'NONE' %}
+              ⚠️ Motif obligatoire : pourquoi le lieu n'est pas Maurage.
+            {% elif libre == '' and ((m_code == 'AUTRE' and type_code not in prevus) or ((cr in ['C', 'D'] or ca == 'B') and m2_code == 'AUTRE REPORT') or (lieu_diff and ml_code == 'AUTRE REPORT')) %}
+              ⚠️ Précision obligatoire : complète le champ texte (motif « Autre »).
+            {% elif libre == '' and type_code == 'PERIODE_VAC' %}
+              ⚠️ Donne un nom à la période de vacances (champ texte).
+            {% endif %}
+      - if: "{{ erreur | trim != '' }}"
+        then:
+          - action: input_text.set_value
+            target: { entity_id: input_text.matteo_form_resultat }
+            data: { value: "{{ erreur | trim }}" }
+          - stop: "Contrôle du formulaire"
+            error: true
+      # Rattrapage (retour D) et compensation (aller B) : trajet C lié
+      - variables:
+          ratt: "{{ states('input_select.matteo_form_rattrapage') }}"
+          ouverts: >-
+            {% set ns = namespace(o=[]) %}
+            {% for w in ws %}
+              {% if w.code_retour == 'C' and not w.hide and not w.masque | default(false) and not w.solde_dette and w.date_key != key
+                    and (not w.report_agreed or w.rattrape_par == key) %}
+                {% set ns.o = ns.o + [{'k': w.du[6:10] ~ w.du[3:5] ~ w.du[0:2], 'd': w.date_key}] %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.o | sort(attribute='k') | map(attribute='d') | list }}
+      - variables:
+          report_date: >-
+            {% if cr == 'D' %}
+              {% if ratt | regex_match('^\\d{2}/\\d{2}/\\d{4}') %}{{ ratt[0:2] ~ '-' ~ ratt[3:5] ~ '-' ~ ratt[6:10] }}
+              {% else %}{{ ouverts[0] if ouverts else '' }}{% endif %}
+            {% endif %}
+      - variables:
+          report_date_aller: >-
+            {% if ca == 'B' %}
+              {% set r = ouverts | reject('eq', report_date | trim) | list %}{{ r[0] if r else '' }}
+            {% endif %}
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_resultat }
+        data: { value: "" }
+      - action: shell_command.matteo_override_enregistrer
+        response_variable: sortie
+        data:
+          date_key: "{{ key }}"
+          type_action: "{{ type_action }}"
+          type_code: "{{ type_code }}"
+          gardien: "{{ 'Maman' if chez_maman else 'Papa' }}"
+          echange_avec: "{{ echange_avec | trim }}"
+          notes: >-
+            {% set n = states('input_text.matteo_form_notes') %}
+            {{ '' if n in ['unknown', 'unavailable'] else n | replace('"', '') }}
+          lieu_aller: >-
+            {% set l = (state_attr('sensor.matteo_options_source', 'lieux') or []) | selectattr('label', 'eq', states('input_select.matteo_form_lieu_aller')) | map(attribute='code') | list %}
+            {{ (l[0] if l else 'MAURAGE') if ca == 'A' else '' }}
+          lieu_retour: >-
+            {% set l = (state_attr('sensor.matteo_options_source', 'lieux') or []) | selectattr('label', 'eq', states('input_select.matteo_form_lieu_retour')) | map(attribute='code') | list %}
+            {{ (l[0] if l else 'MAURAGE') if cr in ['A', 'C'] else '' }}
+          motif_lieu_code: "{{ ml_code if lieu_diff else 'NONE' }}"
+          motif_lieu: "{{ ml_label if lieu_diff else 'Aucun' }}"
+          code_aller: "{{ ca }}"
+          acteur_aller: "{{ {'A': 'Grégory', 'B': 'Élodie / Olivier'}.get(ca, 'Aucun') }}"
+          acteur_aller_code: "{{ {'A': 'GREGORY', 'B': 'ELODIE'}.get(ca, 'AUCUN') }}"
+          code_retour: "{{ cr }}"
+          acteur_retour: >-
+            {{ {'A': 'Grégory', 'B': 'Élodie / Olivier', 'C': 'Grégory (+1 Banque)',
+                'D': 'Élodie / Olivier (Rattrapage)'}.get(cr, 'Aucun (Chez Maman)') }}
+          acteur_retour_code: "{{ {'A': 'GREGORY', 'B': 'ELODIE', 'C': 'GREGORY', 'D': 'ELODIE'}.get(cr, 'AUCUN') }}"
+          motif_code: "{{ m_code if type_code not in prevus else 'NONE' }}"
+          motif: "{{ m_label if type_code not in prevus else 'Aucun' }}"
+          motif2_code: "{{ m2_code if (cr in ['C', 'D'] or ca == 'B') else 'NONE' }}"
+          motif2: "{{ m2_label if (cr in ['C', 'D'] or ca == 'B') else 'Aucun' }}"
+          report_date: "{{ report_date | trim }}"
+          report_date_aller: "{{ report_date_aller | trim }}"
+          date_du: "{{ du[8:10] ~ '/' ~ du[5:7] ~ '/' ~ du[0:4] }}"
+          date_au: "{{ au[8:10] ~ '/' ~ au[5:7] ~ '/' ~ au[0:4] }}"
+          motif_libre: >-
+            {{ libre if (type_code == 'PERIODE_VAC' or (m_code == 'AUTRE' and type_code not in prevus)
+                         or ((cr in ['C', 'D'] or ca == 'B') and m2_code == 'AUTRE REPORT') or (lieu_diff and ml_code == 'AUTRE REPORT')) else '' }}
+      - if: "{{ sortie.returncode | default(0) != 0 }}"
+        then:
+          - action: input_text.set_value
+            target: { entity_id: input_text.matteo_form_resultat }
+            data: { value: "❌ Erreur d'écriture : {{ (sortie.stderr | default(''))[-200:] }}" }
+          - stop: "Erreur script"
+            error: true
+      - delay: { seconds: 1 }
+      - action: homeassistant.update_entity
+        target: { entity_id: sensor.planning_matteo_engine }
+
+  # Applique la case « Date active » (suspendre / réactiver).
+  matteo_planning_appliquer_activation:
+    alias: "Planning Matteo – Appliquer « Date active » (suspendre / réactiver)"
+    icon: mdi:calendar-check
+    mode: queued
+    sequence:
+      - variables:
+          key: "{{ states('input_text.matteo_form_date_key') }}"
+      - condition: template
+        value_template: "{{ key not in ['', 'PERIODE', 'unknown', 'unavailable'] }}"
+      - action: shell_command.matteo_override_flags
+        data:
+          date_key: "{{ key }}"
+          hide: "false"
+          visible: "{{ 'true' if is_state('input_boolean.matteo_form_actif', 'on') else 'false' }}"
+      - delay: { seconds: 1 }
+      - action: homeassistant.update_entity
+        target: { entity_id: sensor.planning_matteo_engine }
+
+  # Bouton Enregistrer du popup : attend la validation puis enregistre et ferme.
+  matteo_planning_modifier:
+    alias: "Planning Matteo – Enregistrer la modification (popup)"
+    icon: mdi:content-save
+    mode: queued
+    sequence:
+      # laisse le temps au dernier champ saisi (texte) d'être enregistré avant la lecture du formulaire
+      - delay: { milliseconds: 1200 }
+      - condition: state
+        entity_id: sensor.matteo_form_validation
+        state: "ok"
+      - action: script.matteo_planning_enregistrer
+      - action: script.matteo_planning_appliquer_activation
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.matteo_mode_edition }
+
+  # Bouton Créer du popup.
+  matteo_planning_creer:
+    alias: "Planning Matteo – Créer la ligne"
+    icon: mdi:content-save-plus
+    mode: queued
+    sequence:
+      # laisse le temps au dernier champ saisi (texte) d'être enregistré avant la lecture du formulaire
+      - delay: { milliseconds: 1200 }
+      - variables:
+          type_code: >-
+            {% set t = (state_attr('sensor.matteo_options_source', 'types_action') or [])
+               | selectattr('label', 'eq', states('input_select.matteo_form_type')) | map(attribute='code') | list %}
+            {{ t[0] if t else 'EXCEPTION' }}
+          d: "{{ states('input_datetime.matteo_form_du') }}"
+          k: >-
+            {% set f = d[8:10] ~ '-' ~ d[5:7] ~ '-' ~ d[0:4] %}
+            {{ 'PERIODE' if type_code == 'PERIODE_VAC' else ('PIVOT_' ~ f if type_code == 'PIVOT' else f) }}
+          existe: >-
+            {{ (state_attr('sensor.planning_matteo_engine', 'weekends') or [])
+               | selectattr('date_key', 'eq', k) | rejectattr('hide') | list | count > 0 }}
+      - if: "{{ existe }}"
+        then:
+          - action: input_text.set_value
+            target: { entity_id: input_text.matteo_form_resultat }
+            data: { value: "⚠️ Une ligne existe déjà pour le {{ d[8:10] ~ '/' ~ d[5:7] ~ '/' ~ d[0:4] }} : ouvre-la dans le tableau et utilise « Modifier »." }
+          - stop: "Doublon"
+            error: true
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_form_date_key }
+        data: { value: "{{ k }}" }
+      - action: script.matteo_planning_enregistrer
+      - action: script.matteo_planning_appliquer_activation
+      - if: "{{ k == 'PERIODE' }}"
+        then:
+          - action: input_text.set_value
+            target: { entity_id: input_text.matteo_form_date_key }
+            data: { value: "VAC_{{ d }}_1" }
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.matteo_mode_edition }
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.matteo_a_une_selection }
+
+  # ---------- Suppression (masquage) ----------
+  # Suppression logique (hide) d'une ligne.
+  matteo_planning_supprimer:
+    alias: "Planning Matteo – Supprimer (masquer) une ligne"
+    icon: mdi:delete
+    mode: queued
+    fields:
+      date_key:
+        description: "Clé de la ligne"
+        example: "25-09-2026"
+    sequence:
+      - condition: template
+        value_template: "{{ date_key not in ['', 'PERIODE', 'unknown', 'unavailable'] }}"
+      - action: shell_command.matteo_override_flags
+        data: { date_key: "{{ date_key }}", hide: "true", visible: "false" }
+      - delay: { seconds: 1 }
+      - action: homeassistant.update_entity
+        target: { entity_id: sensor.planning_matteo_engine }
+
+  # Supprime la ligne ouverte dans le popup et ferme celui-ci.
+  matteo_planning_supprimer_selection:
+    alias: "Planning Matteo – Supprimer la ligne sélectionnée"
+    icon: mdi:delete
+    mode: queued
+    sequence:
+      - action: script.matteo_planning_supprimer
+        data: { date_key: "{{ states('input_text.matteo_form_date_key') }}" }
+      - action: input_boolean.turn_off
+        target: { entity_id: [input_boolean.matteo_mode_edition, input_boolean.matteo_a_une_selection] }
+      - action: browser_mod.close_popup
+        data: {}
+        continue_on_error: true
+
+  # Liste des week-ends proposables pour un échange croisé.
+  matteo_planning_maj_echange:
+    alias: "Planning Matteo – Liste des week-ends pour un échange croisé"
+    icon: mdi:swap-horizontal-bold
+    mode: restart
+    sequence:
+      - variables:
+          opts: >-
+            {% set key = states('input_text.matteo_form_date_key') %}
+            {% set t = now().strftime('%Y%m%d') %}
+            {% set ns = namespace(o=[]) %}
+            {% for w in state_attr('sensor.planning_matteo_engine', 'weekends') or [] %}
+              {% if w.du and not w.hide and w.date_key != key and w.type_code in ['WEEKEND_GREGORY', 'WEEKEND_ELODIE', 'ECHANGE'] %}
+                {% set k = w.du[6:10] ~ w.du[3:5] ~ w.du[0:2] %}
+                {% if k >= t %}
+                  {% set papa = (w.code_aller in ['A', 'B'] or 'GREGORY' in w.type_code) != (w.echange_avec | default('') == key) %}
+                  {% set ns.o = ns.o + [{'k': k, 'l': w.du ~ ' — chez ' ~ ('papa' if papa else 'maman')}] %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ ['— choisir —'] + (ns.o | sort(attribute='k') | map(attribute='l') | list)[:30] }}
+      - action: input_select.set_options
+        target: { entity_id: input_select.matteo_form_echange }
+        data: { options: "{{ opts }}" }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_echange }
+        data:
+          option: >-
+            {% set key = states('input_text.matteo_form_date_key') %}
+            {% set w = (state_attr('sensor.planning_matteo_engine', 'weekends') or []) | selectattr('date_key', 'eq', key) | list | first | default({}) %}
+            {% set e = (w.echange_avec | default('')) | replace('-', '/') %}
+            {% set m = (opts | select('match', e) | list) if e else [] %}
+            {{ m[0] if m else opts[0] }}
+
+  # Applique le retour attendu (alternance) dans le formulaire.
+  matteo_planning_retour_suggere:
+    alias: "Planning Matteo – Appliquer le retour suggéré"
+    icon: mdi:auto-fix
+    mode: restart
+    sequence:
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_retour }
+        data:
+          option: "{{ 'B — Élodie / Olivier (normal)' if is_state('sensor.matteo_form_retour_attendu', 'B') else 'A — Grégory (normal)' }}"
+
+# ---------------------------------------------------------------------
+# Capteurs du formulaire : retour attendu (déclenché) et validation (bouton Enregistrer)
+# ---------------------------------------------------------------------
+template:
+  # Retour attendu : calculé une seule fois quand la ligne éditée ou le planning change
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: state
+        entity_id:
+          - input_text.matteo_form_date_key
+          - input_datetime.matteo_form_du
+          - sensor.planning_matteo_engine
+    actions:
+      - variables:
+          r: >-
+            {% from 'matteo_planning.jinja' import matteo_retour_attendu %}{{ matteo_retour_attendu() }}
+    sensor:
+      - name: "Matteo Formulaire Retour attendu"
+        unique_id: matteo_form_retour_attendu
+        icon: mdi:car-arrow-left
+        state: "{{ r.attendu }}"
+        attributes:
+          precedent: "{{ r.precedent }}"
+          precedent_code: "{{ r.code }}"
+          greg_doit: "{{ r.greg_doit }}"
+          elodie_doit: "{{ r.elodie_doit }}"
+
+  - sensor:
+      - name: "Matteo Form Validation"
+        unique_id: matteo_form_validation
+        icon: mdi:form-textbox-lock
+        state: >-
+          {% from 'matteo_planning.jinja' import matteo_form_erreur %}
+          {{ 'ok' if matteo_form_erreur() | trim == '' else 'erreur' }}
+        attributes:
+          message: >-
+            {% from 'matteo_planning.jinja' import matteo_form_erreur %}
+            {{ matteo_form_erreur() | trim }}

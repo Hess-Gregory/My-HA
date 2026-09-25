@@ -1,0 +1,262 @@
+{
+  "types_action": [
+    {
+      "code": "WEEKEND_GREGORY",
+      "label": "Weekend Gregory (Engis)"
+    },
+    {
+      "code": "WEEKEND_ELODIE",
+      "label": "Weekend Elodie (Maurage)"
+    },
+    {
+      "code": "VAC_GREGORY",
+      "label": "Vac Gregory (Engis)"
+    },
+    {
+      "code": "VAC_ELODIE",
+      "label": "Vac Elodie (Maurage)"
+    },
+    {
+      "code": "EXCEPTION",
+      "label": "Exception / Aménagement"
+    },
+    {
+      "code": "RECUP",
+      "label": "Recuperation de date (voir fiche detail)"
+    },
+    {
+      "code": "PIVOT",
+      "label": "Changement Permanent (Date pivot)"
+    },
+    {
+      "code": "INVERSION",
+      "label": "Exceptionnel Ponctuel (Inverser ce week-end / Jour)"
+    },
+    {
+      "code": "ECHANGE",
+      "label": "Échange Croisé (Prêt-rendu)"
+    },
+    {
+      "code": "PERIODE_VAC",
+      "label": "Période de Vacances"
+    }
+  ],
+  "motifs_principaux": [
+    {
+      "code": "NONE",
+      "label": "Aucun"
+    },
+    {
+      "code": "ANNIV_MAMAN",
+      "label": "Anniversaire : Élodie (Maman)"
+    },
+    {
+      "code": "ANNIV_OLIVIER",
+      "label": "Anniversaire : Olivier (Beau-papa)"
+    },
+    {
+      "code": "ANNIV_NOEMIE",
+      "label": "Anniversaire : Noémie (Sœur)"
+    },
+    {
+      "code": "ANNIV_GRANDS",
+      "label": "Anniversaire : Gino & Catherine (Grands-parents)"
+    },
+    {
+      "code": "ANNIV_NICOLAS",
+      "label": "Anniversaire : Nicolas (Parrain)"
+    },
+    {
+      "code": "ANNIV_MATTEO",
+      "label": "Anniversaire : Matteo"
+    },
+    {
+      "code": "FETE_MERES",
+      "label": "Fête des Mères"
+    },
+    {
+      "code": "FETE_PERES",
+      "label": "Fête des Pères"
+    },
+    {
+      "code": "MALADIE",
+      "label": "Maladie / Confinement (Hugo ou Matteo)"
+    },
+    {
+      "code": "PANNE_VOITURE",
+      "label": "Panne de voiture / Incident technique"
+    },
+    {
+      "code": "URGENCE_FAMILLE",
+      "label": "Urgence familiale / Empêchement de dernière minute"
+    },
+    {
+      "code": "VOYAGE_SCOLAIRE",
+      "label": "Voyage scolaire / Classe verte / Colonie"
+    },
+    {
+      "code": "PONT",
+      "label": "Pont / Week-end prolongé"
+    },
+    {
+      "code": "AUTRE",
+      "label": "Autre (saisir motif libre)"
+    }
+  ],
+  "motifs_trajet": [
+    {
+      "code": "NONE",
+      "label": "Aucun"
+    },
+    {
+      "code": "BALANCE BANK",
+      "label": "Ratrapage"
+    },
+    {
+      "code": "MALADIE ELO",
+      "label": "Maladie / Confinement Elodie"
+    },
+    {
+      "code": "MALADIE OLI",
+      "label": "Maladie / Confinement Olivier"
+    },
+    {
+      "code": "MALADIE NOE",
+      "label": "Maladie / Confinement Noemie"
+    },
+    {
+      "code": "FETE_FAMILLE",
+      "label": "Fête familiale"
+    },
+    {
+      "code": "INDISPONIBLE PRO",
+      "label": "Olivier est indisponible raison professionnelle"
+    },
+    {
+      "code": "INDISPONIBLE PRIVE",
+      "label": "Olivier est indisponible raison privée"
+    },
+    {
+      "code": "PANNE_VOITURE",
+      "label": "Panne de voiture / Incident technique"
+    },
+    {
+      "code": "URGENCE_FAMILLE",
+      "label": "Urgence familiale / Empêchement de dernière minute"
+    },
+    {
+      "code": "MALADIE GREGORY",
+      "label": "Maladie / Confinement Grégory"
+    },
+    {
+      "code": "INDISPO PRO GREGORY",
+      "label": "Grégory indisponible raison professionnelle"
+    },
+    {
+      "code": "INDISPO PRIVE GREGORY",
+      "label": "Grégory indisponible raison privée"
+    },
+    {
+      "code": "RATTRAPAGE CONVENU",
+      "label": "Rattrapage convenu (banque de trajets)"
+    },
+    {
+      "code": "AUTRE REPORT",
+      "label": "Autre (saisir motif libre, remplir champ libre)"
+    }
+  ],
+  "lieux": [
+    {
+      "code": "MAURAGE",
+      "label": "Maurage (Maison Maman)"
+    },
+    {
+      "code": "ICPP_UCCLE",
+      "label": "ICPP Uccle (École)"
+    },
+    {
+      "code": "FOREST_NATIONAL",
+      "label": "Forest National (Grands-parents)"
+    },
+    {
+      "code": "ENGIS",
+      "label": "Engis (Maison Grégory)"
+    },
+    {
+      "code": "AUTRE",
+      "label": "Autre lieu / Adresse personnalisée"
+    }
+  ],
+  "acteurs_trajet": [
+    {
+      "code": "GREGORY",
+      "label": "Grégory"
+    },
+    {
+      "code": "ELODIE",
+      "label": "Élodie"
+    },
+    {
+      "code": "AUCUN",
+      "label": "Aucun"
+    }
+  ],
+  "codes_couleur": [
+    {
+      "code": "A",
+      "label": "A"
+    },
+    {
+      "code": "B",
+      "label": "B"
+    },
+    {
+      "code": "C",
+      "label": "C (+1 Banque)"
+    },
+    {
+      "code": "D",
+      "label": "D (Compensation)"
+    },
+    {
+      "code": "E",
+      "label": "E (Aucun)"
+    }
+  ],
+  "status": [
+    {
+      "code": "PLANIFIE",
+      "label": "Planifié"
+    },
+    {
+      "code": "CONFIRME",
+      "label": "Confirmé"
+    },
+    {
+      "code": "ANNULE",
+      "label": "Annulé"
+    },
+    {
+      "code": "PERMANENT",
+      "label": "Définitif + tout date ulterieur"
+    },
+    {
+      "code": "PROVISOIRE",
+      "label": "Provisoire"
+    }
+  ],
+  "users": [
+    {
+      "code": "GREGORY",
+      "label": "Grégory"
+    },
+    {
+      "code": "ELODIE",
+      "label": "Élodie"
+    },
+    {
+      "code": "CONSENSUS",
+      "label": "Consensus"
+    }
+  ]
+}

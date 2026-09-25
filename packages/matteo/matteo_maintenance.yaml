@@ -1,0 +1,36 @@
+# =====================================================================
+# Matteo — Maintenance : sauvegarde complète du planning
+# Archive : /config/matteo/sauvegardes/ (8 dernières) — voir /config/matteo/README.md
+# =====================================================================
+
+shell_command:
+  matteo_sauvegarde: python3 /config/matteo/scripts/sauvegarde.py
+
+script:
+  matteo_planning_sauvegarder:
+    alias: "Planning Matteo – Sauvegarder (archive complète)"
+    icon: mdi:content-save-all
+    mode: single
+    sequence:
+      - action: shell_command.matteo_sauvegarde
+        response_variable: sortie
+      - action: persistent_notification.create
+        data:
+          notification_id: matteo_sauvegarde
+          title: "💾 Planning Matteo sauvegardé"
+          message: >-
+            {{ 'Archive créée : ' ~ (sortie.stdout | default('') | trim) if sortie.returncode | default(0) == 0
+               else '❌ Échec : ' ~ (sortie.stderr | default(''))[-200:] }}
+
+automation:
+  - id: matteo_sauvegarde_hebdo
+    alias: "Planning Matteo – Sauvegarde hebdomadaire"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "03:17:00"
+    conditions:
+      - condition: time
+        weekday: sun
+    actions:
+      - action: shell_command.matteo_sauvegarde

@@ -1,0 +1,197 @@
+# =====================================================================
+# Matteo — Vue du planning : filtres, pagination, calendrier mensuel
+# Logique de filtrage : /config/custom_templates/matteo_planning.jinja
+# Doc      : /config/packages/matteo/matteo_planning_vue.md · vue d'ensemble : /config/matteo/README.md
+# =====================================================================
+
+# Filtres, pagination et mois affiché du tableau / calendrier (helpers partagés par tous les écrans).
+input_text:
+  matteo_planning_filtre:
+    name: "Planning Matteo – Recherche"
+    icon: mdi:magnify
+    max: 100
+
+input_select:
+  matteo_planning_par_page:
+    name: "Planning Matteo – Lignes par page"
+    icon: mdi:format-list-numbered
+    options: ["5", "10", "25", "50", "Tout"]
+    initial: "10"
+  matteo_planning_visibilite:
+    name: "Planning Matteo – Affichage"
+    icon: mdi:eye-settings
+    options: ["Actifs", "Suspendus", "Actifs + suspendus"]
+    initial: "Actifs"
+  matteo_planning_filtre_type:
+    name: "Planning Matteo – Type"
+    icon: mdi:shape
+    options: ["Tout", "Week-ends", "Congés", "Congés à définir", "Exceptions / autres"]
+    initial: "Tout"
+  matteo_planning_filtre_garde:
+    name: "Planning Matteo – Garde"
+    icon: mdi:human-male-child
+    options: ["Tous", "Papa", "Maman"]
+    initial: "Tous"
+  matteo_planning_filtre_etat:
+    name: "Planning Matteo – Trajets"
+    icon: mdi:car-clock
+    options: ["Tous", "À rattraper", "Rattrapages / compensations", "Trajets normaux"]
+    initial: "Tous"
+
+input_number:
+  matteo_planning_page:
+    name: "Planning Matteo – Page"
+    icon: mdi:book-open-page-variant
+    min: 1
+    max: 200
+    step: 1
+    initial: 1
+    mode: box
+  matteo_cal_offset:
+    name: "Planning Matteo – Mois affiché (décalage)"
+    icon: mdi:calendar-month
+    min: -24
+    max: 24
+    step: 1
+    initial: 0
+    mode: box
+
+input_boolean:
+  matteo_planning_passes:
+    name: "Planning Matteo – Inclure les dates passées"
+    icon: mdi:history
+    initial: false
+
+# Navigation : pages et mois.
+script:
+  matteo_planning_page_precedente:
+    alias: "Planning Matteo – Page précédente"
+    icon: mdi:chevron-left
+    mode: queued
+    sequence:
+      - action: input_number.set_value
+        target: { entity_id: input_number.matteo_planning_page }
+        data:
+          value: "{{ [states('input_number.matteo_planning_page') | int(1) - 1, 1] | max }}"
+
+  matteo_planning_page_suivante:
+    alias: "Planning Matteo – Page suivante"
+    icon: mdi:chevron-right
+    mode: queued
+    sequence:
+      - action: input_number.set_value
+        target: { entity_id: input_number.matteo_planning_page }
+        data:
+          value: >-
+            {{ [states('input_number.matteo_planning_page') | int(1) + 1,
+                state_attr('sensor.planning_matteo_vue', 'pages') | int(1)] | min }}
+
+  matteo_planning_filtres_reset:
+    alias: "Planning Matteo – Réinitialiser les filtres"
+    icon: mdi:filter-remove
+    mode: restart
+    sequence:
+      - action: input_text.set_value
+        target: { entity_id: input_text.matteo_planning_filtre }
+        data: { value: "" }
+      - action: input_select.select_first
+        target:
+          entity_id:
+            - input_select.matteo_planning_visibilite
+            - input_select.matteo_planning_filtre_type
+            - input_select.matteo_planning_filtre_garde
+            - input_select.matteo_planning_filtre_etat
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.matteo_planning_passes }
+
+  matteo_cal_mois:
+    alias: "Planning Matteo – Calendrier : changer de mois"
+    icon: mdi:calendar-month
+    mode: queued
+    fields:
+      delta:
+        description: "-1 mois précédent, 1 mois suivant, 0 mois courant"
+        example: 1
+    sequence:
+      - action: input_number.set_value
+        target: { entity_id: input_number.matteo_cal_offset }
+        data:
+          value: >-
+            {{ 0 if (delta | int(0)) == 0 else
+               ([[states('input_number.matteo_cal_offset') | int(0) + (delta | int(0)), -24] | max, 24] | min) }}
+
+# Retour en page 1 quand un filtre change ; retour au mois en cours après 5 min.
+automation:
+  - id: matteo_planning_retour_page_1
+    alias: "Planning Matteo – Retour page 1 quand un filtre change"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id:
+          - input_text.matteo_planning_filtre
+          - input_select.matteo_planning_par_page
+          - input_boolean.matteo_planning_passes
+          - input_select.matteo_planning_visibilite
+          - input_select.matteo_planning_filtre_type
+          - input_select.matteo_planning_filtre_garde
+          - input_select.matteo_planning_filtre_etat
+    actions:
+      - action: input_number.set_value
+        target: { entity_id: input_number.matteo_planning_page }
+        data: { value: 1 }
+
+  - id: matteo_calendrier_mois_courant
+    alias: "Planning Matteo – Calendrier : revenir au mois en cours"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: input_number.matteo_cal_offset
+        for: { minutes: 5 }
+      - trigger: time
+        at: "00:00:30"
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: template
+        value_template: "{{ states('input_number.matteo_cal_offset') | int(0) != 0 }}"
+    actions:
+      - action: input_number.set_value
+        target: { entity_id: input_number.matteo_cal_offset }
+        data: { value: 0 }
+
+template:
+  # Recalculé uniquement quand un filtre, la page ou le planning change (et chaque heure pour « aujourd'hui »)
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: time_pattern
+        minutes: 0
+        seconds: 5
+      - trigger: state
+        entity_id:
+          - sensor.planning_matteo_engine
+          - input_text.matteo_planning_filtre
+          - input_boolean.matteo_planning_passes
+          - input_select.matteo_planning_visibilite
+          - input_select.matteo_planning_filtre_type
+          - input_select.matteo_planning_filtre_garde
+          - input_select.matteo_planning_filtre_etat
+          - input_select.matteo_planning_par_page
+          - input_number.matteo_planning_page
+    actions:
+      - variables:
+          v: >-
+            {% from 'matteo_planning.jinja' import matteo_vue %}{{ matteo_vue() }}
+    sensor:
+      - name: "Planning Matteo Vue"
+        unique_id: planning_matteo_vue
+        icon: mdi:table-filter
+        availability: "{{ state_attr('sensor.planning_matteo_engine', 'weekends') is list }}"
+        state: "Page {{ v.page }}/{{ v.pages }} · {{ v.total }} ligne{{ 's' if v.total > 1 }}"
+        attributes:
+          weekends: "{{ v.rows }}"
+          total: "{{ v.total }}"
+          page: "{{ v.page }}"
+          pages: "{{ v.pages }}"

@@ -1,0 +1,277 @@
+{# =====================================================================
+   Matteo — macros du planning (dashboard Calendrier > Matteo & Trajets)
+   matteo_vue()      : filtre + pagination du tableau (sensor.planning_matteo_vue)
+   matteo_detail(k)  : fiche « Détails » du popup
+   Source : sensor.planning_matteo_engine (fichier /config/matteo/data/matteo_moteur.json)
+   ===================================================================== #}
+
+{# --- Outils internes : dates JJ/MM/AAAA -> AAAAMMJJ (tri), ISO -> JJ/MM/AAAA, noms des acteurs par code --- #}
+{%- macro _ymd(d) -%}{{ d[6:10] ~ d[3:5] ~ d[0:2] if d else '' }}{%- endmacro -%}
+{%- macro _fr(iso) -%}{{ (iso[8:10] ~ '/' ~ iso[5:7] ~ '/' ~ iso[0:4]) if iso else '' }}{%- endmacro -%}
+{%- macro _nom_aller(c) -%}{{ {'A': 'Grégory', 'B': 'Élodie / Olivier', 'E': 'Aucun'}.get(c, '') }}{%- endmacro -%}
+{%- macro _nom_retour(c) -%}{{ {'A': 'Grégory', 'B': 'Élodie / Olivier', 'C': 'Grégory', 'D': 'Élodie / Olivier', 'E': 'Aucun'}.get(c, '') }}{%- endmacro -%}
+
+{# matteo_vue : lignes du tableau. 1) filtres (recherche, type, garde, trajets, suspendus, passés)
+   2) une ligne par période (week-ends masqués par un congé exclus) 3) tri + pagination -> JSON #}
+{% macro matteo_vue(brut=false) -%}
+{%- set src = state_attr('sensor.planning_matteo_engine', 'weekends') or [] -%}
+{%- set evs = state_attr('sensor.planning_matteo_engine', 'evenements') or [] -%}
+{%- set q = states('input_text.matteo_planning_filtre') | lower | trim -%}
+{%- if q in ['unknown', 'unavailable', 'none'] -%}{%- set q = '' -%}{%- endif -%}
+{%- set passes = is_state('input_boolean.matteo_planning_passes', 'on') -%}
+{%- set mode = states('input_select.matteo_planning_visibilite') -%}
+{%- set show_act = mode not in ['Suspendus'] -%}
+{%- set show_des = mode in ['Suspendus', 'Actifs + suspendus'] -%}
+{%- set ftype = states('input_select.matteo_planning_filtre_type') -%}
+{%- set fgarde = states('input_select.matteo_planning_filtre_garde') -%}
+{%- set fetat = states('input_select.matteo_planning_filtre_etat') -%}
+{%- if brut -%}{%- set q = '' -%}{%- set passes = brut == 'tout' -%}{%- set show_act = true -%}{%- set show_des = false -%}{%- set ftype = 'Tout' -%}{%- set fgarde = 'Tous' -%}{%- set fetat = 'Tous' -%}{%- endif -%}
+{%- set today = now().strftime('%Y%m%d') -%}
+{%- set we = ['WEEKEND_GREGORY', 'WEEKEND_ELODIE'] -%}
+{%- set ns = namespace(vac=[], rows=[]) -%}
+{#- 1) week-ends recouverts par une part de congé : champ « masque » calculé par le moteur (Python) -#}
+{#- 2) lignes -#}
+{%- for w in src -%}
+  {%- set vis = w.visible if w.visible is defined else true -%}
+  {%- set isvac = w.date_key.startswith('VAC_') -%}
+  {%- set defini = (w.du ~ '') != '' and (w.au ~ '') != '' -%}
+  {%- set kdu = _ymd(w.du) if defini else (w.vac_debut | replace('-', '')) -%}
+  {%- set kau = _ymd(w.au) if defini else (w.vac_fin | replace('-', '')) -%}
+  {%- set ns2 = namespace(masque=w.masque | default(false)) -%}
+  {%- set cat = 'conge' if isvac or w.type_code == 'PERIODE_VAC' else ('weekend' if w.type_code in we else 'exception') -%}
+  {%- set garde = '' if not defini else ('Papa' if w.code_aller in ['A', 'B'] or 'GREGORY' in w.type_code else 'Maman') -%}
+  {%- set etat = 'rattraper' if (w.code_retour == 'C' and not w.report_agreed and not w.solde_dette | default(''))
+        else ('compensation' if w.code_retour == 'D' or w.code_aller == 'B' or w.solde_dette | default('') else 'normal') -%}
+  {%- set ok_vis = not w.hide and ((vis and show_act) or (not vis and show_des)) -%}
+  {%- set ok_type = ftype in ['Tout', 'unknown', 'unavailable']
+        or (ftype == 'Week-ends' and cat == 'weekend')
+        or (ftype == 'Congés' and cat == 'conge')
+        or (ftype == 'Congés à définir' and isvac and not defini)
+        or (ftype == 'Exceptions / autres' and cat == 'exception') -%}
+  {%- set ok_garde = fgarde in ['Tous', 'unknown', 'unavailable'] or fgarde == garde -%}
+  {%- set ok_etat = fetat in ['Tous', 'unknown', 'unavailable']
+        or (fetat == 'À rattraper' and etat == 'rattraper')
+        or (fetat == 'Rattrapages / compensations' and etat == 'compensation')
+        or (fetat == 'Trajets normaux' and etat == 'normal') -%}
+  {%- set conge = (w.vac_nom ~ ' · part ' ~ w.vac_part ~ '/' ~ w.vac_parts) if isvac else '' -%}
+  {%- set ns3 = namespace(d='', t=[]) -%}
+  {%- for x in (w.evenements_lies | default([])) -%}
+    {%- set ns3.t = ns3.t + [x.icone ~ ' ' ~ x.nom ~ ((' (' ~ x.date[0:5] ~ ')') if x.avant else '') ~ (' ⚠️' if x.ok == false else '')] -%}
+  {%- endfor -%}
+  {%- set conge = ([conge] + ns3.t) | reject('eq', '') | join(' · ') -%}
+  {%- set la = w.lieu_aller | default('') if w.lieu_aller_code | default('') not in ['MAURAGE', ''] else '' -%}
+  {%- set lr = w.lieu_retour | default('') if w.lieu_retour_code | default('') not in ['MAURAGE', ''] else '' -%}
+  {%- set aller = (_nom_aller(w.code_aller) ~ ((' à ' ~ la) if la else '')) if defini else '' -%}
+  {%- set retour = (_nom_retour(w.code_retour) ~ ((' à ' ~ lr) if lr else '')) if defini else '' -%}
+  {%- set typ = (('⏸️ ' if not vis else '') ~ w.type ~ (' 📝' if w.notes | default('') else '')) if defini else '' -%}
+  {%- set txt = [w.du, w.au, typ, aller, retour, conge] | join(' ') | lower -%}
+  {%- if ok_vis and not ns2.masque and ok_type and ok_garde and ok_etat
+        and (passes or kau >= today) and (q == '' or q in txt) -%}
+    {%- set ns.rows = ns.rows + [{
+      'k': kdu ~ ('%02d' | format(w.vac_part | int(0))), 'date_key': w.date_key, 'garde': garde, 'cat': cat, 'notes': w.notes | default(''),
+      'du': w.du if defini else '', 'au': w.au if defini else '', 'type': typ,
+      'aller_c': (w.code_aller if defini else '') ~ '|' ~ aller,
+      'retour_c': ((('D' if w.solde_dette | default('') else w.code_retour)) if defini else '') ~ '|' ~ retour,
+      'lieu_a': la, 'lieu_r': lr, 'conge': conge, 'conge_du': _fr(w.vac_debut) if isvac else ns3.d, 'conge_au': _fr(w.vac_fin) if isvac else ns3.d
+    }] -%}
+  {%- endif -%}
+{%- endfor -%}
+{#- 3) tri + pagination -#}
+{%- set rows = ns.rows | sort(attribute='k') -%}
+{%- set total = rows | count -%}
+{%- set pp_s = states('input_select.matteo_planning_par_page') -%}
+{%- set pp = total if (pp_s == 'Tout' or brut) else (pp_s | int(10)) -%}
+{%- set pp = [pp, 1] | max -%}
+{%- set pages = [((total + pp - 1) // pp), 1] | max -%}
+{%- set page = 1 if brut else [[states('input_number.matteo_planning_page') | int(1), 1] | max, pages] | min -%}
+{%- set start = (page - 1) * pp -%}
+{{- {'rows': rows[start:start + pp], 'total': total, 'page': page, 'pages': pages} | to_json -}}
+{%- endmacro %}
+
+{# matteo_detail : fiche « Détails » (Markdown) d'une ligne : période, trajets + lieux, nature (banque), motifs, notes, historique #}
+{% macro matteo_detail(k) -%}
+{%- set w = (state_attr('sensor.planning_matteo_engine', 'weekends') or []) | selectattr('date_key', 'eq', k) | list | first -%}
+{%- if w -%}
+{%- set col = {'A': '#2196F3', 'B': '#4CAF50', 'C': '#FF9800', 'D': '#9C27B0', 'E': '#9E9E9E'} -%}
+{%- set defini = (w.du ~ '') != '' -%}
+{%- set isvac = k.startswith('VAC_') -%}
+{%- set ca = 'D' if w.code_aller == 'B' else w.code_aller -%}
+{%- set natures = [] -%}
+{%- set sp = (w.soldee_par | default([])) | map('replace', '-', '/') | list -%}
+{%- if w.code_retour == 'C' and w.solde_dette | default('') -%}
+  {%- set natures = natures + ['<font color="#9C27B0">Rattrapage par Grégory</font> — rend le trajet du ' ~ (w.solde_dette | replace('-', '/')) ~ ' (-1 sur sa dette)'] -%}
+{%- elif w.code_retour == 'C' -%}
+  {%- set natures = natures + ['<font color="#FF9800">Trajet non respecté</font> (+1 pour Grégory) — ' ~ (('rattrapé le ' ~ (w.rattrape_par | replace('-', '/'))) if w.rattrape_par else 'à rattraper')] -%}
+{%- endif -%}
+{%- if w.code_retour == 'D' -%}
+  {%- if w.report_date -%}
+    {%- set natures = natures + ["<font color='#9C27B0'>Rattrapage</font> du trajet du " ~ (w.report_date | replace('-', '/')) ~ " (-1 sur la dette d'Élodie / Olivier)"] -%}
+  {%- else -%}
+    {%- set natures = natures + ["<font color='#9C27B0'>Retour fait par Élodie / Olivier à ta place</font> — tu leur dois 1 trajet" ~ ((' · rendu le ' ~ sp[0]) if sp else '')] -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if w.code_aller == 'B' -%}
+  {%- if w.report_date_aller -%}
+    {%- set natures = natures + ["<font color='#9C27B0'>Compensation</font> — aller fait par Élodie / Olivier, solde le trajet du " ~ (w.report_date_aller | replace('-', '/')) ~ " (-1)"] -%}
+  {%- else -%}
+    {%- set natures = natures + ["<font color='#9C27B0'>Aller fait par Élodie / Olivier</font> — tu leur dois 1 trajet" ~ ((' · rendu le ' ~ sp[-1]) if sp else '')] -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if w.echange_avec | default('') -%}{%- set natures = natures + ['🔁 Échange croisé avec le week-end du ' ~ (w.echange_avec | replace('-', '/'))] -%}{%- endif -%}
+{%- if w.reprise_alternance | default(false) -%}{%- set natures = natures + ['🔄 L\'alternance des retours repart de cette date (convenu)'] -%}{%- endif -%}
+{%- if not natures -%}{%- set natures = ['Normal'] -%}{%- endif -%}
+{%- set m1 = (w.motif_libre if w.motif_code == 'AUTRE' else w.motif) -%}
+{%- set m2 = (w.motif_libre if w.motif2_code == 'AUTRE REPORT' else w.motif2) %}
+| | |
+|---|---|
+| **Période** | {{ ('du ' ~ w.du ~ ' au ' ~ w.au) if defini else '<i>à définir (Modifier)</i>' }} |
+{%- if isvac %}
+| **Congé** | {{ w.vac_nom }} · part {{ w.vac_part }}/{{ w.vac_parts }}<br><small>officiel du {{ _fr(w.vac_debut) }} au {{ _fr(w.vac_fin) }}</small> |
+{%- endif %}
+{%- if defini %}
+| **Type** | {{ w.type }} |
+{%- set chez_maman_d = w.code_aller in ['E', ''] and w.code_retour in ['E', ''] -%}{%- if not chez_maman_d %}
+| **Aller** | {% if w.code_aller in col %}<font color="{{ col[ca] }}"><b>{{ _nom_aller(w.code_aller) }}</b></font>{% else %}—{% endif %} |
+{%- if w.code_aller == 'A' %}
+| &nbsp;&nbsp;↳ *Lieu* | {% set mlt = (w.motif_libre if w.motif_lieu_code | default('') == 'AUTRE REPORT' else w.motif_lieu | default('')) %}{% if w.lieu_aller_code | default('') not in ['', 'MAURAGE'] %}<font color="#F44336"><b>📍 {{ w.lieu_aller }}</b></font>{% if mlt not in ['', 'Aucun'] %} — <i>{{ mlt }}</i>{% endif %}{% else %}📍 Maurage (Maison Maman){% endif %} |
+{%- endif %}
+| **Retour** | {% if w.code_retour in col %}<font color="{{ col['D' if w.solde_dette | default('') else w.code_retour] }}"><b>{{ _nom_retour(w.code_retour) }}</b></font>{% else %}—{% endif %} |
+{%- if w.code_retour in ['A', 'C'] %}
+| &nbsp;&nbsp;↳ *Lieu* | {% set mlt = (w.motif_libre if w.motif_lieu_code | default('') == 'AUTRE REPORT' else w.motif_lieu | default('')) %}{% if w.lieu_retour_code | default('') not in ['', 'MAURAGE'] %}<font color="#F44336"><b>📍 {{ w.lieu_retour }}</b></font>{% if mlt not in ['', 'Aucun'] %} — <i>{{ mlt }}</i>{% endif %}{% else %}📍 Maurage (Maison Maman){% endif %} |
+{%- endif %}
+{%- else %}
+| **Trajets** | <i>Chez maman : aucun trajet à gérer</i> |
+{%- endif %}
+| **Nature** | {{ natures | join('<br>') }} |
+{%- endif %}
+{%- if w.motif_code not in ['NONE', '', 'COMPENSATION', 'BANK_PLUS_1'] %}
+| **Motif de garde** | {{ m1 }} |
+{%- endif %}
+{%- if (w.code_retour in ['C', 'D'] or w.code_aller == 'B') and w.motif2_code not in ['NONE', '', 'BALANCE BANK'] %}
+| **Motif du trajet** | {{ m2 }} |
+{%- endif %}
+{%- if w.notes | default('') %}
+| **📝 Notes** | {{ w.notes }} |
+{%- endif %}
+| **Suspendu** | {{ 'Oui' if not w.visible else 'Non' }} |
+{%- set raw = w -%}
+{%- set c = (raw.created_at | default('', true)) | replace('+00:00Z', '+00:00') -%}
+{%- set m = (raw.modified_at | default('', true)) | replace('+00:00Z', '+00:00') -%}
+{%- set dc = as_datetime(c) if c else none -%}
+{%- set dm = as_datetime(m) if m else none -%}
+{%- set n = raw.modification_count | default(0) | int(0) %}
+
+<small><i>Créé le {{ (dc | as_local).strftime('%d/%m/%Y à %Hh%M') if dc else '—' }}, {{ n }} modification{{ 's' if n > 1 }}{% if n > 0 and dm %}, dernière modification le {{ (dm | as_local).strftime('%d/%m/%Y à %Hh%M') }}{% endif %}</i></small>
+{%- else -%}
+Élément introuvable.
+{%- endif -%}
+{%- endmacro %}
+
+{# Statistiques de l'année scolaire en cours (sensor.matteo_statistiques) #}
+{% macro matteo_stats() -%}
+{%- set rows = (matteo_vue('tout') | from_json).rows -%}
+{%- set t = now() -%}{%- set y0 = t.year if t.month >= 9 else t.year - 1 -%}
+{%- set d0 = y0 ~ '0901' -%}{%- set d1 = (y0 + 1) ~ '0831' -%}
+{%- set ns = namespace(wp=0, wm=0, cp=0, cm=0, ap=0, am=0, c=0, r=0, af=0) -%}
+{%- for r in rows if r.du -%}
+  {%- set k = _ymd(r.du) -%}
+  {%- if d0 <= k and k <= d1 -%}
+    {%- set n = (strptime(r.au, '%d/%m/%Y') - strptime(r.du, '%d/%m/%Y')).days -%}
+    {%- if r.cat == 'weekend' -%}
+      {%- if r.garde == 'Papa' -%}{%- set ns.wp = ns.wp + 1 -%}{%- else -%}{%- set ns.wm = ns.wm + 1 -%}{%- endif -%}
+    {%- elif r.cat == 'conge' -%}
+      {%- if r.garde == 'Papa' -%}{%- set ns.cp = ns.cp + n -%}{%- else -%}{%- set ns.cm = ns.cm + n -%}{%- endif -%}
+    {%- else -%}
+      {%- if r.garde == 'Papa' -%}{%- set ns.ap = ns.ap + 1 -%}{%- else -%}{%- set ns.am = ns.am + 1 -%}{%- endif -%}
+    {%- endif -%}
+    {%- if r.retour_c[0:1] == 'C' -%}{%- set ns.c = ns.c + 1 -%}{%- endif -%}
+    {%- if r.retour_c[0:1] == 'D' or r.aller_c[0:1] == 'B' -%}{%- set ns.r = ns.r + 1 -%}{%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{{- {'annee': y0 ~ '-' ~ (y0 + 1), 'weekends_papa': ns.wp, 'weekends_maman': ns.wm, 'nuits_conges_papa': ns.cp, 'nuits_conges_maman': ns.cm,
+     'autres_papa': ns.ap, 'autres_maman': ns.am, 'trajets_non_respectes': ns.c, 'rattrapages': ns.r} | to_json -}}
+{%- endmacro %}
+
+{# Retour attendu pour la ligne en cours d'édition : alternance stricte des tours (A-B-A-B) d'après le dernier retour réel #}
+{% macro matteo_retour_attendu() -%}
+{%- set key = states('input_text.matteo_form_date_key') -%}
+{%- set du = states('input_datetime.matteo_form_du') | replace('-', '') -%}
+{%- set src = state_attr('sensor.planning_matteo_engine', 'weekends') or [] -%}
+{%- set ns = namespace(k='', c='', d='', parts=[]) -%}
+{%- for w in src if w.du and w.au and not w.hide and w.visible and w.code_retour in ['A', 'B', 'C', 'D'] and w.date_key != key -%}
+  {%- set k = _ymd(w.du) -%}{%- set ka = _ymd(w.au) -%}
+  {%- if not w.masque | default(false) and k < du and k > ns.k -%}{%- set ns.k = k -%}{%- set ns.c = w.code_retour -%}{%- set ns.d = w.au -%}{%- endif -%}
+{%- endfor -%}
+{%- set tour = {'A': 'G', 'B': 'E', 'C': 'E', 'D': 'G'}.get(ns.c, 'E') -%}
+{%- set nsd = namespace(g=0, e=0) -%}
+{%- for p in (state_attr('sensor.planning_matteo_engine', 'weekends') or []) if p.date_key != key and not p.hide and not p.masque | default(false) -%}
+  {%- set u = (1 if p.code_retour == 'D' and not p.report_date else 0) + (1 if p.code_aller == 'B' and not p.report_date_aller else 0) - ((p.soldee_par | default([])) | reject('eq', key) | list | count) -%}
+  {%- if u > 0 -%}{%- set nsd.g = nsd.g + u -%}{%- endif -%}
+  {%- if p.code_retour == 'C' and not p.report_agreed and not p.solde_dette | default('') -%}{%- set nsd.e = nsd.e + 1 -%}{%- endif -%}
+{%- endfor -%}
+{%- set cur = src | selectattr('date_key', 'eq', key) | list | first | default({}) -%}
+{%- set att = (('B' if cur.code_retour in ['B', 'C'] else 'A') if cur.reprise_alternance | default(false) else ('B' if tour == 'G' else 'A')) -%}
+{{- {'attendu': att, 'precedent': ns.d, 'code': ns.c, 'greg_doit': nsd.g, 'elodie_doit': nsd.e} | to_json -}}
+{%- endmacro %}
+
+{# Validation stricte du formulaire (Modifier / Créer) : '' si tout est correct, sinon le premier problème #}
+{% macro matteo_form_erreur() -%}
+{%- set creation = is_state('input_boolean.matteo_a_une_selection', 'off') -%}
+{%- set key = states('input_text.matteo_form_date_key') -%}
+{%- set t = (state_attr('sensor.matteo_options_source', 'types_action') or []) | selectattr('label', 'eq', states('input_select.matteo_form_type')) | map(attribute='code') | list -%}
+{%- set type_code = t[0] if t else 'EXCEPTION' -%}
+{%- set m = (state_attr('sensor.matteo_options_source', 'motifs_principaux') or []) | selectattr('label', 'eq', states('input_select.matteo_form_motif')) | map(attribute='code') | list -%}
+{%- set m_code = m[0] if m else 'NONE' -%}
+{%- set m2 = (state_attr('sensor.matteo_options_source', 'motifs_trajet') or []) | selectattr('label', 'eq', states('input_select.matteo_form_motif2')) | map(attribute='code') | list -%}
+{%- set m2_code = m2[0] if m2 else 'NONE' -%}
+{%- set prevus = ['WEEKEND_GREGORY', 'WEEKEND_ELODIE', 'VAC_GREGORY', 'VAC_ELODIE', 'PERIODE_VAC'] -%}
+{%- set chez_maman = type_code in ['WEEKEND_ELODIE', 'VAC_ELODIE'] or (type_code not in prevus and is_state('input_select.matteo_form_garde', 'Chez maman')) -%}
+{%- set papa_trajets = not chez_maman and type_code != 'PERIODE_VAC' -%}
+{%- set ca = states('input_select.matteo_form_aller')[0:1] -%}
+{%- set cr = states('input_select.matteo_form_retour')[0:1] -%}
+{%- set du = states('input_datetime.matteo_form_du') -%}{%- set au = states('input_datetime.matteo_form_au') -%}
+{%- set libre = states('input_text.matteo_form_motif_libre') | trim -%}
+{%- if libre in ['unknown', 'unavailable'] -%}{%- set libre = '' -%}{%- endif -%}
+{%- set ml = (state_attr('sensor.matteo_options_source', 'motifs_trajet') or []) | selectattr('label', 'eq', states('input_select.matteo_form_motif_lieu')) | map(attribute='code') | list -%}
+{%- set ml_code = ml[0] if ml else 'NONE' -%}
+{%- set la_diff = ca == 'A' and not is_state('input_select.matteo_form_lieu_aller', 'Maurage (Maison Maman)') -%}
+{%- set lieu_diff = la_diff or (cr in ['A', 'C'] and not is_state('input_select.matteo_form_lieu_retour', 'Maurage (Maison Maman)')) -%}
+{%- set ech = states('input_select.matteo_form_echange') -%}
+{%- set attendu = states('sensor.matteo_form_retour_attendu') -%}
+{%- set ws = state_attr('sensor.planning_matteo_engine', 'weekends') or [] -%}
+{%- set w = ws | selectattr('date_key', 'eq', key) | list | first | default({}) -%}
+{%- set kc = du[8:10] ~ '-' ~ du[5:7] ~ '-' ~ du[0:4] -%}
+{%- set kc = ('PIVOT_' ~ kc) if type_code == 'PIVOT' else kc -%}
+{%- set nsd = namespace(g=0, e=0) -%}
+{%- for p in (state_attr('sensor.planning_matteo_engine', 'weekends') or []) if p.date_key != key and not p.hide and not p.masque | default(false) -%}
+  {%- set u = (1 if p.code_retour == 'D' and not p.report_date else 0) + (1 if p.code_aller == 'B' and not p.report_date_aller else 0) - ((p.soldee_par | default([])) | reject('eq', key) | list | count) -%}
+  {%- if u > 0 -%}{%- set nsd.g = nsd.g + u -%}{%- endif -%}
+  {%- if p.code_retour == 'C' and not p.report_agreed and not p.solde_dette | default('') -%}{%- set nsd.e = nsd.e + 1 -%}{%- endif -%}
+{%- endfor -%}
+{%- set ns = namespace(ch=false) -%}
+{%- if not creation and key.startswith('VAC_') -%}
+  {%- for p in ws if p.vac_debut == w.vac_debut | default('x') and p.date_key != key and not p.hide and p.du -%}
+    {%- set pd = p.du[6:10] ~ '-' ~ p.du[3:5] ~ '-' ~ p.du[0:2] -%}{%- set pa = p.au[6:10] ~ '-' ~ p.au[3:5] ~ '-' ~ p.au[0:2] -%}
+    {%- if pd < au and pa > du -%}{%- set ns.ch = true -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if not (du | regex_match('^\\d{4}-\\d{2}-\\d{2}$')) or not (au | regex_match('^\\d{4}-\\d{2}-\\d{2}$')) -%}Renseigne la date de début et la date de fin.
+{%- elif au < du -%}La date de fin doit être après la date de début.
+{%- elif creation and type_code != 'PERIODE_VAC' and (ws | selectattr('date_key', 'eq', kc) | rejectattr('hide') | list | count) > 0 -%}Une ligne existe déjà le {{ du[8:10] ~ '/' ~ du[5:7] ~ '/' ~ du[0:4] }} : ouvre-la dans le tableau (Modifier).
+{%- elif not creation and key.startswith('VAC_') and w.vac_debut | default('') and (du < (as_datetime(w.vac_debut) - timedelta(days=3)).strftime('%Y-%m-%d') or au > (as_datetime(w.vac_fin) + timedelta(days=3)).strftime('%Y-%m-%d')) -%}Les dates doivent rester dans le congé officiel (±3 jours).
+{%- elif ns.ch -%}Ces dates chevauchent une autre part du même congé.
+{%- elif type_code == 'PERIODE_VAC' and libre == '' -%}Donne un nom à la période de vacances.
+{%- elif type_code == 'ECHANGE' and not (ech | regex_match('^\\d{2}/\\d{2}/\\d{4}')) -%}Choisis le week-end avec lequel faire l'échange croisé.
+{%- elif type_code == 'ECHANGE' and (('chez maman' in ech) != chez_maman) -%}Échange croisé : choisis un week-end où Matteo est chez l'autre parent.
+{%- elif type_code not in prevus and m_code == 'NONE' -%}Choisis un motif de garde : ce type sort du rythme prévu.
+{%- elif papa_trajets and ca not in ['A', 'B'] -%}Indique qui fait l'aller.
+{%- elif papa_trajets and cr not in ['A', 'B', 'C', 'D'] -%}Indique qui fait le retour.
+{%- elif papa_trajets and attendu == 'B' and cr == 'A' -%}Retour : c'était au tour d'Élodie / Olivier. Si tu l'as fait à leur place, choisis « C » et indique le motif.
+{%- elif papa_trajets and attendu == 'A' and cr == 'B' -%}Retour : c'était ton tour. Si Élodie / Olivier l'ont fait à ta place, choisis « D » (rattrapage).
+{%- elif papa_trajets and attendu == 'A' and cr == 'C' -%}Retour : c'était ton tour, « C » ne s'applique pas. Choisis « A ».
+{%- elif papa_trajets and attendu == 'B' and cr == 'D' -%}Retour : c'était au tour d'Élodie / Olivier, choisis « B ».
+{%- elif papa_trajets and (cr in ['C', 'D'] or ca == 'B') and m2_code == 'NONE' -%}Motif obligatoire : pourquoi {{ 'Élodie / Olivier n\'ont' if cr == 'C' else 'tu n\'as' }} pas fait {{ 'le retour' if cr in ['C', 'D'] else 'l\'aller' }}{{ ' (et Élodie / Olivier ont fait l\'aller)' if cr == 'C' and ca == 'B' }}.
+{%- elif papa_trajets and lieu_diff and ml_code == 'NONE' -%}Motif obligatoire : pourquoi {{ 'tu vas le chercher' if la_diff else 'tu le ramènes' }} ailleurs qu'à Maurage.
+{%- elif libre == '' and ((m_code == 'AUTRE' and type_code not in prevus) or (papa_trajets and (cr in ['C', 'D'] or ca == 'B') and m2_code == 'AUTRE REPORT') or (papa_trajets and lieu_diff and ml_code == 'AUTRE REPORT')) -%}Complète la précision (motif « Autre »).
+{%- endif -%}
+{%- endmacro %}

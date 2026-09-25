@@ -1,0 +1,38 @@
+# =====================================================================
+# Matteo — Planning : moteur (lecture du fichier compact) + banque
+# Données brutes : /config/matteo/data/matteo_planning_overrides.json (écrites par les scripts Python)
+# Moteur         : /config/matteo/data/matteo_moteur.json (régénéré à chaque enregistrement)
+# Doc            : /config/matteo/README.md
+# =====================================================================
+
+command_line:
+  - sensor:
+      # Moteur : UN seul capteur lit le fichier compact écrit par les scripts Python.
+      # Toutes les cartes et macros lisent leurs données dans ses attributs.
+      name: "Planning Matteo Engine"
+      unique_id: planning_matteo_moteur
+      icon: mdi:calendar-sync
+      command: "cat /config/matteo/data/matteo_moteur.json"
+      scan_interval: 900
+      command_timeout: 15
+      value_template: >-
+        {{ 'ok' if value_json is defined and value_json.weekends is defined else 'erreur' }}
+      json_attributes:
+        - nb_weekends
+        - maj
+        - vacances
+        - pivots
+        - evenements
+        - weekends
+
+template:
+  - sensor:
+      # Solde net de la banque de trajets (+ : Élodie / Olivier doivent, - : Grégory doit).
+      - name: "Matteo Banque Trajets"
+        unique_id: matteo_banque_trajets
+        icon: mdi:bank-transfer
+        unit_of_measurement: "trajet(s)"
+        availability: "{{ state_attr('sensor.planning_matteo_engine', 'weekends') is list }}"
+        state: >-
+          {{ (state_attr('sensor.planning_matteo_engine', 'weekends') or []) | rejectattr('hide')
+             | map(attribute='bank_delta') | map('int', 0) | sum }}

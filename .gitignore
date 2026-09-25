@@ -18,3 +18,15 @@ __pycache__/
 *.pyc
 .HA_VERSION
 .uuid
+
+# Planning Matteo : fichiers générés, secrets et sauvegardes (non versionnés)
+matteo/data/ics_token
+matteo/data/*.bak
+matteo/data/*.tmp
+matteo/data/matteo_moteur.json
+matteo/sauvegardes/
+www/matteo/
+www/_m*.txt
+# Dossiers temporaires à supprimer à la main
+_a_supprimer_matteo/
+backups_claude/

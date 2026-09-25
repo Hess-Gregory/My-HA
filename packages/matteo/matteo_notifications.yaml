@@ -1,0 +1,189 @@
+# =====================================================================
+# Matteo — Prochain week-end, statistiques, notifications, export agenda (.ics)
+# Doc      : /config/packages/matteo/matteo_notifications.md · vue d'ensemble : /config/matteo/README.md
+# =====================================================================
+
+template:
+  # Recalculés quand le planning change + chaque heure (plus de recalcul chaque minute)
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: state
+        entity_id: sensor.planning_matteo_engine
+      - trigger: time_pattern
+        minutes: 0
+        seconds: 10
+    actions:
+      - variables:
+          r: >-
+            {% from 'matteo_planning.jinja' import matteo_vue %}
+            {{ (matteo_vue(true) | from_json).rows | rejectattr('du', 'eq', '') | list }}
+          st: >-
+            {% from 'matteo_planning.jinja' import matteo_stats %}{{ matteo_stats() }}
+    sensor:
+      - name: "Matteo Prochain Weekend"
+        unique_id: matteo_prochain_weekend
+        icon: mdi:calendar-arrow-right
+        availability: "{{ state_attr('sensor.planning_matteo_engine', 'weekends') is list }}"
+        state: "{{ (r[0].du ~ ' → ' ~ r[0].au) if r else 'aucun' }}"
+        attributes:
+          info: "{{ r[0] if r else {} }}"
+          suivant: "{{ r[1] if r | count > 1 else {} }}"
+
+      - name: "Matteo Statistiques"
+        unique_id: matteo_statistiques
+        icon: mdi:chart-box
+        availability: "{{ state_attr('sensor.planning_matteo_engine', 'weekends') is list }}"
+        state: "Année scolaire {{ st.annee }}"
+        attributes:
+          stats: "{{ st }}"
+
+# Raccourcis de filtres du tableau.
+script:
+  matteo_planning_filtre_rapide:
+    alias: "Planning Matteo – Filtre rapide"
+    icon: mdi:filter
+    mode: restart
+    fields:
+      mode:
+        description: "avenir, historique, rattraper, conges"
+        example: "rattraper"
+    sequence:
+      - action: script.matteo_planning_filtres_reset
+      - choose:
+          - conditions: "{{ mode == 'historique' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target: { entity_id: input_boolean.matteo_planning_passes }
+          - conditions: "{{ mode == 'rattraper' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target: { entity_id: input_boolean.matteo_planning_passes }
+              - action: input_select.select_option
+                target: { entity_id: input_select.matteo_planning_filtre_etat }
+                data: { option: "À rattraper" }
+          - conditions: "{{ mode == 'conges' }}"
+            sequence:
+              - action: input_select.select_option
+                target: { entity_id: input_select.matteo_planning_filtre_type }
+                data: { option: "Congés à définir" }
+
+# Export agenda (.ics), page imprimable et CSV.
+shell_command:
+  matteo_export_ics: python3 /config/matteo/scripts/generate_ics.py
+
+automation:
+  # Rappel à 19h des trajets du lendemain (qui, où, événement, notes).
+  - id: matteo_notif_veille_trajet
+    alias: "Planning Matteo – Notification la veille d'un trajet"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "19:00:00"
+    variables:
+      rows: >-
+        {{ [state_attr('sensor.matteo_prochain_weekend', 'info') or {}, state_attr('sensor.matteo_prochain_weekend', 'suivant') or {}] }}
+      demain: "{{ (now() + timedelta(days=1)).strftime('%d/%m/%Y') }}"
+      msg: >-
+        {% set ns = namespace(l=[], c='', n='') %}
+        {% for i in rows if i %}
+          {% set ca = (i.aller_c | default('|'))[0:1] %}{% set cr = (i.retour_c | default('|'))[0:1] %}
+          {% if i.du | default('') == demain and ca in ['A', 'B'] %}
+            {% set ns.l = ns.l + ['🚗 Aller : ' ~ (('tu vas chercher Matteo à ' ~ (i.lieu_a | default('') or 'Maurage')) if ca == 'A' else 'Élodie / Olivier amènent Matteo')] %}
+            {% set ns.c = ns.c or i.conge | default('') %}{% set ns.n = ns.n or i.notes | default('') %}
+          {% endif %}
+          {% if i.au | default('') == demain and cr in ['A', 'B', 'C', 'D'] %}
+            {% set ns.l = ns.l + ['🏠 Retour : ' ~ (('tu ramènes Matteo à ' ~ (i.lieu_r | default('') or 'Maurage')) if cr in ['A', 'C'] else 'Élodie / Olivier viennent chercher Matteo')] %}
+            {% set ns.n = ns.n or i.notes | default('') %}
+          {% endif %}
+        {% endfor %}
+        {% if ns.l and ns.c %}{% set ns.l = ns.l + [ns.c] %}{% endif %}
+        {% if ns.l and ns.n %}{% set ns.l = ns.l + ['📝 ' ~ ns.n] %}{% endif %}
+        {{ ns.l | join('\n') }}
+    conditions:
+      - condition: template
+        value_template: "{{ msg | trim != '' }}"
+    actions:
+      - action: notify.mobile_app_smartphone_greg
+        data:
+          title: "👦 Matteo — demain {{ demain[0:5] }}"
+          message: "{{ msg | trim }}"
+      - action: persistent_notification.create
+        data:
+          notification_id: matteo_trajet
+          title: "👦 Matteo — trajet de demain ({{ demain }})"
+          message: "{{ msg | trim }}"
+
+  # Rappel quand un congé approche sans que ses dates soient fixées.
+  - id: matteo_notif_conges_a_definir
+    alias: "Planning Matteo – Rappel : congé à définir"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "09:00:00"
+    variables:
+      liste: >-
+        {% set ns = namespace(l=[]) %}
+        {% for w in state_attr('sensor.planning_matteo_engine', 'weekends') or [] %}
+          {% if w.date_key.startswith('VAC_') and not w.du and not w.hide and w.vac_debut %}
+            {% set j = (as_datetime(w.vac_debut).date() - now().date()).days %}
+            {% set t = w.vac_nom ~ ' (dans ' ~ j ~ ' jours, le ' ~ w.vac_debut[8:10] ~ '/' ~ w.vac_debut[5:7] ~ ')' %}
+            {% if j in [21, 14, 7, 3, 1] and t not in ns.l %}{% set ns.l = ns.l + [t] %}{% endif %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.l | join(', ') }}
+    conditions:
+      - condition: template
+        value_template: "{{ liste | trim != '' }}"
+    actions:
+      - action: notify.mobile_app_smartphone_greg
+        data:
+          title: "📅 Congé de Matteo à définir"
+          message: "Les dates ne sont pas encore fixées : {{ liste | trim }}. Ouvre Calendrier › Matteo & Trajets › ⚙️ Modifier."
+      - action: persistent_notification.create
+        data:
+          notification_id: matteo_conges
+          title: "📅 Congé de Matteo à définir"
+          message: "Les dates ne sont pas encore fixées : {{ liste | trim }}. Ouvre Calendrier › Matteo & Trajets › ⚙️ Modifier."
+
+  # Alerte 3 jours avant un week-end où un événement est fêté chez l'autre parent.
+  - id: matteo_notif_evenement_autre_parent
+    alias: "Planning Matteo – Rappel : événement chez l'autre parent"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "19:05:00"
+    variables:
+      i: "{{ state_attr('sensor.matteo_prochain_weekend', 'info') or {} }}"
+      j: "{{ ((strptime(i.du, '%d/%m/%Y').date() - now().date()).days) if i.du | default('') else -1 }}"
+    conditions:
+      - condition: template
+        value_template: "{{ j == 3 and '⚠️' in i.conge | default('') }}"
+    actions:
+      - action: notify.mobile_app_smartphone_greg
+        data:
+          title: "⚠️ Matteo — {{ i.du[0:5] }} → {{ i.au[0:5] }}"
+          message: "{{ i.conge }} : fêté chez l'autre parent alors que Matteo est chez {{ 'toi' if i.garde == 'Papa' else 'sa maman' }}."
+      - action: persistent_notification.create
+        data:
+          notification_id: matteo_evenement
+          title: "⚠️ Matteo — événement chez l'autre parent"
+          message: "Week-end du {{ i.du }} au {{ i.au }} : {{ i.conge }} (Matteo est chez {{ 'toi' if i.garde == 'Papa' else 'sa maman' }})."
+
+  # À chaque écriture du planning : régénère les exports et recharge le calendrier « Matteo ».
+  - id: matteo_export_agenda
+    alias: "Planning Matteo – Export agenda partagé (.ics)"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: sensor.planning_matteo_engine
+        attribute: maj
+      - trigger: homeassistant
+        event: start
+    actions:
+      - delay: { seconds: 5 }
+      - action: shell_command.matteo_export_ics
+      - action: homeassistant.reload_config_entry
+        target: { entity_id: calendar.matteo }
