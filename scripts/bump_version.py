@@ -114,13 +114,18 @@ def main() -> None:
     kind = bump_kind(m.group("type"), m.group("bang"))
     description = m.group("desc").strip()
 
-    changed = [f for f in get_changed_files() if is_tracked(f)]
-    if not changed:
-        return
-
     versions = {}
     if VERSIONS_FILE.exists():
         versions = json.loads(VERSIONS_FILE.read_text(encoding="utf-8"))
+
+    # Fichiers supprimes (dans ce commit ou avant) : leur entree est retiree de versions.json
+    # au lieu d'etre bumpee (un "git add" sur un fichier supprime faisait echouer le hook).
+    pruned = [k for k in list(versions) if not (ROOT / k).exists()]
+    for k in pruned:
+        versions.pop(k)
+    changed = [f for f in get_changed_files() if is_tracked(f) and (ROOT / f).exists()]
+    if not changed and not pruned:
+        return
 
     now = datetime.datetime.now().astimezone().isoformat()
     to_stage = []
@@ -145,12 +150,16 @@ def main() -> None:
     subprocess.run(["git", "add", "versions.json", *to_stage], cwd=ROOT, check=True)
     names = ", ".join(Path(f).name for f in to_stage[:5])
     suffix = "..." if len(to_stage) > 5 else ""
+    msg = (f"chore(version): bump {len(to_stage)} fichier(s) ({names}{suffix})" if to_stage
+           else f"chore(version): retrait de {len(pruned)} fichier(s) supprime(s) du suivi")
+    if to_stage and pruned:
+        msg += f" + retrait de {len(pruned)} fichier(s) supprime(s)"
     subprocess.run(
         [
             "git",
             "commit",
             "-m",
-            f"chore(version): bump {len(to_stage)} fichier(s) ({names}{suffix})",
+            msg,
         ],
         cwd=ROOT,
         check=True,

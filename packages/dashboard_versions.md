@@ -27,3 +27,6 @@ a été retiré (remplacé par `packages/matteo/`, voir `/config/matteo/README.m
 ## Footer propre à une vue
 `scripts/dashboard_dependencies.json` accepte une clé `"<slug>/<chemin de la vue>"` (ex. `dashboard_calendrier/matteo-trajets`)
 qui remplace, pour cette vue seulement, la liste par défaut `"<slug>"`. Relancer ensuite `python3 scripts/add_footer_card.py <slug>`.
+
+## Fichiers supprimés
+Quand un fichier suivi est supprimé, le hook `scripts/bump_version.py` retire automatiquement son entrée de `versions.json` (au lieu d'essayer de la bumper) et crée un commit `chore(version): retrait de N fichier(s) supprimé(s) du suivi`.
