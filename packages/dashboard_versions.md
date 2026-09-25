@@ -18,3 +18,8 @@ Fichier d'infrastructure du système de versioning automatique. Il ne contient a
 ## Piège connu
 - Ne jamais éditer les numéros de version manuellement dans ce fichier ou dans `versions.json`.
 - Après tout ajout dans `json_attributes`, effectuer un `ha core restart` pour charger le capteur mis à jour.
+
+## Fichiers du planning Matteo suivis
+Les 6 packages `packages/matteo/*.yaml` sont suivis individuellement et affichés dans le footer du dashboard
+Calendrier (dépendances déclarées dans `scripts/dashboard_dependencies.json`). L'ancien `packages/matteo_logistique.yaml`
+a été retiré (remplacé par `packages/matteo/`, voir `/config/matteo/README.md`).
