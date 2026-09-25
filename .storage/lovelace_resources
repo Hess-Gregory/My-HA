@@ -71,7 +71,7 @@
       },
       {
         "id": "4d9f995d2e3146b684e38c1e4805414e",
-        "url": "/hacsfiles/lovelace-blitzortung-lightning-card/blitzortung-lightning-card.js?hacstag=10163382001180",
+        "url": "/hacsfiles/lovelace-blitzortung-lightning-card/blitzortung-lightning-card.js?hacstag=10163382001182",
         "type": "module"
       },
       {
@@ -170,11 +170,6 @@
         "type": "module"
       },
       {
-        "id": "44933912e4dd4d7cab460bdbd1f239c3",
-        "url": "/hacsfiles/Bubble-Card/bubble-card.js?hacstag=680112919340",
-        "type": "module"
-      },
-      {
         "id": "52844355c77344ffa65c1080d80592b2",
         "url": "/local/todoist-kanban-familial-card.js?v=105",
         "type": "module"
@@ -192,6 +187,11 @@
       {
         "id": "b01a57ffd32b40a880d96d3e48b3b362",
         "url": "/hacsfiles/decluttering-card/decluttering-card.js?hacstag=188686483100",
+        "type": "module"
+      },
+      {
+        "id": "7e41074cca9d439aa8197f111754b53e",
+        "url": "/hacsfiles/lovelace-html-card/html-card.js?hacstag=193408399100",
         "type": "module"
       }
     ]

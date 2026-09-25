@@ -30,3 +30,6 @@ www/_m*.txt
 # Dossiers temporaires à supprimer à la main
 _a_supprimer_matteo/
 backups_claude/
+.cache/
+.ha_run.lock
+bticino_intercom/events/
