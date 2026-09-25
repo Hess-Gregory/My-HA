@@ -70,9 +70,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "footer de versioning visible sur les vues panel (onglet Matteo & Trajets)",
-    "last_update": "2026-09-25T13:16:34.571502+02:00",
-    "version": "1.1.1"
+    "last_change": "footer par onglet - Matteo & Trajets n'affiche que son package maitre",
+    "last_update": "2026-09-25T13:22:00.353354+02:00",
+    "version": "1.1.2"
   },
   ".storage/lovelace.dashboard_calendrier.backup_20260918_232141": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
