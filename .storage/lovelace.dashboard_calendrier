@@ -2961,7 +2961,7 @@
                       "card_mod": {
                         "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; border-radius: 16px !important; box-shadow: none !important; }"
                       },
-                      "content": "{% set s = state_attr('sensor.matteo_statistiques', 'stats') or {} %}\n| | 👨 Chez papa | 👩 Chez maman |\n|---|:-:|:-:|\n| Week-ends | **{{ s.weekends_papa }}** | **{{ s.weekends_maman }}** |\n| Nuits de congé | **{{ s.nuits_conges_papa }}** | **{{ s.nuits_conges_maman }}** |\n| Autres dates | {{ s.autres_papa }} | {{ s.autres_maman }} |\n\nTrajets non respectés : **{{ s.trajets_non_respectes }}** · rattrapages / compensations : **{{ s.rattrapages }}**\n\n<small>Du 1er septembre au 31 août · les congés sont comptés en nuits.</small>"
+                      "content": "{% set s = state_attr('sensor.matteo_statistiques', 'stats') %}{% set s = s if s is mapping else {} %}\n| | 👨 Chez papa | 👩 Chez maman |\n|---|:-:|:-:|\n| Week-ends | **{{ s.get('weekends_papa', '—') }}** | **{{ s.get('weekends_maman', '—') }}** |\n| Nuits de congé | **{{ s.get('nuits_conges_papa', '—') }}** | **{{ s.get('nuits_conges_maman', '—') }}** |\n| Autres dates | {{ s.get('autres_papa', '—') }} | {{ s.get('autres_maman', '—') }} |\n\nTrajets non respectés : **{{ s.get('trajets_non_respectes', '—') }}** · rattrapages / compensations : **{{ s.get('rattrapages', '—') }}**\n\n<small>Du 1er septembre au 31 août · les congés sont comptés en nuits.</small>"
                     }
                   ]
                 },
