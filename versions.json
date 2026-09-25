@@ -70,9 +70,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "onglet Matteo & Trajets v1 - banque 2 colonnes, lieux en rouge, sauvegarde, footer versions",
-    "last_update": "2026-09-25T11:17:20.798336+02:00",
-    "version": "1.1.0"
+    "last_change": "footer de versioning visible sur les vues panel (onglet Matteo & Trajets)",
+    "last_update": "2026-09-25T13:16:34.571502+02:00",
+    "version": "1.1.1"
   },
   ".storage/lovelace.dashboard_calendrier.backup_20260918_232141": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
