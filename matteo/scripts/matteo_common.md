@@ -39,3 +39,10 @@ python3 /config/matteo/scripts/matteo_common.py   # recalcul complet + régéné
 ## aligner_retours — règle (correctif Noël 2026)
 
 Tous les retours A/B **futurs** suivent l'alternance stricte (après A ou D → B ; après B ou C → A), même s'ils ont été saisis à la main depuis le dashboard. Les ancres qui cassent la chaîne sont uniquement les échanges C/D et un retour marqué `reprise_alternance`. Les entrées passées ne sont jamais modifiées.
+
+## Inversion permanente des retours
+
+- `retour_attendu_chaine(data, key, debut)` : retour attendu par l'alternance avant une date.
+- `compenser_inversion(...)` : passe la ligne de compensation en C (+1) ou D (−1) et la lie à l'inversion.
+- `nettoyer_inversions(data)` : appelée par `save()` avant `aligner_retours` ; remet à la normale une compensation orpheline (inversion annulée, déplacée ou supprimée).
+- Moteur : exporte `inversion_retours`, `inversion_comp`, `compense_inversion`.

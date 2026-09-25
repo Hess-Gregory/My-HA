@@ -33,6 +33,9 @@ input_boolean:
   matteo_a_une_selection:
     name: "Planning Matteo – Une ligne est sélectionnée"
     icon: mdi:cursor-default-click
+  matteo_form_inverser_retours:
+    name: "Inverser les retours à partir de cette date (permanent)"
+    icon: mdi:swap-vertical-bold
   matteo_mode_edition:
     name: "Planning Matteo – Mode modification"
     icon: mdi:pencil
@@ -113,6 +116,11 @@ input_select:
       - "Olivier est indisponible raison professionnelle"
       - "Olivier est indisponible raison privée"
       - "Autre (saisir motif libre, remplir champ libre)"
+  matteo_form_compensation:
+    name: "Date du trajet de compensation"
+    icon: mdi:scale-balance
+    options:
+      - "— choisir —"
   matteo_form_echange:
     name: "Échanger avec le week-end du"
     icon: mdi:swap-horizontal-bold
@@ -129,7 +137,7 @@ shell_command:
     "{{ acteur_aller }}" "{{ acteur_aller_code }}" "{{ acteur_retour }}" "{{ acteur_retour_code }}"
     "{{ code_aller }}" "{{ code_retour }}" "{{ motif_code }}" "{{ motif }}" "{{ motif_libre }}"
     "{{ report_date }}" "false" "ha" "{{ motif2_code }}" "{{ motif2 }}"
-    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}"
+    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}" "{{ inversion }}" "{{ comp_key }}"
   matteo_override_supprimer: >-
     python3 /config/matteo/scripts/matteo_delete_override.py "{{ date_key }}"
   matteo_override_flags: >-
@@ -253,6 +261,9 @@ script:
       - action: input_select.select_option
         target: { entity_id: input_select.matteo_form_garde }
         data: { option: "{{ 'Chez papa' if papa else 'Chez maman' }}" }
+      - action: "input_boolean.turn_{{ 'on' if w.inversion_retours | default(false) else 'off' }}"
+        target: { entity_id: input_boolean.matteo_form_inverser_retours }
+      - action: script.matteo_planning_maj_compensation
       - action: script.matteo_planning_maj_echange
 
   # Ouvre la fiche Détails d'une ligne.
@@ -342,8 +353,46 @@ script:
         data: { date: "{{ (now() + timedelta(days=(4 - now().weekday()) % 7 + 2)).strftime('%Y-%m-%d') }}" }
       - action: input_select.select_first
         target: { entity_id: input_select.matteo_form_garde }
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.matteo_form_inverser_retours }
       - action: script.matteo_planning_maj_rattrapage
       - action: script.matteo_planning_maj_echange
+
+  # Dates proposées pour compenser une inversion permanente des retours : un retour sur deux après la date
+  # (là où, après l'inversion, c'est de nouveau le tour du parent qui a fait le retour en plus).
+  matteo_planning_maj_compensation:
+    alias: "Planning Matteo – Dates de compensation (inversion des retours)"
+    icon: mdi:scale-balance
+    mode: restart
+    sequence:
+      - variables:
+          key: "{{ states('input_text.matteo_form_date_key') }}"
+          du: "{{ states('input_datetime.matteo_form_du') | replace('-', '') }}"
+          ws: "{{ state_attr('sensor.planning_matteo_engine', 'weekends') or [] }}"
+          opts: >-
+            {% set nl = namespace(l=[]) %}
+            {% for w in ws if w.du and not w.hide and w.visible and not w.masque | default(false) and w.date_key != key
+                  and w.code_retour in ['A', 'B', 'C', 'D'] and (w.du[6:10] ~ w.du[3:5] ~ w.du[0:2]) > du %}
+              {% set nl.l = nl.l + [{'k': w.du[6:10] ~ w.du[3:5] ~ w.du[0:2], 'au': w.au, 'c': w.code_retour, 'ci': w.compense_inversion | default('')}] %}
+            {% endfor %}
+            {% set ns = namespace(o=[], i=0) %}
+            {% for x in nl.l | sort(attribute='k') %}
+              {% set ns.i = ns.i + 1 %}
+              {% if ns.i % 2 == 0 and (x.c in ['A', 'B'] or x.ci == key) and ns.o | count < 12 %}
+                {% set ns.o = ns.o + [x.au] %}
+              {% endif %}
+            {% endfor %}
+            {{ ['— choisir —'] + ns.o }}
+      - action: input_select.set_options
+        target: { entity_id: input_select.matteo_form_compensation }
+        data: { options: "{{ opts }}" }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_compensation }
+        data:
+          option: >-
+            {% set w = ws | selectattr('date_key', 'eq', key) | list | first | default({}) %}
+            {% set c = ws | selectattr('date_key', 'eq', w.inversion_comp | default('x')) | map(attribute='au') | list %}
+            {{ c[0] if c and c[0] in opts else opts[0] }}
 
   # Liste des trajets dus qu'un retour D peut solder.
   matteo_planning_maj_rattrapage:
@@ -421,6 +470,9 @@ script:
             {{ (ca == 'A' and not is_state('input_select.matteo_form_lieu_aller', 'Maurage (Maison Maman)')) or (cr in ['A', 'C'] and not is_state('input_select.matteo_form_lieu_retour', 'Maurage (Maison Maman)')) }}
           ech_sel: "{{ states('input_select.matteo_form_echange') }}"
           attendu: "{{ states('sensor.matteo_form_retour_attendu') }}"
+          inv: "{{ is_state('input_boolean.matteo_form_inverser_retours', 'on') and not chez_maman and type_code != 'PERIODE_VAC' }}"
+          comp_sel: "{{ states('input_select.matteo_form_compensation') }}"
+          att_chaine: "{{ 'B' if state_attr('sensor.matteo_form_retour_attendu', 'precedent_code') in ['A', 'D'] else 'A' }}"
           echange_avec: >-
             {{ (ech_sel[0:2] ~ '-' ~ ech_sel[3:5] ~ '-' ~ ech_sel[6:10]) if type_code == 'ECHANGE' and (ech_sel | regex_match('^\\d{2}/\\d{2}/\\d{4}')) else '' }}
       - variables:
@@ -454,21 +506,29 @@ script:
               ⚠️ Choisis le week-end avec lequel faire l'échange croisé.
             {% elif type_code == 'ECHANGE' and (('chez maman' in ech_sel) != chez_maman) %}
               ⚠️ Échange croisé : choisis un week-end où Matteo est chez l'autre parent.
-            {% elif not chez_maman and ((attendu == 'B' and cr == 'A')) %}
+            {% elif inv and cr not in ['A', 'B'] %}
+              ⚠️ Inversion des retours : choisis A (Grégory) ou B (Élodie / Olivier), pas C / D.
+            {% elif inv and cr == att_chaine %}
+              ⚠️ Inversion des retours : c'était déjà ce tour-là. Choisis l'autre parent pour inverser.
+            {% elif inv and not (comp_sel | regex_match('^\\d{2}/\\d{2}/\\d{4}')) %}
+              ⚠️ Inversion des retours : choisis obligatoirement la date du trajet de compensation.
+            {% elif inv and m2_code == 'NONE' %}
+              ⚠️ Motif obligatoire : pourquoi les retours sont inversés.
+            {% elif not chez_maman and not inv and ((attendu == 'B' and cr == 'A')) %}
               ⚠️ C'était au tour d'Élodie / Olivier de faire le retour : si tu l'as fait à leur place, choisis « C — Grégory (+1 Banque) » et indique le motif.
-            {% elif not chez_maman and attendu == 'A' and cr == 'B' %}
+            {% elif not chez_maman and not inv and attendu == 'A' and cr == 'B' %}
               ⚠️ C'était ton tour de faire le retour : si Élodie / Olivier l'ont fait à ta place, choisis « D — Élodie / Olivier (Compensation) ».
-            {% elif not chez_maman and attendu == 'A' and cr == 'C' %}
+            {% elif not chez_maman and not inv and attendu == 'A' and cr == 'C' %}
               ⚠️ C'était ton tour de faire le retour : choisis « A — Grégory (normal) » (C = trajet non respecté par Élodie / Olivier).
-            {% elif not chez_maman and attendu == 'B' and cr == 'D' %}
+            {% elif not chez_maman and not inv and attendu == 'B' and cr == 'D' %}
               ⚠️ C'était au tour d'Élodie / Olivier : choisis « B — Élodie / Olivier (normal) » (D = rattrapage d'un de tes tours).
             {% elif type_code not in prevus and m_code == 'NONE' %}
               ⚠️ Choisis un motif de garde : ce type sort du rythme prévu.
-            {% elif not chez_maman and (cr in ['C', 'D'] or ca == 'B') and m2_code == 'NONE' %}
+            {% elif not chez_maman and (cr in ['C', 'D'] or ca == 'B' or inv) and m2_code == 'NONE' %}
               ⚠️ Motif obligatoire : un parent n'a pas fait son trajet.
             {% elif not chez_maman and lieu_diff and ml_code == 'NONE' %}
               ⚠️ Motif obligatoire : pourquoi le lieu n'est pas Maurage.
-            {% elif libre == '' and ((m_code == 'AUTRE' and type_code not in prevus) or ((cr in ['C', 'D'] or ca == 'B') and m2_code == 'AUTRE REPORT') or (lieu_diff and ml_code == 'AUTRE REPORT')) %}
+            {% elif libre == '' and ((m_code == 'AUTRE' and type_code not in prevus) or ((cr in ['C', 'D'] or ca == 'B' or inv) and m2_code == 'AUTRE REPORT') or (lieu_diff and ml_code == 'AUTRE REPORT')) %}
               ⚠️ Précision obligatoire : complète le champ texte (motif « Autre »).
             {% elif libre == '' and type_code == 'PERIODE_VAC' %}
               ⚠️ Donne un nom à la période de vacances (champ texte).
@@ -514,6 +574,9 @@ script:
           type_code: "{{ type_code }}"
           gardien: "{{ 'Maman' if chez_maman else 'Papa' }}"
           echange_avec: "{{ echange_avec | trim }}"
+          inversion: "{{ 'on' if inv else 'off' }}"
+          comp_key: >-
+            {{ (ws | selectattr('au', 'eq', comp_sel[0:10]) | map(attribute='date_key') | list | first | default('')) if inv else '' }}
           notes: >-
             {% set n = states('input_text.matteo_form_notes') %}
             {{ '' if n in ['unknown', 'unavailable'] else n | replace('"', '') }}
@@ -535,15 +598,15 @@ script:
           acteur_retour_code: "{{ {'A': 'GREGORY', 'B': 'ELODIE', 'C': 'GREGORY', 'D': 'ELODIE'}.get(cr, 'AUCUN') }}"
           motif_code: "{{ m_code if type_code not in prevus else 'NONE' }}"
           motif: "{{ m_label if type_code not in prevus else 'Aucun' }}"
-          motif2_code: "{{ m2_code if (cr in ['C', 'D'] or ca == 'B') else 'NONE' }}"
-          motif2: "{{ m2_label if (cr in ['C', 'D'] or ca == 'B') else 'Aucun' }}"
+          motif2_code: "{{ m2_code if (cr in ['C', 'D'] or ca == 'B' or inv) else 'NONE' }}"
+          motif2: "{{ m2_label if (cr in ['C', 'D'] or ca == 'B' or inv) else 'Aucun' }}"
           report_date: "{{ report_date | trim }}"
           report_date_aller: "{{ report_date_aller | trim }}"
           date_du: "{{ du[8:10] ~ '/' ~ du[5:7] ~ '/' ~ du[0:4] }}"
           date_au: "{{ au[8:10] ~ '/' ~ au[5:7] ~ '/' ~ au[0:4] }}"
           motif_libre: >-
             {{ libre if (type_code == 'PERIODE_VAC' or (m_code == 'AUTRE' and type_code not in prevus)
-                         or ((cr in ['C', 'D'] or ca == 'B') and m2_code == 'AUTRE REPORT') or (lieu_diff and ml_code == 'AUTRE REPORT')) else '' }}
+                         or ((cr in ['C', 'D'] or ca == 'B' or inv) and m2_code == 'AUTRE REPORT') or (lieu_diff and ml_code == 'AUTRE REPORT')) else '' }}
       - if: "{{ sortie.returncode | default(0) != 0 }}"
         then:
           - action: input_text.set_value
@@ -751,3 +814,18 @@ template:
           message: >-
             {% from 'matteo_planning.jinja' import matteo_form_erreur %}
             {{ matteo_form_erreur() | trim }}
+
+# ---------------------------------------------------------------------
+# Formulaire : dates de compensation à jour quand on coche l'inversion ou change la date
+# ---------------------------------------------------------------------
+automation:
+  - id: matteo_form_maj_compensation
+    alias: "Planning Matteo – Dates de compensation à jour (formulaire)"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id:
+          - input_boolean.matteo_form_inverser_retours
+          - input_datetime.matteo_form_du
+    actions:
+      - action: script.matteo_planning_maj_compensation

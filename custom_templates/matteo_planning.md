@@ -17,3 +17,7 @@ Chaque ligne de `matteo_vue` contient notamment `aller_c` / `retour_c` au format
 ## Pièges
 - Après modification : **Outils de développement → YAML → Recharger les modèles personnalisés** (ou `homeassistant.reload_custom_templates`).
 - La validation existe aussi dans `matteo_planning_enregistrer` (voir `matteo_planning_actions.md`).
+
+## Inversion permanente des retours
+
+`matteo_form_erreur` contrôle la case d'inversion (retour A/B opposé à l'alternance, date de compensation et motif obligatoires). La fiche Détails affiche « 🔁 Retours inversés… » sur la ligne d'inversion et « ⚖️ Compensation… » sur le trajet de compensation.

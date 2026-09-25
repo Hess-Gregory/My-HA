@@ -46,3 +46,9 @@ n'est pas fait par le bon parent ou si le lieu n'est pas Maurage · précision s
 - La même règle est codée deux fois : dans la macro `matteo_form_erreur` (bouton désactivé) et dans le script
   `matteo_planning_enregistrer` (garde-fou). Modifier les deux ensemble.
 - Les options des menus de motifs sont réécrites par `matteo_planning_options.yaml` depuis `matteo_options.json`.
+
+## Inversion permanente des retours
+
+- `input_boolean.matteo_form_inverser_retours` : case « 🔁 Inverser les retours à partir de cette date ».
+- `input_select.matteo_form_compensation` : date du trajet de compensation (obligatoire), remplie par `script.matteo_planning_maj_compensation` (un retour sur deux après la date) ; l'automatisation `matteo_form_maj_compensation` la met à jour quand on coche la case ou change la date.
+- Contrôles : retour A/B = l'autre parent que prévu, date de compensation et motif obligatoires. Arguments 27-28 du script Python : `inversion`, `comp_key`.

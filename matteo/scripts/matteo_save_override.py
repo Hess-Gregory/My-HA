@@ -4,11 +4,13 @@
 # Args : KEY TYPE_CODE TYPE_LABEL GARDIEN ACTEUR_ALLER ACTEUR_ALLER_CODE ACTEUR_RETOUR ACTEUR_RETOUR_CODE
 #        CODE_ALLER CODE_RETOUR MOTIF1_CODE MOTIF1 MOTIF_LIBRE REPORT_DATE REPORT_AGREED USER
 #        MOTIF2_CODE MOTIF2 DATE_DU DATE_AU REPORT_DATE_ALLER ECHANGE_AVEC NOTES LIEU_ALLER LIEU_RETOUR MOTIF_LIEU_CODE MOTIF_LIEU
+#        INVERSION (on/off : inversion permanente des retours) COMP_KEY (clé du trajet de compensation)
 import sys
 from datetime import datetime, timedelta
 sys.path.insert(0, "/config/matteo/scripts")
 from matteo_common import (masques, load, save, now_iso, type_labels, ddmmyyyy_to_date, entry_start,
-                           weekend_defaut, reopen, link, WE_PAPA, WE_MAMAN)
+                           weekend_defaut, reopen, link, WE_PAPA, WE_MAMAN,
+                           retour_attendu_chaine, compenser_inversion, _d)
 
 
 # Argument n° i de la ligne de commande, ou valeur par défaut s'il est absent.
@@ -30,6 +32,7 @@ def main(a):
     notes = arg(a, 22, None)
     lieu_a, lieu_r = arg(a, 23, None), arg(a, 24, None)
     ml_code, ml = arg(a, 25, None), arg(a, 26, "Aucun")
+    inv, comp = arg(a, 27, None), arg(a, 28, "")
 
     content = load(); data = content["data"]
     ts = now_iso()
@@ -84,6 +87,26 @@ def main(a):
     entry["reason_code"] = "BANK_PLUS_1" if code_retour == "C" else ("COMPENSATION" if code_retour == "D" or code_aller == "B" else "NONE")
     entry["bank_delta"] = (1 if code_retour == "C" else 0) - (1 if code_retour == "D" else 0) - (1 if code_aller == "B" else 0)
 
+    # Inversion permanente des retours : ce retour passe à l'autre parent et l'alternance repart d'ici
+    # (ancre reprise_alternance) pour toutes les dates suivantes. Le parent qui fait ainsi un retour de plus
+    # est compensé à la date choisie (obligatoire) : voir compenser_inversion() / nettoyer_inversions().
+    if inv is not None:
+        old_comp = entry.get("inversion_comp", "") if entry.get("inversion_retours") else ""
+        if inv == "on":
+            if code_retour not in ("A", "B") or not comp or comp not in data or comp == key:
+                sys.stderr.write("Inversion : retour A ou B et date de compensation valide obligatoires\n"); sys.exit(2)
+            if code_retour == retour_attendu_chaine(data, key, _d(date_du)):
+                sys.stderr.write("Inversion : choisis l'autre parent que celui prévu par l'alternance\n"); sys.exit(2)
+            entry.update({"inversion_retours": True, "reprise_alternance": True, "inversion_comp": comp, "inversion_comp_au": data[comp].get("date_au", ""),
+                          "rattrape_par": comp, "reason_code": "INVERSION_RETOURS",
+                          "bank_delta": entry["bank_delta"] + (1 if code_retour == "A" else -1)})
+            compenser_inversion(data, comp, key, code_retour, date_au, user, ts)
+        elif entry.get("inversion_retours"):
+            for f in ("inversion_retours", "reprise_alternance", "inversion_comp", "inversion_comp_au"):
+                entry.pop(f, None)
+            if entry.get("rattrape_par") == old_comp:
+                entry["rattrape_par"] = ""
+
     entry["created_at"] = entry.get("created_at", ts)
     entry["modified_at"] = ts
     entry["modification_count"] = entry.get("modification_count", 0) + 1
@@ -115,7 +138,7 @@ def main(a):
     if old_sd and old_sd in data:
         data[old_sd]["soldee_par"] = [x for x in data[old_sd].get("soldee_par", []) if x != key]
     entry["solde_dette"] = ""
-    if code_retour == "C":
+    if code_retour == "C" and not entry.get("compense_inversion"):
         dettes = sorted([k2 for k2 in data if k2 != key and unites(k2) > 0],
                         key=lambda k2: entry_start(data[k2]) or datetime.max.date())
         if dettes:

@@ -118,7 +118,9 @@
   {%- endif -%}
 {%- endif -%}
 {%- if w.echange_avec | default('') -%}{%- set natures = natures + ['🔁 Échange croisé avec le week-end du ' ~ (w.echange_avec | replace('-', '/'))] -%}{%- endif -%}
-{%- if w.reprise_alternance | default(false) -%}{%- set natures = natures + ['🔄 L\'alternance des retours repart de cette date (convenu)'] -%}{%- endif -%}
+{%- if w.reprise_alternance | default(false) and not w.inversion_retours | default(false) -%}{%- set natures = natures + ['🔄 L\'alternance des retours repart de cette date (convenu)'] -%}{%- endif -%}
+{%- if w.inversion_retours | default(false) -%}{%- set natures = natures + ['🔁 Retours inversés de façon permanente à partir de cette date · compensation : retour du ' ~ (w.inversion_comp_au | default(''))] -%}{%- endif -%}
+{%- if w.compense_inversion | default('') -%}{%- set natures = natures + ['⚖️ Compensation de l\'inversion permanente des retours du ' ~ (w.compense_inversion_au | default(''))] -%}{%- endif -%}
 {%- if not natures -%}{%- set natures = ['Normal'] -%}{%- endif -%}
 {%- set m1 = (w.motif_libre if w.motif_code == 'AUTRE' else w.motif) -%}
 {%- set m2 = (w.motif_libre if w.motif2_code == 'AUTRE REPORT' else w.motif2) %}
@@ -238,6 +240,9 @@
 {%- set lieu_diff = la_diff or (cr in ['A', 'C'] and not is_state('input_select.matteo_form_lieu_retour', 'Maurage (Maison Maman)')) -%}
 {%- set ech = states('input_select.matteo_form_echange') -%}
 {%- set attendu = states('sensor.matteo_form_retour_attendu') -%}
+{%- set inv = papa_trajets and is_state('input_boolean.matteo_form_inverser_retours', 'on') -%}
+{%- set comp = states('input_select.matteo_form_compensation') -%}
+{%- set att_chaine = 'B' if state_attr('sensor.matteo_form_retour_attendu', 'precedent_code') in ['A', 'D'] else 'A' -%}
 {%- set ws = state_attr('sensor.planning_matteo_engine', 'weekends') or [] -%}
 {%- set w = ws | selectattr('date_key', 'eq', key) | list | first | default({}) -%}
 {%- set kc = du[8:10] ~ '-' ~ du[5:7] ~ '-' ~ du[0:4] -%}
@@ -266,12 +271,16 @@
 {%- elif type_code not in prevus and m_code == 'NONE' -%}Choisis un motif de garde : ce type sort du rythme prévu.
 {%- elif papa_trajets and ca not in ['A', 'B'] -%}Indique qui fait l'aller.
 {%- elif papa_trajets and cr not in ['A', 'B', 'C', 'D'] -%}Indique qui fait le retour.
-{%- elif papa_trajets and attendu == 'B' and cr == 'A' -%}Retour : c'était au tour d'Élodie / Olivier. Si tu l'as fait à leur place, choisis « C » et indique le motif.
-{%- elif papa_trajets and attendu == 'A' and cr == 'B' -%}Retour : c'était ton tour. Si Élodie / Olivier l'ont fait à ta place, choisis « D » (rattrapage).
-{%- elif papa_trajets and attendu == 'A' and cr == 'C' -%}Retour : c'était ton tour, « C » ne s'applique pas. Choisis « A ».
-{%- elif papa_trajets and attendu == 'B' and cr == 'D' -%}Retour : c'était au tour d'Élodie / Olivier, choisis « B ».
-{%- elif papa_trajets and (cr in ['C', 'D'] or ca == 'B') and m2_code == 'NONE' -%}Motif obligatoire : pourquoi {{ 'Élodie / Olivier n\'ont' if cr == 'C' else 'tu n\'as' }} pas fait {{ 'le retour' if cr in ['C', 'D'] else 'l\'aller' }}{{ ' (et Élodie / Olivier ont fait l\'aller)' if cr == 'C' and ca == 'B' }}.
+{%- elif inv and cr not in ['A', 'B'] -%}Inversion des retours : choisis A (Grégory) ou B (Élodie / Olivier), pas C / D.
+{%- elif inv and cr == att_chaine -%}Inversion des retours : c'était déjà ce tour-là. Choisis l'autre parent pour inverser.
+{%- elif inv and not (comp | regex_match('^\\d{2}/\\d{2}/\\d{4}')) -%}Inversion des retours : choisis obligatoirement la date du trajet de compensation.
+{%- elif inv and m2_code == 'NONE' -%}Motif obligatoire : pourquoi les retours sont inversés.
+{%- elif papa_trajets and not inv and attendu == 'B' and cr == 'A' -%}Retour : c'était au tour d'Élodie / Olivier. Si tu l'as fait à leur place, choisis « C » et indique le motif.
+{%- elif papa_trajets and not inv and attendu == 'A' and cr == 'B' -%}Retour : c'était ton tour. Si Élodie / Olivier l'ont fait à ta place, choisis « D » (rattrapage).
+{%- elif papa_trajets and not inv and attendu == 'A' and cr == 'C' -%}Retour : c'était ton tour, « C » ne s'applique pas. Choisis « A ».
+{%- elif papa_trajets and not inv and attendu == 'B' and cr == 'D' -%}Retour : c'était au tour d'Élodie / Olivier, choisis « B ».
+{%- elif papa_trajets and (cr in ['C', 'D'] or ca == 'B' or inv) and m2_code == 'NONE' -%}Motif obligatoire : pourquoi {{ 'Élodie / Olivier n\'ont' if cr == 'C' else 'tu n\'as' }} pas fait {{ 'le retour' if cr in ['C', 'D'] else 'l\'aller' }}{{ ' (et Élodie / Olivier ont fait l\'aller)' if cr == 'C' and ca == 'B' }}.
 {%- elif papa_trajets and lieu_diff and ml_code == 'NONE' -%}Motif obligatoire : pourquoi {{ 'tu vas le chercher' if la_diff else 'tu le ramènes' }} ailleurs qu'à Maurage.
-{%- elif libre == '' and ((m_code == 'AUTRE' and type_code not in prevus) or (papa_trajets and (cr in ['C', 'D'] or ca == 'B') and m2_code == 'AUTRE REPORT') or (papa_trajets and lieu_diff and ml_code == 'AUTRE REPORT')) -%}Complète la précision (motif « Autre »).
+{%- elif libre == '' and ((m_code == 'AUTRE' and type_code not in prevus) or (papa_trajets and (cr in ['C', 'D'] or ca == 'B' or inv) and m2_code == 'AUTRE REPORT') or (papa_trajets and lieu_diff and ml_code == 'AUTRE REPORT')) -%}Complète la précision (motif « Autre »).
 {%- endif -%}
 {%- endmacro %}

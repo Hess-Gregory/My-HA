@@ -1534,6 +1534,37 @@
                                                       "type": "conditional",
                                                       "conditions": [
                                                         {
+                                                          "condition": "state",
+                                                          "entity": "input_select.matteo_form_retour",
+                                                          "state": [
+                                                            "A — Grégory (normal)",
+                                                            "B — Élodie / Olivier (normal)"
+                                                          ]
+                                                        }
+                                                      ],
+                                                      "row": {
+                                                        "entity": "input_boolean.matteo_form_inverser_retours",
+                                                        "name": "🔁 Inverser les retours à partir de cette date (permanent)"
+                                                      }
+                                                    },
+                                                    {
+                                                      "type": "conditional",
+                                                      "conditions": [
+                                                        {
+                                                          "condition": "state",
+                                                          "entity": "input_boolean.matteo_form_inverser_retours",
+                                                          "state": "on"
+                                                        }
+                                                      ],
+                                                      "row": {
+                                                        "entity": "input_select.matteo_form_compensation",
+                                                        "name": "↳ ⚖️ Date du trajet de compensation (obligatoire)"
+                                                      }
+                                                    },
+                                                    {
+                                                      "type": "conditional",
+                                                      "conditions": [
+                                                        {
                                                           "condition": "or",
                                                           "conditions": [
                                                             {
@@ -1597,6 +1628,11 @@
                                                               "condition": "state",
                                                               "entity": "input_select.matteo_form_aller",
                                                               "state": "B — Élodie / Olivier"
+                                                            },
+                                                            {
+                                                              "condition": "state",
+                                                              "entity": "input_boolean.matteo_form_inverser_retours",
+                                                              "state": "on"
                                                             }
                                                           ]
                                                         }
@@ -2455,6 +2491,37 @@
                                                       "type": "conditional",
                                                       "conditions": [
                                                         {
+                                                          "condition": "state",
+                                                          "entity": "input_select.matteo_form_retour",
+                                                          "state": [
+                                                            "A — Grégory (normal)",
+                                                            "B — Élodie / Olivier (normal)"
+                                                          ]
+                                                        }
+                                                      ],
+                                                      "row": {
+                                                        "entity": "input_boolean.matteo_form_inverser_retours",
+                                                        "name": "🔁 Inverser les retours à partir de cette date (permanent)"
+                                                      }
+                                                    },
+                                                    {
+                                                      "type": "conditional",
+                                                      "conditions": [
+                                                        {
+                                                          "condition": "state",
+                                                          "entity": "input_boolean.matteo_form_inverser_retours",
+                                                          "state": "on"
+                                                        }
+                                                      ],
+                                                      "row": {
+                                                        "entity": "input_select.matteo_form_compensation",
+                                                        "name": "↳ ⚖️ Date du trajet de compensation (obligatoire)"
+                                                      }
+                                                    },
+                                                    {
+                                                      "type": "conditional",
+                                                      "conditions": [
+                                                        {
                                                           "condition": "or",
                                                           "conditions": [
                                                             {
@@ -2518,6 +2585,11 @@
                                                               "condition": "state",
                                                               "entity": "input_select.matteo_form_aller",
                                                               "state": "B — Élodie / Olivier"
+                                                            },
+                                                            {
+                                                              "condition": "state",
+                                                              "entity": "input_boolean.matteo_form_inverser_retours",
+                                                              "state": "on"
                                                             }
                                                           ]
                                                         }

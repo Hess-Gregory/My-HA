@@ -85,7 +85,7 @@ def recalc_evenements(content):
 # copie .bak, écriture atomique (.tmp puis remplacement) et régénération du moteur compact.
 def save(content):
     recalc_evenements(content)
-    aligner_retours(content.get("data", {}))
+    nettoyer_inversions(content.get("data", {})); aligner_retours(content.get("data", {}))
     if os.path.exists(DATA_PATH):
         try:
             shutil.copy2(DATA_PATH, DATA_PATH + ".bak")
@@ -220,6 +220,60 @@ def manuel(e):
 
 # Alternance stricte des retours : après A ou D -> tour d'Élodie / Olivier (B) ; après B ou C -> tour de Grégory (A).
 # Ne touche que les lignes futures générées automatiquement ; les lignes manuelles servent de point d'appui.
+# ---------------------------------------------------------------------
+# Inversion permanente des retours (case du formulaire) + trajet de compensation obligatoire
+# ---------------------------------------------------------------------
+def retour_attendu_chaine(data, key, debut):
+    """Retour attendu par l'alternance (A = Grégory, B = Élodie / Olivier) d'après le dernier retour réel avant `debut`."""
+    m = masques(data); best = None; prev = None
+    for k, e in data.items():
+        if k == key or k in m or e.get("hide") or not e.get("visible_in_ui", True) or e.get("code_retour") not in ("A", "B", "C", "D"):
+            continue
+        s = _d(e.get("date_du", ""))
+        if s and s < debut and (best is None or s > best):
+            best, prev = s, e["code_retour"]
+    return "B" if prev in ("A", "D") else "A"
+
+
+def compenser_inversion(data, comp, pivot, code_pivot, date_pivot, user, ts):
+    """Trajet de compensation d'une inversion : si l'inversion donne un retour de plus à Élodie / Olivier (pivot B),
+    Grégory fait un de leurs retours (C, +1) ; si elle en donne un de plus à Grégory (pivot A), ils font un des siens
+    (D, -1). C compte comme un tour d'Élodie / Olivier et D comme un tour de Grégory : l'alternance n'est pas cassée."""
+    e = data[comp]; cc = "C" if code_pivot == "B" else "D"
+    lib = "Compensation de l'inversion des retours du " + date_pivot
+    e.update({"code_retour": cc, "acteur_retour": "Grégory (+1 Banque)" if cc == "C" else "Élodie / Olivier (Rattrapage)",
+              "acteur_retour_code": "GREGORY" if cc == "C" else "ELODIE", "compense_inversion": pivot, "compense_inversion_au": date_pivot,
+              "reason_code": "COMPENSATION_INVERSION", "report_date": pivot if cc == "D" else "", "solde_dette": "",
+              "bank_delta": (1 if cc == "C" else -1) - (1 if e.get("code_aller") == "B" else 0),
+              "motif-2": "Autre (saisir motif libre, remplir champ libre)", "motif-2_code": "AUTRE REPORT",
+              "motif_libre": lib, "lieu_retour": "MAURAGE" if cc == "C" else "",
+              "modified_at": ts, "modification_count": e.get("modification_count", 0) + 1})
+    e.setdefault("audit", []).append({"user": user, "action": "inversion", "at": ts, "note": lib})
+
+
+def nettoyer_inversions(data):
+    """Remet à la normale un trajet de compensation dont l'inversion a été annulée, déplacée ou supprimée."""
+    for k, e in data.items():
+        p = e.get("compense_inversion")
+        if not p:
+            continue
+        pe = data.get(p, {})
+        if pe.get("inversion_retours") and pe.get("inversion_comp") == k:
+            continue
+        c = e.get("code_retour"); n = "B" if c == "C" else ("A" if c == "D" else c)
+        e["code_retour"] = n
+        if n in _RET:
+            e["acteur_retour"], e["acteur_retour_code"] = _RET[n]
+        e["bank_delta"] = -(1 if e.get("code_aller") == "B" else 0)
+        e["reason_code"] = "COMPENSATION" if e.get("code_aller") == "B" else "NONE"
+        e["report_date"] = ""; e.pop("compense_inversion", None); e.pop("compense_inversion_au", None)
+        if str(e.get("motif_libre", "")).startswith("Compensation de l'inversion"):
+            e["motif_libre"] = ""; e["motif-2"], e["motif-2_code"] = "Aucun", "NONE"
+        e["lieu_retour"] = "MAURAGE" if n == "A" else ""
+        e.setdefault("audit", []).append({"user": "script", "action": "inversion_annulee", "at": now_iso(),
+                                          "note": "compensation annulée (inversion du " + p + " retirée)"})
+
+
 def aligner_retours(data):
     """Alternance stricte des retours (un coup Grégory, un coup Élodie / Olivier) sur toutes les lignes FUTURES A/B
     (même saisies à la main), en partant du dernier retour réel ; C/D et reprise_alternance sont des ancres. Même règle que la suggestion du formulaire."""
@@ -294,6 +348,9 @@ def ecrire_moteur(content):
             "vac_nom": it.get("vac_nom", ""), "vac_debut": it.get("vac_debut", ""), "vac_fin": it.get("vac_fin", ""),
             "vac_part": it.get("vac_part", 0), "vac_parts": it.get("vac_parts", 0),
             "visible": it.get("visible_in_ui", True), "reprise_alternance": bool(it.get("reprise_alternance", False)),
+            "inversion_retours": bool(it.get("inversion_retours", False)), "inversion_comp": it.get("inversion_comp", ""),
+            "compense_inversion": it.get("compense_inversion", ""), "inversion_comp_au": it.get("inversion_comp_au", ""),
+            "compense_inversion_au": it.get("compense_inversion_au", ""),
             "lieu_aller_code": (it.get("lieu_aller") or LIEU_DEFAUT) if it.get("code_aller") == "A" else "",
             "lieu_aller": lieu_label(it.get("lieu_aller"), LX) if it.get("code_aller") == "A" else "",
             "lieu_retour_code": (it.get("lieu_retour") or LIEU_DEFAUT) if it.get("code_retour") in ("A", "C") else "",

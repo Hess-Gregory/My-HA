@@ -23,3 +23,7 @@ Les 7 derniers sont optionnels (compatibilité) : s'ils sont absents, la valeur 
 - Les week-ends masqués par un congé ne portent jamais de dette (`MASQ`).
 - Chaque enregistrement ajoute une entrée `upsert` dans l'historique : la ligne devient « manuelle »
   et ne sera plus réalignée automatiquement.
+
+## Inversion permanente des retours (args 27-28)
+
+`INVERSION` = on/off, `COMP_KEY` = clé du trajet de compensation. Avec `on`, le retour (A ou B, obligatoirement l'autre parent que celui prévu par l'alternance) reçoit `inversion_retours`, `reprise_alternance` (ancre de l'alternance), `inversion_comp`, `rattrape_par` et un `bank_delta` de ±1 ; la ligne de compensation passe en C (+1) ou D (−1) avec `compense_inversion`. Avec `off` sur une ligne inversée, les champs sont retirés et `nettoyer_inversions()` (appelée par `save()`) remet la compensation à la normale.

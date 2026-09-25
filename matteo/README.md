@@ -98,6 +98,12 @@ Le calendrier commun (vues *Semaine / Mois* et *Vue d'ensemble*) affiche aussi l
   25/10 compensation par Élodie / Olivier → puis 15/11 Grégory à leur place (échange C), 29/11 Grégory, 13/12 eux… À Noël 2026 (18/12 → 27/12 chez Grégory, congé qui prolonge le week-end),
   l'alternance **continue** : le 13/12 a été fait par eux, donc Grégory ramène Matteo le 27/12,
   puis eux le 10/01, Grégory le 24/01, etc.
+- **Inversion permanente des retours** : dans le formulaire, la case « 🔁 Inverser les retours à partir de cette date »
+  donne ce retour à l'autre parent et fait repartir l'alternance de là, pour toutes les dates suivantes. Le parent qui
+  fait ainsi un retour de plus doit être compensé : la **date du trajet de compensation est obligatoire** (proposée parmi
+  un retour sur deux après l'inversion, là où c'est de nouveau son tour). Ce jour-là, le retour passe en **C** (Grégory fait
+  leur retour, +1) ou en **D** (Élodie / Olivier font celui de Grégory, −1) : la banque revient à 0 sans casser l'alternance.
+  Un motif est obligatoire. Décocher la case (ou supprimer la ligne) annule l'inversion et remet la compensation à la normale.
 - **Lieu** : par défaut Maurage. Parfois Grégory va chercher Matteo à l'école (ICPP Uccle) ou à Forest : on choisit le lieu,
   un **motif** est alors obligatoire, et le lieu s'affiche **en rouge** à côté du nom dans le tableau.
 - Le formulaire **suggère** le bon retour et **refuse d'enregistrer** une incohérence (mauvais tour sans le signaler,
