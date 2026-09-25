@@ -2,6 +2,7 @@
 # Matteo — Vue du planning : filtres, pagination, calendrier mensuel
 # Logique de filtrage : /config/custom_templates/matteo_planning.jinja
 # Doc      : /config/packages/matteo/matteo_planning_vue.md · vue d'ensemble : /config/matteo/README.md
+# Version  : en-tête [AUTO-VERSION] (hook git) · affichée dans le footer du dashboard Calendrier
 # =====================================================================
 
 # Filtres, pagination et mois affiché du tableau / calendrier (helpers partagés par tous les écrans).

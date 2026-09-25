@@ -3,6 +3,7 @@
 # Les listes ci-dessous sont un secours ; elles sont resynchronisées
 # depuis le JSON au démarrage et à chaque changement du fichier.
 # Doc      : /config/packages/matteo/matteo_planning_options.md · vue d'ensemble : /config/matteo/README.md
+# Version  : en-tête [AUTO-VERSION] (hook git) · affichée dans le footer du dashboard Calendrier
 # =====================================================================
 
 command_line:

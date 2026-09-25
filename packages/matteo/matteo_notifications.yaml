@@ -1,6 +1,7 @@
 # =====================================================================
 # Matteo — Prochain week-end, statistiques, notifications, export agenda (.ics)
 # Doc      : /config/packages/matteo/matteo_notifications.md · vue d'ensemble : /config/matteo/README.md
+# Version  : en-tête [AUTO-VERSION] (hook git) · affichée dans le footer du dashboard Calendrier
 # =====================================================================
 
 template:

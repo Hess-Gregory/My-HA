@@ -1,6 +1,7 @@
 # =====================================================================
 # Matteo — Maintenance : sauvegarde complète du planning
 # Archive : /config/matteo/sauvegardes/ (8 dernières) — voir /config/matteo/README.md
+# Version  : en-tête [AUTO-VERSION] (hook git) · affichée dans le footer du dashboard Calendrier
 # =====================================================================
 
 shell_command:
