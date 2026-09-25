@@ -34,6 +34,80 @@ ou que le lieu n'est pas Maurage.
 
 ---
 
+## 1 bis. Pourquoi ce dashboard ?
+
+Matteo vit chez sa maman (Élodie, avec Olivier, à **Maurage**) et vient chez son papa (Grégory, à **Engis**)
+**un week-end sur deux** et pendant une partie des **congés scolaires**. Au quotidien, plusieurs questions reviennent :
+
+- *Ce week-end, Matteo est chez qui ?* et *qui va le chercher, qui le ramène ?*
+- *Qui a déjà fait le trajet à la place de l'autre, et qui doit « rendre » un trajet ?*
+- *Comment partager les congés (Toussaint, Noël, Carnaval, Pâques, été) et à quelles dates ?*
+- *Un anniversaire ou une fête tombe-t-il chez le bon parent ?*
+
+Avant, tout cela était calculé « de tête » ou avec une simple formule sur le numéro de semaine,
+qui devenait fausse dès qu'un congé, un échange ou une fête changeait le rythme. Ce dashboard centralise
+**tout le planning jusqu'à fin 2028**, garde l'**historique** de chaque changement, calcule
+automatiquement **qui fait quel trajet**, tient la **banque de trajets** pour que chacun fasse sa part,
+et **prévient** (notification la veille, congé à définir, événement chez l'autre parent).
+
+## 1 ter. À quoi il sert — ce qu'on voit à l'écran
+
+Onglet **Calendrier › Matteo & Trajets** :
+
+| Section | Ce qu'elle montre |
+|---|---|
+| **Prochaine période** | Où est Matteo maintenant / la prochaine fois, qui fait l'aller et le retour, le lieu, les événements |
+| **Calendrier mensuel** | Un mois en couleurs : week-ends papa / maman, congés, exceptions ; survol d'un jour = détails ; navigation mois par mois |
+| **Banque de trajets** | Deux colonnes : ce qu'Élodie / Olivier te doivent et ce que tu leur dois ; ✅ 0 – 0 quand tout est respecté |
+| **Statistiques** | Année scolaire : week-ends et nuits de congé chez chacun, trajets non respectés, rattrapages |
+| **Imprimer / exporter / partager** | Page imprimable (PDF), Excel, agenda iPhone / Android, lien pour Élodie, 💾 sauvegarde |
+| **Lexique** | Explication des couleurs et des codes |
+| **Planning** | Le tableau de toutes les dates, avec filtres et bouton **Modifier** sur chaque ligne |
+
+Le calendrier commun (vues *Semaine / Mois* et *Vue d'ensemble*) affiche aussi les périodes de garde sur la ligne « 👦 Matteo ».
+
+## 1 quater. L'organisation, expliquée simplement
+
+### Les week-ends
+- Un week-end = **du vendredi soir au dimanche soir**.
+- **Un week-end sur deux chez papa**, en partant du week-end de référence du 18/09/2026 (chez papa).
+- Si le rythme change durablement (ex. inversion décidée à partir d'une date), on crée un **pivot** :
+  tous les week-ends suivants sont inversés, sans toucher au passé.
+- Un **échange croisé** permute ponctuellement deux week-ends (papa ↔ maman) ; l'annuler remet les deux comme avant.
+
+### Les congés scolaires
+- Les congés officiels (Fédération Wallonie-Bruxelles) sont déjà inscrits jusqu'à l'été 2028.
+- Chaque congé est découpé en **parts** : 2 parts (Toussaint, Noël, Carnaval, Pâques) ou 4 parts (été).
+  On fixe les dates de chaque part via **Modifier** (ex. Toussaint 2026 : part 1 chez papa du 16/10 au 25/10,
+  part 2 chez maman du 26/10 au 01/11).
+- Tant qu'une part n'est pas datée, elle apparaît « à définir » et une notification le rappelle à J-21, 14, 7, 3, 1.
+- Une part datée **remplace** les week-ends ordinaires qu'elle recouvre (ils disparaissent du tableau et ne comptent plus).
+- Noël alterne d'une année à l'autre (une année chez papa, l'autre chez maman) : on le fixe dans les parts.
+
+### Les fêtes et anniversaires
+- **Fête des pères** (2e dimanche de juin, Belgique) → week-end chez papa ; **fête des mères** (2e dimanche de mai) → chez maman.
+  Si le rythme normal tombe mal, les week-ends sont échangés automatiquement.
+- Anniversaires (Noémie, Élodie, Hugo, Grégory, Matteo) et Saint-Valentin : une icône sur le week-end qui contient la date
+  (ou le suivant) ; ⚠️ si l'événement est fêté chez l'autre parent que celui qui a Matteo ce week-end-là.
+
+### Les trajets
+- Trajets à gérer **seulement quand Matteo est chez papa** (chez maman : aucun trajet).
+- **Aller** (vendredi) : c'est normalement Grégory qui va chercher Matteo.
+- **Retour** (dimanche) : **alternance stricte**, un coup Grégory, un coup Élodie / Olivier, en suivant le **dernier retour réel**
+  (congés compris). Exemple réel : 04/10 retour fait par Grégory à la place d'Élodie / Olivier (Olivier travaillait) →
+  25/10 compensation par Élodie / Olivier → puis 15/11 eux, 29/11 Grégory, 13/12 eux… À Noël 2026, l'alternance repart
+  de zéro (décision commune) : 27/12 eux, 10/01 Grégory, 24/01 eux…
+- **Lieu** : par défaut Maurage. Parfois Grégory va chercher Matteo à l'école (ICPP Uccle) ou à Forest : on choisit le lieu,
+  un **motif** est alors obligatoire, et le lieu s'affiche **en rouge** à côté du nom dans le tableau.
+- Le formulaire **suggère** le bon retour et **refuse d'enregistrer** une incohérence (mauvais tour sans le signaler,
+  motif manquant…).
+
+### La banque de trajets (objectif 0 – 0)
+- Si **Grégory fait le retour à la place** d'Élodie / Olivier (code C) → ils lui doivent **1 trajet**.
+- Si **Élodie / Olivier font un trajet à la place** de Grégory (retour D, ou aller) → cela **rembourse** leur plus ancienne
+  dette ; s'ils ne devaient rien, c'est **Grégory qui leur doit 1 trajet**, qu'il rendra en faisant un de leurs retours.
+- Chaque remboursement est **relié** au trajet qu'il solde (visible dans la fiche Détails) ; supprimer une ligne défait le lien.
+
 ## 2. Comment ça marche (pour un développeur)
 
 ```
