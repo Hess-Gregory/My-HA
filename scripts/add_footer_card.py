@@ -92,6 +92,17 @@ def apply_to_view(view: dict, card: dict) -> None:
         full_width_card = dict(card)
         full_width_card["grid_options"] = dict(FULL_WIDTH_GRID_OPTIONS)
         sections.append({"type": "grid", "cards": [full_width_card]})
+    elif view.get("type") == "panel":
+        # Vue "panel" : seule la PREMIERE carte est affichee. Le footer est donc place
+        # a la fin de cette carte (si c'est une pile) au lieu d'etre ajoute a cote.
+        cards = view.setdefault("cards", [])
+        cards[:] = [c for i, c in enumerate(cards) if i == 0 or not is_footer_card(c)]
+        if cards and isinstance(cards[0], dict) and isinstance(cards[0].get("cards"), list):
+            inner = cards[0]["cards"]
+            inner[:] = [c for c in inner if not is_footer_card(c)]
+            inner.append(dict(card))
+        elif not cards:
+            cards.append(dict(card))
     else:
         cards = view.setdefault("cards", [])
         cards[:] = [c for c in cards if not is_footer_card(c)]
