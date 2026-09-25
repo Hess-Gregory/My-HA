@@ -221,15 +221,21 @@ def manuel(e):
 # Alternance stricte des retours : après A ou D -> tour d'Élodie / Olivier (B) ; après B ou C -> tour de Grégory (A).
 # Ne touche que les lignes futures générées automatiquement ; les lignes manuelles servent de point d'appui.
 def aligner_retours(data):
-    """Alternance stricte des retours (un coup Grégory, un coup Élodie / Olivier) sur les lignes FUTURES générées
-    automatiquement, en partant du dernier retour réel. Même règle que la suggestion du formulaire."""
+    """Alternance stricte des retours (un coup Grégory, un coup Élodie / Olivier) sur toutes les lignes FUTURES A/B
+    (même saisies à la main), en partant du dernier retour réel ; C/D et reprise_alternance sont des ancres. Même règle que la suggestion du formulaire."""
     m = masques(data); today = datetime.now(TZ).date(); prev = None; n = 0
     seq = sorted((_d(e.get("date_du", "")), k) for k, e in data.items()
                  if not e.get("hide") and e.get("visible_in_ui", True) and k not in m
                  and e.get("code_retour") in ("A", "B", "C", "D") and _d(e.get("date_du", "")))
     for s, k in seq:
         e = data[k]
-        if prev and s >= today and e["code_retour"] in ("A", "B") and not manuel(e):
+        # Ancre explicite : un retour marque "reprise_alternance" redemarre la chaine.
+        if e.get("reprise_alternance"):
+            prev = e["code_retour"]
+            continue
+        # Tout retour A/B futur suit l'alternance stricte, meme saisi a la main depuis le
+        # dashboard : seuls les echanges C/D et reprise_alternance cassent la chaine.
+        if prev and s >= today and e["code_retour"] in ("A", "B"):
             att = "B" if prev in ("A", "D") else "A"
             if e["code_retour"] != att:
                 e["code_retour"] = att

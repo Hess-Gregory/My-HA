@@ -34,3 +34,8 @@ python3 /config/matteo/scripts/matteo_common.py   # recalcul complet + régéné
 ## Pièges
 - Ne jamais écrire `matteo_planning_overrides.json` sans passer par `save()` : le moteur ne serait pas régénéré.
 - Les week-ends masqués gardent leurs données dans la source mais le moteur leur met `bank_delta = 0` et retire leurs liens.
+
+
+## aligner_retours — règle (correctif Noël 2026)
+
+Tous les retours A/B **futurs** suivent l'alternance stricte (après A ou D → B ; après B ou C → A), même s'ils ont été saisis à la main depuis le dashboard. Les ancres qui cassent la chaîne sont uniquement les échanges C/D et un retour marqué `reprise_alternance`. Les entrées passées ne sont jamais modifiées.

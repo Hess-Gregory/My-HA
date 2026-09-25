@@ -95,8 +95,9 @@ Le calendrier commun (vues *Semaine / Mois* et *Vue d'ensemble*) affiche aussi l
 - **Aller** (vendredi) : c'est normalement Grégory qui va chercher Matteo.
 - **Retour** (dimanche) : **alternance stricte**, un coup Grégory, un coup Élodie / Olivier, en suivant le **dernier retour réel**
   (congés compris). Exemple réel : 04/10 retour fait par Grégory à la place d'Élodie / Olivier (Olivier travaillait) →
-  25/10 compensation par Élodie / Olivier → puis 15/11 eux, 29/11 Grégory, 13/12 eux… À Noël 2026, l'alternance repart
-  de zéro (décision commune) : 27/12 eux, 10/01 Grégory, 24/01 eux…
+  25/10 compensation par Élodie / Olivier → puis 15/11 Grégory à leur place (échange C), 29/11 Grégory, 13/12 eux… À Noël 2026 (18/12 → 27/12 chez Grégory, congé qui prolonge le week-end),
+  l'alternance **continue** : le 13/12 a été fait par eux, donc Grégory ramène Matteo le 27/12,
+  puis eux le 10/01, Grégory le 24/01, etc.
 - **Lieu** : par défaut Maurage. Parfois Grégory va chercher Matteo à l'école (ICPP Uccle) ou à Forest : on choisit le lieu,
   un **motif** est alors obligatoire, et le lieu s'affiche **en rouge** à côté du nom dans le tableau.
 - Le formulaire **suggère** le bon retour et **refuse d'enregistrer** une incohérence (mauvais tour sans le signaler,
@@ -185,7 +186,7 @@ Le calendrier commun (vues *Semaine / Mois* et *Vue d'ensemble*) affiche aussi l
   (ni banque, ni alternance, ni notifications).
 - **Retours** : alternance stricte d'après le **dernier retour réel** (congés compris). Après A ou D c'est
   le tour d'Élodie / Olivier ; après B ou C c'est le tour de Grégory. Une ligne peut porter
-  `reprise_alternance: true` (ex. Noël 2026) : l'alternance repart de cette date.
+  `reprise_alternance: true` (uniquement si les parents en conviennent explicitement) : l'alternance repart de cette date.
   Les lignes futures générées automatiquement sont réalignées à chaque enregistrement ; les lignes
   enregistrées à la main ne sont jamais modifiées.
 - **Banque** (objectif 0 – 0) : voir tableau des codes. Les rattrapages sont liés entre eux
