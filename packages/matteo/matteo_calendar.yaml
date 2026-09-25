@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v1.0.0 | 25/09/2026 11:19 | versionnage 1.0.0 des 6 packages du planning Matteo
 # =====================================================================
 # Matteo — Planning : moteur (lecture du fichier compact) + banque
 # Données brutes : /config/matteo/data/matteo_planning_overrides.json (écrites par les scripts Python)

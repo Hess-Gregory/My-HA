@@ -189,6 +189,36 @@
     "last_update": "2026-09-19T22:17:32.080787+02:00",
     "version": "0.1.0"
   },
+  "packages/matteo/matteo_calendar.yaml": {
+    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
+    "last_update": "2026-09-25T11:19:02.979902+02:00",
+    "version": "1.0.0"
+  },
+  "packages/matteo/matteo_maintenance.yaml": {
+    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
+    "last_update": "2026-09-25T11:19:02.979902+02:00",
+    "version": "1.0.0"
+  },
+  "packages/matteo/matteo_notifications.yaml": {
+    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
+    "last_update": "2026-09-25T11:19:02.979902+02:00",
+    "version": "1.0.0"
+  },
+  "packages/matteo/matteo_planning_actions.yaml": {
+    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
+    "last_update": "2026-09-25T11:19:02.979902+02:00",
+    "version": "1.0.0"
+  },
+  "packages/matteo/matteo_planning_options.yaml": {
+    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
+    "last_update": "2026-09-25T11:19:02.979902+02:00",
+    "version": "1.0.0"
+  },
+  "packages/matteo/matteo_planning_vue.yaml": {
+    "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
+    "last_update": "2026-09-25T11:19:02.979902+02:00",
+    "version": "1.0.0"
+  },
   "packages/matteo_logistique.yaml": {
     "last_change": "retrait de l'ancien package matteo_logistique remplace par packages/matteo",
     "last_update": "2026-09-25T11:17:19.356827+02:00",
