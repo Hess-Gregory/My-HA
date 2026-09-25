@@ -1,8 +1,8 @@
 {
   ".storage/lovelace.1_accueil": {
-    "last_change": "ajoute le footer de versioning et corrige la disposition en colonnes",
-    "last_update": "2026-09-22T12:20:17.911819+02:00",
-    "version": "0.3.0"
+    "last_change": "accueil (temperatures par piece), calendrier tout-en-un, chambre enfants (ventilateurs et plafonnier via telecommande)",
+    "last_update": "2026-09-25T19:39:22.467048+02:00",
+    "version": "0.4.0"
   },
   ".storage/lovelace.1_courses": {
     "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
@@ -10,9 +10,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.1_eclairage": {
-    "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
-    "last_update": "2026-09-17T18:18:24.960660+02:00",
-    "version": "0.2.0"
+    "last_change": "accueil (temperatures par piece), calendrier tout-en-un, chambre enfants (ventilateurs et plafonnier via telecommande)",
+    "last_update": "2026-09-25T19:39:22.467048+02:00",
+    "version": "0.3.0"
   },
   ".storage/lovelace.1_energie": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -20,9 +20,9 @@
     "version": "0.2.1"
   },
   ".storage/lovelace.1_ma_maison": {
-    "last_change": "footer pleine largeur, dependances etendues (chauffage/chaudiere/taches) et signature simplifiee",
-    "last_update": "2026-09-17T18:18:24.960660+02:00",
-    "version": "0.2.0"
+    "last_change": "accueil (temperatures par piece), calendrier tout-en-un, chambre enfants (ventilateurs et plafonnier via telecommande)",
+    "last_update": "2026-09-25T19:39:22.467048+02:00",
+    "version": "0.3.0"
   },
   ".storage/lovelace.1_meteo_belgique": {
     "last_change": "corrige les erreurs meteo et securise les templates jinja",
@@ -65,9 +65,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "inversion permanente des retours avec trajet de compensation obligatoire",
-    "last_update": "2026-09-25T15:14:18.877395+02:00",
-    "version": "1.2.0"
+    "last_change": "accueil (temperatures par piece), calendrier tout-en-un, chambre enfants (ventilateurs et plafonnier via telecommande)",
+    "last_update": "2026-09-25T19:39:22.467048+02:00",
+    "version": "1.3.0"
   },
   ".storage/lovelace.dashboard_test": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
