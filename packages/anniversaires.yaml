@@ -1,0 +1,195 @@
+# =====================================================================
+# Anniversaires & dates récurrentes (dashboard Calendrier › Vue d'ensemble)
+# Liste stockée dans l'attribut « liste » de sensor.anniversaires (capteur déclenché,
+# restauré au redémarrage). Ajout / suppression via les popups du dashboard.
+# Indépendant du planning de Matteo : ces dates n'apparaissent pas dans ses trajets.
+# Doc : /config/packages/anniversaires.md
+# =====================================================================
+
+input_text:
+  anniv_form_nom:
+    name: "Anniversaire – Nom"
+    icon: mdi:account
+    max: 60
+  anniv_form_resultat:
+    name: "Anniversaire – Message formulaire"
+    max: 255
+
+input_datetime:
+  anniv_form_date:
+    name: "Date (naissance ou événement)"
+    icon: mdi:calendar
+    has_date: true
+    has_time: false
+
+input_select:
+  anniv_form_type:
+    name: "Type"
+    icon: mdi:shape
+    options:
+      - "🎂 Anniversaire"
+      - "💞 Anniversaire de couple / rencontre"
+      - "🕊️ En mémoire d'un proche disparu"
+      - "📅 Autre date récurrente"
+  anniv_a_supprimer:
+    name: "Date à supprimer"
+    icon: mdi:delete
+    options:
+      - "— choisir —"
+
+script:
+  # Vide le formulaire avant d'ouvrir le popup « Ajouter ».
+  anniversaire_nouveau:
+    alias: "Anniversaires – Préparer un ajout"
+    icon: mdi:cake-variant
+    mode: restart
+    sequence:
+      - action: input_text.set_value
+        target: { entity_id: [input_text.anniv_form_nom, input_text.anniv_form_resultat] }
+        data: { value: "" }
+      - action: input_select.select_first
+        target: { entity_id: input_select.anniv_form_type }
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.anniv_form_date }
+        data: { date: "{{ now().strftime('%Y-%m-%d') }}" }
+
+  # Contrôle puis ajoute la date (nom obligatoire, pas de doublon exact).
+  anniversaire_ajouter:
+    alias: "Anniversaires – Ajouter"
+    icon: mdi:plus
+    mode: queued
+    sequence:
+      - variables:
+          nom: "{{ states('input_text.anniv_form_nom') | trim | replace('\"', '') }}"
+          date: "{{ states('input_datetime.anniv_form_date') }}"
+          type: >-
+            {% set t = states('input_select.anniv_form_type') %}
+            {{ 'rencontre' if 'couple' in t else ('memoire' if 'mémoire' in t else ('autre' if 'Autre' in t else 'anniversaire')) }}
+          liste: "{{ state_attr('sensor.anniversaires', 'liste') or [] }}"
+          erreur: >-
+            {% if nom in ['', 'unknown'] %}⚠️ Indique un nom.
+            {% elif not (date | regex_match('^\\d{4}-\\d{2}-\\d{2}$')) %}⚠️ Choisis une date.
+            {% elif date > now().strftime('%Y-%m-%d') %}⚠️ La date ne peut pas être dans le futur.
+            {% elif liste | selectattr('nom', 'eq', nom) | selectattr('date', 'eq', date) | list | count > 0 %}⚠️ Cette date existe déjà.
+            {% endif %}
+      - if: "{{ erreur | trim != '' }}"
+        then:
+          - action: input_text.set_value
+            target: { entity_id: input_text.anniv_form_resultat }
+            data: { value: "{{ erreur | trim }}" }
+          - stop: "Formulaire incomplet"
+      - event: anniversaires_modifier
+        event_data:
+          action: ajouter
+          item: { id: "a{{ now().strftime('%Y%m%d%H%M%S') }}", nom: "{{ nom }}", date: "{{ date }}", type: "{{ type }}" }
+      - action: input_text.set_value
+        target: { entity_id: input_text.anniv_form_resultat }
+        data: { value: "✅ {{ nom }} ajouté(e)." }
+      - action: input_text.set_value
+        target: { entity_id: input_text.anniv_form_nom }
+        data: { value: "" }
+
+  # Remplit la liste du popup « Supprimer ».
+  anniversaire_maj_liste:
+    alias: "Anniversaires – Liste à supprimer"
+    icon: mdi:format-list-bulleted
+    mode: restart
+    sequence:
+      - action: input_select.set_options
+        target: { entity_id: input_select.anniv_a_supprimer }
+        data:
+          options: >-
+            {% set ns = namespace(o=['— choisir —']) %}
+            {% for a in (state_attr('sensor.anniversaires', 'liste') or []) | sort(attribute='nom') %}
+              {% set ns.o = ns.o + [a.nom ~ ' · ' ~ a.date[8:10] ~ '/' ~ a.date[5:7] ~ '/' ~ a.date[0:4] ~ ' #' ~ a.id] %}
+            {% endfor %}
+            {{ ns.o }}
+
+  # Supprime la date choisie dans la liste.
+  anniversaire_supprimer:
+    alias: "Anniversaires – Supprimer"
+    icon: mdi:delete
+    mode: queued
+    sequence:
+      - variables:
+          sel: "{{ states('input_select.anniv_a_supprimer') }}"
+      - condition: template
+        value_template: "{{ '#' in sel }}"
+      - event: anniversaires_modifier
+        event_data:
+          action: supprimer
+          id: "{{ sel.split('#')[-1] }}"
+      - delay: { milliseconds: 500 }
+      - action: script.anniversaire_maj_liste
+
+template:
+  # Liste des dates : modifiée uniquement par l'événement anniversaires_modifier.
+  - triggers:
+      - trigger: event
+        event_type: anniversaires_modifier
+    actions:
+      - variables:
+          cur: "{{ state_attr('sensor.anniversaires', 'liste') or [] }}"
+          nouvelle: >-
+            {% set a = trigger.event.data.action %}
+            {% if a == 'ajouter' %}{{ cur + [trigger.event.data.item] }}
+            {% elif a == 'supprimer' %}{% set ns = namespace(l=[]) %}{% for x in cur if (x.id | string) != (trigger.event.data.id | string) %}{% set ns.l = ns.l + [x] %}{% endfor %}{{ ns.l }}
+            {% elif a == 'importer' %}{{ trigger.event.data.liste }}
+            {% else %}{{ cur }}{% endif %}
+    sensor:
+      - name: "Anniversaires"
+        unique_id: anniversaires_liste
+        icon: mdi:cake-variant
+        state: "{{ nouvelle | count }}"
+        attributes:
+          liste: "{{ nouvelle }}"
+
+automation:
+  # Rappel des anniversaires : barre de notifications HA (J-7 → jour J) + téléphone de Grégory (J-7, veille, jour J).
+  - id: anniversaires_rappel
+    alias: "Anniversaires – Rappel (notification + téléphone)"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "08:02:00"
+        id: matin
+      - trigger: homeassistant
+        event: start
+      - trigger: state
+        entity_id: sensor.anniversaires
+    variables:
+      proches: >-
+        {% set t = now().date() %}{% set ns = namespace(l=[]) %}
+        {% for a in state_attr('sensor.anniversaires', 'liste') or [] %}
+          {% set d = strptime(a.date, '%Y-%m-%d').date() %}
+          {% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}
+          {% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}
+          {% set j = (p - t).days %}
+          {% if j <= 7 %}{% set ns.l = ns.l + [{'j': j, 'nom': a.nom, 'age': y - d.year, 'type': a.type | default('anniversaire'), 'date': p.strftime('%d/%m')}] %}{% endif %}
+        {% endfor %}
+        {{ ns.l | sort(attribute='j') }}
+      texte: >-
+        {% for x in proches %}{{ '🕊️' if x.type == 'memoire' else ('🎉' if x.j == 0 else ('💞' if x.type == 'rencontre' else '🎂')) }} {{ x.nom }} — {% if x.type == 'memoire' %}aurait eu {{ x.age }} ans{% elif x.type == 'rencontre' %}{{ x.age }} ans ensemble{% else %}{{ x.age }} ans{% endif %} · {{ "aujourd'hui" if x.j == 0 else ('demain' if x.j == 1 else 'dans ' ~ x.j ~ ' jours (' ~ x.date ~ ')') }}
+        {% endfor %}
+      a_pousser: "{{ proches | selectattr('j', 'in', [0, 1, 7]) | list }}"
+    actions:
+      - if: "{{ proches | count > 0 }}"
+        then:
+          - action: persistent_notification.create
+            data:
+              notification_id: anniversaires
+              title: "🎂 Anniversaires cette semaine"
+              message: "{{ texte | trim }}"
+        else:
+          - action: persistent_notification.dismiss
+            data: { notification_id: anniversaires }
+      - if: "{{ trigger.id == 'matin' and a_pousser | count > 0 }}"
+        then:
+          - action: notify.mobile_app_smartphone_greg
+            data:
+              title: "🎂 Anniversaires"
+              message: >-
+                {% for x in a_pousser %}{{ x.nom }} — {{ "aujourd'hui" if x.j == 0 else ('demain' if x.j == 1 else 'dans 7 jours') }}{% if x.type == 'memoire' %} (aurait eu {{ x.age }} ans){% elif x.type == 'rencontre' %} ({{ x.age }} ans ensemble){% else %} ({{ x.age }} ans){% endif %}{{ ' · ' if not loop.last }}{% endfor %}
+              data:
+                clickAction: /dashboard-calendrier/vue-ensemble
+                url: /dashboard-calendrier/vue-ensemble

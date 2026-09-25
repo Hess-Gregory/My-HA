@@ -55,8 +55,8 @@
                   "icon": "mdi:calendar-star",
                   "icon_color": "amber",
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 3
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -71,8 +71,8 @@
                   "icon": "{{ 'mdi:account-child' if (state_attr(entity, 'info') or {}).garde == 'Papa' else 'mdi:account-child-outline' }}",
                   "icon_color": "{% set i = state_attr(entity, 'info') or {} %}{{ 'blue' if i.garde == 'Papa' and i.du and (i.du[6:10] ~ i.du[3:5] ~ i.du[0:2]) <= now().strftime('%Y%m%d') else 'grey' }}",
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 3
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -86,15 +86,15 @@
                   "type": "custom:mushroom-template-card",
                   "layout": "vertical",
                   "icon": "mdi:cake-variant",
-                  "primary": "{% set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] %}{% set t = now().date() %}{% set ns = namespace(b=none, n='', a=0, d='') %}{% for nom, e in L if states(e) not in ['unknown','unavailable',''] %}{% set d = strptime(states(e), '%Y-%m-%d').date() %}{% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}{% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}{% set j = (p - t).days %}{% if ns.b is none or j < ns.b %}{% set ns.b = j %}{% set ns.n = nom %}{% set ns.a = y - d.year %}{% set ns.d = p.strftime('%d/%m') %}{% endif %}{% endfor %}{{ ('🎉 ' ~ ns.n ~ ' — aujourd\\'hui !') if ns.b == 0 else (ns.n ~ ' — ' ~ ns.a ~ ' ans') if ns.n else 'Aucun anniversaire' }}",
-                  "secondary": "{% set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] %}{% set t = now().date() %}{% set ns = namespace(b=none, n='', a=0, d='') %}{% for nom, e in L if states(e) not in ['unknown','unavailable',''] %}{% set d = strptime(states(e), '%Y-%m-%d').date() %}{% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}{% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}{% set j = (p - t).days %}{% if ns.b is none or j < ns.b %}{% set ns.b = j %}{% set ns.n = nom %}{% set ns.a = y - d.year %}{% set ns.d = p.strftime('%d/%m') %}{% endif %}{% endfor %}{% if ns.n and ns.b > 0 %}dans {{ ns.b }} jour{{ 's' if ns.b > 1 }} · le {{ ns.d }}{% elif ns.n %}Bon anniversaire !{% endif %}",
-                  "icon_color": "{% set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] %}{% set t = now().date() %}{% set ns = namespace(b=none, n='', a=0, d='') %}{% for nom, e in L if states(e) not in ['unknown','unavailable',''] %}{% set d = strptime(states(e), '%Y-%m-%d').date() %}{% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}{% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}{% set j = (p - t).days %}{% if ns.b is none or j < ns.b %}{% set ns.b = j %}{% set ns.n = nom %}{% set ns.a = y - d.year %}{% set ns.d = p.strftime('%d/%m') %}{% endif %}{% endfor %}{{ 'pink' if ns.b is not none and ns.b <= 7 else 'amber' }}",
+                  "primary": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L -%}{%- set j, nom, p, age, ty = L[0] -%}{{ ico(j, ty) }} {{ nom }}{%- else -%}Aucune date{%- endif -%}",
+                  "secondary": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L -%}{%- set j, nom, p, age, ty = L[0] -%}{{ txt(age, ty) }} · {{ \"aujourd'hui\" if j == 0 else 'dans ' ~ j ~ ' jour' ~ ('s' if j > 1 else '') ~ ' (' ~ p ~ ')' }}{%- endif -%}",
+                  "icon_color": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{{ 'pink' if L and L[0][0] <= 7 else 'amber' }}",
                   "tap_action": {
                     "action": "none"
                   },
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 3
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -237,14 +237,14 @@
                     }
                   },
                   "grid_options": {
-                    "columns": 6,
+                    "columns": 12,
                     "rows": "auto"
                   }
                 },
                 {
                   "type": "markdown",
                   "grid_options": {
-                    "columns": 6,
+                    "columns": 12,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -256,7 +256,7 @@
             },
             {
               "type": "grid",
-              "column_span": 2,
+              "column_span": 4,
               "cards": [
                 {
                   "type": "custom:mushroom-title-card",
@@ -308,7 +308,7 @@
                   "show_time": true,
                   "show_location": true,
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 48,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -319,7 +319,7 @@
             },
             {
               "type": "grid",
-              "column_span": 2,
+              "column_span": 4,
               "cards": [
                 {
                   "type": "custom:mushroom-title-card",
@@ -344,7 +344,7 @@
                   ],
                   "initial_view": "dayGridMonth",
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 48,
                     "rows": 13
                   },
                   "card_mod": {
@@ -367,11 +367,11 @@
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
                   },
-                  "subtitle": "Du plus proche au plus lointain · touche une personne pour modifier sa date"
+                  "subtitle": "Du plus proche au plus lointain"
                 },
                 {
                   "type": "markdown",
-                  "content": "{%- set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] -%}\n{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for nom, e in L if states(e) not in ['unknown','unavailable',''] -%}\n{%- set d = strptime(states(e), '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, nom, p.strftime('%d/%m'), y - d.year)] -%}\n{%- endfor -%}\n{%- if ns.l | count == 0 -%}ℹ️ Aucune date configurée.{%- else -%}\n{%- for j, nom, p, age in ns.l | sort %}\n\n{{ '🎉' if j == 0 else '🎂' }} **{{ nom }}** — {{ age }} ans {{ \"aujourd'hui !\" if j == 0 else ('dans **' ~ j ~ ' jour' ~ ('s' if j > 1 else '') ~ '** · ' ~ p) }}\n{%- endfor -%}{%- endif -%}",
+                  "content": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L | count == 0 -%}ℹ️ Aucune date. Ajoute-en une avec ➕.{%- else -%}\n{%- for j, nom, p, age, ty in L %}\n\n{{ ico(j, ty) }} **{{ nom }}** — {{ txt(age, ty) }} {{ \"· aujourd'hui\" if j == 0 else ('· dans **' ~ j ~ ' jour' ~ ('s' if j > 1 else '') ~ '** · ' ~ p) }}\n{%- endfor -%}{%- endif -%}",
                   "grid_options": {
                     "columns": 12,
                     "rows": "auto"
@@ -382,78 +382,306 @@
                 },
                 {
                   "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_gregory",
+                  "primary": "Ajouter une date",
+                  "icon": "mdi:plus-circle",
+                  "icon_color": "green",
                   "layout": "horizontal",
-                  "primary": "Grégory",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
                     "rows": 1
                   },
-                  "tap_action": {
-                    "action": "more-info"
-                  },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  },
+                  "tap_action": {
+                    "action": "fire-dom-event",
+                    "browser_mod": {
+                      "service": "browser_mod.sequence",
+                      "data": {
+                        "sequence": [
+                          {
+                            "service": "script.anniversaire_nouveau",
+                            "data": {}
+                          },
+                          {
+                            "service": "browser_mod.popup",
+                            "data": {
+                              "title": "➕ Ajouter une date",
+                              "size": "normal",
+                              "dismissable": true,
+                              "content": {
+                                "type": "vertical-stack",
+                                "cards": [
+                                  {
+                                    "type": "entities",
+                                    "card_mod": {
+                                      "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                                    },
+                                    "entities": [
+                                      {
+                                        "entity": "input_text.anniv_form_nom",
+                                        "name": "Nom (ex. Laura, Notre mariage…)"
+                                      },
+                                      {
+                                        "entity": "input_datetime.anniv_form_date",
+                                        "name": "Date (naissance ou événement)"
+                                      },
+                                      {
+                                        "entity": "input_select.anniv_form_type",
+                                        "name": "Type"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "conditional",
+                                    "conditions": [
+                                      {
+                                        "condition": "state",
+                                        "entity": "input_text.anniv_form_resultat",
+                                        "state_not": ""
+                                      }
+                                    ],
+                                    "card": {
+                                      "type": "markdown",
+                                      "content": "{{ states('input_text.anniv_form_resultat') }}",
+                                      "card_mod": {
+                                        "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "type": "horizontal-stack",
+                                    "cards": [
+                                      {
+                                        "type": "custom:button-card",
+                                        "name": "Fermer",
+                                        "icon": "mdi:close",
+                                        "size": "20px",
+                                        "styles": {
+                                          "card": [
+                                            {
+                                              "background": "rgba(38, 28, 58, 0.55)"
+                                            },
+                                            {
+                                              "backdrop-filter": "blur(16px)"
+                                            },
+                                            {
+                                              "border-radius": "12px"
+                                            },
+                                            {
+                                              "padding": "10px"
+                                            }
+                                          ],
+                                          "name": [
+                                            {
+                                              "font-size": "13px"
+                                            },
+                                            {
+                                              "font-weight": "600"
+                                            }
+                                          ],
+                                          "icon": [
+                                            {
+                                              "color": "#d9c4f0"
+                                            }
+                                          ]
+                                        },
+                                        "tap_action": {
+                                          "action": "fire-dom-event",
+                                          "browser_mod": {
+                                            "service": "browser_mod.close_popup"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "custom:button-card",
+                                        "name": "Ajouter",
+                                        "icon": "mdi:check",
+                                        "size": "20px",
+                                        "styles": {
+                                          "card": [
+                                            {
+                                              "background": "rgba(38, 28, 58, 0.55)"
+                                            },
+                                            {
+                                              "backdrop-filter": "blur(16px)"
+                                            },
+                                            {
+                                              "border-radius": "12px"
+                                            },
+                                            {
+                                              "padding": "10px"
+                                            }
+                                          ],
+                                          "name": [
+                                            {
+                                              "font-size": "13px"
+                                            },
+                                            {
+                                              "font-weight": "600"
+                                            }
+                                          ],
+                                          "icon": [
+                                            {
+                                              "color": "#7ed321"
+                                            }
+                                          ]
+                                        },
+                                        "tap_action": {
+                                          "action": "perform-action",
+                                          "perform_action": "script.anniversaire_ajouter"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
                   }
                 },
                 {
                   "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_sandrine",
+                  "primary": "Supprimer une date",
+                  "icon": "mdi:delete",
+                  "icon_color": "red",
                   "layout": "horizontal",
-                  "primary": "Sandrine",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "purple",
                   "grid_options": {
                     "columns": 6,
                     "rows": 1
                   },
-                  "tap_action": {
-                    "action": "more-info"
-                  },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_matteo",
-                  "layout": "horizontal",
-                  "primary": "Matteo",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "blue",
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": 1
                   },
                   "tap_action": {
-                    "action": "more-info"
-                  },
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_hugo",
-                  "layout": "horizontal",
-                  "primary": "Hugo",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "cyan",
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": 1
-                  },
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                    "action": "fire-dom-event",
+                    "browser_mod": {
+                      "service": "browser_mod.sequence",
+                      "data": {
+                        "sequence": [
+                          {
+                            "service": "script.anniversaire_maj_liste",
+                            "data": {}
+                          },
+                          {
+                            "service": "browser_mod.popup",
+                            "data": {
+                              "title": "🗑️ Supprimer une date",
+                              "size": "normal",
+                              "dismissable": true,
+                              "content": {
+                                "type": "vertical-stack",
+                                "cards": [
+                                  {
+                                    "type": "entities",
+                                    "card_mod": {
+                                      "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                                    },
+                                    "entities": [
+                                      {
+                                        "entity": "input_select.anniv_a_supprimer",
+                                        "name": "Date à supprimer"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "horizontal-stack",
+                                    "cards": [
+                                      {
+                                        "type": "custom:button-card",
+                                        "name": "Fermer",
+                                        "icon": "mdi:close",
+                                        "size": "20px",
+                                        "styles": {
+                                          "card": [
+                                            {
+                                              "background": "rgba(38, 28, 58, 0.55)"
+                                            },
+                                            {
+                                              "backdrop-filter": "blur(16px)"
+                                            },
+                                            {
+                                              "border-radius": "12px"
+                                            },
+                                            {
+                                              "padding": "10px"
+                                            }
+                                          ],
+                                          "name": [
+                                            {
+                                              "font-size": "13px"
+                                            },
+                                            {
+                                              "font-weight": "600"
+                                            }
+                                          ],
+                                          "icon": [
+                                            {
+                                              "color": "#d9c4f0"
+                                            }
+                                          ]
+                                        },
+                                        "tap_action": {
+                                          "action": "fire-dom-event",
+                                          "browser_mod": {
+                                            "service": "browser_mod.close_popup"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "custom:button-card",
+                                        "name": "Supprimer",
+                                        "icon": "mdi:delete",
+                                        "size": "20px",
+                                        "styles": {
+                                          "card": [
+                                            {
+                                              "background": "rgba(38, 28, 58, 0.55)"
+                                            },
+                                            {
+                                              "backdrop-filter": "blur(16px)"
+                                            },
+                                            {
+                                              "border-radius": "12px"
+                                            },
+                                            {
+                                              "padding": "10px"
+                                            }
+                                          ],
+                                          "name": [
+                                            {
+                                              "font-size": "13px"
+                                            },
+                                            {
+                                              "font-weight": "600"
+                                            }
+                                          ],
+                                          "icon": [
+                                            {
+                                              "color": "#F44336"
+                                            }
+                                          ]
+                                        },
+                                        "confirmation": {
+                                          "text": "Supprimer définitivement cette date ?"
+                                        },
+                                        "tap_action": {
+                                          "action": "perform-action",
+                                          "perform_action": "script.anniversaire_supprimer"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
                   }
                 }
               ]
@@ -469,7 +697,8 @@
                     "rows": "auto"
                   }
                 }
-              ]
+              ],
+              "column_span": 4
             }
           ]
         },

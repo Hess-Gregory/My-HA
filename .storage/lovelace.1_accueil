@@ -139,6 +139,26 @@
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.anniversaires",
+                  "icon": "mdi:cake-variant",
+                  "primary": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L -%}{%- set j, nom, p, age, ty = L[0] -%}{{ ico(j, ty) }} {{ nom }}{%- else -%}Aucune date{%- endif -%}",
+                  "secondary": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L -%}{%- set j, nom, p, age, ty = L[0] -%}{{ txt(age, ty) }} · {{ \"aujourd'hui\" if j == 0 else 'dans ' ~ j ~ ' jour' ~ ('s' if j > 1 else '') ~ ' (' ~ p ~ ')' }}{%- endif -%}",
+                  "icon_color": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{{ 'pink' if L and L[0][0] <= 7 else 'amber' }}",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-calendrier/vue-ensemble"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
                 }
               ]
             },
