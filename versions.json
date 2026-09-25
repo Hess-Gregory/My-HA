@@ -165,9 +165,9 @@
     "version": "0.0.1"
   },
   "scripts.yaml": {
-    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
-    "last_update": "2026-09-20T21:15:29.547315+02:00",
-    "version": "0.0.2"
+    "last_change": "nettoyage et optimisation de Home Assistant",
+    "last_update": "2026-09-25T18:03:41.924287+02:00",
+    "version": "0.0.3"
   },
   "themes/Alpine-night.yaml": {
     "last_change": "initialisation du versionning par fichier",
