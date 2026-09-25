@@ -185,6 +185,16 @@ recorder:
       - sensor.matteo_prochain_weekend
       - sensor.matteo_statistiques
       - input_*.matteo_*
+      # Performances : entités très bavardes sans intérêt historique (≈ 20 000 écritures / jour en moins)
+      - media_player.spotifyplus_*
+      - calendar.*
+      - sensor.salon_sam_tablette_espace_libre_du_stockage_interne
+      - sensor.salon_sam_tablette_memoire_libre
+      - sensor.*_distance_estimee
+      - binary_sensor.browser_mod_*
+      - sensor.browser_mod_*
+      - camera.bticino_intercom_*
+      - sensor.sw_*_puissance_poe_*
       - sensor.prochain_changement_*
       - sensor.mode_horaire_*
       - sensor.ecart_*

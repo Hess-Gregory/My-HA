@@ -39,6 +39,8 @@ C'est un bug de l'intégration custom v2.0.2 (dernière version disponible sur H
 
 ## Le bloc `recorder:`
 
+> Performances : `entity_globs` exclut aussi les entités très bavardes sans intérêt historique (lecteur SpotifyPlus, calendriers, mémoire/stockage de la tablette, distances iBeacon, Browser Mod, instantanés bticino, puissance PoE des switches) : environ 20 000 écritures par jour en moins.
+
 > Planning Matteo : les capteurs `sensor.planning_matteo_*`, `sensor.matteo_form_*`, `sensor.matteo_options_source`,
 > `sensor.matteo_prochain_weekend`, `sensor.matteo_statistiques` et les helpers `input_*.matteo_*` sont exclus via
 > `entity_globs` (gros attributs / formulaire). La garde de Matteo n'est plus calculée ici : voir `/config/matteo/README.md`
