@@ -468,38 +468,135 @@
                 {
                   "type": "custom:mushroom-title-card",
                   "title": "Températures de la maison",
-                  "subtitle": "Touchez une pièce pour son détail confort/chauffage",
+                  "subtitle": "Touchez une pièce pour son détail confort / chauffage",
                   "alignment": "center",
                   "card_mod": {
                     "style": ":host {\n  --primary-text-color: #f6d68a !important;\n  --secondary-text-color: #d9c4f0 !important;\n  --card-mod-icon-color: #f6d68a !important;\n}\nha-card {\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n}\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "sensor.salon_temperature",
-                  "name": "Salon",
-                  "icon": "mdi:sofa",
-                  "icon_color": "orange",
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
+                  "primary": "Couloir & Entrée",
+                  "icon": "mdi:door",
+                  "secondary": "{% set t = states('sensor.temp_couloir_sonoff_a480146b60_temperature') %}{% set hu = states('sensor.temp_couloir_sonoff_a480146b60_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_couloir') }} °C ({{ states('input_select.mode_couloir') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_couloir') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.couloir', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/couloir-entree"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "grid_options": {
                     "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "sensor.chambre_temperature",
-                  "name": "Chambre",
-                  "icon": "mdi:bed",
-                  "icon_color": "blue",
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                  "primary": "Pièce de vie",
+                  "icon": "mdi:sofa",
+                  "secondary": "{% set t = states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature') %}{% set hu = states('sensor.temp_piece_de_vie_sonoff_a480146b56_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_piece_de_vie') }} °C ({{ states('input_select.mode_piece_de_vie') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_piece_de_vie') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.living', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/piece-de-vie"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "grid_options": {
                     "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
+                  "primary": "Chambre enfants",
+                  "icon": "mdi:teddy-bear",
+                  "secondary": "{% set t = states('sensor.temp_chambre_enfants_sonoff_a480146b58_temperature') %}{% set hu = states('sensor.temp_chambre_enfants_sonoff_a480146b58_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_chambre_enfants') }} °C ({{ states('input_select.mode_chambre_enfants') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_chambre_enfants') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.chambre_enfants', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/chambre-enfants"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
+                  "primary": "Chambre parents",
+                  "icon": "mdi:bed-king",
+                  "secondary": "{% set t = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature') %}{% set hu = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_chambre_adulte') }} °C ({{ states('input_select.mode_chambre_adulte') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_chambre_adulte') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.chambre_adulte', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/chambre-parents"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                  "primary": "Salle de bain",
+                  "icon": "mdi:shower",
+                  "secondary": "{% set t = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature') %}{% set hu = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_salle_de_bain') }} °C ({{ states('input_select.mode_salle_de_bain') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_salle_de_bain') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.salle_de_bain', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-mon-confort/salle-de-bain"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
                 }
               ]

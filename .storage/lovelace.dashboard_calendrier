@@ -19,16 +19,10 @@
           "show_icon_and_title": true,
           "type": "sections",
           "max_columns": 4,
-          "badges": [
-            {
-              "type": "entity",
-              "entity": "calendar.calendrier"
-            }
-          ],
           "header": {
             "card": {
               "type": "markdown",
-              "content": "# 📅 Calendrier\nRendez-vous, événements et anniversaires en un coup d'œil",
+              "content": "# 📅 Calendrier\nAgenda, planning de Matteo et anniversaires — tout sur une seule page",
               "text_only": true,
               "card_mod": {
                 "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
@@ -47,7 +41,7 @@
                   },
                   "alignment": "center",
                   "title": "Aujourd'hui en un coup d'œil",
-                  "subtitle": "Prochain événement · planning garde Matteo",
+                  "subtitle": "Prochain événement · Matteo · prochain anniversaire",
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
                   }
@@ -61,7 +55,7 @@
                   "icon": "mdi:calendar-star",
                   "icon_color": "amber",
                   "grid_options": {
-                    "columns": 6,
+                    "columns": 4,
                     "rows": 3
                   },
                   "card_mod": {
@@ -77,7 +71,7 @@
                   "icon": "{{ 'mdi:account-child' if (state_attr(entity, 'info') or {}).garde == 'Papa' else 'mdi:account-child-outline' }}",
                   "icon_color": "{% set i = state_attr(entity, 'info') or {} %}{{ 'blue' if i.garde == 'Papa' and i.du and (i.du[6:10] ~ i.du[3:5] ~ i.du[0:2]) <= now().strftime('%Y%m%d') else 'grey' }}",
                   "grid_options": {
-                    "columns": 6,
+                    "columns": 4,
                     "rows": 3
                   },
                   "card_mod": {
@@ -86,6 +80,24 @@
                   "tap_action": {
                     "action": "navigate",
                     "navigation_path": "/dashboard-calendrier/matteo-trajets"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "icon": "mdi:cake-variant",
+                  "primary": "{% set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] %}{% set t = now().date() %}{% set ns = namespace(b=none, n='', a=0, d='') %}{% for nom, e in L if states(e) not in ['unknown','unavailable',''] %}{% set d = strptime(states(e), '%Y-%m-%d').date() %}{% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}{% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}{% set j = (p - t).days %}{% if ns.b is none or j < ns.b %}{% set ns.b = j %}{% set ns.n = nom %}{% set ns.a = y - d.year %}{% set ns.d = p.strftime('%d/%m') %}{% endif %}{% endfor %}{{ ('🎉 ' ~ ns.n ~ ' — aujourd\\'hui !') if ns.b == 0 else (ns.n ~ ' — ' ~ ns.a ~ ' ans') if ns.n else 'Aucun anniversaire' }}",
+                  "secondary": "{% set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] %}{% set t = now().date() %}{% set ns = namespace(b=none, n='', a=0, d='') %}{% for nom, e in L if states(e) not in ['unknown','unavailable',''] %}{% set d = strptime(states(e), '%Y-%m-%d').date() %}{% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}{% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}{% set j = (p - t).days %}{% if ns.b is none or j < ns.b %}{% set ns.b = j %}{% set ns.n = nom %}{% set ns.a = y - d.year %}{% set ns.d = p.strftime('%d/%m') %}{% endif %}{% endfor %}{% if ns.n and ns.b > 0 %}dans {{ ns.b }} jour{{ 's' if ns.b > 1 }} · le {{ ns.d }}{% elif ns.n %}Bon anniversaire !{% endif %}",
+                  "icon_color": "{% set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] %}{% set t = now().date() %}{% set ns = namespace(b=none, n='', a=0, d='') %}{% for nom, e in L if states(e) not in ['unknown','unavailable',''] %}{% set d = strptime(states(e), '%Y-%m-%d').date() %}{% set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 %}{% set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() %}{% set j = (p - t).days %}{% if ns.b is none or j < ns.b %}{% set ns.b = j %}{% set ns.n = nom %}{% set ns.a = y - d.year %}{% set ns.d = p.strftime('%d/%m') %}{% endif %}{% endfor %}{{ 'pink' if ns.b is not none and ns.b <= 7 else 'amber' }}",
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
                   }
                 }
               ]
@@ -97,7 +109,14 @@
                 {
                   "type": "custom:mushroom-title-card",
                   "title": "👦 Matteo",
-                  "subtitle": "Prochaine période · banque de trajets · événements — touche une carte pour ouvrir le planning"
+                  "subtitle": "Prochaine période · banque de trajets · événements — touche une carte pour ouvrir le planning",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                  },
+                  "alignment": "center",
+                  "grid_options": {
+                    "columns": "full"
+                  }
                 },
                 {
                   "type": "custom:button-card",
@@ -237,7 +256,7 @@
             },
             {
               "type": "grid",
-              "column_span": 4,
+              "column_span": 2,
               "cards": [
                 {
                   "type": "custom:mushroom-title-card",
@@ -245,10 +264,10 @@
                     "columns": "full"
                   },
                   "alignment": "center",
-                  "title": "7 prochains jours",
-                  "subtitle": "Toute la famille — un calendrier par personne",
+                  "title": "Agenda — 14 prochains jours",
+                  "subtitle": "Toute la famille · une couleur par personne",
                   "card_mod": {
-                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
                   }
                 },
                 {
@@ -285,15 +304,156 @@
                       "accent_color": "#17a589"
                     }
                   ],
-                  "days_to_show": 7,
+                  "days_to_show": 14,
                   "show_time": true,
                   "show_location": true,
                   "grid_options": {
                     "columns": 12,
-                    "rows": 8
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "Vue mois",
+                  "subtitle": "Une couleur par calendrier",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "calendar",
+                  "entities": [
+                    "calendar.calendrier",
+                    "calendar.greg",
+                    "calendar.sandrine",
+                    "calendar.matteo",
+                    "calendar.hugo"
+                  ],
+                  "initial_view": "dayGridMonth",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 13
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:mushroom-title-card",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "alignment": "center",
+                  "title": "🎂 Anniversaires & dates récurrentes",
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
+                  },
+                  "subtitle": "Du plus proche au plus lointain · touche une personne pour modifier sa date"
+                },
+                {
+                  "type": "markdown",
+                  "content": "{%- set L = [('Grégory','input_datetime.anniversaire_gregory'),('Sandrine','input_datetime.anniversaire_sandrine'),('Matteo','input_datetime.anniversaire_matteo'),('Hugo','input_datetime.anniversaire_hugo')] -%}\n{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for nom, e in L if states(e) not in ['unknown','unavailable',''] -%}\n{%- set d = strptime(states(e), '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, nom, p.strftime('%d/%m'), y - d.year)] -%}\n{%- endfor -%}\n{%- if ns.l | count == 0 -%}ℹ️ Aucune date configurée.{%- else -%}\n{%- for j, nom, p, age in ns.l | sort %}\n\n{{ '🎉' if j == 0 else '🎂' }} **{{ nom }}** — {{ age }} ans {{ \"aujourd'hui !\" if j == 0 else ('dans **' ~ j ~ ' jour' ~ ('s' if j > 1 else '') ~ '** · ' ~ p) }}\n{%- endfor -%}{%- endif -%}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_gregory",
+                  "layout": "horizontal",
+                  "primary": "Grégory",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_sandrine",
+                  "layout": "horizontal",
+                  "primary": "Sandrine",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_matteo",
+                  "layout": "horizontal",
+                  "primary": "Matteo",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "input_datetime.anniversaire_hugo",
+                  "layout": "horizontal",
+                  "primary": "Hugo",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}{% set d = strptime(states(entity), '%Y-%m-%d').date() %}{{ d.strftime('%d/%m/%Y') }}{% else %}Non configuré{% endif %}",
+                  "icon": "mdi:cake-variant-outline",
+                  "icon_color": "cyan",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
                   }
                 }
               ]
@@ -6302,268 +6462,6 @@
                 {
                   "type": "markdown",
                   "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>dashboard_calendrier</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier') else 'non versionne' }}<br>\n📦 <b>horaires_pro</b> &middot; v{{ state_attr('sensor.versions_config_ha', 'packages/horaires_pro.yaml').version if state_attr('sensor.versions_config_ha', 'packages/horaires_pro.yaml') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', 'packages/horaires_pro.yaml').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', 'packages/horaires_pro.yaml') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
-                  "grid_options": {
-                    "columns": 36,
-                    "rows": "auto"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "title": "Semaine / Mois",
-          "path": "semaine-mois",
-          "icon": "mdi:calendar-month",
-          "show_icon_and_title": true,
-          "type": "sections",
-          "max_columns": 2,
-          "header": {
-            "card": {
-              "type": "markdown",
-              "content": "# 🗓️ Semaine / Mois\n14 prochains jours (toute la famille) et vue mensuelle complète",
-              "text_only": true,
-              "card_mod": {
-                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
-              }
-            }
-          },
-          "sections": [
-            {
-              "type": "grid",
-              "column_span": 1,
-              "cards": [
-                {
-                  "type": "custom:mushroom-title-card",
-                  "grid_options": {
-                    "columns": "full"
-                  },
-                  "alignment": "center",
-                  "title": "14 prochains jours",
-                  "subtitle": "Toute la famille",
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
-                  }
-                },
-                {
-                  "type": "custom:calendar-card-pro",
-                  "entities": [
-                    {
-                      "entity": "calendar.calendrier",
-                      "label": "📅 Calendrier",
-                      "color": "#7ed321",
-                      "accent_color": "#50c878"
-                    },
-                    {
-                      "entity": "calendar.greg",
-                      "label": "🧑 Grégory",
-                      "color": "#f6d68a",
-                      "accent_color": "#e0a72e"
-                    },
-                    {
-                      "entity": "calendar.sandrine",
-                      "label": "👩 Sandrine",
-                      "color": "#c39bd3",
-                      "accent_color": "#9b59b6"
-                    },
-                    {
-                      "entity": "calendar.matteo",
-                      "label": "👦 Matteo",
-                      "color": "#5dade2",
-                      "accent_color": "#2e86c1"
-                    },
-                    {
-                      "entity": "calendar.hugo",
-                      "label": "🧒 Hugo",
-                      "color": "#76d7c4",
-                      "accent_color": "#17a589"
-                    }
-                  ],
-                  "days_to_show": 14,
-                  "show_time": true,
-                  "show_location": true,
-                  "grid_options": {
-                    "columns": 12,
-                    "rows": 10
-                  },
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "grid",
-              "column_span": 1,
-              "cards": [
-                {
-                  "type": "custom:mushroom-title-card",
-                  "grid_options": {
-                    "columns": "full"
-                  },
-                  "alignment": "center",
-                  "title": "Vue Mois",
-                  "subtitle": "Une couleur par calendrier",
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
-                  }
-                },
-                {
-                  "type": "calendar",
-                  "entities": [
-                    "calendar.calendrier",
-                    "calendar.greg",
-                    "calendar.sandrine",
-                    "calendar.matteo",
-                    "calendar.hugo"
-                  ],
-                  "initial_view": "dayGridMonth",
-                  "grid_options": {
-                    "columns": 12,
-                    "rows": 10
-                  },
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "grid",
-              "cards": [
-                {
-                  "type": "markdown",
-                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>dashboard_calendrier</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
-                  "grid_options": {
-                    "columns": 36,
-                    "rows": "auto"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "title": "Anniversaires & dates récurrentes",
-          "path": "anniversaires",
-          "icon": "mdi:cake-variant",
-          "show_icon_and_title": true,
-          "type": "sections",
-          "max_columns": 2,
-          "header": {
-            "card": {
-              "type": "markdown",
-              "content": "# 🎂 Anniversaires & dates récurrentes\nCalculé à partir des input_datetime — voir prérequis en haut du fichier",
-              "text_only": true,
-              "card_mod": {
-                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
-              }
-            }
-          },
-          "sections": [
-            {
-              "type": "grid",
-              "column_span": 2,
-              "cards": [
-                {
-                  "type": "custom:mushroom-title-card",
-                  "grid_options": {
-                    "columns": "full"
-                  },
-                  "alignment": "center",
-                  "title": "Prochain anniversaire dans la famille",
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
-                  }
-                },
-                {
-                  "type": "markdown",
-                  "content": "{% macro bissextile(y) %}{{ y % 4 == 0 and (y % 100 != 0 or y % 400 == 0) }}{% endmacro %}\n{% macro date_sure(y, m, d) %}\n  {% if m == 2 and d == 29 and bissextile(y) | trim != 'True' %}\n    {{ '%04d-%02d-%02d' | format(y, 2, 28) }}\n  {% else %}\n    {{ '%04d-%02d-%02d' | format(y, m, d) }}\n  {% endif %}\n{% endmacro %}\n{% set personnes = [\n  ('Grégory', 'input_datetime.anniversaire_gregory'),\n  ('Sandrine', 'input_datetime.anniversaire_sandrine'),\n  ('Matteo', 'input_datetime.anniversaire_matteo'),\n  ('Hugo', 'input_datetime.anniversaire_hugo')\n] %}\n{% set today = now().date() %} {% set ns = namespace(liste=[]) %}\n{% for nom, ent in personnes %}\n  {% if states(ent) not in ['unknown','unavailable',''] %}\n    {% set d = strptime(states(ent), '%Y-%m-%d').date() %}\n    {% set prochain = strptime(date_sure(today.year, d.month, d.day) | trim, '%Y-%m-%d').date() %}\n    {% set prochain = prochain if prochain >= today else strptime(date_sure(today.year + 1, d.month, d.day) | trim, '%Y-%m-%d').date() %}\n    {% set jours = (prochain - today).days %}\n    {% set age = prochain.year - d.year %}\n    {% set ns.liste = ns.liste + [(jours, nom, prochain, age)] %}\n  {% endif %}\n{% endfor %}\n{% if ns.liste | count == 0 %}\n  ℹ️ Aucun input_datetime d'anniversaire configuré pour l'instant.\n{% else %}\n  {% for jours, nom, prochain, age in ns.liste | sort %}\n    {% if jours == 0 %}\n      🎉 **{{ nom }}** fête ses **{{ age }} ans** aujourd'hui !\n    {% else %}\n      🎂 **{{ nom }}** — {{ age }} ans dans **{{ jours }} jour(s)** ({{ prochain.strftime('%d/%m') }})\n    {% endif %}\n  {% endfor %}\n{% endif %}",
-                  "grid_options": {
-                    "columns": 12,
-                    "rows": "auto"
-                  },
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "grid",
-              "column_span": 2,
-              "cards": [
-                {
-                  "type": "custom:mushroom-title-card",
-                  "grid_options": {
-                    "columns": "full"
-                  },
-                  "alignment": "center",
-                  "title": "Détail par personne",
-                  "card_mod": {
-                    "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_gregory",
-                  "layout": "vertical",
-                  "primary": "Grégory",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Né le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "amber",
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 3
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_sandrine",
-                  "layout": "vertical",
-                  "primary": "Sandrine",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Née le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "purple",
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 3
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_matteo",
-                  "layout": "vertical",
-                  "primary": "Matteo",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Né le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "blue",
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 3
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "input_datetime.anniversaire_hugo",
-                  "layout": "vertical",
-                  "primary": "Hugo",
-                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %}\n  Né le {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y') }}\n{% else %}\n  Non configuré\n{% endif %}",
-                  "icon": "mdi:cake-variant-outline",
-                  "icon_color": "cyan",
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 3
-                  }
-                }
-              ]
-            },
-            {
-              "type": "grid",
-              "cards": [
-                {
-                  "type": "markdown",
-                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>dashboard_calendrier</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.dashboard_calendrier') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
                   "grid_options": {
                     "columns": 36,
                     "rows": "auto"
