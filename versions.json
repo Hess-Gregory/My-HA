@@ -70,9 +70,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
-    "last_update": "2026-09-20T21:15:29.547315+02:00",
-    "version": "1.0.3"
+    "last_change": "onglet Matteo & Trajets v1 - banque 2 colonnes, lieux en rouge, sauvegarde, footer versions",
+    "last_update": "2026-09-25T11:17:20.798336+02:00",
+    "version": "1.1.0"
   },
   ".storage/lovelace.dashboard_calendrier.backup_20260918_232141": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -150,9 +150,9 @@
     "version": "0.0.4"
   },
   "configuration.yaml": {
-    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
-    "last_update": "2026-09-20T21:15:29.547315+02:00",
-    "version": "0.1.2"
+    "last_change": "onglet Matteo & Trajets v1 - banque 2 colonnes, lieux en rouge, sauvegarde, footer versions",
+    "last_update": "2026-09-25T11:17:20.798336+02:00",
+    "version": "0.2.0"
   },
   "packages/Horaires_pro_feries.yaml": {
     "last_change": "met a jour configuration.md et chaudiere.md, supprime le doublon Horaires_pro_feries",
@@ -170,9 +170,9 @@
     "version": "0.1.0"
   },
   "packages/dashboard_versions.yaml": {
-    "last_change": "ajout package calendrier, scripts Python, JSON et documentation",
-    "last_update": "2026-09-23T02:57:54.752909+02:00",
-    "version": "0.3.0"
+    "last_change": "onglet Matteo & Trajets v1 - banque 2 colonnes, lieux en rouge, sauvegarde, footer versions",
+    "last_update": "2026-09-25T11:17:20.798336+02:00",
+    "version": "0.4.0"
   },
   "packages/horaires_pro.yaml": {
     "last_change": "ajoute les compteurs Maladie manquants",
@@ -190,9 +190,9 @@
     "version": "0.1.0"
   },
   "packages/matteo_logistique.yaml": {
-    "last_change": "Création du package logistique Home Assistant (helpers, sélecteurs, moteur de calcul des plannings de garde et gestion de la banque de trajets)",
-    "last_update": "2026-09-22T13:27:37.553067",
-    "version": "1.0.0"
+    "last_change": "retrait de l'ancien package matteo_logistique remplace par packages/matteo",
+    "last_update": "2026-09-25T11:17:19.356827+02:00",
+    "version": "1.0.1"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
