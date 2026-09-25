@@ -85,9 +85,9 @@
     "version": "0.0.4"
   },
   "configuration.yaml": {
-    "last_change": "onglet Matteo & Trajets v1 - banque 2 colonnes, lieux en rouge, sauvegarde, footer versions",
-    "last_update": "2026-09-25T11:17:20.798336+02:00",
-    "version": "0.2.0"
+    "last_change": "performances - historique allege des entites tres bavardes sans interet",
+    "last_update": "2026-09-25T14:12:51.081860+02:00",
+    "version": "0.2.1"
   },
   "packages/chaudiere.yaml": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
