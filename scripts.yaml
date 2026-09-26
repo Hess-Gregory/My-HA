@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.0.4 | 26/09/2026 22:17 | barres gauche / droite remises a l'endroit, barres separees de la sono, bouton Sono DJ fiable
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command

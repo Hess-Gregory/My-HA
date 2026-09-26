@@ -10,9 +10,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.1_eclairage": {
-    "last_change": "accueil (temperatures par piece), calendrier tout-en-un, chambre enfants (ventilateurs et plafonnier via telecommande)",
-    "last_update": "2026-09-25T19:39:22.467048+02:00",
-    "version": "0.3.0"
+    "last_change": "barres gauche / droite remises a l'endroit, barres separees de la sono, bouton Sono DJ fiable",
+    "last_update": "2026-09-26T22:17:55.088740+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_energie": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -20,9 +20,9 @@
     "version": "0.2.1"
   },
   ".storage/lovelace.1_ma_maison": {
-    "last_change": "accueil (temperatures par piece), calendrier tout-en-un, chambre enfants (ventilateurs et plafonnier via telecommande)",
-    "last_update": "2026-09-25T19:39:22.467048+02:00",
-    "version": "0.3.0"
+    "last_change": "barres gauche / droite remises a l'endroit, barres separees de la sono, bouton Sono DJ fiable",
+    "last_update": "2026-09-26T22:17:55.088740+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_meteo_belgique": {
     "last_change": "corrige les erreurs meteo et securise les templates jinja",
@@ -170,9 +170,9 @@
     "version": "0.0.1"
   },
   "scripts.yaml": {
-    "last_change": "nettoyage et optimisation de Home Assistant",
-    "last_update": "2026-09-25T18:03:41.924287+02:00",
-    "version": "0.0.3"
+    "last_change": "barres gauche / droite remises a l'endroit, barres separees de la sono, bouton Sono DJ fiable",
+    "last_update": "2026-09-26T22:17:55.088740+02:00",
+    "version": "0.0.4"
   },
   "themes/Alpine-night.yaml": {
     "last_change": "initialisation du versionning par fichier",
