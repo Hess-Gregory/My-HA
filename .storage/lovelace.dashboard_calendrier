@@ -540,8 +540,8 @@
                                           ]
                                         },
                                         "tap_action": {
-                                          "action": "perform-action",
-                                          "perform_action": "script.anniversaire_ajouter"
+                                          "action": "call-service",
+                                          "service": "script.anniversaire_ajouter"
                                         }
                                       }
                                     ]
@@ -681,8 +681,8 @@
                                           "text": "Supprimer définitivement cette date ?"
                                         },
                                         "tap_action": {
-                                          "action": "perform-action",
-                                          "perform_action": "script.anniversaire_supprimer"
+                                          "action": "call-service",
+                                          "service": "script.anniversaire_supprimer"
                                         }
                                       }
                                     ]
@@ -930,8 +930,8 @@
                           "icon": "mdi:chevron-left",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_cal_mois",
+                            "action": "call-service",
+                            "service": "script.matteo_cal_mois",
                             "data": {
                               "delta": -1
                             }
@@ -975,8 +975,8 @@
                           "icon": "mdi:calendar-today",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_cal_mois",
+                            "action": "call-service",
+                            "service": "script.matteo_cal_mois",
                             "data": {
                               "delta": 0
                             }
@@ -1020,8 +1020,8 @@
                           "icon": "mdi:chevron-right",
                           "layout": "name_icon",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_cal_mois",
+                            "action": "call-service",
+                            "service": "script.matteo_cal_mois",
                             "data": {
                               "delta": 1
                             }
@@ -1869,8 +1869,8 @@
                                                       "sensor.matteo_form_retour_attendu"
                                                     ],
                                                     "tap_action": {
-                                                      "action": "perform-action",
-                                                      "perform_action": "script.matteo_planning_retour_suggere"
+                                                      "action": "call-service",
+                                                      "service": "script.matteo_planning_retour_suggere"
                                                     },
                                                     "custom_fields": {
                                                       "s": "[[[ const att=entity.state; const prev=entity.attributes.precedent||''; const pc=entity.attributes.precedent_code||''; const ch=((states['input_select.matteo_form_retour']||{}).state||'')[0];const C={A:'#2196F3',B:'#4CAF50',C:'#FF9800',D:'#9C27B0'}; const qui={A:'Grégory',B:'Élodie / Olivier',C:'Grégory (à la place d\\'Élodie / Olivier)',D:'Élodie / Olivier (rattrapage)'};const gd=parseInt(entity.attributes.greg_doit||0), ed=parseInt(entity.attributes.elodie_doit||0); const nom=att==='B'?'Élodie / Olivier':'Grégory';const just=prev?'Dernier retour le '+prev.slice(0,5)+' : '+(qui[pc]||'?')+' → c\\'est au tour '+(att==='B'?'d\\'Élodie / Olivier':'de Grégory')+' (alternance A-B-A-B).':'Aucun retour précédent : tour de Grégory par défaut.';let st, col; if(ch===att){st='✅ Conforme à l\\'alternance';col='#4CAF50';} else if(att==='B'&&ch==='C'&&gd>0){st='🟣 Rattrapage : tu rends un des '+gd+' trajet(s) que tu leur dois (ta dette -1) · motif obligatoire (ex. « Rattrapage convenu »)';col='#9C27B0';} else if(att==='B'&&ch==='C'){st='🟠 Trajet non respecté : tu le fais à la place d\\'Élodie / Olivier → ils te doivent 1 trajet · motif obligatoire';col='#FF9800';} else if(att==='A'&&ch==='D'&&ed>0){st='🟣 Rattrapage : Élodie / Olivier rendent un des '+ed+' trajet(s) qu\\'ils te doivent (leur dette -1)';col='#9C27B0';} else if(att==='A'&&ch==='D'){st='⚠️ Ils ne te doivent rien : en faisant ton retour, c\\'est toi qui leur devras 1 trajet';col='#FF9800';} else if(att==='B'&&ch==='A'){st='⛔ C\\'était leur tour : si tu l\\'as fait à leur place, choisis C (non respecté) et indique le motif';col='#F44336';} else if(att==='A'&&ch==='B'){st='⛔ C\\'était ton tour : si Élodie / Olivier l\\'ont fait, choisis D (rattrapage)';col='#F44336';} else if(att==='A'&&ch==='C'){st='⛔ C\\'était ton tour : C ne s\\'applique pas, choisis A';col='#F44336';} else if(att==='B'&&ch==='D'){st='⛔ C\\'était leur tour : choisis B';col='#F44336';} else {st='Choisis qui fait le retour';col='#9E9E9E';}return '<div style=\"font-size:13px;opacity:.7;margin-bottom:4px\">💡 Retour suggéré</div><div style=\"font-size:16px;font-weight:700\"><span style=\"color:'+C[att]+'\">'+nom+' ('+att+')</span>'+(ch!==att?' <span style=\"font-size:12px;font-weight:500;opacity:.75\">— toucher pour appliquer</span>':'')+'</div><div style=\"font-size:12.5px;opacity:.8;margin:4px 0 8px\">'+just+'</div><div style=\"font-size:13px;font-weight:600;color:'+col+'\">'+st+'</div>'; ]]]"
@@ -2826,8 +2826,8 @@
                                                       "sensor.matteo_form_retour_attendu"
                                                     ],
                                                     "tap_action": {
-                                                      "action": "perform-action",
-                                                      "perform_action": "script.matteo_planning_retour_suggere"
+                                                      "action": "call-service",
+                                                      "service": "script.matteo_planning_retour_suggere"
                                                     },
                                                     "custom_fields": {
                                                       "s": "[[[ const att=entity.state; const prev=entity.attributes.precedent||''; const pc=entity.attributes.precedent_code||''; const ch=((states['input_select.matteo_form_retour']||{}).state||'')[0];const C={A:'#2196F3',B:'#4CAF50',C:'#FF9800',D:'#9C27B0'}; const qui={A:'Grégory',B:'Élodie / Olivier',C:'Grégory (à la place d\\'Élodie / Olivier)',D:'Élodie / Olivier (rattrapage)'};const gd=parseInt(entity.attributes.greg_doit||0), ed=parseInt(entity.attributes.elodie_doit||0); const nom=att==='B'?'Élodie / Olivier':'Grégory';const just=prev?'Dernier retour le '+prev.slice(0,5)+' : '+(qui[pc]||'?')+' → c\\'est au tour '+(att==='B'?'d\\'Élodie / Olivier':'de Grégory')+' (alternance A-B-A-B).':'Aucun retour précédent : tour de Grégory par défaut.';let st, col; if(ch===att){st='✅ Conforme à l\\'alternance';col='#4CAF50';} else if(att==='B'&&ch==='C'&&gd>0){st='🟣 Rattrapage : tu rends un des '+gd+' trajet(s) que tu leur dois (ta dette -1) · motif obligatoire (ex. « Rattrapage convenu »)';col='#9C27B0';} else if(att==='B'&&ch==='C'){st='🟠 Trajet non respecté : tu le fais à la place d\\'Élodie / Olivier → ils te doivent 1 trajet · motif obligatoire';col='#FF9800';} else if(att==='A'&&ch==='D'&&ed>0){st='🟣 Rattrapage : Élodie / Olivier rendent un des '+ed+' trajet(s) qu\\'ils te doivent (leur dette -1)';col='#9C27B0';} else if(att==='A'&&ch==='D'){st='⚠️ Ils ne te doivent rien : en faisant ton retour, c\\'est toi qui leur devras 1 trajet';col='#FF9800';} else if(att==='B'&&ch==='A'){st='⛔ C\\'était leur tour : si tu l\\'as fait à leur place, choisis C (non respecté) et indique le motif';col='#F44336';} else if(att==='A'&&ch==='B'){st='⛔ C\\'était ton tour : si Élodie / Olivier l\\'ont fait, choisis D (rattrapage)';col='#F44336';} else if(att==='A'&&ch==='C'){st='⛔ C\\'était ton tour : C ne s\\'applique pas, choisis A';col='#F44336';} else if(att==='B'&&ch==='D'){st='⛔ C\\'était leur tour : choisis B';col='#F44336';} else {st='Choisis qui fait le retour';col='#9E9E9E';}return '<div style=\"font-size:13px;opacity:.7;margin-bottom:4px\">💡 Retour suggéré</div><div style=\"font-size:16px;font-weight:700\"><span style=\"color:'+C[att]+'\">'+nom+' ('+att+')</span>'+(ch!==att?' <span style=\"font-size:12px;font-weight:500;opacity:.75\">— toucher pour appliquer</span>':'')+'</div><div style=\"font-size:12.5px;opacity:.8;margin:4px 0 8px\">'+just+'</div><div style=\"font-size:13px;font-weight:600;color:'+col+'\">'+st+'</div>'; ]]]"
@@ -3564,8 +3564,8 @@
                       "show_label": true,
                       "icon": "mdi:content-save-all",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "script.matteo_planning_sauvegarder",
+                        "action": "call-service",
+                        "service": "script.matteo_planning_sauvegarder",
                         "confirmation": {
                           "text": "Créer une archive complète du planning Matteo maintenant ?"
                         }
@@ -3782,8 +3782,8 @@
                           "icon": "mdi:calendar-arrow-right",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_planning_filtre_rapide",
+                            "action": "call-service",
+                            "service": "script.matteo_planning_filtre_rapide",
                             "data": {
                               "mode": "avenir"
                             }
@@ -3827,8 +3827,8 @@
                           "icon": "mdi:history",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_planning_filtre_rapide",
+                            "action": "call-service",
+                            "service": "script.matteo_planning_filtre_rapide",
                             "data": {
                               "mode": "historique"
                             }
@@ -3872,8 +3872,8 @@
                           "icon": "mdi:alert-circle-outline",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_planning_filtre_rapide",
+                            "action": "call-service",
+                            "service": "script.matteo_planning_filtre_rapide",
                             "data": {
                               "mode": "rattraper"
                             }
@@ -3917,8 +3917,8 @@
                           "icon": "mdi:calendar-question",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_planning_filtre_rapide",
+                            "action": "call-service",
+                            "service": "script.matteo_planning_filtre_rapide",
                             "data": {
                               "mode": "conges"
                             }
@@ -4048,8 +4048,8 @@
                               "icon_color": "grey",
                               "fill_container": true,
                               "tap_action": {
-                                "action": "perform-action",
-                                "perform_action": "script.matteo_planning_filtres_reset"
+                                "action": "call-service",
+                                "service": "script.matteo_planning_filtres_reset"
                               },
                               "card_mod": {
                                 "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 14px !important;\n  box-shadow: none !important;\n}\n"
@@ -4134,8 +4134,8 @@
                           "icon": "mdi:chevron-left",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_planning_page_precedente"
+                            "action": "call-service",
+                            "service": "script.matteo_planning_page_precedente"
                           },
                           "styles": {
                             "card": [
@@ -4204,8 +4204,8 @@
                           "icon": "mdi:chevron-right",
                           "layout": "icon_name",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.matteo_planning_page_suivante"
+                            "action": "call-service",
+                            "service": "script.matteo_planning_page_suivante"
                           },
                           "styles": {
                             "card": [
@@ -4245,8 +4245,8 @@
                           "show_state": false,
                           "name": "[[[ return 'Lignes / page : <b>'+entity.state+'</b>' ]]]",
                           "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "input_select.select_next",
+                            "action": "call-service",
+                            "service": "input_select.select_next",
                             "target": {
                               "entity_id": "input_select.matteo_planning_par_page"
                             },

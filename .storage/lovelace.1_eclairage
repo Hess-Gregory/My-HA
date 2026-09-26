@@ -48,8 +48,8 @@
                   "icon": "mdi:lightbulb-on",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "light.turn_on",
+                    "action": "call-service",
+                    "service": "light.turn_on",
                     "target": {
                       "entity_id": [
                         "light.lustre_salon",
@@ -84,8 +84,8 @@
                   "icon": "mdi:lightbulb-off",
                   "icon_color": "grey",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "light.turn_off",
+                    "action": "call-service",
+                    "service": "light.turn_off",
                     "target": {
                       "entity_id": [
                         "light.lustre_salon",
@@ -152,8 +152,8 @@
                   "icon": "mdi:weather-night",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.soiree"
                     }
@@ -174,8 +174,8 @@
                   "icon": "mdi:book-open-page-variant",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.lecture"
                     }
@@ -196,8 +196,8 @@
                   "icon": "mdi:party-popper",
                   "icon_color": "purple",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.fete_coin_dj"
                     }
@@ -218,8 +218,8 @@
                   "icon": "mdi:power-sleep",
                   "icon_color": "indigo",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.nuit"
                     }
@@ -249,8 +249,8 @@
                   "icon": "mdi:snowflake",
                   "icon_color": "light-blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_bleu_polaire_relax"
                     }
@@ -271,8 +271,8 @@
                   "icon": "mdi:flower",
                   "icon_color": "purple",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_detente_lavande"
                     }
@@ -293,8 +293,8 @@
                   "icon": "mdi:palette",
                   "icon_color": "deep-purple",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_lavonier"
                     }
@@ -315,8 +315,8 @@
                   "icon": "mdi:fruit-citrus",
                   "icon_color": "yellow",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_lemon_esquisse"
                     }
@@ -337,8 +337,8 @@
                   "icon": "mdi:bed",
                   "icon_color": "deep-orange",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_repos_rouge_et_blanc_chaud_2_3"
                     }
@@ -359,8 +359,8 @@
                   "icon": "mdi:fire",
                   "icon_color": "red",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_rouge_et_blanc_chaud_1_3"
                     }
@@ -381,8 +381,8 @@
                   "icon": "mdi:fire",
                   "icon_color": "red",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_rouge_et_blanc_chaud_2_3"
                     }
@@ -403,8 +403,8 @@
                   "icon": "mdi:fire",
                   "icon_color": "red",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.toute_lumieres_rouge_et_blanc_chaud_3_3"
                     }
@@ -589,8 +589,8 @@
                   "icon": "mdi:lightbulb-on",
                   "icon_color": "orange",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "light.turn_on",
+                    "action": "call-service",
+                    "service": "light.turn_on",
                     "target": {
                       "entity_id": [
                         "light.cuisine_cuisine",
@@ -616,8 +616,8 @@
                   "icon": "mdi:lightbulb-off",
                   "icon_color": "grey",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "light.turn_off",
+                    "action": "call-service",
+                    "service": "light.turn_off",
                     "target": {
                       "entity_id": [
                         "light.cuisine_cuisine",
@@ -816,8 +816,8 @@
                   "icon_color": "amber",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -842,8 +842,8 @@
                   "icon_color": "blue-grey",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -870,8 +870,8 @@
                       "content": "Blanc chaud",
                       "icon_color": "orange",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -887,8 +887,8 @@
                       "content": "Blanc froid",
                       "icon_color": "cyan",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -904,8 +904,8 @@
                       "content": "Plus fort",
                       "icon_color": "amber",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -921,8 +921,8 @@
                       "content": "Moins fort",
                       "icon_color": "amber",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -951,8 +951,8 @@
                       "content": "RGB on/off",
                       "icon_color": "purple",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -968,8 +968,8 @@
                       "content": "Effet −",
                       "icon_color": "purple",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -985,8 +985,8 @@
                       "content": "Effet +",
                       "icon_color": "purple",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },

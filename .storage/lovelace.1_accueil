@@ -56,8 +56,8 @@
                       "icon": "mdi:brightness-4",
                       "icon_color": "indigo",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "number.set_value",
+                        "action": "call-service",
+                        "service": "number.set_value",
                         "target": {
                           "entity_id": "number.salon_sam_tablette_luminosite_de_l_ecran"
                         },
@@ -77,8 +77,8 @@
                       "icon": "mdi:brightness-7",
                       "icon_color": "amber",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "number.set_value",
+                        "action": "call-service",
+                        "service": "number.set_value",
                         "target": {
                           "entity_id": "number.salon_sam_tablette_luminosite_de_l_ecran"
                         },
@@ -274,8 +274,8 @@
                   "icon": "mdi:weather-night",
                   "icon_color": "indigo",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.bonne_nuit"
+                    "action": "call-service",
+                    "service": "script.bonne_nuit"
                   },
                   "grid_options": {
                     "columns": 4,
@@ -293,8 +293,8 @@
                   "icon": "mdi:home-export-outline",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.je_pars"
+                    "action": "call-service",
+                    "service": "script.je_pars"
                   },
                   "grid_options": {
                     "columns": 4,
@@ -312,8 +312,8 @@
                   "icon": "mdi:home-import-outline",
                   "icon_color": "green",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.retour"
+                    "action": "call-service",
+                    "service": "script.retour"
                   },
                   "grid_options": {
                     "columns": 4,
@@ -331,8 +331,8 @@
                   "icon": "mdi:volume-off",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.sieste_calme"
+                    "action": "call-service",
+                    "service": "script.sieste_calme"
                   },
                   "grid_options": {
                     "columns": 4,
@@ -350,8 +350,8 @@
                   "icon": "mdi:power",
                   "icon_color": "red",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.tout_eteindre",
+                    "action": "call-service",
+                    "service": "script.tout_eteindre",
                     "confirmation": {
                       "text": "Éteindre toutes les lumières de la maison ?"
                     }

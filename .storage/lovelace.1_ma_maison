@@ -69,8 +69,8 @@
                   "primary_info": "name",
                   "secondary_info": "state",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "lock.unlock",
+                    "action": "call-service",
+                    "service": "lock.unlock",
                     "target": {
                       "entity_id": "lock.hall_dentree_bticino_intercom_greg_et_sandrine_serrure"
                     }
@@ -970,8 +970,8 @@
                     {
                       "name": "netflix",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.turn_on",
+                        "action": "call-service",
+                        "service": "remote.turn_on",
                         "target": {
                           "entity_id": "remote.orange_tv_box"
                         },
@@ -985,8 +985,8 @@
                     {
                       "name": "youtube",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.turn_on",
+                        "action": "call-service",
+                        "service": "remote.turn_on",
                         "target": {
                           "entity_id": "remote.orange_tv_box"
                         },
@@ -1123,8 +1123,8 @@
                       "name": "power",
                       "icon": "mdi:power",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "homeassistant.toggle",
+                        "action": "call-service",
+                        "service": "homeassistant.toggle",
                         "target": {
                           "entity_id": "media_player.ampli_cine"
                         }
@@ -1145,8 +1145,8 @@
                       "name": "drc",
                       "label": "DRC",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "switch.toggle",
+                        "action": "call-service",
+                        "service": "switch.toggle",
                         "target": {
                           "entity_id": "switch.ampli_cine_adaptive_drc"
                         }
@@ -1157,8 +1157,8 @@
                       "name": "volume_down",
                       "icon": "mdi:volume-minus",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "media_player.volume_down",
+                        "action": "call-service",
+                        "service": "media_player.volume_down",
                         "target": {
                           "entity_id": "media_player.ampli_cine"
                         }
@@ -1172,8 +1172,8 @@
                       "name": "volume_up",
                       "icon": "mdi:volume-plus",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "media_player.volume_up",
+                        "action": "call-service",
+                        "service": "media_player.volume_up",
                         "target": {
                           "entity_id": "media_player.ampli_cine"
                         }
@@ -1187,8 +1187,8 @@
                       "name": "mute",
                       "icon": "mdi:volume-mute",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "media_player.volume_mute",
+                        "action": "call-service",
+                        "service": "media_player.volume_mute",
                         "target": {
                           "entity_id": "media_player.ampli_cine"
                         },
@@ -1202,8 +1202,8 @@
                       "name": "pure_direct",
                       "label": "Pure Direct",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "switch.toggle",
+                        "action": "call-service",
+                        "service": "switch.toggle",
                         "target": {
                           "entity_id": "switch.ampli_cine_pure_direct"
                         }
@@ -1214,8 +1214,8 @@
                       "name": "enhancer",
                       "label": "Enhancer",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "switch.toggle",
+                        "action": "call-service",
+                        "service": "switch.toggle",
                         "target": {
                           "entity_id": "switch.ampli_cine_enhancer"
                         }
@@ -1226,8 +1226,8 @@
                       "name": "extra_bass",
                       "label": "Bass+",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "switch.toggle",
+                        "action": "call-service",
+                        "service": "switch.toggle",
                         "target": {
                           "entity_id": "switch.ampli_cine_extra_bass"
                         }
@@ -1239,8 +1239,8 @@
                       "icon": "mdi:party-popper",
                       "label": "Party",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "switch.toggle",
+                        "action": "call-service",
+                        "service": "switch.toggle",
                         "target": {
                           "entity_id": "switch.ampli_cine_party_mode"
                         }
@@ -1252,8 +1252,8 @@
                       "icon": "mdi:power",
                       "label": "Salon",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "homeassistant.toggle",
+                        "action": "call-service",
+                        "service": "homeassistant.toggle",
                         "target": {
                           "entity_id": "media_player.room_ampli_cine_zone2"
                         }
@@ -1264,8 +1264,8 @@
                       "name": "zone2_volume_down",
                       "icon": "mdi:volume-minus",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "media_player.volume_down",
+                        "action": "call-service",
+                        "service": "media_player.volume_down",
                         "target": {
                           "entity_id": "media_player.room_ampli_cine_zone2"
                         }
@@ -1279,8 +1279,8 @@
                       "name": "zone2_volume_up",
                       "icon": "mdi:volume-plus",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "media_player.volume_up",
+                        "action": "call-service",
+                        "service": "media_player.volume_up",
                         "target": {
                           "entity_id": "media_player.room_ampli_cine_zone2"
                         }
@@ -1469,13 +1469,14 @@
                 {
                   "type": "custom:mushroom-template-card",
                   "layout": "vertical",
-                  "entity": "input_boolean.sono",
-                  "primary": "Sono",
-                  "secondary": "{{ 'Allumée' if is_state(entity, 'on') else 'Éteinte' }}",
+                  "entity": "light.sono",
+                  "primary": "Sono DJ",
+                  "secondary": "{{ 'Allumée' if is_state('light.sono', 'on') else 'Éteinte' }}",
                   "icon": "mdi:speaker",
-                  "icon_color": "{{ 'purple' if is_state(entity, 'on') else 'grey' }}",
+                  "icon_color": "{{ 'purple' if is_state('light.sono', 'on') else 'grey' }}",
                   "tap_action": {
-                    "action": "toggle"
+                    "action": "call-service",
+                    "service": "script.sono_dj_basculer"
                   },
                   "grid_options": {
                     "columns": 12,
@@ -1483,6 +1484,9 @@
                   },
                   "card_mod": {
                     "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
                   }
                 },
                 {
@@ -1492,8 +1496,8 @@
                   "icon": "mdi:numeric-3-box",
                   "icon_color": "teal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "media_player.play_media",
+                    "action": "call-service",
+                    "service": "media_player.play_media",
                     "target": {
                       "entity_id": "media_player.ampli_cine"
                     },
@@ -1724,8 +1728,8 @@
                   "icon": "mdi:air-conditioner",
                   "icon_color": "teal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.allumer_eteindre_clim_salon"
+                    "action": "call-service",
+                    "service": "script.allumer_eteindre_clim_salon"
                   },
                   "grid_options": {
                     "columns": 4,
@@ -1742,8 +1746,8 @@
                   "icon": "mdi:fan",
                   "icon_color": "teal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "button.press",
+                    "action": "call-service",
+                    "service": "button.press",
                     "target": {
                       "entity_id": "button.clim_salon_vitesse"
                     }
@@ -2209,8 +2213,8 @@
                   "icon": "mdi:power",
                   "icon_color": "{{ 'purple' if is_state('light.sono', 'on') else 'grey' }}",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.sono_dj_basculer"
+                    "action": "call-service",
+                    "service": "script.sono_dj_basculer"
                   },
                   "grid_options": {
                     "columns": 12,
@@ -2306,8 +2310,8 @@
                   "icon_color": "amber",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -2332,8 +2336,8 @@
                   "icon_color": "blue-grey",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -2360,8 +2364,8 @@
                       "content": "Blanc chaud",
                       "icon_color": "orange",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2377,8 +2381,8 @@
                       "content": "Blanc froid",
                       "icon_color": "cyan",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2394,8 +2398,8 @@
                       "content": "Plus fort",
                       "icon_color": "amber",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2411,8 +2415,8 @@
                       "content": "Moins fort",
                       "icon_color": "amber",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2441,8 +2445,8 @@
                       "content": "RGB on/off",
                       "icon_color": "purple",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2458,8 +2462,8 @@
                       "content": "Effet −",
                       "icon_color": "purple",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2475,8 +2479,8 @@
                       "content": "Effet +",
                       "icon_color": "purple",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2693,8 +2697,8 @@
                   "icon_color": "blue",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -2719,8 +2723,8 @@
                   "icon_color": "red",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -2747,8 +2751,8 @@
                       "content": "Vitesse −",
                       "icon_color": "blue",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2764,8 +2768,8 @@
                       "content": "Vitesse +",
                       "icon_color": "blue",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2781,8 +2785,8 @@
                       "content": "Brise",
                       "icon_color": "teal",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2798,8 +2802,8 @@
                       "content": "Sleep off",
                       "icon_color": "indigo",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2826,8 +2830,8 @@
                   "icon_color": "cyan",
                   "layout": "horizontal",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "remote.send_command",
+                    "action": "call-service",
+                    "service": "remote.send_command",
                     "target": {
                       "entity_id": "remote.cellule_remonte_salon"
                     },
@@ -2854,8 +2858,8 @@
                       "content": "Vitesse",
                       "icon_color": "cyan",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2871,8 +2875,8 @@
                       "content": "Sleep",
                       "icon_color": "indigo",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2888,8 +2892,8 @@
                       "content": "Mode",
                       "icon_color": "teal",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2905,8 +2909,8 @@
                       "content": "Minuterie",
                       "icon_color": "amber",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2922,8 +2926,8 @@
                       "content": "Temp +",
                       "icon_color": "red",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -2939,8 +2943,8 @@
                       "content": "Temp −",
                       "icon_color": "blue",
                       "tap_action": {
-                        "action": "perform-action",
-                        "perform_action": "remote.send_command",
+                        "action": "call-service",
+                        "service": "remote.send_command",
                         "target": {
                           "entity_id": "remote.cellule_remonte_salon"
                         },
@@ -3055,8 +3059,8 @@
                   "icon": "mdi:brightness-4",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_25"
                     }
@@ -3092,8 +3096,8 @@
                   "icon": "mdi:star",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_etoiles_fixes"
                     }
@@ -3118,8 +3122,8 @@
                   "icon": "mdi:star-shooting",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_etoiles_tournantes"
                     }
@@ -3144,8 +3148,8 @@
                   "icon": "mdi:rotate-3d-variant",
                   "icon_color": "grey",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_moteur_off"
                     }
@@ -3181,8 +3185,8 @@
                   "icon": "mdi:moon-waning-crescent",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_10"
                     }
@@ -3207,8 +3211,8 @@
                   "icon": "mdi:moon-waning-gibbous",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_33"
                     }
@@ -3233,8 +3237,8 @@
                   "icon": "mdi:moon-first-quarter",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_50"
                     }
@@ -3259,8 +3263,8 @@
                   "icon": "mdi:moon-waxing-gibbous",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_66"
                     }
@@ -3285,8 +3289,8 @@
                   "icon": "mdi:moon-waning-gibbous",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_75"
                     }
@@ -3311,8 +3315,8 @@
                   "icon": "mdi:moon-full",
                   "icon_color": "amber",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_100"
                     }
@@ -3348,8 +3352,8 @@
                   "icon": "mdi:white-balance-sunny",
                   "icon_color": "white",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_blanc"
                     }
@@ -3374,8 +3378,8 @@
                   "icon": "mdi:palette",
                   "icon_color": "purple",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_couleur"
                     }
@@ -3400,8 +3404,8 @@
                   "icon": "mdi:music-note",
                   "icon_color": "purple",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_musique"
                     }
@@ -3426,8 +3430,8 @@
                   "icon": "mdi:auto-fix",
                   "icon_color": "purple",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "scene.turn_on",
+                    "action": "call-service",
+                    "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_scene"
                     }
@@ -3814,8 +3818,8 @@
                   "icon": "mdi:bullhorn-outline",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.turn_on",
+                    "action": "call-service",
+                    "service": "script.turn_on",
                     "target": {
                       "entity_id": "script.annonce_chevet_1"
                     }
@@ -3874,8 +3878,8 @@
                   "icon": "mdi:bullhorn-outline",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.turn_on",
+                    "action": "call-service",
+                    "service": "script.turn_on",
                     "target": {
                       "entity_id": "script.annonce_chevet_2"
                     }
@@ -4253,8 +4257,8 @@
                   "icon": "mdi:bullhorn-outline",
                   "icon_color": "blue",
                   "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "script.turn_on",
+                    "action": "call-service",
+                    "service": "script.turn_on",
                     "target": {
                       "entity_id": "script.annonce_salle_de_bain"
                     }
