@@ -62,12 +62,8 @@
                         "light.spot_cuisine",
                         "light.evier",
                         "light.cuisine_etagere_cafe",
-                        "light.coin_dj_coin_dj",
                         "light.coin_dj_sono_gauche",
                         "light.coin_dj_sono_droite",
-                        "light.coin_dj_sono_adams",
-                        "light.coin_dj_sono_mixeur",
-                        "light.coin_dj_sono_lecteurs",
                         "light.salle_de_bain_salle_de_bain"
                       ]
                     }
@@ -102,12 +98,8 @@
                         "light.spot_cuisine",
                         "light.evier",
                         "light.cuisine_etagere_cafe",
-                        "light.coin_dj_coin_dj",
                         "light.coin_dj_sono_gauche",
                         "light.coin_dj_sono_droite",
-                        "light.coin_dj_sono_adams",
-                        "light.coin_dj_sono_mixeur",
-                        "light.coin_dj_sono_lecteurs",
                         "light.salle_de_bain_salle_de_bain"
                       ]
                     },
@@ -127,7 +119,7 @@
                   "type": "custom:mushroom-template-card",
                   "layout": "vertical",
                   "primary": "Lumières Allumées",
-                  "secondary": "{{ ['light.lustre_salon','light.salon_panneau_mural','light.salon_ambilight_tv','light.lustre_salle_a_manger','light.vitrine','light.salle_a_manger_chevet','light.cuisine_cuisine','light.spot_cuisine','light.evier','light.cuisine_etagere_cafe','light.coin_dj_coin_dj','light.coin_dj_sono_gauche','light.coin_dj_sono_droite','light.coin_dj_sono_adams','light.coin_dj_sono_mixeur','light.coin_dj_sono_lecteurs','light.salle_de_bain_salle_de_bain'] | select('is_state','on') | list | count }} / 19",
+                  "secondary": "{{ ['light.lustre_salon','light.salon_panneau_mural','light.salon_ambilight_tv','light.lustre_salle_a_manger','light.vitrine','light.salle_a_manger_chevet','light.cuisine_cuisine','light.spot_cuisine','light.evier','light.cuisine_etagere_cafe','light.lumieres_sono','light.coin_dj_sono_gauche','light.coin_dj_sono_droite','light.salle_de_bain_salle_de_bain'] | select('is_state','on') | list | count }} / 19",
                   "icon": "mdi:lightbulb-multiple",
                   "icon_color": "amber",
                   "grid_options": {
@@ -741,66 +733,8 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-template-card",
-                  "layout": "horizontal",
-                  "primary": "Tout allumer",
-                  "secondary": "Coin DJ",
-                  "icon": "mdi:lightbulb-on",
-                  "icon_color": "purple",
-                  "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "light.turn_on",
-                    "target": {
-                      "entity_id": [
-                        "light.coin_dj_coin_dj",
-                        "light.coin_dj_sono_gauche",
-                        "light.coin_dj_sono_droite",
-                        "light.coin_dj_sono_adams",
-                        "light.coin_dj_sono_mixeur",
-                        "light.coin_dj_sono_lecteurs"
-                      ]
-                    }
-                  },
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": 1
-                  },
-                  "card_mod": {
-                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "layout": "horizontal",
-                  "primary": "Tout éteindre",
-                  "secondary": "Coin DJ",
-                  "icon": "mdi:lightbulb-off",
-                  "icon_color": "grey",
-                  "tap_action": {
-                    "action": "perform-action",
-                    "perform_action": "light.turn_off",
-                    "target": {
-                      "entity_id": [
-                        "light.coin_dj_coin_dj",
-                        "light.coin_dj_sono_gauche",
-                        "light.coin_dj_sono_droite",
-                        "light.coin_dj_sono_adams",
-                        "light.coin_dj_sono_mixeur",
-                        "light.coin_dj_sono_lecteurs"
-                      ]
-                    }
-                  },
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": 1
-                  },
-                  "card_mod": {
-                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                  }
-                },
-                {
                   "type": "custom:mushroom-light-card",
-                  "entity": "light.coin_dj_coin_dj",
+                  "entity": "light.lumieres_sono",
                   "name": "Barres (Toutes)",
                   "icon": "mdi:led-strip-variant",
                   "use_light_color": true,
@@ -848,75 +782,6 @@
                   "use_light_color": true,
                   "show_brightness_control": true,
                   "show_color_control": true,
-                  "grid_options": {
-                    "columns": 4,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
-                  }
-                },
-                {
-                  "type": "custom:mushroom-light-card",
-                  "entity": "light.coin_dj_sono_adams",
-                  "name": "Enceintes Adam",
-                  "icon": "mdi:speaker",
-                  "icon_color": "purple",
-                  "use_light_color": true,
-                  "tap_action": {
-                    "action": "toggle"
-                  },
-                  "grid_options": {
-                    "columns": 4,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
-                  }
-                },
-                {
-                  "type": "custom:mushroom-light-card",
-                  "entity": "light.coin_dj_sono_mixeur",
-                  "name": "Table Mixage",
-                  "icon": "mdi:tune-vertical",
-                  "icon_color": "purple",
-                  "use_light_color": true,
-                  "tap_action": {
-                    "action": "toggle"
-                  },
-                  "grid_options": {
-                    "columns": 4,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
-                  }
-                },
-                {
-                  "type": "custom:mushroom-light-card",
-                  "entity": "light.coin_dj_sono_lecteurs",
-                  "name": "Lecteurs DJ",
-                  "icon": "mdi:album",
-                  "icon_color": "purple",
-                  "use_light_color": true,
-                  "tap_action": {
-                    "action": "toggle"
-                  },
                   "grid_options": {
                     "columns": 4,
                     "rows": 2
