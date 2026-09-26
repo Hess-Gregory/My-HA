@@ -14,9 +14,6 @@
     "packages/taches_kanban.yaml"
   ],
   "dashboard_calendrier": [],
-  "dashboard_transversal": [
-    "packages/chauffage.yaml"
-  ],
   "dashboard_calendrier/matteo-trajets": [
     "packages/matteo/matteo_calendar.yaml"
   ],

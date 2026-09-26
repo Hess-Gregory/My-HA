@@ -1,0 +1,19 @@
+# =====================================================================
+# Chambre enfants — plafonnier du ventilateur (télécommande Broadlink, sans retour d'état)
+# Interrupteur optimiste : HA retient le dernier ordre envoyé (allumer / éteindre).
+# Doc : /config/packages/chambre_enfants.md
+# =====================================================================
+
+template:
+  - switch:
+      - name: "Plafonnier chambre enfants"
+        unique_id: plafonnier_chambre_enfants
+        icon: mdi:ceiling-fan-light
+        turn_on:
+          - action: remote.send_command
+            target: { entity_id: remote.cellule_remonte_salon }
+            data: { device: ventillateur_plafond_chambre, command: "True" }
+        turn_off:
+          - action: remote.send_command
+            target: { entity_id: remote.cellule_remonte_salon }
+            data: { device: ventillateur_plafond_chambre, command: "False" }

@@ -159,6 +159,44 @@
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.r_wan2_core_liaison_internet_du_port_2",
+                  "primary": "{{ 'Internet OK' if is_state(entity, 'on') else 'Internet : secours 4G' }}",
+                  "secondary": "{{ states('sensor.ookla_speedtest_download') | float(0) | round(0) | int }} ↓ / {{ states('sensor.ookla_speedtest_upload') | float(0) | round(0) | int }} ↑ Mbps",
+                  "icon": "mdi:web",
+                  "icon_color": "{{ 'green' if is_state(entity, 'on') else 'amber' }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-reseau-infra/reseau-it"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                  "primary": "{{ states(entity) | float(0) | round(2) }} kW en ce moment",
+                  "secondary": "{{ states('sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui') | float(0) | round(1) }} kWh aujourd'hui · {{ 'heures pleines' if is_state('select.consommation_maison', 'heures_pleines') else 'heures creuses' }}",
+                  "icon": "mdi:flash",
+                  "icon_color": "{% set p = states(entity) | float(0) %}{{ 'red' if p > 12 else ('amber' if p > 9 else 'green') }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/1-energie/energie"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
                 }
               ]
             },
@@ -365,22 +403,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
+                  "type": "tile",
                   "entity": "input_boolean.simulation_presence",
-                  "layout": "vertical",
-                  "primary_info": "name",
-                  "secondary_info": "state",
-                  "icon": "mdi:motion-sensor",
-                  "icon_color": "purple",
-                  "tap_action": {
-                    "action": "toggle",
-                    "confirmation": {
-                      "text": "Activer/désactiver la simulation de présence ? Cela arme aussi l'alarme et passe le chauffage en mode éco."
+                  "features": [
+                    {
+                      "type": "toggle"
                     }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "toggle"
                   },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "icon": "mdi:motion-sensor",
+                  "color": "purple",
                   "grid_options": {
-                    "columns": 4,
-                    "rows": "auto"
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {

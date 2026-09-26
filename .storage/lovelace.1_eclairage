@@ -431,15 +431,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.lustre_salon",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Lustre",
                   "icon": "mdi:ceiling-light",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -451,16 +465,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.salon_panneau_mural",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Panneau Mural",
                   "icon": "mdi:led-strip-variant",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -472,16 +499,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.salon_ambilight_tv",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Ambilight",
                   "icon": "mdi:television-ambient-light",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -506,16 +546,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.lustre_salle_a_manger",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Lustre",
                   "icon": "mdi:chandelier",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -527,16 +580,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.vitrine",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Vitrine",
                   "icon": "mdi:cabinet",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -548,16 +614,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.salle_a_manger_chevet",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Chevet",
                   "icon": "mdi:lamp",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -636,16 +715,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.cuisine_cuisine",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Toutes les Lumières",
                   "icon": "mdi:lightbulb-group",
-                  "icon_color": "orange",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -657,16 +749,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.spot_cuisine",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Spots Cuisine",
                   "icon": "mdi:spotlight-beam",
-                  "icon_color": "orange",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -678,16 +783,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.evier",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "LED Évier",
                   "icon": "mdi:led-strip-variant",
-                  "icon_color": "orange",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -699,16 +817,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.cuisine_etagere_cafe",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "LED Étagère",
                   "icon": "mdi:led-strip-variant",
-                  "icon_color": "orange",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -733,16 +864,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.lumieres_sono",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Barres (Toutes)",
                   "icon": "mdi:led-strip-variant",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -754,16 +898,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.coin_dj_sono_gauche",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Barre Gauche",
                   "icon": "mdi:led-strip-variant",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -775,16 +932,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.coin_dj_sono_droite",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Barre Droite",
                   "icon": "mdi:led-strip-variant",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
+                    "columns": 6,
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {
@@ -809,51 +979,26 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-template-card",
-                  "primary": "Plafonnier",
-                  "secondary": "Allumer",
+                  "type": "tile",
+                  "entity": "switch.plafonnier_chambre_enfants",
+                  "name": "Plafonnier",
                   "icon": "mdi:ceiling-fan-light",
-                  "icon_color": "amber",
-                  "layout": "horizontal",
-                  "tap_action": {
-                    "action": "call-service",
-                    "service": "remote.send_command",
-                    "target": {
-                      "entity_id": "remote.cellule_remonte_salon"
-                    },
-                    "data": {
-                      "device": "ventillateur_plafond_chambre",
-                      "command": "True"
+                  "color": "amber",
+                  "features": [
+                    {
+                      "type": "toggle"
                     }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
                   },
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
-                  },
-                  "card_mod": {
-                    "style": "ha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "primary": "Plafonnier",
-                  "secondary": "Éteindre",
-                  "icon": "mdi:lightbulb-off-outline",
-                  "icon_color": "blue-grey",
-                  "layout": "horizontal",
-                  "tap_action": {
-                    "action": "call-service",
-                    "service": "remote.send_command",
-                    "target": {
-                      "entity_id": "remote.cellule_remonte_salon"
-                    },
-                    "data": {
-                      "device": "ventillateur_plafond_chambre",
-                      "command": "False"
-                    }
-                  },
-                  "grid_options": {
-                    "columns": 6,
+                    "columns": 12,
                     "rows": 1
                   },
                   "card_mod": {
@@ -1038,16 +1183,29 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-light-card",
+                  "type": "tile",
                   "entity": "light.salle_de_bain_salle_de_bain",
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "inline",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
                   "name": "Plafond Salle de Bain",
                   "icon": "mdi:ceiling-light",
-                  "use_light_color": true,
-                  "show_brightness_control": true,
-                  "show_color_control": true,
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": 1
                   },
                   "card_mod": {
                     "style": {

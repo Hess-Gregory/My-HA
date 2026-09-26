@@ -1,0 +1,19 @@
+# =====================================================================
+# Coin DJ — interrupteur « Sono DJ » (barres + table de mixage + lecteurs + enceintes Adam)
+# Allume / éteint dans le bon ordre pour éviter les clacs dans les enceintes :
+#   marche : barres + mixage + lecteurs, 9 s, puis enceintes Adam  (script.demarrage_mixer)
+#   arrêt  : enceintes Adam + barres, 6 s, puis mixage + lecteurs  (script.1786831774432)
+# État = état réel des prises de la sono (groupe Hue light.sono).
+# Doc : /config/packages/coin_dj.md
+# =====================================================================
+
+template:
+  - switch:
+      - name: "Sono DJ"
+        unique_id: sono_dj_interrupteur
+        icon: mdi:speaker
+        state: "{{ is_state('light.sono', 'on') }}"
+        turn_on:
+          - action: script.demarrage_mixer
+        turn_off:
+          - action: script.1786831774432

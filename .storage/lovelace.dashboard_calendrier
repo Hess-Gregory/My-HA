@@ -4029,14 +4029,30 @@
                               ]
                             },
                             {
-                              "type": "custom:mushroom-entity-card",
+                              "type": "tile",
                               "entity": "input_boolean.matteo_planning_passes",
-                              "name": "Inclure les dates passées",
-                              "icon_color": "amber",
+                              "features": [
+                                {
+                                  "type": "toggle"
+                                }
+                              ],
+                              "features_position": "inline",
+                              "vertical": false,
                               "tap_action": {
                                 "action": "toggle"
                               },
-                              "fill_container": true,
+                              "icon_tap_action": {
+                                "action": "toggle"
+                              },
+                              "hold_action": {
+                                "action": "more-info"
+                              },
+                              "name": "Inclure les dates passées",
+                              "color": "amber",
+                              "grid_options": {
+                                "columns": 6,
+                                "rows": 1
+                              },
                               "card_mod": {
                                 "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  border-radius: 14px !important;\n  box-shadow: none !important;\n}\n"
                               }

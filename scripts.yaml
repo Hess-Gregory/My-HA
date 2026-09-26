@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.0.5 | 26/09/2026 22:26 | ordre et delais de la sono sans clacs
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
@@ -103,8 +102,8 @@ demarrage_mixer:
     data: {}
     alias: Allumer les barres, la table de mixage et les lecteurs
   - delay:
-      seconds: 5
-    alias: Attendre 5 secondes
+      seconds: 9
+    alias: Attendre 9 secondes
   - action: light.turn_on
     target:
       entity_id: light.coin_dj_sono_adams
@@ -112,6 +111,8 @@ demarrage_mixer:
     alias: 'Allumer les enceintes Adam (en dernier : évite les clacs)'
   alias: Démarrage mixer
   description: ''
+  mode: single
+  max_exceeded: silent
 '1786831774432':
   sequence:
   - action: light.turn_off
@@ -122,8 +123,8 @@ demarrage_mixer:
     data: {}
     alias: 'Éteindre les enceintes Adam et les barres (en premier : évite les clacs)'
   - delay:
-      seconds: 3
-    alias: Attendre 3 secondes
+      seconds: 6
+    alias: Attendre 6 secondes
   - action: light.turn_off
     target:
       entity_id:
@@ -133,15 +134,21 @@ demarrage_mixer:
     alias: Éteindre la table de mixage et les lecteurs
   alias: Éteindre la sono
   description: ''
+  mode: single
+  max_exceeded: silent
 bonne_nuit:
   alias: "\U0001F319 Bonne nuit"
   description: ''
   icon: mdi:weather-night
   mode: single
   sequence:
+  - action: script.turn_on
+    target:
+      entity_id: script.1786831774432
+    alias: Éteindre la sono et les barres du coin DJ (enceintes Adam en premier)
   - action: light.turn_off
     target:
-      entity_id: &id001
+      entity_id:
       - light.lustre_salon
       - light.salon_panneau_mural
       - light.salon_ambilight_tv
@@ -152,14 +159,6 @@ bonne_nuit:
       - light.spot_cuisine
       - light.evier
       - light.cuisine_etagere_cafe
-      - light.coin_dj_coin_dj
-      - light.coin_dj_sono_gauche
-      - light.coin_dj_sono_droite
-      - light.coin_dj_sono_adams
-      - light.coin_dj_sono_mixeur
-      - light.coin_dj_sono_lecteurs
-      - light.lampe_murale_lit_matteo
-      - light.lampe_galaxie_tuya
       - light.salle_de_bain_salle_de_bain
   - action: media_player.turn_off
     target:
@@ -178,18 +177,10 @@ tout_eteindre:
   icon: mdi:power
   mode: single
   sequence:
-  - action: light.turn_off
+  - action: script.turn_on
     target:
-      entity_id: *id001
-  - action: media_player.turn_off
-    target:
-      entity_id: media_player.fire_tv_192_168_80_103
-je_pars:
-  alias: "\U0001F6AA Je pars"
-  description: ''
-  icon: mdi:home-export-outline
-  mode: single
-  sequence:
+      entity_id: script.1786831774432
+    alias: Éteindre la sono et les barres du coin DJ (enceintes Adam en premier)
   - action: light.turn_off
     target:
       entity_id:
@@ -203,14 +194,33 @@ je_pars:
       - light.spot_cuisine
       - light.evier
       - light.cuisine_etagere_cafe
-      - light.coin_dj_coin_dj
-      - light.coin_dj_sono_gauche
-      - light.coin_dj_sono_droite
-      - light.coin_dj_sono_adams
-      - light.coin_dj_sono_mixeur
-      - light.coin_dj_sono_lecteurs
-      - light.lampe_murale_lit_matteo
-      - light.lampe_galaxie_tuya
+      - light.salle_de_bain_salle_de_bain
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.fire_tv_192_168_80_103
+je_pars:
+  alias: "\U0001F6AA Je pars"
+  description: ''
+  icon: mdi:home-export-outline
+  mode: single
+  sequence:
+  - action: script.turn_on
+    target:
+      entity_id: script.1786831774432
+    alias: Éteindre la sono et les barres du coin DJ (enceintes Adam en premier)
+  - action: light.turn_off
+    target:
+      entity_id:
+      - light.lustre_salon
+      - light.salon_panneau_mural
+      - light.salon_ambilight_tv
+      - light.lustre_salle_a_manger
+      - light.vitrine
+      - light.salle_a_manger_chevet
+      - light.cuisine_cuisine
+      - light.spot_cuisine
+      - light.evier
+      - light.cuisine_etagere_cafe
       - light.salle_de_bain_salle_de_bain
   - action: media_player.turn_off
     target:
@@ -259,15 +269,10 @@ sieste_calme:
   icon: mdi:volume-off
   mode: single
   sequence:
-  - action: light.turn_off
+  - action: script.turn_on
     target:
-      entity_id:
-      - light.coin_dj_coin_dj
-      - light.coin_dj_sono_gauche
-      - light.coin_dj_sono_droite
-      - light.coin_dj_sono_adams
-      - light.coin_dj_sono_mixeur
-      - light.coin_dj_sono_lecteurs
+      entity_id: script.1786831774432
+    alias: Éteindre la sono et les barres du coin DJ (enceintes Adam en premier)
   - action: media_player.turn_off
     target:
       entity_id: media_player.fire_tv_192_168_80_103
