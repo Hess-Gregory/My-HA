@@ -16,12 +16,16 @@ input_text:
     name: "Anniversaire – Message formulaire"
     max: 255
 
-input_datetime:
-  anniv_form_date:
-    name: "Date (naissance ou événement)"
-    icon: mdi:calendar
-    has_date: true
-    has_time: false
+# Date saisie en 3 champs (jour / mois / année) : le sélecteur de date HA ne descend pas sous 1970
+# et oblige à défiler mois par mois.
+input_number:
+  anniv_form_annee:
+    name: "Année"
+    icon: mdi:calendar-range
+    min: 1900
+    max: 2100
+    step: 1
+    mode: box
 
 input_select:
   anniv_form_type:
@@ -32,6 +36,57 @@ input_select:
       - "💞 Anniversaire de couple / rencontre"
       - "🕊️ En mémoire d'un proche disparu"
       - "📅 Autre date récurrente"
+  anniv_form_jour:
+    name: "Jour"
+    icon: mdi:calendar-today
+    options:
+      - "01"
+      - "02"
+      - "03"
+      - "04"
+      - "05"
+      - "06"
+      - "07"
+      - "08"
+      - "09"
+      - "10"
+      - "11"
+      - "12"
+      - "13"
+      - "14"
+      - "15"
+      - "16"
+      - "17"
+      - "18"
+      - "19"
+      - "20"
+      - "21"
+      - "22"
+      - "23"
+      - "24"
+      - "25"
+      - "26"
+      - "27"
+      - "28"
+      - "29"
+      - "30"
+      - "31"
+  anniv_form_mois:
+    name: "Mois"
+    icon: mdi:calendar-month
+    options:
+      - "01 – janvier"
+      - "02 – février"
+      - "03 – mars"
+      - "04 – avril"
+      - "05 – mai"
+      - "06 – juin"
+      - "07 – juillet"
+      - "08 – août"
+      - "09 – septembre"
+      - "10 – octobre"
+      - "11 – novembre"
+      - "12 – décembre"
   anniv_a_supprimer:
     name: "Date à supprimer"
     icon: mdi:delete
@@ -50,9 +105,11 @@ script:
         data: { value: "" }
       - action: input_select.select_first
         target: { entity_id: input_select.anniv_form_type }
-      - action: input_datetime.set_datetime
-        target: { entity_id: input_datetime.anniv_form_date }
-        data: { date: "{{ now().strftime('%Y-%m-%d') }}" }
+      - action: input_select.select_first
+        target: { entity_id: [input_select.anniv_form_jour, input_select.anniv_form_mois] }
+      - action: input_number.set_value
+        target: { entity_id: input_number.anniv_form_annee }
+        data: { value: "{{ now().year }}" }
 
   # Contrôle puis ajoute la date (nom obligatoire, pas de doublon exact).
   anniversaire_ajouter:
@@ -62,14 +119,20 @@ script:
     sequence:
       - variables:
           nom: "{{ states('input_text.anniv_form_nom') | trim | replace('\"', '') }}"
-          date: "{{ states('input_datetime.anniv_form_date') }}"
+          j: "{{ states('input_select.anniv_form_jour') | int(0) }}"
+          m: "{{ states('input_select.anniv_form_mois')[0:2] | int(0) }}"
+          an: "{{ states('input_number.anniv_form_annee') | float(0) | int }}"
+          date: "{{ '%04d-%02d-%02d' % (an, m, j) }}"
+          jmax: >-
+            {{ [31, 29 if (an % 4 == 0 and (an % 100 != 0 or an % 400 == 0)) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1] if 1 <= m <= 12 else 0 }}
           type: >-
             {% set t = states('input_select.anniv_form_type') %}
             {{ 'rencontre' if 'couple' in t else ('memoire' if 'mémoire' in t else ('autre' if 'Autre' in t else 'anniversaire')) }}
           liste: "{{ state_attr('sensor.anniversaires', 'liste') or [] }}"
           erreur: >-
             {% if nom in ['', 'unknown'] %}⚠️ Indique un nom.
-            {% elif not (date | regex_match('^\\d{4}-\\d{2}-\\d{2}$')) %}⚠️ Choisis une date.
+            {% elif an < 1900 or m < 1 or j < 1 %}⚠️ Choisis le jour, le mois et l'année.
+            {% elif j > jmax %}⚠️ Cette date n'existe pas ({{ '%02d/%02d/%04d' % (j, m, an) }}).
             {% elif date > now().strftime('%Y-%m-%d') %}⚠️ La date ne peut pas être dans le futur.
             {% elif liste | selectattr('nom', 'eq', nom) | selectattr('date', 'eq', date) | list | count > 0 %}⚠️ Cette date existe déjà.
             {% endif %}

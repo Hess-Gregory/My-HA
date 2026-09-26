@@ -423,8 +423,20 @@
                                         "name": "Nom (ex. Laura, Notre mariage…)"
                                       },
                                       {
-                                        "entity": "input_datetime.anniv_form_date",
-                                        "name": "Date (naissance ou événement)"
+                                        "type": "section",
+                                        "label": "Date (naissance ou événement)"
+                                      },
+                                      {
+                                        "entity": "input_select.anniv_form_jour",
+                                        "name": "Jour"
+                                      },
+                                      {
+                                        "entity": "input_select.anniv_form_mois",
+                                        "name": "Mois"
+                                      },
+                                      {
+                                        "entity": "input_number.anniv_form_annee",
+                                        "name": "Année (ex. 1959)"
                                       },
                                       {
                                         "entity": "input_select.anniv_form_type",

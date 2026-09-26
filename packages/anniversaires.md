@@ -9,7 +9,7 @@ Ces dates sont **indépendantes du planning de Matteo** : elles n'apparaissent n
 - Seul l'événement `anniversaires_modifier` modifie la liste (`action` : `ajouter` + `item`, `supprimer` + `id`, `importer` + `liste`).
 
 ## Formulaires (popups du dashboard)
-- **Ajouter** : `script.anniversaire_nouveau` (vide le formulaire) puis `script.anniversaire_ajouter` (nom obligatoire, date passée, pas de doublon) ; message dans `input_text.anniv_form_resultat`.
+- **Ajouter** : `script.anniversaire_nouveau` (vide le formulaire) puis `script.anniversaire_ajouter` (nom obligatoire ; date en 3 champs jour / mois / année — année de 1900 à aujourd'hui — contrôlée : date existante, pas dans le futur, pas de doublon) ; message dans `input_text.anniv_form_resultat`.
 - **Supprimer** : `script.anniversaire_maj_liste` remplit `input_select.anniv_a_supprimer`, puis `script.anniversaire_supprimer` (avec confirmation).
 - Pas de modification ni de fiche détail (volontaire) : pour corriger une date, la supprimer puis la rajouter.
 
