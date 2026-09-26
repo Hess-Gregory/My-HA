@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 26/09/2026 23:02 | interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
