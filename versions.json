@@ -65,9 +65,9 @@
     "version": "0.2.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "liste des anniversaires avec ajout / suppression, rappels et carte accueil",
-    "last_update": "2026-09-25T21:55:51.172546+02:00",
-    "version": "1.4.0"
+    "last_change": "saisie de la date en jour / mois / annee (dates avant 1970)",
+    "last_update": "2026-09-26T21:53:43.124121+02:00",
+    "version": "1.4.1"
   },
   ".storage/lovelace.dashboard_test": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",
@@ -90,9 +90,9 @@
     "version": "0.2.1"
   },
   "packages/anniversaires.yaml": {
-    "last_change": "liste des anniversaires avec ajout / suppression, rappels et carte accueil",
-    "last_update": "2026-09-25T21:55:51.172546+02:00",
-    "version": "0.1.0"
+    "last_change": "saisie de la date en jour / mois / annee (dates avant 1970)",
+    "last_update": "2026-09-26T21:53:43.124121+02:00",
+    "version": "0.1.1"
   },
   "packages/chaudiere.yaml": {
     "last_change": "recorder allege, bticino silencieux, speedtest 30min",

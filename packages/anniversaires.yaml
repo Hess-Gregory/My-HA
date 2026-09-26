@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.0 | 25/09/2026 21:55 | liste des anniversaires avec ajout / suppression, rappels et carte accueil
+# [AUTO-VERSION] v0.1.1 | 26/09/2026 21:53 | saisie de la date en jour / mois / annee (dates avant 1970)
 # =====================================================================
 # Anniversaires & dates récurrentes (dashboard Calendrier › Vue d'ensemble)
 # Liste stockée dans l'attribut « liste » de sensor.anniversaires (capteur déclenché,
