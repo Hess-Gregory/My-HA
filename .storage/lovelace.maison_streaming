@@ -42,7 +42,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -513,7 +514,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -553,7 +555,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -664,7 +667,7 @@
                     }
                   ],
                   "grid_options": {
-                    "rows": 1,
+                    "rows": "auto",
                     "columns": 18
                   },
                   "card_mod": {
@@ -687,7 +690,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {

@@ -43,7 +43,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -55,7 +56,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 9,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -70,7 +71,7 @@
                   "icon_color": "purple",
                   "grid_options": {
                     "columns": 9,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -85,7 +86,7 @@
                   "icon_color": "green",
                   "grid_options": {
                     "columns": 9,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -104,8 +105,8 @@
                     "start_listening": true
                   },
                   "grid_options": {
-                    "columns": 9,
-                    "rows": 3
+                    "columns": 4,
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -127,7 +128,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -154,7 +156,7 @@
                   "icon_color": "{% set v = states('todo.liste_de_courses') | int(0) %} {{ 'red' if v >= 13 else ('amber' if v >= 6 else 'green') }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set v = states('todo.liste_de_courses') | int(0) %} {% set pct = [(v / 20 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 13 else ('#f6d68a' if v >= 6 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -170,7 +172,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -188,7 +190,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -209,7 +211,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -235,7 +237,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -262,7 +265,7 @@
                   "icon_color": "{% set v = states('todo.pharmacie') | int(0) %} {{ 'red' if v >= 6 else ('amber' if v >= 3 else 'green') }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set v = states('todo.pharmacie') | int(0) %} {% set pct = [(v / 8 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 6 else ('#f6d68a' if v >= 3 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -278,7 +281,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -296,7 +299,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -317,7 +320,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -343,7 +346,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -370,7 +374,7 @@
                   "icon_color": "{% set v = states('todo.luxembourg_alcool_tabac') | int(0) %} {{ 'red' if v >= 5 else ('amber' if v >= 2 else 'green') }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set v = states('todo.luxembourg_alcool_tabac') | int(0) %} {% set pct = [(v / 6 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 5 else ('#f6d68a' if v >= 2 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -386,7 +390,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -404,7 +408,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -425,7 +429,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -454,7 +458,7 @@
                   },
                   "grid_options": {
                     "columns": "full",
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"

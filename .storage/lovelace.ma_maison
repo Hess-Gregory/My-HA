@@ -41,7 +41,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -63,6 +64,10 @@
                   ],
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -89,7 +94,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 }
               ]
@@ -108,7 +113,7 @@
                   "name": "Dernière Sonnerie",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
@@ -128,7 +133,7 @@
                   "entity": "camera.couloir",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; overflow: hidden !important; }"
@@ -149,7 +154,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -162,7 +168,7 @@
                   "icon_color": "{{ 'orange' if is_state(entity, 'on') else 'green' }}",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -189,7 +195,7 @@
                   "icon_color": "{{ 'red' if is_state(entity, 'on') else 'green' }}",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -209,7 +215,7 @@
                   ],
                   "grid_options": {
                     "columns": 12,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -232,7 +238,7 @@
                   ],
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -258,7 +264,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -271,7 +278,7 @@
                   "icon_color": "{{ 'red' if is_state(entity, 'on') else 'green' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -287,7 +294,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -420,7 +427,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-select-card",
@@ -437,7 +448,8 @@
                     }
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -480,7 +492,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -497,7 +510,7 @@
                   "secondary_info": "last-changed",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -518,7 +531,7 @@
                   "icon_color": "{{ 'orange' if is_state(entity, 'on') else 'green' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -534,7 +547,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -599,7 +612,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -806,7 +820,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_salon",
                   "tap_action": {
@@ -991,7 +1006,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -2354,7 +2370,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -2384,7 +2401,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "visibility": [
@@ -2404,7 +2421,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "visibility": [
@@ -2425,7 +2442,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "visibility": [
@@ -2527,7 +2544,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_coin_dj",
                   "tap_action": {
@@ -2731,7 +2749,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -2809,7 +2828,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_salle_a_manger",
                   "tap_action": {
@@ -2965,7 +2985,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_balcon",
                   "tap_action": {
@@ -3036,7 +3057,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_toute_piece",
                   "tap_action": {
@@ -3261,7 +3283,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -3505,7 +3528,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -3719,7 +3743,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_cuisine",
                   "tap_action": {
@@ -3951,7 +3976,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "entity": "input_boolean.pdv_four",
                   "tap_action": {
@@ -6107,7 +6133,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -7821,7 +7848,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "_rec": 1,
                   "visibility": [
@@ -8206,7 +8234,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -8448,7 +8477,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -8622,7 +8652,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -8756,7 +8787,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-select-card",
@@ -9097,7 +9132,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9105,7 +9141,7 @@
                   "content": "🔧 **À venir** : lampe-ventilateur plafonnier et ventilateur colonne pilotés par un futur module IR.",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 16px !important; }\nha-markdown { color: var(--secondary-text-color) !important; }\n"
@@ -9116,7 +9152,7 @@
                   "content": "👨‍👩‍👧 **Contrôle parental** géré via **Google Family Link** directement sur la tablette Android — pas d'intégration Home Assistant pour cette fonction.",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 16px !important; }\nha-markdown { color: var(--secondary-text-color) !important; }\n"
@@ -9137,7 +9173,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9170,7 +9207,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9178,36 +9216,34 @@
                   "content": "☀️ **Luminosité**",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 8px 0 8px !important; }\nha-markdown { text-align: center !important; color: var(--secondary-text-color) !important; font-size: 0.85em !important; text-transform: uppercase; letter-spacing: 0.05em; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_25",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "25 %",
+                  "label": "",
                   "icon": "mdi:brightness-4",
-                  "icon_color": "blue",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_25"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9215,88 +9251,82 @@
                   "content": "⭐ **Étoiles**",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 8px 0 8px !important; }\nha-markdown { text-align: center !important; color: var(--secondary-text-color) !important; font-size: 0.85em !important; text-transform: uppercase; letter-spacing: 0.05em; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_etoiles_fixes",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Étoiles Fixes",
+                  "label": "",
                   "icon": "mdi:star",
-                  "icon_color": "blue",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_etoiles_fixes"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
-                    "columns": 8,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_etoiles_tournantes",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Étoiles Tournantes",
+                  "label": "",
                   "icon": "mdi:star-shooting",
-                  "icon_color": "blue",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_etoiles_tournantes"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
-                    "columns": 8,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_moteur_off",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Moteur Arrêt",
+                  "label": "",
                   "icon": "mdi:rotate-3d-variant",
-                  "icon_color": "grey",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_moteur_off"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
-                    "columns": 8,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9304,166 +9334,154 @@
                   "content": "🌙 **Lune**",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 8px 0 8px !important; }\nha-markdown { text-align: center !important; color: var(--secondary-text-color) !important; font-size: 0.85em !important; text-transform: uppercase; letter-spacing: 0.05em; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_lune_10",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Lune 10 %",
+                  "label": "",
                   "icon": "mdi:moon-waning-crescent",
-                  "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_10"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_lune_33",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Lune 33 %",
+                  "label": "",
                   "icon": "mdi:moon-waning-gibbous",
-                  "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_33"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_lune_50",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Lune 50 %",
+                  "label": "",
                   "icon": "mdi:moon-first-quarter",
-                  "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_50"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_lune_66",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Lune 66 %",
+                  "label": "",
                   "icon": "mdi:moon-waxing-gibbous",
-                  "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_66"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_lune_75",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Lune 75 %",
+                  "label": "",
                   "icon": "mdi:moon-waning-gibbous",
-                  "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_75"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_lune_100",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Lune 100 %",
+                  "label": "",
                   "icon": "mdi:moon-full",
-                  "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_lune_100"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9471,114 +9489,106 @@
                   "content": "🎨 **Modes**",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 8px 0 8px !important; }\nha-markdown { text-align: center !important; color: var(--secondary-text-color) !important; font-size: 0.85em !important; text-transform: uppercase; letter-spacing: 0.05em; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_mode_blanc",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Mode Blanc",
+                  "label": "",
                   "icon": "mdi:white-balance-sunny",
-                  "icon_color": "white",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_blanc"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_mode_couleur",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Mode Couleur",
+                  "label": "",
                   "icon": "mdi:palette",
-                  "icon_color": "purple",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_couleur"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_mode_musique",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Mode Musique",
+                  "label": "",
                   "icon": "mdi:music-note",
-                  "icon_color": "purple",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_musique"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "scene.galaxie_mode_scene",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Mode Scène",
+                  "label": "",
                   "icon": "mdi:auto-fix",
-                  "icon_color": "purple",
                   "tap_action": {
                     "action": "call-service",
                     "service": "scene.turn_on",
                     "target": {
                       "entity_id": "scene.galaxie_mode_scene"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "rows": "auto"
                   }
                 }
               ]
@@ -9632,7 +9642,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9766,7 +9777,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-select-card",
@@ -9809,7 +9824,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 }
               ]
@@ -9827,7 +9842,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9843,7 +9859,8 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
                   },
                   "grid_options": {
-                    "columns": 12
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -9868,7 +9885,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9880,7 +9898,7 @@
                   "show_volume_level": true,
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -9900,7 +9918,7 @@
                   "show_volume_level": true,
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -9926,7 +9944,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -9949,36 +9968,34 @@
                   "icon": "mdi:alarm",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "script.annonce_chevet_1",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Annonce Vocale (Chevet 1)",
+                  "label": "",
                   "icon": "mdi:bullhorn-outline",
-                  "icon_color": "blue",
                   "tap_action": {
                     "action": "call-service",
                     "service": "script.turn_on",
                     "target": {
                       "entity_id": "script.annonce_chevet_1"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#9b78e0",
+                    "c2": "#5b3f99",
+                    "c3": "#3a2766"
                   },
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10001,36 +10018,34 @@
                   "icon": "mdi:alarm",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "script.annonce_chevet_2",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Annonce Vocale (Chevet 2)",
+                  "label": "",
                   "icon": "mdi:bullhorn-outline",
-                  "icon_color": "blue",
                   "tap_action": {
                     "action": "call-service",
                     "service": "script.turn_on",
                     "target": {
                       "entity_id": "script.annonce_chevet_2"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#9b78e0",
+                    "c2": "#5b3f99",
+                    "c3": "#3a2766"
                   },
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -10048,7 +10063,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10060,7 +10076,7 @@
                   "entity": "camera.rue_fluide",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; overflow: hidden !important; }"
@@ -10117,42 +10133,49 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.salle_de_bain_salle_de_bain",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Plafond Salle de Bain",
-                  "icon": "mdi:ceiling-light",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.salle_de_bain_salle_de_bain','on') %}{% set c=state_attr('light.salle_de_bain_salle_de_bain','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.salle_de_bain_salle_de_bain",
+                      "name": "Plafond Salle de Bain",
+                      "icon": "mdi:ceiling-light"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.salle_de_bain_salle_de_bain",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.salle_de_bain_salle_de_bain','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
                   "type": "custom:mushroom-media-player-card",
@@ -10163,7 +10186,7 @@
                   "show_volume_level": true,
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -10189,7 +10212,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10323,7 +10347,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-select-card",
@@ -10384,7 +10412,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10407,36 +10436,34 @@
                   "icon": "mdi:alarm",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   }
                 },
                 {
-                  "type": "custom:mushroom-entity-card",
-                  "entity": "script.annonce_salle_de_bain",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "name": "Annonce Vocale",
+                  "label": "",
                   "icon": "mdi:bullhorn-outline",
-                  "icon_color": "blue",
                   "tap_action": {
                     "action": "call-service",
                     "service": "script.turn_on",
                     "target": {
                       "entity_id": "script.annonce_salle_de_bain"
-                    }
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#9b78e0",
+                    "c2": "#5b3f99",
+                    "c3": "#3a2766"
                   },
                   "grid_options": {
-                    "columns": 4,
-                    "rows": 2
-                  },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -10490,7 +10517,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10506,7 +10534,7 @@
                   ],
                   "grid_options": {
                     "columns": 12,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -10527,7 +10555,7 @@
                   "icon_color": "{{ 'red' if is_state(entity, 'on') else 'green' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10543,7 +10571,7 @@
                   "icon_color": "{{ 'red' if is_state('binary_sensor.buanderie_local_tech_detecteur_incendie_vapeur', 'on') else 'orange' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10564,7 +10592,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10578,7 +10607,7 @@
                   ],
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -10599,7 +10628,7 @@
                   "icon_color": "{{ 'red' if is_state(entity, 'on') else 'green' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10615,7 +10644,7 @@
                   "icon_color": "green",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10636,7 +10665,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10653,7 +10683,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10669,7 +10699,7 @@
                   "icon_color": "orange",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10690,7 +10720,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10702,7 +10733,7 @@
                   "icon": "mdi:washing-machine",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -10717,7 +10748,7 @@
                   "icon": "mdi:tumble-dryer",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"

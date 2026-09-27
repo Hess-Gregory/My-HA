@@ -55,7 +55,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -79,7 +80,7 @@
                   "icon_color": "{{ 'amber' if states(entity) == 'heures_pleines' else 'green' }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -95,7 +96,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -108,7 +110,7 @@
                   "icon_color": "{% set p = states(entity) | float(0) %}{% if p > 12 %}red{% elif p > 9 %}amber{% else %}green{% endif %}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -124,7 +126,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -136,7 +139,7 @@
                   "icon_color": "{% set kwh = states('sensor.buanderie_local_tech_compteur_general_maison_ce_mois') | float(0) %} {% set prix_moyen = ((states('input_number.prix_heures_pleines') | float(0)) + (states('input_number.prix_heures_creuses') | float(0))) / 2 %} {% set acompte = states('input_number.acompte_mensuel') | float(214.02) %} {% set pct = (kwh * prix_moyen) / acompte * 100 %} {% if pct > 100 %}red{% elif pct > 80 %}amber{% else %}green{% endif %}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -157,7 +160,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -174,7 +178,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
@@ -195,7 +199,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -266,7 +271,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -279,7 +285,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -295,7 +301,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -311,7 +317,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -332,7 +338,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -344,7 +351,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -364,7 +371,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -384,7 +391,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -404,7 +411,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -430,7 +437,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -443,7 +451,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -459,7 +467,7 @@
                   "icon_color": "green",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -474,7 +482,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -495,7 +503,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -545,7 +554,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -557,7 +567,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -577,7 +587,7 @@
                   "icon_color": "green",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -597,7 +607,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -617,7 +627,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -637,7 +647,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -657,7 +667,7 @@
                   "icon_color": "green",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -677,7 +687,7 @@
                   "icon_color": "purple",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": {
@@ -703,7 +713,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -719,7 +730,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"

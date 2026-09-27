@@ -1,0 +1,117 @@
+# =====================================================================
+# Calendriers « grille de mois » (même design que le planning de Matteo)
+# Collecteurs en LECTURE SEULE : calendar.get_events -> capteur (6 semaines).
+# Doc : /config/packages/calendriers.md
+# =====================================================================
+input_number:
+  cal_famille_offset:
+    name: "Calendrier famille – décalage de mois"
+    icon: mdi:calendar-arrow-right
+    min: -24
+    initial: 0
+    max: 24
+    step: 1
+    mode: box
+  cal_hp_offset:
+    name: "Horaires pro – décalage de mois"
+    icon: mdi:calendar-arrow-right
+    min: -24
+    initial: 0
+    max: 24
+    step: 1
+    mode: box
+
+input_datetime:
+  cal_famille_jour:
+    name: "Calendrier famille – jour sélectionné"
+    has_date: true
+    has_time: false
+
+template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: /15
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: state
+        entity_id: input_number.cal_famille_offset
+    actions:
+      - variables:
+          decal: "{{ states('input_number.cal_famille_offset') | int(0) }}"
+          m0: >-
+            {% set t = now() %}{% set k = t.month - 1 + decal %}
+            {{ '%04d-%02d-01' % (t.year + (k // 12), (k % 12) + 1) }}
+          debut: >-
+            {% set d = as_datetime(m0 ~ 'T00:00:00').replace(tzinfo=now().tzinfo) %}
+            {{ (d - timedelta(days=d.weekday())).isoformat() }}
+          fin: "{{ (as_datetime(debut) + timedelta(days=42)).isoformat() }}"
+      - action: calendar.get_events
+        continue_on_error: true
+        target:
+          entity_id: 
+            - calendar.calendrier
+            - calendar.greg
+            - calendar.sandrine
+            - calendar.matteo
+            - calendar.hugo
+            - calendar.belgique
+        data:
+          start_date_time: "{{ debut }}"
+          end_date_time: "{{ fin }}"
+        response_variable: r
+    sensor:
+      - name: "Calendrier famille – mois"
+        unique_id: calendrier_famille_mois
+        icon: mdi:calendar-month
+        state: "{{ m0 }}"
+        attributes:
+          debut: "{{ debut }}"
+          evenements: >-
+            {% set ns = namespace(l=[]) %}
+            {% for cal, v in (r or {}).items() %}{% for e in (v.events or []) %}{% set ns.l = ns.l + [{'s': e.start, 'e': e.end, 't': e.summary, 'c': cal.split('.')[1]}] %}{% endfor %}{% endfor %}
+            {{ ns.l | sort(attribute='s') }}
+
+  - triggers:
+      - trigger: time_pattern
+        minutes: /15
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: state
+        entity_id: input_number.cal_hp_offset
+    actions:
+      - variables:
+          decal: "{{ states('input_number.cal_hp_offset') | int(0) }}"
+          m0: >-
+            {% set t = now() %}{% set k = t.month - 1 + decal %}
+            {{ '%04d-%02d-01' % (t.year + (k // 12), (k % 12) + 1) }}
+          debut: >-
+            {% set d = as_datetime(m0 ~ 'T00:00:00').replace(tzinfo=now().tzinfo) %}
+            {{ (d - timedelta(days=d.weekday())).isoformat() }}
+          fin: "{{ (as_datetime(debut) + timedelta(days=42)).isoformat() }}"
+      - action: calendar.get_events
+        continue_on_error: true
+        target:
+          entity_id: 
+            - calendar.horaires_pro
+            - calendar.horaire_gregory
+            - calendar.horaire_sandrine
+            - calendar.belgique
+        data:
+          start_date_time: "{{ debut }}"
+          end_date_time: "{{ fin }}"
+        response_variable: r
+    sensor:
+      - name: "Horaires pro – mois"
+        unique_id: horaires_pro_mois
+        icon: mdi:calendar-month
+        state: "{{ m0 }}"
+        attributes:
+          debut: "{{ debut }}"
+          evenements: >-
+            {% set ns = namespace(l=[]) %}
+            {% for cal, v in (r or {}).items() %}{% for e in (v.events or []) %}{% set ns.l = ns.l + [{'s': e.start, 'e': e.end, 't': e.summary, 'c': cal.split('.')[1]}] %}{% endfor %}{% endfor %}
+            {{ ns.l | sort(attribute='s') }}

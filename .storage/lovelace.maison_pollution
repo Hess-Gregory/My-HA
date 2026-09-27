@@ -50,7 +50,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -63,7 +64,7 @@
                   "icon_color": "{% set v = states('sensor.engis_belgium_indice_de_qualite_de_l_air') | int(0) %} {% if v <= 50 %}green {% elif v <= 100 %}yellow {% elif v <= 150 %}orange {% elif v <= 200 %}red {% elif v <= 300 %}purple {% else %}deep-purple {% endif %}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -79,7 +80,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -94,7 +95,7 @@
                   "icon_color": "blue",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -191,7 +192,7 @@
                   "icon_color": "{% set v = states('sensor.engis_belgium_pm2_5') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -206,7 +207,7 @@
                   "icon_color": "{% set v = states('sensor.engis_belgium_pm10') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -221,7 +222,7 @@
                   "icon_color": "{% set v = states('sensor.engis_belgium_dioxyde_d_azote') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -236,7 +237,7 @@
                   "icon_color": "{% set v = states('sensor.engis_belgium_dioxyde_de_soufre') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -251,7 +252,7 @@
                   "icon_color": "{% set v = states('sensor.engis_belgium_ozone') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -273,7 +274,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -396,7 +398,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -460,7 +463,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -567,7 +571,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -597,7 +602,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -627,7 +633,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -657,7 +664,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {

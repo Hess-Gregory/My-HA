@@ -41,7 +41,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -132,7 +133,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -153,7 +154,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -262,7 +264,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -472,110 +475,129 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.lustre_salon",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Lustre",
-                  "icon": "mdi:ceiling-light",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.lustre_salon','on') %}{% set c=state_attr('light.lustre_salon','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.lustre_salon",
+                      "name": "Lustre",
+                      "icon": "mdi:ceiling-light"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.lustre_salon",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": false,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.lustre_salon','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.salon_panneau_mural",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Panneau Mural",
-                  "icon": "mdi:led-strip-variant",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.salon_panneau_mural','on') %}{% set c=state_attr('light.salon_panneau_mural','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.salon_panneau_mural",
+                      "name": "Panneau Mural",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.salon_panneau_mural",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.salon_panneau_mural','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.salon_ambilight_tv",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Ambilight",
-                  "icon": "mdi:television-ambient-light",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.salon_ambilight_tv','on') %}{% set c=state_attr('light.salon_ambilight_tv','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.salon_ambilight_tv",
+                      "name": "Ambilight",
+                      "icon": "mdi:television-ambient-light"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.salon_ambilight_tv",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.salon_ambilight_tv','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 }
               ]
             },
@@ -592,110 +614,129 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.lustre_salle_a_manger",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Lustre",
-                  "icon": "mdi:chandelier",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.lustre_salle_a_manger','on') %}{% set c=state_attr('light.lustre_salle_a_manger','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.lustre_salle_a_manger",
+                      "name": "Lustre",
+                      "icon": "mdi:chandelier"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.lustre_salle_a_manger",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.lustre_salle_a_manger','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.vitrine",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Vitrine",
-                  "icon": "mdi:cabinet",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.vitrine','on') %}{% set c=state_attr('light.vitrine','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.vitrine",
+                      "name": "Vitrine",
+                      "icon": "mdi:cabinet"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.vitrine",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.vitrine','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.salle_a_manger_chevet",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Chevet",
-                  "icon": "mdi:lamp",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.salle_a_manger_chevet','on') %}{% set c=state_attr('light.salle_a_manger_chevet','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.salle_a_manger_chevet",
+                      "name": "Chevet",
+                      "icon": "mdi:lamp"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.salle_a_manger_chevet",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.salle_a_manger_chevet','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 }
               ]
             },
@@ -712,7 +753,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -774,140 +816,164 @@
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.cuisine_cuisine",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Toutes les Lumières",
-                  "icon": "mdi:lightbulb-group",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.cuisine_cuisine','on') %}{% set c=state_attr('light.cuisine_cuisine','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.cuisine_cuisine",
+                      "name": "Toutes les Lumières",
+                      "icon": "mdi:lightbulb-group"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.cuisine_cuisine",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": false,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.cuisine_cuisine','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.spot_cuisine",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Spots Cuisine",
-                  "icon": "mdi:spotlight-beam",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.spot_cuisine','on') %}{% set c=state_attr('light.spot_cuisine','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.spot_cuisine",
+                      "name": "Spots Cuisine",
+                      "icon": "mdi:spotlight-beam"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.spot_cuisine",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": false,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.spot_cuisine','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.evier",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "LED Évier",
-                  "icon": "mdi:led-strip-variant",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.evier','on') %}{% set c=state_attr('light.evier','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.evier",
+                      "name": "LED Évier",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.evier",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": false,
+                      "show_color_temp_control": false,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.evier','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.cuisine_etagere_cafe",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "LED Étagère",
-                  "icon": "mdi:led-strip-variant",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.cuisine_etagere_cafe','on') %}{% set c=state_attr('light.cuisine_etagere_cafe','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.cuisine_etagere_cafe",
+                      "name": "LED Étagère",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.cuisine_etagere_cafe",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": false,
+                      "show_color_temp_control": false,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.cuisine_etagere_cafe','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 }
               ]
             },
@@ -924,110 +990,129 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.lumieres_sono",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Barres (Toutes)",
-                  "icon": "mdi:led-strip-variant",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.lumieres_sono','on') %}{% set c=state_attr('light.lumieres_sono','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.lumieres_sono",
+                      "name": "Barres (Toutes)",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.lumieres_sono",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.lumieres_sono','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.coin_dj_sono_gauche",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Barre Gauche",
-                  "icon": "mdi:led-strip-variant",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.coin_dj_sono_gauche','on') %}{% set c=state_attr('light.coin_dj_sono_gauche','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.coin_dj_sono_gauche",
+                      "name": "Barre Gauche",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.coin_dj_sono_gauche",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.coin_dj_sono_gauche','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.coin_dj_sono_droite",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Barre Droite",
-                  "icon": "mdi:led-strip-variant",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.coin_dj_sono_droite','on') %}{% set c=state_attr('light.coin_dj_sono_droite','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.coin_dj_sono_droite",
+                      "name": "Barre Droite",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.coin_dj_sono_droite",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.coin_dj_sono_droite','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 }
               ]
             },
@@ -1044,7 +1129,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1216,7 +1302,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -1237,42 +1323,49 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "light.salle_de_bain_salle_de_bain",
-                  "features": [
-                    {
-                      "type": "toggle"
-                    }
-                  ],
-                  "features_position": "inline",
-                  "vertical": false,
-                  "tap_action": {
-                    "action": "more-info"
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "name": "Plafond Salle de Bain",
-                  "icon": "mdi:ceiling-light",
+                  "type": "custom:vertical-stack-in-card",
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 12,
+                    "rows": "auto"
                   },
                   "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;margin-bottom:6px;{% set on=is_state('light.salle_de_bain_salle_de_bain','on') %}{% set c=state_attr('light.salle_de_bain_salle_de_bain','rgb_color') %}border:1px solid {% if on and c %}rgba({{c|join(',')}},.75){% elif on %}rgba(246,214,138,.8){% else %}rgba(246,214,138,.22){% endif %}!important;box-shadow:{% if on and c %}0 0 16px rgba({{c|join(',')}},.35),{% elif on %}0 0 14px rgba(246,214,138,.3),{% endif %}0 4px 0 rgba(12,8,22,.75)!important}"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "template": "cc_light_inner",
+                      "entity": "light.salle_de_bain_salle_de_bain",
+                      "name": "Plafond Salle de Bain",
+                      "icon": "mdi:ceiling-light"
+                    },
+                    {
+                      "type": "custom:mushroom-light-card",
+                      "entity": "light.salle_de_bain_salle_de_bain",
+                      "primary_info": "none",
+                      "secondary_info": "none",
+                      "icon_type": "none",
+                      "use_light_color": true,
+                      "show_brightness_control": true,
+                      "show_color_control": true,
+                      "show_color_temp_control": true,
+                      "collapsible_controls": true,
+                      "tap_action": {
+                        "action": "none"
+                      },
+                      "hold_action": {
+                        "action": "more-info"
+                      },
+                      "card_mod": {
+                        "style": "ha-card{background:transparent!important;border:none!important;box-shadow:none!important;{% if is_state('light.salle_de_bain_salle_de_bain','on') %}padding:0 12px 10px!important;{% else %}padding:0!important;height:0!important;overflow:hidden;{% endif %}}"
                       }
                     }
-                  }
+                  ]
                 }
               ]
             },

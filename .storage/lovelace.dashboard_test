@@ -265,8 +265,8 @@
                   ],
                   "features_position": "inline",
                   "grid_options": {
-                    "columns": 12,
-                    "rows": 1
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -389,7 +389,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -503,7 +503,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -990,7 +990,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1028,7 +1028,7 @@
                   ],
                   "features_position": "bottom",
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -1059,7 +1059,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.28)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -1194,7 +1194,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1428,7 +1428,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1537,7 +1537,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1646,7 +1646,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1755,7 +1755,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1857,7 +1857,7 @@
                   },
                   "grid_options": {
                     "columns": 3,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1950,7 +1950,7 @@
                   },
                   "grid_options": {
                     "columns": 3,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2043,7 +2043,7 @@
                   },
                   "grid_options": {
                     "columns": 3,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2136,7 +2136,7 @@
                   },
                   "grid_options": {
                     "columns": 3,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2247,7 +2247,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2349,7 +2349,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2451,7 +2451,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2553,7 +2553,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2624,7 +2624,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2686,7 +2686,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2945,7 +2945,7 @@
                   "features": [],
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -2961,8 +2961,8 @@
                     "action": "none"
                   },
                   "grid_options": {
-                    "columns": 6,
-                    "rows": 1
+                    "columns": 4,
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card { background: rgba(38,28,58,.55) !important; border: 1px solid rgba(246,214,138,.45) !important; border-radius: 14px !important; box-shadow: none !important; }"
@@ -3033,7 +3033,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3092,7 +3092,7 @@
                   },
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3115,7 +3115,7 @@
                   },
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -3132,7 +3132,7 @@
                   },
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -3149,7 +3149,7 @@
                   },
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n} .container.fixed-height { height: auto !important; min-height: 56px !important; } .content.fixed-info-height { height: auto !important; } ha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -3239,7 +3239,7 @@
                   "icon": "{% set s = states('alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax') %} {{ 'mdi:shield-alert' if s == 'triggered' else 'mdi:shield-lock' if s in ['armed_home','armed_away','armed_night'] else 'mdi:shield-off-outline' }}",
                   "icon_color": "{% set s = states('alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax') %} {{ 'red' if s == 'triggered' else 'green' if s in ['armed_home','armed_away','armed_night'] else 'grey' }}",
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -3258,7 +3258,7 @@
                     "navigation_path": "/reseau-infra/reseau-it"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -3277,7 +3277,7 @@
                     "navigation_path": "/maison-energie/energie"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -3295,7 +3295,7 @@
                     "navigation_path": "/maison-taches/taches"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -3317,7 +3317,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3464,7 +3465,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3477,7 +3478,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3549,7 +3551,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3682,7 +3685,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3697,7 +3701,7 @@
                   "features_position": "bottom",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
@@ -3715,7 +3719,7 @@
                   "features_position": "bottom",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
@@ -3731,7 +3735,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3769,7 +3774,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3795,7 +3801,7 @@
                   "icon_color": "{% set w_raw = state_attr('weather.forecast_maison', 'wind_speed') %} {% if is_number(w_raw) %}\n  {% set w = w_raw | float %}\n  {% if w > 60 %}red{% elif w > 35 %}amber{% else %}green{% endif %}\n{% else %}grey{% endif %}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
@@ -3811,7 +3817,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3981,7 +3988,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -4188,7 +4196,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -4321,7 +4330,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -5653,7 +5663,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -5676,7 +5687,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -5689,7 +5700,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -5703,7 +5714,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -5770,7 +5781,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -5915,7 +5927,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -5965,7 +5978,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -6069,7 +6083,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -6102,7 +6117,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -6289,7 +6305,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -6477,7 +6494,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -6664,7 +6682,8 @@
                     ]
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -6837,7 +6856,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -8948,7 +8968,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -10641,7 +10662,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "_rec": 1
                 },
@@ -11005,7 +11027,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -11456,7 +11479,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -11644,7 +11668,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -11812,7 +11837,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -11888,7 +11914,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -13225,7 +13252,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -13637,7 +13665,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -13905,7 +13934,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -15963,7 +15993,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -16360,7 +16391,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -18148,7 +18180,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -19511,7 +19544,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23293,7 +23327,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23305,7 +23340,7 @@
                   "icon_color": "{% set s = states('todo.taches_famille') %} {{\n  'grey'\n  if s in ['unavailable','unknown']\n  else 'green'\n  if s == '0'\n  else 'amber'\n}}",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -23324,7 +23359,7 @@
                   },
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -23344,7 +23379,7 @@
                   },
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -23365,7 +23400,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23377,7 +23413,7 @@
                   "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if g == top and top > 0 else 'grey' }}",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23392,7 +23428,7 @@
                   "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if m == top and top > 0 else 'grey' }}",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23407,7 +23443,7 @@
                   "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if s == top and top > 0 else 'grey' }}",
                   "grid_options": {
                     "columns": 4,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23428,7 +23464,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23440,7 +23477,7 @@
                   "icon_color": "{{\n  'green'\n  if states('todo.taches_gregory') == '0'\n  else 'amber'\n}}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23455,7 +23492,7 @@
                   "icon_color": "purple",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23468,7 +23505,7 @@
                   "display_order": "none",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23489,6 +23526,10 @@
                     "card_mod": {
                       "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
                     }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -23506,7 +23547,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23518,7 +23560,7 @@
                   "icon_color": "{{\n  'green'\n  if states('todo.taches_matteo') == '0'\n  else 'amber'\n}}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23533,7 +23575,7 @@
                   "icon_color": "purple",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23546,7 +23588,7 @@
                   "display_order": "none",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23567,6 +23609,10 @@
                     "card_mod": {
                       "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
                     }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -23584,7 +23630,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23596,7 +23643,7 @@
                   "icon_color": "{{\n  'green'\n  if states('todo.taches_sandrine') == '0'\n  else 'amber'\n}}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23611,7 +23658,7 @@
                   "icon_color": "purple",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23624,7 +23671,7 @@
                   "display_order": "none",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23645,6 +23692,10 @@
                     "card_mod": {
                       "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
                     }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -23662,7 +23713,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23674,7 +23726,7 @@
                   "icon_color": "{{\n  'green'\n  if states('todo.taches_famille') == '0'\n  else 'amber'\n}}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -23706,6 +23758,10 @@
                     "card_mod": {
                       "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
                     }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23737,6 +23793,10 @@
                     "card_mod": {
                       "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  padding: 16px 20px !important;\n}\nha-markdown {\n  color: #e8dff5 !important;\n}\n"
                     }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23754,6 +23814,10 @@
                     "card_mod": {
                       "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
                     }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -23816,7 +23880,8 @@
                   "show_item_add": true,
                   "show_item_delete": true,
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -23899,7 +23964,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -23911,7 +23977,7 @@
                   "icon": "mdi:calendar-star",
                   "icon_color": "amber",
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -23927,7 +23993,7 @@
                   "icon": "{{ 'mdi:account-child' if (state_attr(entity, 'info') or {}).garde == 'Papa' else 'mdi:account-child-outline' }}",
                   "icon_color": "{% set i = state_attr(entity, 'info') or {} %}{{ 'blue' if i.garde == 'Papa' and i.du and (i.du[6:10] ~ i.du[3:5] ~ i.du[0:2]) <= now().strftime('%Y%m%d') else 'grey' }}",
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -23949,7 +24015,7 @@
                     "action": "none"
                   },
                   "grid_options": {
-                    "columns": 12,
+                    "columns": 6,
                     "rows": "auto"
                   },
                   "card_mod": {
@@ -23972,7 +24038,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -24131,7 +24198,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -24195,7 +24263,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -24210,7 +24279,7 @@
                   "initial_view": "dayGridMonth",
                   "grid_options": {
                     "columns": 48,
-                    "rows": 13
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
@@ -24232,7 +24301,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -24254,7 +24324,7 @@
                   "layout": "horizontal",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -24429,7 +24499,7 @@
                   "layout": "horizontal",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
@@ -28290,7 +28360,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -28360,7 +28431,7 @@
                   "content": "<div style=\"text-align:left; opacity:0.5; font-size:11px; padding:2px 8px 4px 8px;\"> {{ state_attr('sensor.horaires_pro_version', 'affichage') }} </div>",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: -8px !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\nha-markdown {\n  padding: 0 !important;\n}\n"
@@ -28375,7 +28446,8 @@
                 {
                   "type": "custom:button-card",
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "name": "✏️ Déclarer une journée ou horaire",
                   "label": "Créer, modifier ou supprimer une journée ou horaire",
@@ -29234,6 +29306,10 @@
                   "label": "[[[\n  var findAll = function(root, sel, out) {\n    if (!root) return out;\n    try {\n      root.querySelectorAll(sel).forEach(function(el){ out.push(el); });\n      root.querySelectorAll('*').forEach(function(el){ if (el.shadowRoot) findAll(el.shadowRoot, sel, out); });\n    } catch(e) {}\n    return out;\n  };\n  var openEditeurPopup = function() {\n    var btns = findAll(document, 'button-card', []);\n    var target = btns.find(function(b){\n      return b.shadowRoot && b.shadowRoot.textContent && b.shadowRoot.textContent.indexOf('Déclarer une journée ou horaire') !== -1;\n    });\n    if (target && target.shadowRoot) {\n      var inner = target.shadowRoot.querySelector('ha-card') || target.shadowRoot.firstElementChild;\n      if (inner) {\n        window.__hpSkipMainBtnIntercept = true;\n        inner.click();\n      }\n    }\n  };\n  var openSupprimerConfirm = function() {\n    var btns = findAll(document, 'button-card', []);\n    var target = btns.find(function(b){\n      return b.shadowRoot && b.shadowRoot.textContent && b.shadowRoot.textContent.indexOf('Confirmation Suppression Ligne') !== -1;\n    });\n    if (target && target.shadowRoot) {\n      var inner = target.shadowRoot.querySelector('ha-card') || target.shadowRoot.firstElementChild;\n      if (inner) inner.click();\n    }\n  };\n  if (!window.__hpMergedList) {\n    window.__hpMergedList = function(dateStr) {\n      var haEl = document.querySelector('home-assistant');\n      var h = haEl && haEl.hass;\n      var src = [];\n      if (h && dateStr) {\n        ['gregory','sandrine'].forEach(function(p) {\n          var ent = h.states['sensor.horaires_pro_blocs_' + p];\n          var blocs = (ent && ent.attributes.blocs) || [];\n          blocs.forEach(function(b) {\n            if (b.date && b.date.slice(0,10) === dateStr) src.push(b);\n          });\n        });\n        src.sort(function(a,b){ return (a.start||'').localeCompare(b.start||''); });\n      }\n      return src;\n    };\n  }\n  var hpExtractDate = function(dd) {\n    if (!dd) return null;\n    if (typeof dd === 'string') return dd.split('T')[0];\n    var y, m, day;\n    if (typeof dd.year === 'number') { y = dd.year; m = dd.month; day = dd.day; }\n    else if (typeof dd.getFullYear === 'function') { y = dd.getFullYear(); m = dd.getMonth() + 1; day = dd.getDate(); }\n    else return null;\n    var pad = function(n){ n = String(n); return n.length < 2 ? '0' + n : n; };\n    return y + '-' + pad(m) + '-' + pad(day);\n  };\n  if (!window.__hpCalWatcher) {\n    window.__hpCalWatcher = true;\n    var hpHideDayModal = function() {\n      findAll(document, 'family-calendar-card', []).forEach(function(cal) {\n        if (!cal.shadowRoot) return;\n        if (cal.shadowRoot.getElementById('hp-hide-daymodal')) return;\n        var st = document.createElement('style');\n        st.id = 'hp-hide-daymodal';\n        st.textContent = '.day-events-modal, .hw-overlay { display: none !important; pointer-events: none !important; }';\n        cal.shadowRoot.appendChild(st);\n      });\n    };\n    hpHideDayModal();\n    setInterval(hpHideDayModal, 2000);\n    document.addEventListener('click', function(ev) {\n      var path = ev.composedPath ? ev.composedPath() : [];\n      var cell = path.find(function(el){\n        return el.classList && el.classList.contains('day') && !el.classList.contains('header');\n      });\n      if (!cell) return;\n      var cal = path.find(function(el){\n        return el.tagName && el.tagName.toLowerCase() === 'family-calendar-card';\n      });\n      if (!cal) return;\n      setTimeout(function() {\n        if (!cal._selectedDay) return;\n        var d = hpExtractDate(cal._selectedDay.date);\n        if (!d) return;\n        var haEl = document.querySelector('home-assistant');\n        haEl.hass.callService('input_datetime', 'set_datetime', {\n          entity_id: 'input_datetime.hp_editeur_date',\n          date: d\n        });\n      }, 50);\n    }, true);\n\n    document.addEventListener('click', function(ev) {\n      if (window.__hpSkipMainBtnIntercept) {\n        window.__hpSkipMainBtnIntercept = false;\n        return;\n      }\n      var path = ev.composedPath ? ev.composedPath() : [];\n      var btns = findAll(document, 'button-card', []);\n      var main = btns.find(function(b){\n        return b.shadowRoot && b.shadowRoot.textContent && b.shadowRoot.textContent.indexOf('Déclarer une journée ou horaire') !== -1;\n      });\n      if (!main) return;\n      if (path.indexOf(main) === -1) return;\n      ev.preventDefault();\n      ev.stopImmediatePropagation();\n      var haEl = document.querySelector('home-assistant');\n      var h = haEl.hass;\n      h.callService('script', 'horaires_pro_fermer_selection', {}).then(function() {\n        return Promise.all([\n          h.callService('input_text', 'set_value', { entity_id: 'input_text.hp_editeur_duree', value: '' }),\n          h.callService('input_text', 'set_value', { entity_id: 'input_text.hp_editeur_pause', value: '' }),\n          h.callService('input_text', 'set_value', { entity_id: 'input_text.hp_editeur_resultat', value: '' }),\n          h.callService('input_text', 'set_value', { entity_id: 'input_text.hp_editeur_task_id_en_cours', value: '' }),\n          h.callService('input_datetime', 'set_datetime', { entity_id: 'input_datetime.hp_editeur_heure', time: '00:00:00' }),\n          h.callService('input_select', 'select_option', { entity_id: 'input_select.hp_editeur_type_gregory', option: 'Jour normal' }),\n          h.callService('input_select', 'select_option', { entity_id: 'input_select.hp_editeur_type_sandrine', option: 'Jour normal' })\n        ]);\n      }).then(function() {\n        setTimeout(openEditeurPopup, 300);\n      });\n    }, true);\n\n    document.addEventListener('ll-custom', function(ev) {\n      if (!ev.detail || typeof ev.detail.hp_row_index !== 'number') return;\n      var action = ev.detail.hp_action || 'detail';\n      var haEl = document.querySelector('home-assistant');\n      var liveHass = haEl.hass;\n      var d = liveHass.states['input_datetime.hp_editeur_date'].state;\n      var l = window.__hpMergedList(d);\n      var t = l[ev.detail.hp_row_index];\n      if (!t) return;\n      var personneLabel = t.personne === 'Gregory' ? 'Grégory' : 'Sandrine';\n      liveHass.callService('input_select', 'select_option', {\n        entity_id: 'input_select.hp_editeur_personne',\n        option: personneLabel\n      });\n      setTimeout(function() {\n        var hass2 = document.querySelector('home-assistant').hass;\n        var ent = hass2.states['sensor.horaires_pro_taches_du_jour'];\n        var arr = (ent && ent.attributes && ent.attributes.liste) || [];\n        var idx = arr.findIndex(function(x){ return x.nom === t.nom && x.start === t.start; });\n        if (idx < 0) idx = 0;\n        hass2.callService('script', 'horaires_pro_selectionner_tache_par_index', { index: idx });\n\n        if (action === 'supprimer') {\n          setTimeout(openSupprimerConfirm, 250);\n          return;\n        }\n\n        if (action === 'modifier') {\n          setTimeout(function() {\n            hass2.callService('script', 'horaires_pro_charger_pour_edition', {});\n            setTimeout(openEditeurPopup, 900);\n          }, 250);\n          return;\n        }\n\n        setTimeout(openEditeurPopup, 300);\n      }, 400);\n    }, true);\n  }\n  return '';\n]]]",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -29284,6 +29360,10 @@
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -30576,7 +30656,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -30589,7 +30670,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30605,7 +30686,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30621,7 +30702,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30637,7 +30718,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30653,7 +30734,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30669,7 +30750,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30691,7 +30772,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -30704,7 +30786,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30720,7 +30802,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30736,7 +30818,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30752,7 +30834,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30768,7 +30850,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30784,7 +30866,7 @@
                   "layout": "vertical",
                   "grid_options": {
                     "columns": 6,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
@@ -30847,7 +30929,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -30859,7 +30942,7 @@
                   "icon_color": "amber",
                   "grid_options": {
                     "columns": 9,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -30874,7 +30957,7 @@
                   "icon_color": "purple",
                   "grid_options": {
                     "columns": 9,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -30889,7 +30972,7 @@
                   "icon_color": "green",
                   "grid_options": {
                     "columns": 9,
-                    "rows": 3
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -30908,8 +30991,8 @@
                     "start_listening": true
                   },
                   "grid_options": {
-                    "columns": 9,
-                    "rows": 3
+                    "columns": 4,
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -30931,7 +31014,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -30958,7 +31042,7 @@
                   "icon_color": "{% set v = states('todo.liste_de_courses') | int(0) %} {{ 'red' if v >= 13 else ('amber' if v >= 6 else 'green') }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set v = states('todo.liste_de_courses') | int(0) %} {% set pct = [(v / 20 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 13 else ('#f6d68a' if v >= 6 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -30974,7 +31058,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -30992,7 +31076,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31013,7 +31097,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31039,7 +31123,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -31066,7 +31151,7 @@
                   "icon_color": "{% set v = states('todo.pharmacie') | int(0) %} {{ 'red' if v >= 6 else ('amber' if v >= 3 else 'green') }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set v = states('todo.pharmacie') | int(0) %} {% set pct = [(v / 8 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 6 else ('#f6d68a' if v >= 3 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -31082,7 +31167,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31100,7 +31185,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31121,7 +31206,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31147,7 +31232,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -31174,7 +31260,7 @@
                   "icon_color": "{% set v = states('todo.luxembourg_alcool_tabac') | int(0) %} {{ 'red' if v >= 5 else ('amber' if v >= 2 else 'green') }}",
                   "grid_options": {
                     "columns": 12,
-                    "rows": 1
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set v = states('todo.luxembourg_alcool_tabac') | int(0) %} {% set pct = [(v / 6 * 100), 100] | min %} {% set color = '#e88b8b' if v >= 5 else ('#f6d68a' if v >= 2 else '#8bd18b') %} ha-card {\n  background: linear-gradient(to right, {{ color }} {{ pct }}%, rgba(38, 28, 58, 0.55) {{ pct }}%) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  transition: background 0.4s ease;\n}\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
@@ -31190,7 +31276,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 6
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31208,7 +31294,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 4
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31229,7 +31315,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -31258,7 +31344,7 @@
                   },
                   "grid_options": {
                     "columns": "full",
-                    "rows": 2
+                    "rows": "auto"
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"

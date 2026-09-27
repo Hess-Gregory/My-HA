@@ -41,7 +41,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -102,7 +103,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -120,7 +122,8 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   },
                   "grid_options": {
-                    "rows": "auto"
+                    "rows": "auto",
+                    "columns": 6
                   }
                 },
                 {
@@ -227,7 +230,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -357,7 +361,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -487,7 +492,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-template-card",
@@ -530,7 +539,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -548,7 +558,8 @@
                     }
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -888,7 +899,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1076,7 +1088,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   },
                   "visibility": [
                     {
@@ -1244,7 +1257,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1326,7 +1340,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1460,7 +1475,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-template-card",
@@ -1492,7 +1511,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1608,7 +1628,8 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 }
               ]
@@ -1626,7 +1647,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1725,7 +1747,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1859,7 +1882,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-template-card",
@@ -1891,7 +1918,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -1935,7 +1963,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2007,7 +2035,8 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2025,7 +2054,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2043,7 +2073,8 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
                   },
                   "grid_options": {
-                    "columns": 12
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2097,7 +2128,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2231,7 +2263,11 @@
                         "action": "more-info"
                       }
                     }
-                  ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
                 },
                 {
                   "type": "custom:mushroom-template-card",
@@ -2267,6 +2303,10 @@
                   "icon": "mdi:thermometer",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2284,7 +2324,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2400,7 +2441,8 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2454,7 +2496,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2466,6 +2509,10 @@
                   "icon_color": "{{ 'orange' if is_state('binary_sensor.boiler_burngas','on') else 'grey' }}",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2488,6 +2535,10 @@
                   "icon_color": "{{ 'orange' if is_state(entity,'on') else 'grey' }}",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2505,7 +2556,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2517,6 +2569,10 @@
                   "icon_color": "orange",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2533,6 +2589,10 @@
                         "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                       }
                     }
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2544,6 +2604,10 @@
                   "icon_color": "blue",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2561,7 +2625,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2652,7 +2717,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2726,7 +2792,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2740,7 +2807,7 @@
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
                   },
                   "grid_options": {
-                    "rows": 1,
+                    "rows": "auto",
                     "columns": 12
                   }
                 },
@@ -2749,6 +2816,10 @@
                   "content": "{% set n = states('sensor.boiler_servicecodenumber') | int(0) %} {% set services = {\n  200: ('-H', 'Chaudière en fonctionnement chauffage', 'Fonctionnement normal. Aucune action requise.'),\n  201: ('=H', 'Chaudière en fonctionnement Eau Chaude Sanitaire', 'Fonctionnement normal. Aucune action requise.'),\n  202: ('0A', 'Optimisation du redémarrage / Temporisation brûleur', 'Fonctionnement normal. La chaudière attend la fin de la temporisation pour redémarrer.'),\n  203: ('0H', 'Chaudière en veille (pas de demande de chaleur)', 'Fonctionnement normal. Aucune action requise.'),\n  204: ('0Y', 'Température de départ supérieure à la consigne', 'Fonctionnement normal. Attendre la baisse de température du circuit.'),\n  207: ('2E', 'Pression d eau chauffage trop basse (< 0.8 bar)', 'Procédure : Ouvrir les robinets de remplissage sous la chaudière jusqu à atteindre 1.5 bar puis bien refermer.'),\n  208: ('-A', 'Mode ramoneur / test de combustion actif', 'Test en cours. S éteint automatiquement après 15 minutes.'),\n  214: ('', 'Ventilateur arrêté en phase de sécurité', 'Attendre le redémarrage automatique. Si répétitif, faire vérifier par le chauffagiste.'),\n  224: ('', 'Limiteur de sécurité déclenché temporairement', 'Attendre le refroidissement. Si la chaudière se bloque sur E9, appliquer la procédure E9.'),\n  260: ('2F', 'Écart de température anormal entre départ et retour', 'Purger les radiateurs et vérifier que les vannes du circuit sont ouvertes.'),\n  265: ('0E', 'Demande de chaleur inférieure à la puissance minimale', 'Fonctionnement normal en modulation basse. Aucune action requise.'),\n  270: ('0U', 'Chaudière en phase de pré-démarrage', 'Fonctionnement normal. Attendre l allumage.'),\n  276: ('0Y', 'Température départ mesurée très élevée', 'Attendre la circulation de l eau. Si persistant, vérifier la pompe de circulation.'),\n  283: ('0C', 'Préparation du brûleur à l allumage', 'Fonctionnement normal. Attendre l allumage.'),\n  284: ('0L', 'Ouverture du bloc gaz', 'Fonctionnement normal pendant la phase d allumage.'),\n  285: ('0Y', 'Surchauffe interne temporaire', 'Attendre le refroidissement complet du corps de chauffe.'),\n  306: ('FA', 'Flamme résiduelle après coupure gaz', 'Défaut de sécurité. Si la chaudière se bloque, appeler le chauffagiste.')\n} %} **{{ services[n][0] if n in services else '?' }} (N° {{ n }})** — {% if n in services %}{{ services[n][1] }}. 👉 **Que faire :** {{ services[n][2] }}{% else %}Code non répertorié. Si la chaudière fonctionne correctement, aucune action n est requise.{% endif %}",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2766,7 +2837,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2842,6 +2914,10 @@
                   "content": "**📖 Table de référence — codes défaut Junkers Heatronic 3** (le gateway EMS-ESP ne remonte pas de code défaut en direct sur ce modèle — relever le code affiché sur l'écran de la chaudière et le chercher ci-dessous)\n\n| Code | Signification | Niveau |\n|---|---|---|\n| A7 | CTN eau chaude défectueux | 📞 Chauffagiste |\n| Ad | Sonde CTN ballon non détectée | 📞 Chauffagiste |\n| b1 | Fiche de codification non détectée | 📞 Chauffagiste |\n| b2 / b3 / F1 | Erreur interne des données | 🔄 1 reset max / 📞 Chauffagiste |\n| C6 | Ventilateur ne tourne pas / défaut d'air | 📞 Chauffagiste |\n| CC | Sonde extérieure non détectée | 👁️ Contrôle visuel / 📞 Chauffagiste |\n| d3 | Limiteur de température externe (TB1) ouvert | 📞 Chauffagiste |\n| d5 | Sonde de départ externe défectueuse | 📞 Chauffagiste |\n| E2 | Sonde CTN départ défectueuse | 📞 Chauffagiste |\n| E9 | Limiteur de sécurité (STB) ou fumées déclenché | 🛠️ Vérifier pression 1.2-1.5 bar + 🔄 reset / 📞 Chauffagiste |\n| EA | Absence de flamme / ionisation | 🛠️ Vérifier vanne gaz + 🔄 1 reset / 📞 Chauffagiste |\n| F0 | Erreur interne de la carte | 🔄 1 reset max / 📞 Chauffagiste |\n| F7 | Flamme détectée chaudière à l'arrêt | 📞 Chauffagiste |\n| FA | Flamme détectée après coupure gaz | 📞 Chauffagiste (sécurité) |\n| Fd | Touche Reset maintenue trop longtemps | 🔌 Reboot électrique |\n\n⚠️ Seuls le remplissage en eau, la vérification des robinets gaz et 1 seul reset sont autorisés. Toute intervention gaz/combustion/électrique doit être réalisée par un professionnel.",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2859,7 +2935,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2867,6 +2944,10 @@
                   "content": "**Dernier entretien réalisé :** 10/02/2023\n**1. Obligation légale** (Wallonie — AGW du 29/01/2009) : fréquence requise tous les **3 ans** pour une chaudière gaz ≤ 100 kW. Échéance légale maximale : **10/02/2026**.\n**2. Assurance habitation** : un défaut d'attestation valide peut entraîner un refus d'indemnisation ou une franchise majorée en cas de sinistre.\n**3. Recommandation constructeur** (Junkers/Bosch) : tous les **1 à 2 ans**. Échéance constructeur dépassée (recommandée au plus tard le 10/02/2025).",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2884,7 +2965,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -2892,6 +2974,10 @@
                   "content": "**Modèle :** Junkers / Bosch ZWB 28-3 CE 23 S 3600 (installation 2015)\n**Dernier entretien :** 10/02/2023 — nettoyage chambre de combustion, brûleur, injecteurs, siphon, bac à condensation, électrodes.\n**Dernier dépannage :** 10/02/2023 — remplacement ventouse à condensation, vanne 3 voies et soupape de sécurité.\n**Chauffagiste référent :** [Ets. Dubois — Contact & Dépannage](https://dubois-ets.be/contact) · 📞 +32 (0)4 343 25 59",
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
                   }
                 }
               ]
@@ -2945,7 +3031,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3019,7 +3106,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3093,7 +3181,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3167,7 +3256,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3223,7 +3313,7 @@
                   },
                   "grid_options": {
                     "columns": 12,
-                    "rows": 2
+                    "rows": "auto"
                   }
                 }
               ]
@@ -3241,7 +3331,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
@@ -3315,7 +3406,8 @@
                     "lights": []
                   },
                   "grid_options": {
-                    "columns": "full"
+                    "columns": "full",
+                    "rows": "auto"
                   }
                 },
                 {
