@@ -1,0 +1,1165 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.maison_taches",
+  "data": {
+    "config": {
+      "title": "Tâches",
+      "background": {
+        "image": "/local/images/wallpaper/taches.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Tâches",
+          "path": "taches",
+          "icon": "mdi:broom",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🧹 Tâches ménagères\nUne liste Todoist par personne — pour voir la liste de courses,\ndirection le dashboard Courses.",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow:\n    0 1px 3px rgba(0,0,0,0.95),\n    0 2px 10px rgba(0,0,0,0.9),\n    0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Résumé",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Vue d'ensemble des 3 listes",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "{% set s = states('todo.taches_famille') %} {{ 'Liste non configurée' if s in ['unavailable','unknown'] else s ~ ' tâche(s) restante(s)' }}",
+                  "secondary": "Tâches restantes",
+                  "icon": "{% set s = states('todo.taches_famille') %} {{\n  'mdi:playlist-remove'\n  if s in ['unavailable','unknown']\n  else 'mdi:check-circle'\n  if s == '0'\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{% set s = states('todo.taches_famille') %} {{\n  'grey'\n  if s in ['unavailable','unknown']\n  else 'green'\n  if s == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Courses",
+                  "secondary": "Voir la liste de courses",
+                  "icon": "mdi:cart-outline",
+                  "icon_color": "purple",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/maison-courses/courses"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;color:#f6d68a;opacity:.85;pointer-events:none}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "Ajouter à l'oral",
+                  "secondary": "Assistant Assist",
+                  "icon": "mdi:microphone",
+                  "icon_color": "blue",
+                  "tap_action": {
+                    "action": "assist",
+                    "pipeline": "preferred",
+                    "start_listening": true
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n.content.fixed-info-height {\n  height: auto !important;\n}\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Classement de la semaine",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "🧑 Grégory",
+                  "secondary": "{{ states('counter.taches_completees_gregory') }} tâche(s)",
+                  "icon": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'mdi:trophy' if g == top and top > 0 else 'mdi:trophy-outline' }}",
+                  "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if g == top and top > 0 else 'grey' }}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "🧒 Matteo",
+                  "secondary": "{{ states('counter.taches_completees_matteo') }} tâche(s)",
+                  "icon": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'mdi:trophy' if m == top and top > 0 else 'mdi:trophy-outline' }}",
+                  "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if m == top and top > 0 else 'grey' }}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "primary": "👩 Sandrine",
+                  "secondary": "{{ states('counter.taches_completees_sandrine') }} tâche(s)",
+                  "icon": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'mdi:trophy' if s == top and top > 0 else 'mdi:trophy-outline' }}",
+                  "icon_color": "{% set g = states('counter.taches_completees_gregory') | int(0) %} {% set m = states('counter.taches_completees_matteo') | int(0) %} {% set s = states('counter.taches_completees_sandrine') | int(0) %} {% set top = [g, m, s] | max %} {{ 'amber' if s == top and top > 0 else 'grey' }}",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Grégory",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_gregory') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_gregory') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_gregory') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "🏆 {{ states('counter.taches_completees_gregory') }} tâche(s) complétée(s)",
+                  "secondary": "Cette semaine",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.taches_gregory",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_gregory",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches de Grégory sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Matteo",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_matteo') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_matteo') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_matteo') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "🏆 {{ states('counter.taches_completees_matteo') }} tâche(s) complétée(s)",
+                  "secondary": "Cette semaine",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.taches_matteo",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_matteo",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches de Matteo sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Sandrine",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_sandrine') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_sandrine') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_sandrine') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "🏆 {{ states('counter.taches_completees_sandrine') }} tâche(s) complétée(s)",
+                  "secondary": "Cette semaine",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.taches_sandrine",
+                  "hide_completed": true,
+                  "display_order": "none",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_sandrine",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches de Sandrine sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Famille",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Tâches communes, non liées à une personne",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "{{ states('todo.taches_famille') }} tâche(s) restante(s)",
+                  "secondary": "À faire",
+                  "icon": "{{\n  'mdi:check-circle'\n  if states('todo.taches_famille') in ['0','unavailable','unknown']\n  else 'mdi:format-list-checks'\n}}",
+                  "icon_color": "{{\n  'green'\n  if states('todo.taches_famille') == '0'\n  else 'amber'\n}}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_famille",
+                      "state_not": "unavailable"
+                    },
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_famille",
+                      "state_not": "unknown"
+                    }
+                  ],
+                  "card": {
+                    "type": "todo-list",
+                    "entity": "todo.taches_famille",
+                    "hide_completed": true,
+                    "display_order": "none",
+                    "grid_options": {
+                      "columns": 12,
+                      "rows": 6
+                    },
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                    }
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "or",
+                      "conditions": [
+                        {
+                          "condition": "state",
+                          "entity": "todo.taches_famille",
+                          "state": "unavailable"
+                        },
+                        {
+                          "condition": "state",
+                          "entity": "todo.taches_famille",
+                          "state": "unknown"
+                        }
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "⚠️ **Liste « Tâches Famille » pas encore configurée.**\n\nCette liste partagée n'existe pas encore côté Todoist ni dans Home Assistant. Demande à Grégory de créer soit un projet Todoist « Famille », soit une liste locale via l'intégration *Local To-do*.",
+                    "grid_options": {
+                      "columns": 12,
+                      "rows": 3
+                    },
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n  padding: 16px 20px !important;\n}\nha-markdown {\n  color: #e8dff5 !important;\n}\n"
+                    }
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "todo.taches_famille",
+                      "state": "0"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "✅ **Rien en attente.** Toutes les tâches communes sont à jour.",
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(60, 40, 90, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 10px 16px !important;\n}\nha-markdown {\n  text-align: center !important;\n  color: var(--primary-text-color) !important;\n}\n"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_taches</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches') else 'non versionne' }}<br>\n📦 <b>taches_kanban</b> &middot; v{{ state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml').version if state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 0,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/a3b64414c8ecf3947264414b0d70175e",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "taches.jpg",
+                "thumbnail": "/api/image/serve/a3b64414c8ecf3947264414b0d70175e/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "type": "sections",
+          "max_columns": 4,
+          "title": "Kanban",
+          "path": "kanban",
+          "icon": "mdi:view-column-outline",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:todoist-kanban-familial-card",
+                  "entity": "sensor.kanban_familial",
+                  "show_header": true,
+                  "show_item_add": true,
+                  "show_item_delete": true,
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ],
+              "column_span": 4
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_taches</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_taches') else 'non versionne' }}<br>\n📦 <b>taches_kanban</b> &middot; v{{ state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml').version if state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', 'packages/taches_kanban.yaml') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 0,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/a3b64414c8ecf3947264414b0d70175e",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "taches.jpg",
+                "thumbnail": "/api/image/serve/a3b64414c8ecf3947264414b0d70175e/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "show_icon_and_title": true
+        }
+      ],
+      "button_card_templates": {
+        "cc_card": {
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(38,28,58,.55)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "-webkit-backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "border": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`1px solid rgba(${c},.75)`:'1px solid rgba(246,214,138,.8)'):'1px solid rgba(246,214,138,.22)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 16px rgba(${c},.35), 0 4px 0 rgba(12,8,22,.75)`:'0 0 14px rgba(246,214,138,.3), 0 4px 0 rgba(12,8,22,.75)'):'0 4px 0 rgba(12,8,22,.75)' ]]]"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ]
+          }
+        },
+        "cc_switch": {
+          "template": "cc_card",
+          "show_label": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "toggle",
+            "haptic": "light"
+          },
+          "hold_action": {
+            "action": "more-info"
+          },
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)}",
+          "label": "[[[ if(!entity) return ''; if(entity.state==='unavailable') return 'Indisponible'; const on=entity.state==='on'; let t=on?'Allumé':'Éteint'; if(on && entity.attributes.brightness!=null) t+=' · '+Math.round(entity.attributes.brightness/2.55)+' %'; return t ]]]",
+          "custom_fields": {
+            "sw": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); const col=c?`rgb(${c})`:'linear-gradient(180deg,#f6d68a,#d4a23c)'; return `<div style=\"width:54px;height:30px;border-radius:15px;background:${on?col:'rgba(255,255,255,.12)'};box-shadow:inset 0 2px 5px rgba(0,0,0,.5);position:relative\"><div style=\"position:absolute;top:3px;left:${on?27:3}px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fff,#cfcfcf);box-shadow:0 2px 4px rgba(0,0,0,.55)\"></div></div>` ]]]"
+          },
+          "styles": {
+            "grid": [
+              {
+                "grid-template-areas": "\"i n sw\" \"i l sw\""
+              },
+              {
+                "grid-template-columns": "50px 1fr 60px"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "42px"
+              },
+              {
+                "height": "42px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`rgb(${c})`:'linear-gradient(145deg,#f6d68a,#d4a23c)'):'rgba(255,255,255,.08)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 12px rgb(${c})`:'0 0 12px rgba(246,214,138,.5)'):'none' ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); return on?((entity && entity.attributes && entity.attributes.rgb_color)?'#fff':'#3a2766'):'#bfb2d6' ]]]"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return (entity && ['on','playing'].includes(entity.state))?'#f6d68a':'#9d8fb3' ]]]"
+              }
+            ],
+            "custom_fields": {
+              "sw": [
+                {
+                  "justify-self": "end"
+                }
+              ]
+            }
+          }
+        },
+        "cc_light_inner": {
+          "template": "cc_switch",
+          "styles": {
+            "card": [
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "backdrop-filter": "none"
+              },
+              {
+                "-webkit-backdrop-filter": "none"
+              },
+              {
+                "border-radius": "0"
+              }
+            ]
+          }
+        },
+        "cc_push": {
+          "show_label": true,
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)} ha-card:active{box-shadow:0 1px 0 #120b1e!important}",
+          "variables": {
+            "c1": "#9b78e0",
+            "c2": "#5b3f99",
+            "c3": "#3a2766"
+          },
+          "styles": {
+            "card": [
+              {
+                "background": "linear-gradient(180deg, rgba(78,60,112,.92) 0%, rgba(40,29,62,.92) 100%)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.35)"
+              },
+              {
+                "box-shadow": "0 6px 0 #120b1e, 0 10px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22)"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "margin-bottom": "10px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "54px 1fr"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "44px"
+              },
+              {
+                "height": "44px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ return `radial-gradient(circle at 35% 30%, ${variables.c1} 0%, ${variables.c2} 65%)` ]]]"
+              },
+              {
+                "box-shadow": "[[[ return `0 3px 0 ${variables.c3}, inset 0 2px 2px rgba(255,255,255,.35), inset 0 -2px 3px rgba(0,0,0,.3)` ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ]
+          }
+        },
+        "cc_title": {
+          "show_label": true,
+          "tap_action": {
+            "action": "none"
+          },
+          "variables": {
+            "lights": []
+          },
+          "label": "[[[ const L=variables.lights||[]; if(!L.length) return variables.sub||\"\"; const n=L.filter(e=>states[e]&&states[e].state===\"on\").length; return (variables.sub?variables.sub+\" · \":\"\")+(n?`💡 ${n} allumée${n>1?\"s\":\"\"}`:\"Tout est éteint\") ]]]",
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(25,18,38,.72)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "14px"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "border-bottom": "2px solid rgba(246,214,138,.55)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "padding": "10px 14px"
+              },
+              {
+                "cursor": "default"
+              },
+              {
+                "margin-top": "10px"
+              },
+              {
+                "margin-bottom": "4px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "40px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "26px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "17px"
+              },
+              {
+                "color": "#f6d68a"
+              },
+              {
+                "text-shadow": "0 1px 3px rgba(0,0,0,.9)"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_chip": {
+          "template": "cc_card",
+          "show_label": true,
+          "tap_action": {
+            "action": "more-info"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "8px 10px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.22)"
+              },
+              {
+                "box-shadow": "0 4px 0 rgba(12,8,22,.75)"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "34px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "16px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_room": {
+          "template": "cc_card",
+          "show_label": true,
+          "variables": {
+            "attr": null,
+            "path": null
+          },
+          "label": "[[[ return variables.sub||\"\" ]]]",
+          "custom_fields": {
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "10px 12px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n t\" \"i l t\""
+              },
+              {
+                "grid-template-columns": "40px 1fr auto"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "14px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#9d8fb3"
+              }
+            ],
+            "custom_fields": {
+              "t": [
+                {
+                  "justify-self": "end"
+                },
+                {
+                  "padding-right": "14px"
+                }
+              ]
+            }
+          },
+          "extra_styles": "ha-card{position:relative}ha-card::after{content:'›';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:20px;color:#f6d68a;opacity:.7}"
+        },
+        "cc_seg": {
+          "variables": {
+            "ent": "",
+            "opt": ""
+          },
+          "show_label": false,
+          "extra_styles": "ha-card{transition:transform .08s} ha-card:active{transform:translateY(3px)}",
+          "styles": {
+            "card": [
+              {
+                "border-radius": "14px"
+              },
+              {
+                "padding": "8px 4px"
+              },
+              {
+                "background": "[[[ return states[variables.ent]?.state===variables.opt?\"linear-gradient(180deg,#f6d68a,#d4a23c)\":\"rgba(38,28,58,.55)\" ]]]"
+              },
+              {
+                "border": "[[[ return states[variables.ent]?.state===variables.opt?\"1px solid #f6d68a\":\"1px solid rgba(246,214,138,.22)\" ]]]"
+              },
+              {
+                "box-shadow": "[[[ return states[variables.ent]?.state===variables.opt?\"0 0 14px rgba(246,214,138,.45), 0 2px 0 #7a5a1c\":\"0 4px 0 rgba(12,8,22,.75)\" ]]]"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i\" \"n\""
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#d9c4f0\" ]]]"
+              }
+            ],
+            "name": [
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#fff\" ]]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

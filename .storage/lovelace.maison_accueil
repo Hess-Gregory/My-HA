@@ -1,0 +1,1344 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.maison_accueil",
+  "data": {
+    "config": {
+      "title": "Accueil",
+      "background": {
+        "image": "/local/images/wallpaper/accueil.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Accueil",
+          "path": "accueil",
+          "type": "sections",
+          "max_columns": 4,
+          "background": {
+            "image": "/local/images/wallpaper/accueil.jpg",
+            "size": "cover",
+            "attachment": "fixed"
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_icon": false,
+                  "show_name": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [
+                    "weather.forecast_maison",
+                    "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                    "person.greg",
+                    "person.sandrine",
+                    "sensor.anniversaires",
+                    "alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax"
+                  ],
+                  "custom_fields": {
+                    "hero": "[[[\n  const d=new Date(), hr=d.getHours();\n  const g=hr<5?'Bonne nuit':hr<12?'Bonjour':hr<18?'Bon après-midi':'Bonsoir';\n  const who=(user&&user.name)||'';\n  const date=d.toLocaleDateString('fr-BE',{weekday:'long',day:'numeric',month:'long'});\n  const w=states['weather.forecast_maison']; const WF={'clear-night':['🌙','Nuit claire'],cloudy:['☁️','Nuageux'],fog:['🌫️','Brouillard'],hail:['🌨️','Grêle'],lightning:['⚡','Orage'],'lightning-rainy':['⛈️','Orage'],partlycloudy:['⛅','Éclaircies'],pouring:['🌧️','Averses'],rainy:['🌦️','Pluie'],snowy:['❄️','Neige'],sunny:['☀️','Ensoleillé'],windy:['💨','Venteux']};\n  const wf=w?(WF[w.state]||['🌡️',w.state]):['',''];\n  const tin=Number(states['sensor.temp_piece_de_vie_sonoff_a480146b56_temperature']?.state);\n  const home=['person.greg','person.sandrine'].filter(p=>states[p]?.state==='home').length;\n  const al=states['alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax']?.state||''; const alarm=al.startsWith('armed')?['🛡️','Alarme armée','#7fdc9a']:al==='triggered'?['🚨','Alarme déclenchée','#f07a7a']:['🔓','Alarme désarmée','#d9c4f0'];\n  let an=''; const L=states['sensor.anniversaires']?.attributes?.liste||[]; const t0=new Date(d.getFullYear(),d.getMonth(),d.getDate());\n  const nx=L.map(x=>{const [y,mo,da]=x.date.split('-').map(Number); let p=new Date(d.getFullYear(),mo-1,da); if(p<t0) p=new Date(d.getFullYear()+1,mo-1,da); return {j:Math.round((p-t0)/864e5),n:x.nom,ty:x.type}}).sort((a,b)=>a.j-b.j)[0];\n  if(nx) an=(nx.ty==='memoire'?'🕊️':nx.ty==='rencontre'?'💞':'🎂')+' '+nx.n+(nx.j===0?\" aujourd'hui\":' dans '+nx.j+' j');\n  const pill=(t,col)=>`<span style=\"display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(246,214,138,.25);font-size:13px;color:${col||'#fff'};white-space:nowrap\">${t}</span>`;\n  return `<div style=\"text-align:left;padding:6px 4px\">\n   <div style=\"font:700 28px sans-serif;color:#f6d68a;text-shadow:0 2px 8px rgba(0,0,0,.8)\">${g}${who?', '+who:''}</div>\n   <div style=\"font-size:14px;color:#d9c4f0;margin:2px 0 12px;\"><span style=\"text-transform:capitalize\">${date}</span> · 🤖 Sam veille sur la maison</div>\n   <div style=\"display:flex;flex-wrap:wrap;gap:8px\">\n    ${w?pill(wf[0]+' '+Number(w.attributes.temperature).toFixed(0)+'° dehors · '+wf[1]):''}\n    ${!isNaN(tin)?pill('🛋️ '+tin.toFixed(1)+'° au salon'):''}\n    ${pill('🏠 '+(home?home+' à la maison':'Personne à la maison'))}\n    ${pill(alarm[0]+' '+alarm[1],alarm[2])}\n    ${an?pill(an):''}\n   </div></div>` ]]]"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "background": "linear-gradient(135deg, rgba(60,40,96,.78), rgba(25,18,38,.78))"
+                      },
+                      {
+                        "backdrop-filter": "blur(18px)"
+                      },
+                      {
+                        "border-radius": "20px"
+                      },
+                      {
+                        "border": "1px solid rgba(246,214,138,.35)"
+                      },
+                      {
+                        "box-shadow": "0 6px 0 rgba(12,8,22,.75), 0 12px 30px rgba(0,0,0,.35)"
+                      },
+                      {
+                        "padding": "16px 18px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"hero\""
+                      }
+                    ],
+                    "custom_fields": {
+                      "hero": [
+                        {
+                          "justify-self": "stretch"
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax",
+                  "primary": "Alarme",
+                  "secondary": "{% set s = states('alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax') %} {% set labels = {\n  'armed_home': 'Armée (maison)',\n  'armed_away': 'Armée (absence)',\n  'armed_night': 'Armée (nuit)',\n  'armed_vacation': 'Armée (vacances)',\n  'armed_custom_bypass': 'Activée (exception personnalisée)',\n  'disarmed': 'Désarmée',\n  'pending': 'Armement en cours…',\n  'triggered': '🚨 Déclenchée !',\n  'arming': 'Armement en cours…',\n  'disarming': 'Désarmement en cours…'\n} %} {{ labels.get(s, s) }}",
+                  "icon": "{% set s = states('alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax') %} {{ 'mdi:shield-alert' if s == 'triggered' else 'mdi:shield-lock' if s in ['armed_home','armed_away','armed_night'] else 'mdi:shield-off-outline' }}",
+                  "icon_color": "{% set s = states('alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax') %} {{ 'red' if s == 'triggered' else 'green' if s in ['armed_home','armed_away','armed_night'] else 'grey' }}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.r_wan2_core_liaison_internet_du_port_2",
+                  "primary": "{{ 'Internet OK' if is_state(entity, 'on') else 'Internet : secours 4G' }}",
+                  "secondary": "{{ states('sensor.ookla_speedtest_download') | float(0) | round(0) | int }} ↓ / {{ states('sensor.ookla_speedtest_upload') | float(0) | round(0) | int }} ↑ Mbps",
+                  "icon": "mdi:web",
+                  "icon_color": "{{ 'green' if is_state(entity, 'on') else 'amber' }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/reseau-infra/reseau-it"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;line-height:1;color:#f6d68a;opacity:.85;pointer-events:none}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                  "primary": "{{ states(entity) | float(0) | round(2) }} kW en ce moment",
+                  "secondary": "{{ states('sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui') | float(0) | round(1) }} kWh aujourd'hui · {{ 'heures pleines' if is_state('select.consommation_maison', 'heures_pleines') else 'heures creuses' }}",
+                  "icon": "mdi:flash",
+                  "icon_color": "{% set p = states(entity) | float(0) %}{{ 'red' if p > 12 else ('amber' if p > 9 else 'green') }}",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/maison-energie/energie"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;line-height:1;color:#f6d68a;opacity:.85;pointer-events:none}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Tâches complétées cette semaine",
+                  "secondary": "Grégory {{ states('counter.taches_completees_gregory') }} · Matteo {{ states('counter.taches_completees_matteo') }} · Sandrine {{ states('counter.taches_completees_sandrine') }}",
+                  "icon": "mdi:trophy-outline",
+                  "icon_color": "amber",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/maison-taches/taches"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;line-height:1;color:#f6d68a;opacity:.85;pointer-events:none}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Actions rapides",
+                  "icon": "mdi:gesture-tap-button",
+                  "variables": {
+                    "sub": "Un appui = toute la maison",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Je pars",
+                  "label": "Alarme + lumières off + éco",
+                  "icon": "mdi:home-export-outline",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.je_pars",
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#f3c156",
+                    "c2": "#b9851f",
+                    "c3": "#6e4d10"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Retour",
+                  "label": "Chauffage confort",
+                  "icon": "mdi:home-import-outline",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.retour",
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#66d08a",
+                    "c2": "#2e7d4f",
+                    "c3": "#1b4d30"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Bonne nuit",
+                  "label": "Éteint tout",
+                  "icon": "mdi:weather-night",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.bonne_nuit",
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Sieste / Calme",
+                  "label": "Coupe le coin DJ",
+                  "icon": "mdi:volume-off",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.sieste_calme",
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#9b78e0",
+                    "c2": "#5b3f99",
+                    "c3": "#3a2766"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Tout éteindre",
+                  "label": "Toutes les lumières",
+                  "icon": "mdi:power",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.tout_eteindre",
+                    "confirmation": {
+                      "text": "Éteindre toutes les lumières de la maison ?"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#f07a7a",
+                    "c2": "#b33636",
+                    "c3": "#6e1f1f"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.simulation_presence",
+                  "name": "Simulation",
+                  "icon": "mdi:motion-sensor",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "timer.compte_a_rebours_depart",
+                      "state": "active"
+                    }
+                  ],
+                  "card": {
+                    "type": "entities",
+                    "title": "⏳ Armement de l'alarme dans...",
+                    "entities": [
+                      {
+                        "entity": "timer.compte_a_rebours_depart",
+                        "name": "Départ en cours",
+                        "icon": "mdi:timer-alert"
+                      }
+                    ],
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Tablette Sam",
+                  "icon": "mdi:tablet",
+                  "variables": {
+                    "sub": "Luminosité de l'écran",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Écran doux",
+                  "label": "30 %",
+                  "icon": "mdi:brightness-4",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "number.set_value",
+                    "target": {
+                      "entity_id": "number.salon_sam_tablette_luminosite_de_l_ecran"
+                    },
+                    "data": {
+                      "value": 30
+                    },
+                    "haptic": "light"
+                  },
+                  "variables": {
+                    "c1": "#6aa8f0",
+                    "c2": "#2f5fa8",
+                    "c3": "#1c3a6a"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Écran max",
+                  "label": "100 %",
+                  "icon": "mdi:brightness-7",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "number.set_value",
+                    "target": {
+                      "entity_id": "number.salon_sam_tablette_luminosite_de_l_ecran"
+                    },
+                    "data": {
+                      "value": 255
+                    },
+                    "haptic": "light"
+                  },
+                  "variables": {
+                    "c1": "#f3c156",
+                    "c2": "#b9851f",
+                    "c3": "#6e4d10"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Températures",
+                  "icon": "mdi:thermometer",
+                  "variables": {
+                    "sub": "Touchez une pièce pour la régler",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_room",
+                  "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                  "name": "Pièce de vie",
+                  "icon": "mdi:sofa",
+                  "variables": {
+                    "path": "/mon-confort/piece-de-vie",
+                    "attr": null
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/piece-de-vie"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_room",
+                  "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
+                  "name": "Ch. enfants",
+                  "icon": "mdi:teddy-bear",
+                  "variables": {
+                    "path": "/mon-confort/chambre-enfants",
+                    "attr": null
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/chambre-enfants"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_room",
+                  "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
+                  "name": "Ch. parents",
+                  "icon": "mdi:bed-king",
+                  "variables": {
+                    "path": "/mon-confort/chambre-parents",
+                    "attr": null
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/chambre-parents"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_room",
+                  "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                  "name": "Salle de bain",
+                  "icon": "mdi:shower",
+                  "variables": {
+                    "path": "/mon-confort/salle-de-bain",
+                    "attr": null
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/salle-de-bain"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_room",
+                  "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
+                  "name": "Couloir",
+                  "icon": "mdi:door",
+                  "variables": {
+                    "path": "/mon-confort/couloir-entree",
+                    "attr": null
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/couloir-entree"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_room",
+                  "entity": "weather.forecast_maison",
+                  "name": "Extérieur",
+                  "icon": "mdi:tree-outline",
+                  "variables": {
+                    "path": "/meteo-belgique",
+                    "sub": "",
+                    "attr": "temperature"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/meteo-belgique"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Qui est à la maison ?",
+                  "icon": "mdi:account-group",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Gregory",
+                  "secondary": "{% set home = is_state('person.greg', 'home') %} {% set eta = states('sensor.trajet_greg_waze_trajet_greg_vers_maison') %} {% set eta_ok = eta not in ['unknown','unavailable','none',''] and is_number(eta) %} {% if home %}est à la maison {% elif eta_ok %}\n  {% set s = (eta | float(0) * 60) | round(0) | int %}\n  {% if s < 60 %}est arrivé dans la rue, il se gare.\n  {% elif s < 120 %}est dans la rue avoisinante, arrivée imminente !\n  {% else %}{% set h = s // 3600 %}{% set m = (s % 3600) // 60 %}{% set sec = s % 60 %}il arrive dans {{ '%02d:%02d:%02d' | format(h, m, sec) }}\n  {% endif %}\n{% else %}est absent{% endif %}",
+                  "picture": "{{ state_attr('person.greg', 'entity_picture') }}",
+                  "icon": "mdi:account",
+                  "badge_icon": "{% set home = is_state('person.greg', 'home') %} {% set eta = states('sensor.trajet_greg_waze_trajet_greg_vers_maison') %} {% set eta_ok = eta not in ['unknown','unavailable','none',''] and is_number(eta) %} {% if home %}mdi:check-bold {% elif eta_ok %}\n  {% set s = (eta | float(0) * 60) | round(0) | int %}\n  {% if s < 60 %}mdi:parking{% elif s < 120 %}mdi:map-marker-distance{% else %}mdi:car{% endif %}\n{% else %}mdi:account-off{% endif %}",
+                  "badge_color": "{% set home = is_state('person.greg', 'home') %} {% set eta = states('sensor.trajet_greg_waze_trajet_greg_vers_maison') %} {% set eta_ok = eta not in ['unknown','unavailable','none',''] and is_number(eta) %} {% if home %}green {% elif eta_ok %}\n  {% set s = (eta | float(0) * 60) | round(0) | int %}\n  {% if s < 120 %}blue{% else %}amber{% endif %}\n{% else %}grey{% endif %}",
+                  "vertical": true,
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Sandrine",
+                  "secondary": "{% set home = is_state('person.sandrine', 'home') %} {% set eta = states('sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison') %} {% set eta_ok = eta not in ['unknown','unavailable','none',''] and is_number(eta) %} {% if home %}est à la maison. {% elif eta_ok %}\n  {% set s = (eta | float(0) * 60) | round(0) | int %}\n  {% if s < 60 %}est arrivée dans la rue, elle se gare.\n  {% elif s < 120 %}est dans la rue avoisinante, arrivée imminente !\n  {% else %}{% set h = s // 3600 %}{% set m = (s % 3600) // 60 %}{% set sec = s % 60 %}elle arrive dans {{ '%02d:%02d:%02d' | format(h, m, sec) }}\n  {% endif %}\n{% else %}est absente.{% endif %}",
+                  "picture": "{{ state_attr('person.sandrine', 'entity_picture') }}",
+                  "icon": "mdi:account",
+                  "badge_icon": "{% set home = is_state('person.sandrine', 'home') %} {% set eta = states('sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison') %} {% set eta_ok = eta not in ['unknown','unavailable','none',''] and is_number(eta) %} {% if home %}mdi:check-bold {% elif eta_ok %}\n  {% set s = (eta | float(0) * 60) | round(0) | int %}\n  {% if s < 60 %}mdi:parking{% elif s < 120 %}mdi:map-marker-distance{% else %}mdi:car{% endif %}\n{% else %}mdi:account-off{% endif %}",
+                  "badge_color": "{% set home = is_state('person.sandrine', 'home') %} {% set eta = states('sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison') %} {% set eta_ok = eta not in ['unknown','unavailable','none',''] and is_number(eta) %} {% if home %}green {% elif eta_ok %}\n  {% set s = (eta | float(0) * 60) | round(0) | int %}\n  {% if s < 120 %}blue{% else %}amber{% endif %}\n{% else %}grey{% endif %}",
+                  "vertical": true,
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Prochaine date",
+                  "icon": "mdi:cake-variant",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.anniversaires",
+                  "icon": "mdi:cake-variant",
+                  "primary": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L -%}{%- set j, nom, p, age, ty = L[0] -%}{{ ico(j, ty) }} {{ nom }}{%- else -%}Aucune date{%- endif -%}",
+                  "secondary": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{%- macro txt(age, ty) -%}{{ {'rencontre': age ~ ' an' ~ ('s' if age > 1 else '') ~ ' ensemble', 'memoire': 'aurait eu ' ~ age ~ ' ans', 'autre': age ~ ' an' ~ ('s' if age > 1 else '')}.get(ty, age ~ ' ans') }}{%- endmacro -%}{%- macro ico(j, ty) -%}{{ '🕊️' if ty == 'memoire' else ('🎉' if j == 0 else {'rencontre':'💞','autre':'📅'}.get(ty,'🎂')) }}{%- endmacro -%}{%- if L -%}{%- set j, nom, p, age, ty = L[0] -%}{{ txt(age, ty) }} · {{ \"aujourd'hui\" if j == 0 else 'dans ' ~ j ~ ' jour' ~ ('s' if j > 1 else '') ~ ' (' ~ p ~ ')' }}{%- endif -%}",
+                  "icon_color": "{%- set t = now().date() -%}{%- set ns = namespace(l=[]) -%}\n{%- for a in state_attr('sensor.anniversaires', 'liste') or [] -%}\n{%- set d = strptime(a.date, '%Y-%m-%d').date() -%}\n{%- set y = t.year if (d.month, d.day) >= (t.month, t.day) else t.year + 1 -%}\n{%- set p = strptime(y ~ '-' ~ '%02d' % d.month ~ '-' ~ '%02d' % (28 if d.month == 2 and d.day == 29 else d.day), '%Y-%m-%d').date() -%}\n{%- set ns.l = ns.l + [((p - t).days, a.nom, p.strftime('%d/%m'), y - d.year, a.type | default('anniversaire'))] -%}\n{%- endfor -%}{%- set L = ns.l | sort -%}{{ 'pink' if L and L[0][0] <= 7 else 'amber' }}",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-calendrier/vue-ensemble"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\nha-card{position:relative}ha-card::after{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:26px;line-height:1;color:#f6d68a;opacity:.85;pointer-events:none}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Météo",
+                  "icon": "mdi:weather-partly-cloudy",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "weather-forecast",
+                  "entity": "weather.forecast_maison",
+                  "forecast_type": "hourly",
+                  "show_current": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "vertical",
+                  "entity": "weather.forecast_maison",
+                  "primary": "Vent",
+                  "secondary": "{% set w_raw = state_attr('weather.forecast_maison', 'wind_speed') %} {% if is_number(w_raw) %}\n  {% set w = w_raw | float %}\n  {% if w > 60 %}💨 Vent fort ({{ w | round(0) }} km/h) — rentrez le parasol et protégez les plantes !\n  {% elif w > 35 %}🍃 Vent modéré ({{ w | round(0) }} km/h) — surveillez le parasol\n  {% else %}😌 Vent calme ({{ w | round(0) }} km/h){% endif %}\n{% else %}\n  ⏳ Données de vent indisponibles\n{% endif %}",
+                  "icon": "mdi:weather-windy",
+                  "icon_color": "{% set w_raw = state_attr('weather.forecast_maison', 'wind_speed') %} {% if is_number(w_raw) %}\n  {% set w = w_raw | float %}\n  {% if w > 60 %}red{% elif w > 35 %}amber{% else %}green{% endif %}\n{% else %}grey{% endif %}",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Orage à proximité",
+                  "icon": "mdi:weather-lightning",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
+                  "primary": "Couloir & Entrée",
+                  "icon": "mdi:door",
+                  "secondary": "{% set t = states('sensor.temp_couloir_sonoff_a480146b60_temperature') %}{% set hu = states('sensor.temp_couloir_sonoff_a480146b60_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_couloir') }} °C ({{ states('input_select.mode_couloir') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_couloir') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.couloir', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/couloir-entree"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                  "primary": "Pièce de vie",
+                  "icon": "mdi:sofa",
+                  "secondary": "{% set t = states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature') %}{% set hu = states('sensor.temp_piece_de_vie_sonoff_a480146b56_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_piece_de_vie') }} °C ({{ states('input_select.mode_piece_de_vie') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_piece_de_vie') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.living', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/piece-de-vie"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
+                  "primary": "Chambre enfants",
+                  "icon": "mdi:teddy-bear",
+                  "secondary": "{% set t = states('sensor.temp_chambre_enfants_sonoff_a480146b58_temperature') %}{% set hu = states('sensor.temp_chambre_enfants_sonoff_a480146b58_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_chambre_enfants') }} °C ({{ states('input_select.mode_chambre_enfants') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_chambre_enfants') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.chambre_enfants', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/chambre-enfants"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
+                  "primary": "Chambre parents",
+                  "icon": "mdi:bed-king",
+                  "secondary": "{% set t = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature') %}{% set hu = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_chambre_adulte') }} °C ({{ states('input_select.mode_chambre_adulte') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_chambre_adulte') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.chambre_adulte', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/chambre-parents"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                  "primary": "Salle de bain",
+                  "icon": "mdi:shower",
+                  "secondary": "{% set t = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature') %}{% set hu = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_salle_de_bain') }} °C ({{ states('input_select.mode_salle_de_bain') }})",
+                  "icon_color": "{% set e = states('sensor.ecart_salle_de_bain') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
+                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.salle_de_bain', 'hvac_action') == 'heating' else '' }}",
+                  "badge_color": "red",
+                  "multiline_secondary": true,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/mon-confort/salle-de-bain"
+                  },
+                  "hold_action": {
+                    "action": "more-info"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "button_card_templates": {
+        "cc_card": {
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(38,28,58,.55)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "-webkit-backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "border": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`1px solid rgba(${c},.75)`:'1px solid rgba(246,214,138,.8)'):'1px solid rgba(246,214,138,.22)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 16px rgba(${c},.35), 0 4px 0 rgba(12,8,22,.75)`:'0 0 14px rgba(246,214,138,.3), 0 4px 0 rgba(12,8,22,.75)'):'0 4px 0 rgba(12,8,22,.75)' ]]]"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ]
+          }
+        },
+        "cc_switch": {
+          "template": "cc_card",
+          "show_label": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "toggle",
+            "haptic": "light"
+          },
+          "hold_action": {
+            "action": "more-info"
+          },
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)}",
+          "label": "[[[ if(!entity) return ''; if(entity.state==='unavailable') return 'Indisponible'; const on=entity.state==='on'; let t=on?'Allumé':'Éteint'; if(on && entity.attributes.brightness!=null) t+=' · '+Math.round(entity.attributes.brightness/2.55)+' %'; return t ]]]",
+          "custom_fields": {
+            "sw": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); const col=c?`rgb(${c})`:'linear-gradient(180deg,#f6d68a,#d4a23c)'; return `<div style=\"width:54px;height:30px;border-radius:15px;background:${on?col:'rgba(255,255,255,.12)'};box-shadow:inset 0 2px 5px rgba(0,0,0,.5);position:relative\"><div style=\"position:absolute;top:3px;left:${on?27:3}px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fff,#cfcfcf);box-shadow:0 2px 4px rgba(0,0,0,.55)\"></div></div>` ]]]"
+          },
+          "styles": {
+            "grid": [
+              {
+                "grid-template-areas": "\"i n sw\" \"i l sw\""
+              },
+              {
+                "grid-template-columns": "50px 1fr 60px"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "42px"
+              },
+              {
+                "height": "42px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`rgb(${c})`:'linear-gradient(145deg,#f6d68a,#d4a23c)'):'rgba(255,255,255,.08)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 12px rgb(${c})`:'0 0 12px rgba(246,214,138,.5)'):'none' ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); return on?((entity && entity.attributes && entity.attributes.rgb_color)?'#fff':'#3a2766'):'#bfb2d6' ]]]"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return (entity && ['on','playing'].includes(entity.state))?'#f6d68a':'#9d8fb3' ]]]"
+              }
+            ],
+            "custom_fields": {
+              "sw": [
+                {
+                  "justify-self": "end"
+                }
+              ]
+            }
+          }
+        },
+        "cc_light_inner": {
+          "template": "cc_switch",
+          "styles": {
+            "card": [
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "backdrop-filter": "none"
+              },
+              {
+                "-webkit-backdrop-filter": "none"
+              },
+              {
+                "border-radius": "0"
+              }
+            ]
+          }
+        },
+        "cc_push": {
+          "show_label": true,
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)} ha-card:active{box-shadow:0 1px 0 #120b1e!important}",
+          "variables": {
+            "c1": "#9b78e0",
+            "c2": "#5b3f99",
+            "c3": "#3a2766"
+          },
+          "styles": {
+            "card": [
+              {
+                "background": "linear-gradient(180deg, rgba(78,60,112,.92) 0%, rgba(40,29,62,.92) 100%)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.35)"
+              },
+              {
+                "box-shadow": "0 6px 0 #120b1e, 0 10px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22)"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "margin-bottom": "10px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "54px 1fr"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "44px"
+              },
+              {
+                "height": "44px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ return `radial-gradient(circle at 35% 30%, ${variables.c1} 0%, ${variables.c2} 65%)` ]]]"
+              },
+              {
+                "box-shadow": "[[[ return `0 3px 0 ${variables.c3}, inset 0 2px 2px rgba(255,255,255,.35), inset 0 -2px 3px rgba(0,0,0,.3)` ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ]
+          }
+        },
+        "cc_title": {
+          "show_label": true,
+          "tap_action": {
+            "action": "none"
+          },
+          "variables": {
+            "lights": []
+          },
+          "label": "[[[ const L=variables.lights||[]; if(!L.length) return variables.sub||\"\"; const n=L.filter(e=>states[e]&&states[e].state===\"on\").length; return (variables.sub?variables.sub+\" · \":\"\")+(n?`💡 ${n} allumée${n>1?\"s\":\"\"}`:\"Tout est éteint\") ]]]",
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(25,18,38,.72)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "14px"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "border-bottom": "2px solid rgba(246,214,138,.55)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "padding": "10px 14px"
+              },
+              {
+                "cursor": "default"
+              },
+              {
+                "margin-top": "10px"
+              },
+              {
+                "margin-bottom": "4px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "40px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "26px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "17px"
+              },
+              {
+                "color": "#f6d68a"
+              },
+              {
+                "text-shadow": "0 1px 3px rgba(0,0,0,.9)"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_chip": {
+          "template": "cc_card",
+          "show_label": true,
+          "tap_action": {
+            "action": "more-info"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "8px 10px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.22)"
+              },
+              {
+                "box-shadow": "0 4px 0 rgba(12,8,22,.75)"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "34px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "16px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_room": {
+          "template": "cc_card",
+          "show_label": true,
+          "variables": {
+            "attr": null,
+            "path": null
+          },
+          "label": "[[[ return variables.sub||\"\" ]]]",
+          "custom_fields": {
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "10px 12px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n t\" \"i l t\""
+              },
+              {
+                "grid-template-columns": "40px 1fr auto"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "14px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#9d8fb3"
+              }
+            ],
+            "custom_fields": {
+              "t": [
+                {
+                  "justify-self": "end"
+                },
+                {
+                  "padding-right": "14px"
+                }
+              ]
+            }
+          },
+          "extra_styles": "ha-card{position:relative}ha-card::after{content:'›';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:20px;color:#f6d68a;opacity:.7}"
+        },
+        "cc_seg": {
+          "variables": {
+            "ent": "",
+            "opt": ""
+          },
+          "show_label": false,
+          "extra_styles": "ha-card{transition:transform .08s} ha-card:active{transform:translateY(3px)}",
+          "styles": {
+            "card": [
+              {
+                "border-radius": "14px"
+              },
+              {
+                "padding": "8px 4px"
+              },
+              {
+                "background": "[[[ return states[variables.ent]?.state===variables.opt?\"linear-gradient(180deg,#f6d68a,#d4a23c)\":\"rgba(38,28,58,.55)\" ]]]"
+              },
+              {
+                "border": "[[[ return states[variables.ent]?.state===variables.opt?\"1px solid #f6d68a\":\"1px solid rgba(246,214,138,.22)\" ]]]"
+              },
+              {
+                "box-shadow": "[[[ return states[variables.ent]?.state===variables.opt?\"0 0 14px rgba(246,214,138,.45), 0 2px 0 #7a5a1c\":\"0 4px 0 rgba(12,8,22,.75)\" ]]]"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i\" \"n\""
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#d9c4f0\" ]]]"
+              }
+            ],
+            "name": [
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#fff\" ]]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

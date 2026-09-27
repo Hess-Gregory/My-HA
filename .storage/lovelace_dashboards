@@ -6,8 +6,8 @@
     "items": [
       {
         "id": "1_accueil",
-        "show_in_sidebar": true,
-        "title": "Accueil",
+        "show_in_sidebar": false,
+        "title": "Accueil (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-accueil",
@@ -15,8 +15,8 @@
       },
       {
         "id": "1_ma_maison",
-        "show_in_sidebar": true,
-        "title": "Ma Maison",
+        "show_in_sidebar": false,
+        "title": "Ma Maison (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-ma-maison",
@@ -24,8 +24,8 @@
       },
       {
         "id": "1_eclairage",
-        "show_in_sidebar": true,
-        "title": "Éclairage",
+        "show_in_sidebar": false,
+        "title": "Éclairage (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-eclairage",
@@ -33,8 +33,8 @@
       },
       {
         "id": "1_mon_confort",
-        "show_in_sidebar": true,
-        "title": "Mon Confort",
+        "show_in_sidebar": false,
+        "title": "Mon Confort (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-mon-confort",
@@ -42,8 +42,8 @@
       },
       {
         "id": "1_energie",
-        "show_in_sidebar": true,
-        "title": "Énergie",
+        "show_in_sidebar": false,
+        "title": "Énergie (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-energie",
@@ -51,8 +51,8 @@
       },
       {
         "id": "1_reseau_infra",
-        "show_in_sidebar": true,
-        "title": "Réseau & Infra",
+        "show_in_sidebar": false,
+        "title": "Réseau & Infra (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-reseau-infra",
@@ -60,8 +60,8 @@
       },
       {
         "id": "1_securite",
-        "show_in_sidebar": true,
-        "title": "Sécurité",
+        "show_in_sidebar": false,
+        "title": "Sécurité (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-securite",
@@ -69,8 +69,8 @@
       },
       {
         "id": "1_streaming",
-        "show_in_sidebar": true,
-        "title": "Streaming",
+        "show_in_sidebar": false,
+        "title": "Streaming (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-streaming",
@@ -78,8 +78,8 @@
       },
       {
         "id": "1_courses",
-        "show_in_sidebar": true,
-        "title": "Courses",
+        "show_in_sidebar": false,
+        "title": "Courses (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-courses",
@@ -87,8 +87,8 @@
       },
       {
         "id": "1_taches",
-        "show_in_sidebar": true,
-        "title": "Taches",
+        "show_in_sidebar": false,
+        "title": "Taches (ancien)",
         "require_admin": false,
         "mode": "storage",
         "url_path": "1-taches",
@@ -97,8 +97,8 @@
       {
         "id": "1_meteo_belgique",
         "require_admin": false,
-        "show_in_sidebar": true,
-        "title": "Météo Belgique",
+        "show_in_sidebar": false,
+        "title": "Météo Belgique (ancien)",
         "url_path": "1-meteo-belgique",
         "mode": "storage",
         "icon": "mdi:weather-partly-cloudy"
@@ -106,8 +106,8 @@
       {
         "id": "1_pollution",
         "require_admin": false,
-        "show_in_sidebar": true,
-        "title": "Pollution & Qualité de l'Air (Engis)",
+        "show_in_sidebar": false,
+        "title": "Pollution & Qualité de l'Air (Engis) (ancien)",
         "url_path": "1-pollution",
         "mode": "storage",
         "icon": "mdi:weather-dust"
@@ -136,6 +136,114 @@
         "show_in_sidebar": true,
         "title": "test",
         "url_path": "dashboard-test",
+        "mode": "storage"
+      },
+      {
+        "id": "maison_accueil",
+        "url_path": "maison-accueil",
+        "title": "Accueil",
+        "icon": "mdi:monitor-dashboard",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "ma_maison",
+        "url_path": "ma-maison",
+        "title": "Ma Maison",
+        "icon": "mdi:home-assistant",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_eclairage",
+        "url_path": "maison-eclairage",
+        "title": "Éclairage",
+        "icon": "mdi:lamps",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "mon_confort",
+        "url_path": "mon-confort",
+        "title": "Mon Confort",
+        "icon": "mdi:home-thermometer",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_energie",
+        "url_path": "maison-energie",
+        "title": "Énergie",
+        "icon": "mdi:flash",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "reseau_infra",
+        "url_path": "reseau-infra",
+        "title": "Réseau & Infra",
+        "icon": "mdi:access-point-network",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_securite",
+        "url_path": "maison-securite",
+        "title": "Sécurité",
+        "icon": "mdi:security",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_streaming",
+        "url_path": "maison-streaming",
+        "title": "Streaming",
+        "icon": "mdi:television-play",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_courses",
+        "url_path": "maison-courses",
+        "title": "Courses",
+        "icon": "mdi:cart-outline",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_taches",
+        "url_path": "maison-taches",
+        "title": "Taches",
+        "icon": "mdi:broom",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "meteo_belgique",
+        "url_path": "meteo-belgique",
+        "title": "Météo Belgique",
+        "icon": "mdi:weather-partly-cloudy",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "maison_pollution",
+        "url_path": "maison-pollution",
+        "title": "Pollution & Qualité de l'Air (Engis)",
+        "icon": "mdi:weather-dust",
+        "show_in_sidebar": true,
+        "require_admin": false,
         "mode": "storage"
       }
     ]

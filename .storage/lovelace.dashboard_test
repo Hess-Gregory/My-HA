@@ -3255,7 +3255,7 @@
                   "icon_color": "{{ 'green' if is_state(entity, 'on') else 'amber' }}",
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-reseau-infra/reseau-it"
+                    "navigation_path": "/reseau-infra/reseau-it"
                   },
                   "grid_options": {
                     "columns": 12,
@@ -3274,7 +3274,7 @@
                   "icon_color": "{% set p = states(entity) | float(0) %}{{ 'red' if p > 12 else ('amber' if p > 9 else 'green') }}",
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-energie/energie"
+                    "navigation_path": "/maison-energie/energie"
                   },
                   "grid_options": {
                     "columns": 12,
@@ -3292,7 +3292,7 @@
                   "icon_color": "amber",
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-taches/taches"
+                    "navigation_path": "/maison-taches/taches"
                   },
                   "grid_options": {
                     "columns": 12,
@@ -3559,7 +3559,7 @@
                   "name": "Pièce de vie",
                   "icon": "mdi:sofa",
                   "variables": {
-                    "path": "/1-mon-confort/piece-de-vie",
+                    "path": "/mon-confort/piece-de-vie",
                     "attr": null
                   },
                   "grid_options": {
@@ -3568,7 +3568,7 @@
                   },
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/piece-de-vie"
+                    "navigation_path": "/mon-confort/piece-de-vie"
                   }
                 },
                 {
@@ -3578,7 +3578,7 @@
                   "name": "Ch. enfants",
                   "icon": "mdi:teddy-bear",
                   "variables": {
-                    "path": "/1-mon-confort/chambre-enfants",
+                    "path": "/mon-confort/chambre-enfants",
                     "attr": null
                   },
                   "grid_options": {
@@ -3587,7 +3587,7 @@
                   },
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/chambre-enfants"
+                    "navigation_path": "/mon-confort/chambre-enfants"
                   }
                 },
                 {
@@ -3597,7 +3597,7 @@
                   "name": "Ch. parents",
                   "icon": "mdi:bed-king",
                   "variables": {
-                    "path": "/1-mon-confort/chambre-parents",
+                    "path": "/mon-confort/chambre-parents",
                     "attr": null
                   },
                   "grid_options": {
@@ -3606,7 +3606,7 @@
                   },
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/chambre-parents"
+                    "navigation_path": "/mon-confort/chambre-parents"
                   }
                 },
                 {
@@ -3616,7 +3616,7 @@
                   "name": "Salle de bain",
                   "icon": "mdi:shower",
                   "variables": {
-                    "path": "/1-mon-confort/salle-de-bain",
+                    "path": "/mon-confort/salle-de-bain",
                     "attr": null
                   },
                   "grid_options": {
@@ -3625,7 +3625,7 @@
                   },
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/salle-de-bain"
+                    "navigation_path": "/mon-confort/salle-de-bain"
                   }
                 },
                 {
@@ -3635,7 +3635,7 @@
                   "name": "Couloir",
                   "icon": "mdi:door",
                   "variables": {
-                    "path": "/1-mon-confort/couloir-entree",
+                    "path": "/mon-confort/couloir-entree",
                     "attr": null
                   },
                   "grid_options": {
@@ -3644,7 +3644,7 @@
                   },
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/couloir-entree"
+                    "navigation_path": "/mon-confort/couloir-entree"
                   }
                 },
                 {
@@ -3654,7 +3654,7 @@
                   "name": "Extérieur",
                   "icon": "mdi:tree-outline",
                   "variables": {
-                    "path": "/1-meteo-belgique",
+                    "path": "/meteo-belgique",
                     "sub": "",
                     "attr": "temperature"
                   },
@@ -3664,7 +3664,7 @@
                   },
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-meteo-belgique"
+                    "navigation_path": "/meteo-belgique"
                   }
                 }
               ]
@@ -3826,7 +3826,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/couloir-entree"
+                    "navigation_path": "/mon-confort/couloir-entree"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -3851,7 +3851,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/piece-de-vie"
+                    "navigation_path": "/mon-confort/piece-de-vie"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -3876,7 +3876,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/chambre-enfants"
+                    "navigation_path": "/mon-confort/chambre-enfants"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -3901,7 +3901,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/chambre-parents"
+                    "navigation_path": "/mon-confort/chambre-parents"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -3926,7 +3926,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/salle-de-bain"
+                    "navigation_path": "/mon-confort/salle-de-bain"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -23320,7 +23320,7 @@
                   "icon_color": "purple",
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-courses/courses"
+                    "navigation_path": "/maison-courses/courses"
                   },
                   "grid_options": {
                     "columns": 4,
@@ -31254,7 +31254,7 @@
                   "icon_color": "blue",
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-taches/taches"
+                    "navigation_path": "/maison-taches/taches"
                   },
                   "grid_options": {
                     "columns": "full",

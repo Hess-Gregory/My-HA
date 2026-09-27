@@ -1,0 +1,1342 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.reseau_infra",
+  "data": {
+    "config": {
+      "title": "Réseau & Infra",
+      "background": {
+        "image": "/local/images/wallpaper/reseau.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Réseau & Infra",
+          "path": "reseau-it",
+          "icon": "mdi:lan",
+          "type": "sections",
+          "max_columns": 4,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🌐 Réseau & Infra\nInternet · Wi-Fi · Switches · Débit",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; } ha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Internet — Ligne principale & secours",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "## 📡 Connexion active : {% if is_state('binary_sensor.r_wan2_core_liaison_internet_du_port_2', 'on') %}🟢 **Orange (VOO)**{% else %}🟠 **Carte SIM Digi (secours)**{% endif %}",
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "entity": "binary_sensor.r_wan2_core_liaison_internet_du_port_2",
+                      "state": "off"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "## ⚠️ Internet sur ligne de secours (4G)\nLa ligne principale VOO/Orange est coupée. Le trafic passe par\nla carte SIM du routeur.\n",
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(120, 30, 30, 0.45) !important; backdrop-filter: blur(16px) !important; } ha-markdown { text-align: center !important; }\n"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.r_wan2_core_liaison_internet_du_port_2",
+                  "primary": "Ligne principale (VOO/Orange)",
+                  "secondary": "{{ 'Connecté' if is_state(entity,'on') else 'Déconnecté' }}",
+                  "icon": "mdi:cable-data",
+                  "icon_color": "{{ 'green' if is_state(entity,'on') else 'red' }}",
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.r_wan2_core_liaison_internet_du_port_7",
+                  "primary": "Ligne de secours (LTE)",
+                  "secondary": "{{ 'Connecté' if is_state(entity,'on') else 'Déconnecté' }}",
+                  "icon": "mdi:sim",
+                  "icon_color": "{{ 'amber' if is_state(entity,'on') else 'grey' }}",
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "history-graph",
+                  "title": "Historique des 48 dernières heures",
+                  "entities": [
+                    "binary_sensor.r_wan2_core_liaison_internet_du_port_2",
+                    "binary_sensor.r_wan2_core_liaison_internet_du_port_7"
+                  ],
+                  "hours_to_show": 48,
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "logbook",
+                  "title": "Journal des basculements",
+                  "entities": [
+                    "binary_sensor.r_wan2_core_liaison_internet_du_port_2",
+                    "binary_sensor.r_wan2_core_liaison_internet_du_port_7"
+                  ],
+                  "hours_to_show": 48,
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Appareils réseau",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "🔀 **Routeur**",
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 4px 0 4px !important; } ha-markdown { color: #f6d68a !important; opacity: 0.85; }\n"
+                  }
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.r_wan2_core_etat_de_l_appareil",
+                      "primary": "R WAN2 - Core",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:router-wireless",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.r_wan2_core_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.r_wan2_core_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "markdown",
+                  "content": "📶 **Points d'accès**",
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 4px 0 4px !important; } ha-markdown { color: #f6d68a !important; opacity: 0.85; }\n"
+                  }
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.ap_buanderie_etat_de_l_appareil",
+                      "primary": "AP Buanderie",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:access-point-network",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.ap_buanderie_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.ap_buanderie_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.ap_chambre_etat_de_l_appareil",
+                      "primary": "AP Chambre",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:access-point-network",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.ap_chambre_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.ap_chambre_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.ap_salon_etat_de_l_appareil",
+                      "primary": "AP Salon",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:access-point-network",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.ap_salon_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.ap_salon_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "markdown",
+                  "content": "🔌 **Switches**",
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 4px 0 4px !important; } ha-markdown { color: #f6d68a !important; opacity: 0.85; }\n"
+                  }
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.sw_core_etat_de_l_appareil",
+                      "primary": "SW - Core",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:lan",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.sw_core_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.sw_core_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.sw_salon_etat_de_l_appareil",
+                      "primary": "SW - Salon",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:lan",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.sw_salon_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.sw_salon_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "vertical-stack",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "cards": [
+                    {
+                      "type": "custom:mushroom-template-card",
+                      "entity": "sensor.sw_sono_etat_de_l_appareil",
+                      "primary": "SW - Sono",
+                      "secondary": "{{ states(entity) }}",
+                      "icon": "mdi:lan",
+                      "icon_color": "{{ 'red' if states(entity) in ['disconnected','Disconnected','déconnecté','Déconnecté','offline'] else 'green' }}",
+                      "card_mod": {
+                        "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "horizontal-stack",
+                      "cards": [
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.sw_sono_utilisation_du_processeur",
+                          "name": "CPU",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 60,
+                            "red": 85
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        },
+                        {
+                          "type": "gauge",
+                          "entity": "sensor.sw_sono_utilisation_de_la_memoire",
+                          "name": "Mémoire",
+                          "min": 0,
+                          "max": 100,
+                          "severity": {
+                            "green": 0,
+                            "yellow": 70,
+                            "red": 90
+                          },
+                          "card_mod": {
+                            "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Speedtest — Orange Evere",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.ookla_speedtest_server",
+                  "primary": "Serveur",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:server-network",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.ookla_speedtest_last_test",
+                  "primary": "Dernier test",
+                  "secondary": "{% if states(entity) not in ['unknown','unavailable',''] %} {{ as_timestamp(states(entity)) | timestamp_custom('%d/%m/%Y à %H:%M') }} {% else %} Non disponible {% endif %}",
+                  "icon": "mdi:clock-outline",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.ookla_speedtest_download_plan_compliance",
+                  "primary": "Conformité Download",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:file-check-outline",
+                  "icon_color": "teal",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.ookla_speedtest_upload_plan_compliance",
+                  "primary": "Conformité Upload",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:file-check-outline",
+                  "icon_color": "teal",
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "sensor",
+                  "entity": "sensor.ookla_speedtest_download",
+                  "name": "Download",
+                  "icon": "mdi:download",
+                  "graph": "line",
+                  "hours_to_show": 24,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "sensor",
+                  "entity": "sensor.ookla_speedtest_upload",
+                  "name": "Upload",
+                  "icon": "mdi:upload",
+                  "graph": "line",
+                  "hours_to_show": 24,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "sensor",
+                  "entity": "sensor.ookla_speedtest_ping",
+                  "name": "Ping",
+                  "icon": "mdi:swap-horizontal",
+                  "graph": "line",
+                  "hours_to_show": 24,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "📈 **Tendances long terme**",
+                  "grid_options": {
+                    "columns": 48,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(25, 18, 38, 0.72) !important; box-shadow: none !important; padding: 4px 4px 0 4px !important; } ha-markdown { color: #f6d68a !important; opacity: 0.85; }\n"
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "Débit — 7 derniers jours",
+                  "entities": [
+                    "sensor.ookla_speedtest_download",
+                    "sensor.ookla_speedtest_upload"
+                  ],
+                  "stat_types": [
+                    "mean",
+                    "min",
+                    "max"
+                  ],
+                  "days_to_show": 7,
+                  "chart_type": "line",
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "Débit — 30 derniers jours",
+                  "entities": [
+                    "sensor.ookla_speedtest_download",
+                    "sensor.ookla_speedtest_upload"
+                  ],
+                  "stat_types": [
+                    "mean"
+                  ],
+                  "days_to_show": 30,
+                  "chart_type": "line",
+                  "grid_options": {
+                    "columns": 18,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "Ping — 7 derniers jours",
+                  "entities": [
+                    "sensor.ookla_speedtest_ping"
+                  ],
+                  "stat_types": [
+                    "mean",
+                    "min",
+                    "max"
+                  ],
+                  "days_to_show": 7,
+                  "chart_type": "line",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; } ha-markdown { text-align: center !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_reseau_infra</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_reseau_infra').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_reseau_infra') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_reseau_infra').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_reseau_infra') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "button_card_templates": {
+        "cc_card": {
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(38,28,58,.55)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "-webkit-backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "border": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`1px solid rgba(${c},.75)`:'1px solid rgba(246,214,138,.8)'):'1px solid rgba(246,214,138,.22)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 16px rgba(${c},.35), 0 4px 0 rgba(12,8,22,.75)`:'0 0 14px rgba(246,214,138,.3), 0 4px 0 rgba(12,8,22,.75)'):'0 4px 0 rgba(12,8,22,.75)' ]]]"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ]
+          }
+        },
+        "cc_switch": {
+          "template": "cc_card",
+          "show_label": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "toggle",
+            "haptic": "light"
+          },
+          "hold_action": {
+            "action": "more-info"
+          },
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)}",
+          "label": "[[[ if(!entity) return ''; if(entity.state==='unavailable') return 'Indisponible'; const on=entity.state==='on'; let t=on?'Allumé':'Éteint'; if(on && entity.attributes.brightness!=null) t+=' · '+Math.round(entity.attributes.brightness/2.55)+' %'; return t ]]]",
+          "custom_fields": {
+            "sw": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); const col=c?`rgb(${c})`:'linear-gradient(180deg,#f6d68a,#d4a23c)'; return `<div style=\"width:54px;height:30px;border-radius:15px;background:${on?col:'rgba(255,255,255,.12)'};box-shadow:inset 0 2px 5px rgba(0,0,0,.5);position:relative\"><div style=\"position:absolute;top:3px;left:${on?27:3}px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fff,#cfcfcf);box-shadow:0 2px 4px rgba(0,0,0,.55)\"></div></div>` ]]]"
+          },
+          "styles": {
+            "grid": [
+              {
+                "grid-template-areas": "\"i n sw\" \"i l sw\""
+              },
+              {
+                "grid-template-columns": "50px 1fr 60px"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "42px"
+              },
+              {
+                "height": "42px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`rgb(${c})`:'linear-gradient(145deg,#f6d68a,#d4a23c)'):'rgba(255,255,255,.08)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 12px rgb(${c})`:'0 0 12px rgba(246,214,138,.5)'):'none' ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); return on?((entity && entity.attributes && entity.attributes.rgb_color)?'#fff':'#3a2766'):'#bfb2d6' ]]]"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return (entity && ['on','playing'].includes(entity.state))?'#f6d68a':'#9d8fb3' ]]]"
+              }
+            ],
+            "custom_fields": {
+              "sw": [
+                {
+                  "justify-self": "end"
+                }
+              ]
+            }
+          }
+        },
+        "cc_light_inner": {
+          "template": "cc_switch",
+          "styles": {
+            "card": [
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "backdrop-filter": "none"
+              },
+              {
+                "-webkit-backdrop-filter": "none"
+              },
+              {
+                "border-radius": "0"
+              }
+            ]
+          }
+        },
+        "cc_push": {
+          "show_label": true,
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)} ha-card:active{box-shadow:0 1px 0 #120b1e!important}",
+          "variables": {
+            "c1": "#9b78e0",
+            "c2": "#5b3f99",
+            "c3": "#3a2766"
+          },
+          "styles": {
+            "card": [
+              {
+                "background": "linear-gradient(180deg, rgba(78,60,112,.92) 0%, rgba(40,29,62,.92) 100%)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.35)"
+              },
+              {
+                "box-shadow": "0 6px 0 #120b1e, 0 10px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22)"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "margin-bottom": "10px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "54px 1fr"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "44px"
+              },
+              {
+                "height": "44px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ return `radial-gradient(circle at 35% 30%, ${variables.c1} 0%, ${variables.c2} 65%)` ]]]"
+              },
+              {
+                "box-shadow": "[[[ return `0 3px 0 ${variables.c3}, inset 0 2px 2px rgba(255,255,255,.35), inset 0 -2px 3px rgba(0,0,0,.3)` ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ]
+          }
+        },
+        "cc_title": {
+          "show_label": true,
+          "tap_action": {
+            "action": "none"
+          },
+          "variables": {
+            "lights": []
+          },
+          "label": "[[[ const L=variables.lights||[]; if(!L.length) return variables.sub||\"\"; const n=L.filter(e=>states[e]&&states[e].state===\"on\").length; return (variables.sub?variables.sub+\" · \":\"\")+(n?`💡 ${n} allumée${n>1?\"s\":\"\"}`:\"Tout est éteint\") ]]]",
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(25,18,38,.72)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "14px"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "border-bottom": "2px solid rgba(246,214,138,.55)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "padding": "10px 14px"
+              },
+              {
+                "cursor": "default"
+              },
+              {
+                "margin-top": "10px"
+              },
+              {
+                "margin-bottom": "4px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "40px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "26px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "17px"
+              },
+              {
+                "color": "#f6d68a"
+              },
+              {
+                "text-shadow": "0 1px 3px rgba(0,0,0,.9)"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_chip": {
+          "template": "cc_card",
+          "show_label": true,
+          "tap_action": {
+            "action": "more-info"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "8px 10px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.22)"
+              },
+              {
+                "box-shadow": "0 4px 0 rgba(12,8,22,.75)"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "34px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "16px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_room": {
+          "template": "cc_card",
+          "show_label": true,
+          "variables": {
+            "attr": null,
+            "path": null
+          },
+          "label": "[[[ return variables.sub||\"\" ]]]",
+          "custom_fields": {
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "10px 12px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n t\" \"i l t\""
+              },
+              {
+                "grid-template-columns": "40px 1fr auto"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "14px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#9d8fb3"
+              }
+            ],
+            "custom_fields": {
+              "t": [
+                {
+                  "justify-self": "end"
+                },
+                {
+                  "padding-right": "14px"
+                }
+              ]
+            }
+          },
+          "extra_styles": "ha-card{position:relative}ha-card::after{content:'›';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:20px;color:#f6d68a;opacity:.7}"
+        },
+        "cc_seg": {
+          "variables": {
+            "ent": "",
+            "opt": ""
+          },
+          "show_label": false,
+          "extra_styles": "ha-card{transition:transform .08s} ha-card:active{transform:translateY(3px)}",
+          "styles": {
+            "card": [
+              {
+                "border-radius": "14px"
+              },
+              {
+                "padding": "8px 4px"
+              },
+              {
+                "background": "[[[ return states[variables.ent]?.state===variables.opt?\"linear-gradient(180deg,#f6d68a,#d4a23c)\":\"rgba(38,28,58,.55)\" ]]]"
+              },
+              {
+                "border": "[[[ return states[variables.ent]?.state===variables.opt?\"1px solid #f6d68a\":\"1px solid rgba(246,214,138,.22)\" ]]]"
+              },
+              {
+                "box-shadow": "[[[ return states[variables.ent]?.state===variables.opt?\"0 0 14px rgba(246,214,138,.45), 0 2px 0 #7a5a1c\":\"0 4px 0 rgba(12,8,22,.75)\" ]]]"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i\" \"n\""
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#d9c4f0\" ]]]"
+              }
+            ],
+            "name": [
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#fff\" ]]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

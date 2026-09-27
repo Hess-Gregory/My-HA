@@ -1,0 +1,1595 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.meteo_belgique",
+  "data": {
+    "config": {
+      "title": "Météo Belgique",
+      "background": {
+        "image": "/local/images/wallpaper/meteo.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Vue d'Ensemble",
+          "path": "vue-ensemble",
+          "icon": "mdi:weather-partly-cloudy",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "weather.forecast_maison"
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.weather_warning_maison"
+            }
+          ],
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🌦️ Météo Belgique\nEngis · Met.no + IRM-KMI (radar, alertes officielles, pollen)",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "weather.forecast_maison",
+                  "layout": "vertical",
+                  "primary": "{% set temp = state_attr(entity, 'temperature') %}\n{{ temp | round(0) if temp is numeric else '--' }}°",
+                  "secondary": "{% set c = states(entity) | replace('-', ' ') | title %}\n{% set app = state_attr(entity, 'apparent_temperature') %}\n{% set app_str = (app | round(0)) ~ '°' if app is numeric else '--' %}\n{% set fc = state_attr(entity, 'forecast') %}\n{% set hi = fc[0].temperature if fc and fc[0] is defined and fc[0].temperature is numeric else none %}\n{% set lo = fc[0].templow if fc and fc[0] is defined and fc[0].templow is numeric else none %}\n{% set range_str = ' · ↑' ~ (hi | round(0)) ~ '° / ↓' ~ (lo | round(0)) ~ '°' if hi is not none and lo is not none else '' %}\n{{ c }} · Ressenti {{ app_str }}{{ range_str }}",
+                  "icon": "{% set icones = {\n  'clear-night': 'mdi:weather-night',\n  'cloudy': 'mdi:weather-cloudy',\n  'exceptional': 'mdi:alert-circle-outline',\n  'fog': 'mdi:weather-fog',\n  'hail': 'mdi:weather-hail',\n  'lightning': 'mdi:weather-lightning',\n  'lightning-rainy': 'mdi:weather-lightning-rainy',\n  'partlycloudy': 'mdi:weather-partly-cloudy',\n  'pouring': 'mdi:weather-pouring',\n  'rainy': 'mdi:weather-rainy',\n  'snowy': 'mdi:weather-snowy',\n  'snowy-rainy': 'mdi:weather-snowy-rainy',\n  'sunny': 'mdi:weather-sunny',\n  'windy': 'mdi:weather-windy',\n  'windy-variant': 'mdi:weather-windy-variant'\n} %}\n{{ icones.get(states(entity), 'mdi:weather-partly-cloudy') }}",
+                  "icon_color": "white",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n{% set c = states('weather.forecast_maison') %}\n{% set elev = state_attr('sun.sun', 'elevation') | float(0) %}\n{% if elev < 0 %}\n  {% set grad = 'linear-gradient(160deg, #14142e 0%, #2a2a5c 55%, #3d3d78 100%)' %}\n{% elif c in ['sunny'] %}\n  {% set grad = 'linear-gradient(160deg, #3d84c9 0%, #6fb8ec 55%, #a4dcf5 100%)' %}\n{% elif c in ['partlycloudy'] %}\n  {% set grad = 'linear-gradient(160deg, #5a83ab 0%, #8fb2d0 55%, #c2d8e6 100%)' %}\n{% elif c in ['cloudy', 'fog'] %}\n  {% set grad = 'linear-gradient(160deg, #52626f 0%, #76858f 55%, #9fabb3 100%)' %}\n{% elif c in ['rainy', 'pouring', 'lightning-rainy', 'lightning', 'hail'] %}\n  {% set grad = 'linear-gradient(160deg, #34424f 0%, #47555f 55%, #5c6a72 100%)' %}\n{% elif c in ['snowy', 'snowy-rainy'] %}\n  {% set grad = 'linear-gradient(160deg, #7186a0 0%, #a8bfd0 55%, #dbe6ec 100%)' %}\n{% else %}\n  {% set grad = 'linear-gradient(160deg, #3d84c9 0%, #6fb8ec 55%, #a4dcf5 100%)' %}\n{% endif %}\n\nha-card {\n  background: {{ grad }} !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: 0 4px 24px rgba(0,0,0,0.35) !important;\n  padding: 20px 24px !important;\n  transition: background 0.6s ease;\n  text-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;\n}\n\n:host {\n  --primary-text-color: #ffffff !important;\n  --secondary-text-color: rgba(255,255,255,0.92) !important;\n  --card-mod-icon-color: #ffffff !important;\n}\n\n.container.fixed-height {\n  height: auto !important;\n  min-height: 56px !important;\n}\n\n.content.fixed-info-height {\n  height: auto !important;\n}\n\nha-tile-info span {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: unset !important;\n}"
+                  }
+                },
+                {
+                  "type": "weather-forecast",
+                  "entity": "weather.forecast_maison",
+                  "forecast_type": "hourly",
+                  "show_current": false,
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Conditions actuelles — Engis",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Ressenti",
+                  "secondary": "{{ state_attr('weather.forecast_maison', 'apparent_temperature') }} °C",
+                  "icon": "mdi:thermometer-lines",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Humidité",
+                  "secondary": "{{ state_attr('weather.forecast_maison', 'humidity') }} %",
+                  "icon": "mdi:water-percent",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Vent",
+                  "secondary": "{% set w = state_attr('weather.forecast_maison', 'wind_speed') | float(0) %}\n{{ w | round(0) }} km/h · {{ state_attr('weather.forecast_maison', 'wind_bearing') }}°",
+                  "icon": "mdi:weather-windy",
+                  "icon_color": "{% set w = state_attr('weather.forecast_maison', 'wind_speed') | float(0) %}\n{{ 'red' if w > 60 else 'amber' if w > 35 else 'green' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "primary": "Pression",
+                  "secondary": "{{ state_attr('weather.forecast_maison', 'pressure') }} hPa",
+                  "icon": "mdi:gauge",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sun.sun",
+                  "primary": "Lever du soleil",
+                  "secondary": "{{ as_timestamp(state_attr(entity, 'next_rising')) | timestamp_custom('%H:%M') }}",
+                  "icon": "mdi:weather-sunset-up",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sun.sun",
+                  "primary": "Coucher du soleil",
+                  "secondary": "{{ as_timestamp(state_attr(entity, 'next_setting')) | timestamp_custom('%H:%M') }}",
+                  "icon": "mdi:weather-sunset-down",
+                  "icon_color": "purple",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Données IRM-KMI complémentaires",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Indice UV, précipitations et rafales — non fournis par Met.no",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.maison_current_uv_index",
+                  "primary": "Indice UV",
+                  "secondary": "{{ states(entity) }}",
+                  "icon": "mdi:sun-wireless",
+                  "icon_color": "{% set uv = states('sensor.maison_current_uv_index') | float(0) %}\n{{ 'red' if uv >= 8 else 'amber' if uv >= 3 else 'green' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.maison_current_rainfall",
+                  "primary": "Précipitations",
+                  "secondary": "{{ states(entity) }} mm",
+                  "icon": "mdi:weather-pouring",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.maison_current_wind_gust_speed",
+                  "primary": "Rafales de vent",
+                  "secondary": "{{ states(entity) }} km/h",
+                  "icon": "mdi:weather-windy-variant",
+                  "icon_color": "{% set g = states('sensor.maison_current_wind_gust_speed') | float(0) %}\n{{ 'red' if g > 70 else 'amber' if g > 45 else 'green' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "numeric_state",
+                      "entity": "sensor.maison_distance_de_foudre",
+                      "below": 150
+                    }
+                  ],
+                  "card": {
+                    "type": "vertical-stack",
+                    "cards": [
+                      {
+                        "type": "custom:button-card",
+                        "template": "cc_title",
+                        "name": "Orage détecté à proximité",
+                        "icon": "mdi:label-outline",
+                        "variables": {
+                          "sub": "Foudre repérée dans un rayon de 150 km de la maison — couvre la Belgique et ses abords",
+                          "lights": []
+                        },
+                        "grid_options": {
+                          "columns": "full"
+                        }
+                      },
+                      {
+                        "type": "custom:blitzortung-lightning-card",
+                        "title": "Impacts de foudre",
+                        "distance_entity": "sensor.maison_distance_de_foudre",
+                        "counter_entity": "sensor.maison_compteur_de_foudre",
+                        "azimuth_entity": "sensor.maison_azimut_de_foudre",
+                        "lightning_detection_radius": 250,
+                        "always_show_full_card": true,
+                        "show_compass": true,
+                        "show_radar": true,
+                        "period": "30m",
+                        "grid_color": "#d9c4f0",
+                        "font_color": "#d9c4f0",
+                        "strike_color": "#f6d68a",
+                        "show_history_chart": true,
+                        "invert_history_direction": true,
+                        "show_map": true,
+                        "card_mod": {
+                          "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                        }
+                      }
+                    ]
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "binary_sensor.weather_warning_maison",
+                      "state": "on"
+                    }
+                  ],
+                  "card": {
+                    "type": "markdown",
+                    "content": "{% set alerts = state_attr('binary_sensor.weather_warning_maison', 'warnings') or [] %}\n\n## 🚨 Alerte(s) météo IRM en cours\n\n{% for a in alerts %}\n\n**{{ a.text | default(a.type, true) }}** (sévérité {{ a.severity }}) — du {{ a.start }} au {{ a.end }}\n\n{% endfor %}",
+                    "card_mod": {
+                      "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(120, 30, 30, 0.45) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n}\nha-markdown {\n  text-align: center !important;\n}\n"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n\n🔧 <b>1_meteo_belgique</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique').last_update) | timestamp_custom('%d/%m/%Y à %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') else 'non versionné' }}<br>\n\nConçu et maintenu par <b>Gregory</b> via Claude AI\n\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/2b4127a5698e6d497e10b8d447965bd6",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "meteo.jpg",
+                "thumbnail": "/api/image/serve/2b4127a5698e6d497e10b8d447965bd6/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Prévisions détaillées",
+          "path": "previsions",
+          "icon": "mdi:chart-line",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 📈 Prévisions détaillées\nMet.no (graphique) · IRM-KMI (comparatif)",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Met.no — Engis",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Température, précipitations, vent",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:weather-chart-card",
+                  "entity": "weather.forecast_maison",
+                  "show_main": true,
+                  "show_attributes": true,
+                  "forecast": {
+                    "condition_icons": true,
+                    "temperature1_color": "rgba(246, 214, 138, 1.0)",
+                    "precipitation_color": "rgba(132, 209, 253, 1.0)"
+                  },
+                  "units": {
+                    "pressure": "hPa",
+                    "speed": "km/h"
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "IRM-KMI — Comparatif",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Prévisions officielles belges",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:weather-chart-card",
+                  "entity": "weather.maison",
+                  "show_main": true,
+                  "show_attributes": true,
+                  "forecast": {
+                    "condition_icons": true,
+                    "temperature1_color": "rgba(246, 214, 138, 1.0)",
+                    "precipitation_color": "rgba(132, 209, 253, 1.0)"
+                  },
+                  "units": {
+                    "pressure": "hPa",
+                    "speed": "km/h"
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Semaine — vue native 7 jours",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "weather-forecast",
+                  "entity": "weather.forecast_maison",
+                  "forecast_type": "daily",
+                  "show_current": false,
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_meteo_belgique</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique').last_update) | timestamp_custom('%d/%m/%Y à %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') else 'non versionné' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/8b7f0f4e2c260d9ddb13f8987bd7650b",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "meteo.jpg",
+                "thumbnail": "/api/image/serve/8b7f0f4e2c260d9ddb13f8987bd7650b/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Précipitations",
+          "path": "radar",
+          "icon": "mdi:radar",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 1,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🌧️ Radar de précipitations animé\nCarte de Belgique en temps réel — nowcasting IRM-KMI",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Radar animé — Belgique",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Lecture/pause et curseur temporel intégrés — carte centrée sur Engis",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:kmi-weather-radar-beta",
+                  "height": "480px",
+                  "center": [
+                    50.5826,
+                    5.4061
+                  ],
+                  "zoom": 7,
+                  "refresh_interval": 120,
+                  "animation_interval": 0.7,
+                  "max_frames": 40,
+                  "map_style": "kmi_light",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  overflow: hidden !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "ℹ️ Cette carte utilise l'intégration HACS **KMI Weather Radar Beta** (dépôt `JBolsens/kmi-weather-radar-beta`).",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  padding: 12px 16px !important;\n}\nha-markdown {\n  color: var(--secondary-text-color) !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Vue alternative — IRM-KMI officiel",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "camera.maison_radar_maison",
+                  "camera_view": "live",
+                  "show_name": false,
+                  "show_state": false,
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": 6
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  overflow: hidden !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n{% set ver_info = state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') or {} %} {% set version = ver_info.get('version', '0.0.0') %} {% set last_up = ver_info.get('last_update') %} 🔧 <b>1_meteo_belgique</b> &middot; v{{ version }} &middot; {{ as_timestamp(last_up) | timestamp_custom('%d/%m/%Y à %H:%M') if last_up else 'non versionné' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/422fbef2d97205fab7b2536f87b9e0ad",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "meteo.jpg",
+                "thumbnail": "/api/image/serve/422fbef2d97205fab7b2536f87b9e0ad/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        },
+        {
+          "title": "Nuages",
+          "path": "nuages",
+          "icon": "mdi:weather-cloudy",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 1,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# ☁️ Nuages\nCouverture nuageuse animée — vue satellite en direct",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Couverture nuageuse — Belgique",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Animation en direct via Windy.com",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "iframe",
+                  "url": "https://embed.windy.com/embed2.html?lat=50.583&lon=5.317&detailLat=50.583&detailLon=5.317&width=650&height=450&zoom=7&level=surface&overlay=clouds&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1",
+                  "aspect_ratio": "75%",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  overflow: hidden !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n{% set ver_info = state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') or {} %} {% set version = ver_info.get('version', '0.0.0') %} {% set last_up = ver_info.get('last_update') %} 🔧 <b>1_meteo_belgique</b> &middot; v{{ version }} &middot; {{ as_timestamp(last_up) | timestamp_custom('%d/%m/%Y à %H:%M') if last_up else 'non versionné' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed"
+          },
+          "cards": []
+        },
+        {
+          "title": "Température",
+          "path": "temperature",
+          "icon": "mdi:thermometer",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 1,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🌡️ Température\nCarte des températures animée — Belgique et alentours",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Carte des températures — Belgique",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Animation en direct via Windy.com",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "iframe",
+                  "url": "https://embed.windy.com/embed2.html?lat=50.583&lon=5.317&detailLat=50.583&detailLon=5.317&width=650&height=450&zoom=7&level=surface&overlay=temp&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1",
+                  "aspect_ratio": "75%",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  overflow: hidden !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n{% set ver_info = state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') or {} %} {% set version = ver_info.get('version', '0.0.0') %} {% set last_up = ver_info.get('last_update') %} 🔧 <b>1_meteo_belgique</b> &middot; v{{ version }} &middot; {{ as_timestamp(last_up) | timestamp_custom('%d/%m/%Y à %H:%M') if last_up else 'non versionné' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed"
+          },
+          "cards": []
+        },
+        {
+          "title": "Vent",
+          "path": "vent",
+          "icon": "mdi:weather-windy",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 1,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 💨 Vent\nCarte des vents animée — Belgique et alentours",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n}\nha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Carte des vents — Belgique",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Animation en direct via Windy.com",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "iframe",
+                  "url": "https://embed.windy.com/embed2.html?lat=50.583&lon=5.317&detailLat=50.583&detailLon=5.317&width=650&height=450&zoom=7&level=surface&overlay=wind&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1",
+                  "aspect_ratio": "75%",
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  overflow: hidden !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n{% set ver_info = state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') or {} %} {% set version = ver_info.get('version', '0.0.0') %} {% set last_up = ver_info.get('last_update') %} 🔧 <b>1_meteo_belgique</b> &middot; v{{ version }} &middot; {{ as_timestamp(last_up) | timestamp_custom('%d/%m/%Y à %H:%M') if last_up else 'non versionné' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed"
+          },
+          "cards": []
+        },
+        {
+          "title": "Alertes & Pollen",
+          "path": "alertes-pollen",
+          "icon": "mdi:alert-outline",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🚨 Alertes officielles IRM & 🌼 Pollen",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card {\n  background: rgba(25, 18, 38, 0.72) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  box-shadow: none !important;\n  padding: 12px 20px !important;\n} ha-markdown {\n  text-align: center !important;\n  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important;\n  color: #f6d68a !important;\n}\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Alertes météo IRM en cours et à venir",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "binary_sensor.weather_warning_maison",
+                  "primary": "Statut",
+                  "secondary": "{{ 'Alerte(s) active(s)' if is_state(entity,'on') else 'Aucune alerte en cours' }}",
+                  "icon": "mdi:alert-circle-outline",
+                  "icon_color": "{{ 'red' if is_state(entity,'on') else 'green' }}",
+                  "grid_options": {
+                    "columns": 2,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.maison_next_warning",
+                  "primary": "Prochaine alerte connue",
+                  "secondary": "{% set val = states(entity) %} {% if val not in ['unknown','unavailable','none',''] and as_timestamp(val, none) is not none %}\n  {{ as_timestamp(val) | timestamp_custom('%d/%m/%Y à %H:%M') }}\n{% else %}\n  Aucune programmée\n{% endif %}",
+                  "icon": "mdi:calendar-alert",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 2,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% set alerts = state_attr('binary_sensor.weather_warning_maison','warnings') or [] %} {% if alerts | count == 0 %}\n  ✅ Aucune alerte IRM en cours ou programmée pour ta commune.\n{% else %}\n  {% for a in alerts %}\n    ### {{ a.type | default('Alerte', true) }} — sévérité {{ a.severity | default('N/A', true) }}\n    {{ a.text | default('', true) }}\n    📅 Du {{ a.start | default('?', true) }} au {{ a.end | default('?', true) }}\n    ---\n  {% endfor %}\n{% endif %}",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Pollen",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Les 7 capteurs pollen IRM-KMI (armoise, aulne, bouleau, chêne, frêne, graminées, noisetier)",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% set pollens = expand(integration_entities('irm_kmi'))\n  | selectattr('attributes.friendly_name', 'defined')\n  | selectattr('attributes.friendly_name', 'search', 'Pollen')\n  | list %}\n{% if pollens | count == 0 %}\n  {% set pollens = expand(states.sensor | selectattr('entity_id', 'search', 'pollen') | map(attribute='entity_id'))\n    | selectattr('attributes.friendly_name', 'defined')\n    | list %}\n{% endif %} {% if pollens | count == 0 %}\n  ℹ️ Aucun capteur pollen détecté pour l'instant — vérifie qu'IRM-KMI est bien installé et configuré, ou attends que les entités apparaissent après le premier rafraîchissement.\n{% else %}\n  {% for p in pollens | sort(attribute='attributes.friendly_name') %}\n    **{{ p.attributes.friendly_name }}** : {{ p.state }}\n  {% endfor %}\n{% endif %}",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card {\n  background: rgba(38, 28, 58, 0.55) !important;\n  backdrop-filter: blur(16px) !important;\n  -webkit-backdrop-filter: blur(16px) !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n{% set ver_info = state_attr('sensor.versions_config_ha', '.storage/lovelace.1_meteo_belgique') %} 🔧 <b>1_meteo_belgique</b> &middot; v{{ ver_info.version if ver_info and ver_info.version is defined else '0.0.0' }} &middot; {{ as_timestamp(ver_info.last_update, 0) | timestamp_custom('%d/%m/%Y à %H:%M') if ver_info and ver_info.last_update is defined else 'non versionné' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 33,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/b668d9afe1037af1fe2086b718115018",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "meteo.jpg",
+                "thumbnail": "/api/image/serve/b668d9afe1037af1fe2086b718115018/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          },
+          "cards": []
+        }
+      ],
+      "button_card_templates": {
+        "cc_card": {
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(38,28,58,.55)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "-webkit-backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "border": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`1px solid rgba(${c},.75)`:'1px solid rgba(246,214,138,.8)'):'1px solid rgba(246,214,138,.22)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 16px rgba(${c},.35), 0 4px 0 rgba(12,8,22,.75)`:'0 0 14px rgba(246,214,138,.3), 0 4px 0 rgba(12,8,22,.75)'):'0 4px 0 rgba(12,8,22,.75)' ]]]"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ]
+          }
+        },
+        "cc_switch": {
+          "template": "cc_card",
+          "show_label": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "toggle",
+            "haptic": "light"
+          },
+          "hold_action": {
+            "action": "more-info"
+          },
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)}",
+          "label": "[[[ if(!entity) return ''; if(entity.state==='unavailable') return 'Indisponible'; const on=entity.state==='on'; let t=on?'Allumé':'Éteint'; if(on && entity.attributes.brightness!=null) t+=' · '+Math.round(entity.attributes.brightness/2.55)+' %'; return t ]]]",
+          "custom_fields": {
+            "sw": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); const col=c?`rgb(${c})`:'linear-gradient(180deg,#f6d68a,#d4a23c)'; return `<div style=\"width:54px;height:30px;border-radius:15px;background:${on?col:'rgba(255,255,255,.12)'};box-shadow:inset 0 2px 5px rgba(0,0,0,.5);position:relative\"><div style=\"position:absolute;top:3px;left:${on?27:3}px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fff,#cfcfcf);box-shadow:0 2px 4px rgba(0,0,0,.55)\"></div></div>` ]]]"
+          },
+          "styles": {
+            "grid": [
+              {
+                "grid-template-areas": "\"i n sw\" \"i l sw\""
+              },
+              {
+                "grid-template-columns": "50px 1fr 60px"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "42px"
+              },
+              {
+                "height": "42px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`rgb(${c})`:'linear-gradient(145deg,#f6d68a,#d4a23c)'):'rgba(255,255,255,.08)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 12px rgb(${c})`:'0 0 12px rgba(246,214,138,.5)'):'none' ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); return on?((entity && entity.attributes && entity.attributes.rgb_color)?'#fff':'#3a2766'):'#bfb2d6' ]]]"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return (entity && ['on','playing'].includes(entity.state))?'#f6d68a':'#9d8fb3' ]]]"
+              }
+            ],
+            "custom_fields": {
+              "sw": [
+                {
+                  "justify-self": "end"
+                }
+              ]
+            }
+          }
+        },
+        "cc_light_inner": {
+          "template": "cc_switch",
+          "styles": {
+            "card": [
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "backdrop-filter": "none"
+              },
+              {
+                "-webkit-backdrop-filter": "none"
+              },
+              {
+                "border-radius": "0"
+              }
+            ]
+          }
+        },
+        "cc_push": {
+          "show_label": true,
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)} ha-card:active{box-shadow:0 1px 0 #120b1e!important}",
+          "variables": {
+            "c1": "#9b78e0",
+            "c2": "#5b3f99",
+            "c3": "#3a2766"
+          },
+          "styles": {
+            "card": [
+              {
+                "background": "linear-gradient(180deg, rgba(78,60,112,.92) 0%, rgba(40,29,62,.92) 100%)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.35)"
+              },
+              {
+                "box-shadow": "0 6px 0 #120b1e, 0 10px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22)"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "margin-bottom": "10px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "54px 1fr"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "44px"
+              },
+              {
+                "height": "44px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ return `radial-gradient(circle at 35% 30%, ${variables.c1} 0%, ${variables.c2} 65%)` ]]]"
+              },
+              {
+                "box-shadow": "[[[ return `0 3px 0 ${variables.c3}, inset 0 2px 2px rgba(255,255,255,.35), inset 0 -2px 3px rgba(0,0,0,.3)` ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ]
+          }
+        },
+        "cc_title": {
+          "show_label": true,
+          "tap_action": {
+            "action": "none"
+          },
+          "variables": {
+            "lights": []
+          },
+          "label": "[[[ const L=variables.lights||[]; if(!L.length) return variables.sub||\"\"; const n=L.filter(e=>states[e]&&states[e].state===\"on\").length; return (variables.sub?variables.sub+\" · \":\"\")+(n?`💡 ${n} allumée${n>1?\"s\":\"\"}`:\"Tout est éteint\") ]]]",
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(25,18,38,.72)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "14px"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "border-bottom": "2px solid rgba(246,214,138,.55)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "padding": "10px 14px"
+              },
+              {
+                "cursor": "default"
+              },
+              {
+                "margin-top": "10px"
+              },
+              {
+                "margin-bottom": "4px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "40px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "26px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "17px"
+              },
+              {
+                "color": "#f6d68a"
+              },
+              {
+                "text-shadow": "0 1px 3px rgba(0,0,0,.9)"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_chip": {
+          "template": "cc_card",
+          "show_label": true,
+          "tap_action": {
+            "action": "more-info"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "8px 10px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.22)"
+              },
+              {
+                "box-shadow": "0 4px 0 rgba(12,8,22,.75)"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "34px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "16px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_room": {
+          "template": "cc_card",
+          "show_label": true,
+          "variables": {
+            "attr": null,
+            "path": null
+          },
+          "label": "[[[ return variables.sub||\"\" ]]]",
+          "custom_fields": {
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "10px 12px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n t\" \"i l t\""
+              },
+              {
+                "grid-template-columns": "40px 1fr auto"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "14px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#9d8fb3"
+              }
+            ],
+            "custom_fields": {
+              "t": [
+                {
+                  "justify-self": "end"
+                },
+                {
+                  "padding-right": "14px"
+                }
+              ]
+            }
+          },
+          "extra_styles": "ha-card{position:relative}ha-card::after{content:'›';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:20px;color:#f6d68a;opacity:.7}"
+        },
+        "cc_seg": {
+          "variables": {
+            "ent": "",
+            "opt": ""
+          },
+          "show_label": false,
+          "extra_styles": "ha-card{transition:transform .08s} ha-card:active{transform:translateY(3px)}",
+          "styles": {
+            "card": [
+              {
+                "border-radius": "14px"
+              },
+              {
+                "padding": "8px 4px"
+              },
+              {
+                "background": "[[[ return states[variables.ent]?.state===variables.opt?\"linear-gradient(180deg,#f6d68a,#d4a23c)\":\"rgba(38,28,58,.55)\" ]]]"
+              },
+              {
+                "border": "[[[ return states[variables.ent]?.state===variables.opt?\"1px solid #f6d68a\":\"1px solid rgba(246,214,138,.22)\" ]]]"
+              },
+              {
+                "box-shadow": "[[[ return states[variables.ent]?.state===variables.opt?\"0 0 14px rgba(246,214,138,.45), 0 2px 0 #7a5a1c\":\"0 4px 0 rgba(12,8,22,.75)\" ]]]"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i\" \"n\""
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#d9c4f0\" ]]]"
+              }
+            ],
+            "name": [
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#fff\" ]]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

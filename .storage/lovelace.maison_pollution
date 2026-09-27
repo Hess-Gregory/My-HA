@@ -1,0 +1,1263 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.maison_pollution",
+  "data": {
+    "config": {
+      "title": "Pollution & Qualité de l'Air",
+      "background": {
+        "image": "/local/images/wallpaper/pollution.jpg",
+        "size": "cover",
+        "attachment": "fixed"
+      },
+      "views": [
+        {
+          "title": "Vue d'Ensemble",
+          "path": "vue-ensemble",
+          "icon": "mdi:weather-hazy",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 4,
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "sensor.engis_belgium_indice_de_qualite_de_l_air",
+              "name": "AQI Engis"
+            }
+          ],
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🏭 Pollution & Qualité de l'Air — Engis\nStation Rue du Marly (ISSeP/AwAC) via le réseau WAQI (données IRCEL-CELINE)",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Indice de qualité de l'air (AQI, échelle EPA 0-500)",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_indice_de_qualite_de_l_air",
+                  "layout": "vertical",
+                  "primary": "{{ states(entity) }}",
+                  "secondary": "{% set v = states(entity) | int(0) %} {% if v <= 50 %}Bon {% elif v <= 100 %}Modéré {% elif v <= 150 %}Mauvais pour groupes sensibles {% elif v <= 200 %}Mauvais {% elif v <= 300 %}Très mauvais {% else %}Dangereux {% endif %}",
+                  "icon": "mdi:weather-hazy",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_indice_de_qualite_de_l_air') | int(0) %} {% if v <= 50 %}green {% elif v <= 100 %}yellow {% elif v <= 150 %}orange {% elif v <= 200 %}red {% elif v <= 300 %}purple {% else %}deep-purple {% endif %}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_polluant_dominant",
+                  "layout": "vertical",
+                  "primary": "Polluant dominant",
+                  "secondary": "{{ states(entity) | upper }}",
+                  "icon": "mdi:molecule",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 3
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "layout": "horizontal",
+                  "primary": "Dernière mise à jour",
+                  "secondary": "{{ states.sensor.engis_belgium_indice_de_qualite_de_l_air.last_updated\n   | as_timestamp | timestamp_custom('%d/%m/%Y à %H:%M') }}",
+                  "icon": "mdi:clock-outline",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 4,
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "ℹ️ **À lire avant d'interpréter ces chiffres** : l'indice ci-dessus est l'**AQI américain** (échelle EPA 0-500), pas une concentration en µg/m³. Il donne une bonne indication de tendance et déclenche les alertes ci-dessous, mais ne correspond pas directement aux seuils réglementaires wallons (qui sont en µg/m³ — voir l'onglet **Contexte local Engis**). Pour l'alerte officielle basée sur les vraies concentrations, reste abonné aux emails/SMS de l'AwAC en parallèle.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(60, 40, 90, 0.5) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 12px 18px !important; }\nha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_pollution</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "no-repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/308d7edf26cc1cb3f12dc853b3279ab5",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/308d7edf26cc1cb3f12dc853b3279ab5/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "Détail par polluant",
+          "path": "polluants",
+          "icon": "mdi:chart-bubble",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 3,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🧪 Détail par polluant\nSous-indices AQI (0-500) — chaque polluant a sa propre courbe de conversion",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_pm2_5",
+                  "primary": "PM2.5",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:blur",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_pm2_5') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_pm10",
+                  "primary": "PM10",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:blur-linear",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_pm10') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_dioxyde_d_azote",
+                  "primary": "Dioxyde d'azote (NO₂)",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:factory",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_dioxyde_d_azote') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_dioxyde_de_soufre",
+                  "primary": "Dioxyde de soufre (SO₂)",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:factory",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_dioxyde_de_soufre') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_ozone",
+                  "primary": "Ozone (O₃)",
+                  "secondary": "{{ states(entity) }} (sous-indice AQI)",
+                  "icon": "mdi:weather-sunny-alert",
+                  "icon_color": "{% set v = states('sensor.engis_belgium_ozone') | int(0) %} {{ 'green' if v <= 50 else 'yellow' if v <= 100 else 'orange' if v <= 150 else 'red' if v <= 200 else 'purple' }}",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Conditions à la station (bonus)",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Pas de capteur CO sur la station d'Engis — non affiché",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_temperature",
+                  "primary": "Température station",
+                  "secondary": "{{ states(entity) }} °C",
+                  "icon": "mdi:thermometer",
+                  "icon_color": "amber",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_humidite",
+                  "primary": "Humidité station",
+                  "secondary": "{{ states(entity) }} %",
+                  "icon": "mdi:water-percent",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                },
+                {
+                  "type": "custom:mushroom-template-card",
+                  "entity": "sensor.engis_belgium_pression",
+                  "primary": "Pression station",
+                  "secondary": "{{ states(entity) }} hPa",
+                  "icon": "mdi:gauge",
+                  "icon_color": "blue",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n\n.container.fixed-height { height: auto !important; min-height: 56px !important; }\n.content.fixed-info-height { height: auto !important; }\nha-tile-info span { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_pollution</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/0dbd042decb34b9b6cc77af7a9f0b429",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/0dbd042decb34b9b6cc77af7a9f0b429/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "Historique & tendances",
+          "path": "historique",
+          "icon": "mdi:chart-line",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 📈 Historique & tendances\nRepérer les pics — utile pour croiser avec le vent et l'activité industrielle",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "AQI global — 24 dernières heures",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "entities": [
+                    {
+                      "entity": "sensor.engis_belgium_indice_de_qualite_de_l_air",
+                      "name": "AQI"
+                    }
+                  ],
+                  "hours_to_show": 24,
+                  "points_per_hour": 4,
+                  "line_width": 3,
+                  "show": {
+                    "labels": true,
+                    "points": false
+                  },
+                  "color_thresholds": [
+                    {
+                      "value": 0,
+                      "color": "#4caf50"
+                    },
+                    {
+                      "value": 51,
+                      "color": "#ffeb3b"
+                    },
+                    {
+                      "value": 101,
+                      "color": "#ff9800"
+                    },
+                    {
+                      "value": 151,
+                      "color": "#f44336"
+                    },
+                    {
+                      "value": 201,
+                      "color": "#9c27b0"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "PM10 & PM2.5 — 7 derniers jours",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Les deux polluants historiquement les plus problématiques à Engis",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "custom:mini-graph-card",
+                  "entities": [
+                    {
+                      "entity": "sensor.engis_belgium_pm10",
+                      "name": "PM10",
+                      "color": "#f6d68a"
+                    },
+                    {
+                      "entity": "sensor.engis_belgium_pm2_5",
+                      "name": "PM2.5",
+                      "color": "#84d1fd"
+                    }
+                  ],
+                  "hours_to_show": 168,
+                  "points_per_hour": 0.25,
+                  "line_width": 3,
+                  "show": {
+                    "labels": true,
+                    "points": false
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_pollution</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/5e9b0d437046107a5a4beace0a0a09b5",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/5e9b0d437046107a5a4beace0a0a09b5/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "Contexte local Engis",
+          "path": "contexte",
+          "icon": "mdi:factory",
+          "show_icon_and_title": true,
+          "type": "sections",
+          "max_columns": 2,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "content": "# 🏘️ Contexte local — Engis\nStation, seuils officiels, alertes, et origine connue de la pollution",
+              "text_only": true,
+              "card_mod": {
+                "style": "ha-card { background: rgba(25, 18, 38, 0.72) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; box-shadow: none !important; padding: 12px 20px !important; }\nha-markdown { text-align: center !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1) !important; color: #f6d68a !important; }\n"
+              }
+            }
+          },
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Station de mesure",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "**Station officielle** : Rue du Marly, Engis — gérée conjointement par l'**AwAC** (Agence wallonne de l'Air et du Climat), l'**ISSeP** (Institut Scientifique de Service Public), le **SPW** et la **commune d'Engis**.\n\nElle mesure en continu les **PM10** (particules fines), le polluant historiquement le plus problématique dans la vallée. Un **comité de concertation \"Qualité de l'air Engis\"** réunit depuis 2015 les autorités et les industriels locaux.\n\nPortail officiel de consultation (données en direct et archives) : **wallonair.be** — la commune renvoie aussi vers airquality.issep.be pour le détail par station.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--primary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Alerte officielle AwAC (email/SMS, hors Home Assistant)",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "L'AwAC propose un **abonnement gratuit** aux alertes de dépassement PM10 pour Engis, en complément de ce dashboard :\n\n- 📧 **Email** : envoyé toutes les 30 min tant que le PM10\n  dépasse 100 µg/m³, jusqu'à repasser sous 70 µg/m³.\n\n- 📱 **SMS** : un seul message dès que le PM10 dépasse\n  100 µg/m³, jusqu'à repasser sous 50 µg/m³.\n\n\nInscription via le formulaire de contact de l'AwAC (voir la page \"Qualité de l'air\" du site **engis.be**, ou directement **wallonair.be**). C'est aujourd'hui la source la plus fiable pour une alerte basée sur les vraies concentrations en µg/m³.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(120, 90, 30, 0.35) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--primary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Seuils réglementaires officiels (µg/m³)",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "Pour référence — pas directement comparables à l'AQI WAQI ci-dessus",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "| Polluant | Info | Alerte | Alerte renforcée | |---|---|---|---| | **PM10** (moy. 24h) | 50 µg/m³ | 70 µg/m³ | 150 µg/m³ | | **PM2.5** (moy. 24h) | 35 µg/m³ | 50 µg/m³ | — | | **Ozone O₃** (moy. 1h) | 180 µg/m³ | 240 µg/m³ | — | | **NO₂** (moy. 1h, directive UE) | 200 µg/m³ | 400 µg/m³ | — | | **SO₂** (moy. 1h sur 3h, directive UE) | — | 500 µg/m³ | — |\n\nSources : SPW/Wallonie (\"Connaître les obligations en cas de pics de pollution de l'air\") pour PM10/PM2.5/O₃ ; directive européenne 2008/50/CE pour NO₂/SO₂ (valeurs non détaillées sur la page wallonne consultée — à reconfirmer auprès de la SPW si tu veux les utiliser pour une alerte officielle).",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--primary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "Origine connue de la pollution",
+                  "icon": "mdi:label-outline",
+                  "variables": {
+                    "sub": "",
+                    "lights": []
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "Une analyse officielle wallonne a identifié le **gypse** (sous-produit du traitement de l'acide phosphorique) comme principale composante des PM10 mesurées à Engis, provenant de deux sites industriels voisins :\n\n- **Prayon** (chimie, acide phosphorique — le gypse est un\n  sous-produit de sa fabrication)\n\n- **Knauf** (matériaux de construction à base de plâtre/gypse)\n\nLe gypse en lui-même n'est pas classé comme particulièrement toxique, mais une exposition prolongée aux particules fines peut irriter les voies respiratoires. Un plan d'action concerté avec les deux entreprises est suivi par le comité de concertation local.\n\nℹ️ La vallée de la Meuse liégeoise (dont Engis) porte aussi une contamination historique des **sols** au cadmium, liée à d'anciennes activités métallurgiques — un sujet distinct de la qualité de l'air mesurée ici, mais qui explique le suivi environnemental renforcé de la zone.",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; padding: 14px 20px !important; }\nha-markdown { color: var(--secondary-text-color) !important; }\n"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.7;margin-top:10px;padding-top:8px;border-top:1px solid var(--divider-color);\">\n🔧 <b>1_pollution</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.1_pollution') else 'non versionne' }}<br>\nConçu et maintenu par <b>Gregory</b> via Claude AI\n</div>",
+                  "grid_options": {
+                    "columns": 36,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "background": {
+            "opacity": 60,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "media-source://image_upload/0f1c38af4b81eaf90225014a55253ec1",
+              "media_content_type": "image/jpeg",
+              "metadata": {
+                "title": "pollution.jpg",
+                "thumbnail": "/api/image/serve/0f1c38af4b81eaf90225014a55253ec1/256x256",
+                "media_class": "image",
+                "navigateIds": [
+                  {},
+                  {
+                    "media_content_type": "app",
+                    "media_content_id": "media-source://image_upload"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "button_card_templates": {
+        "cc_card": {
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(38,28,58,.55)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "-webkit-backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "border": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`1px solid rgba(${c},.75)`:'1px solid rgba(246,214,138,.8)'):'1px solid rgba(246,214,138,.22)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 16px rgba(${c},.35), 0 4px 0 rgba(12,8,22,.75)`:'0 0 14px rgba(246,214,138,.3), 0 4px 0 rgba(12,8,22,.75)'):'0 4px 0 rgba(12,8,22,.75)' ]]]"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ]
+          }
+        },
+        "cc_switch": {
+          "template": "cc_card",
+          "show_label": true,
+          "show_state": false,
+          "tap_action": {
+            "action": "toggle",
+            "haptic": "light"
+          },
+          "hold_action": {
+            "action": "more-info"
+          },
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)}",
+          "label": "[[[ if(!entity) return ''; if(entity.state==='unavailable') return 'Indisponible'; const on=entity.state==='on'; let t=on?'Allumé':'Éteint'; if(on && entity.attributes.brightness!=null) t+=' · '+Math.round(entity.attributes.brightness/2.55)+' %'; return t ]]]",
+          "custom_fields": {
+            "sw": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); const col=c?`rgb(${c})`:'linear-gradient(180deg,#f6d68a,#d4a23c)'; return `<div style=\"width:54px;height:30px;border-radius:15px;background:${on?col:'rgba(255,255,255,.12)'};box-shadow:inset 0 2px 5px rgba(0,0,0,.5);position:relative\"><div style=\"position:absolute;top:3px;left:${on?27:3}px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fff,#cfcfcf);box-shadow:0 2px 4px rgba(0,0,0,.55)\"></div></div>` ]]]"
+          },
+          "styles": {
+            "grid": [
+              {
+                "grid-template-areas": "\"i n sw\" \"i l sw\""
+              },
+              {
+                "grid-template-columns": "50px 1fr 60px"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "42px"
+              },
+              {
+                "height": "42px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`rgb(${c})`:'linear-gradient(145deg,#f6d68a,#d4a23c)'):'rgba(255,255,255,.08)' ]]]"
+              },
+              {
+                "box-shadow": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); const c=(entity && entity.attributes && entity.attributes.rgb_color); return on?(c?`0 0 12px rgb(${c})`:'0 0 12px rgba(246,214,138,.5)'):'none' ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ const on=(entity && ['on','playing'].includes(entity.state)); return on?((entity && entity.attributes && entity.attributes.rgb_color)?'#fff':'#3a2766'):'#bfb2d6' ]]]"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return (entity && ['on','playing'].includes(entity.state))?'#f6d68a':'#9d8fb3' ]]]"
+              }
+            ],
+            "custom_fields": {
+              "sw": [
+                {
+                  "justify-self": "end"
+                }
+              ]
+            }
+          }
+        },
+        "cc_light_inner": {
+          "template": "cc_switch",
+          "styles": {
+            "card": [
+              {
+                "background": "transparent"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "backdrop-filter": "none"
+              },
+              {
+                "-webkit-backdrop-filter": "none"
+              },
+              {
+                "border-radius": "0"
+              }
+            ]
+          }
+        },
+        "cc_push": {
+          "show_label": true,
+          "extra_styles": "ha-card{transition:transform .08s,box-shadow .08s} ha-card:active{transform:translateY(4px)} ha-card:active{box-shadow:0 1px 0 #120b1e!important}",
+          "variables": {
+            "c1": "#9b78e0",
+            "c2": "#5b3f99",
+            "c3": "#3a2766"
+          },
+          "styles": {
+            "card": [
+              {
+                "background": "linear-gradient(180deg, rgba(78,60,112,.92) 0%, rgba(40,29,62,.92) 100%)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "16px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.35)"
+              },
+              {
+                "box-shadow": "0 6px 0 #120b1e, 0 10px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22)"
+              },
+              {
+                "padding": "10px 12px"
+              },
+              {
+                "margin-bottom": "10px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "54px 1fr"
+              },
+              {
+                "grid-template-rows": "min-content min-content"
+              }
+            ],
+            "img_cell": [
+              {
+                "width": "44px"
+              },
+              {
+                "height": "44px"
+              },
+              {
+                "border-radius": "50%"
+              },
+              {
+                "background": "[[[ return `radial-gradient(circle at 35% 30%, ${variables.c1} 0%, ${variables.c2} 65%)` ]]]"
+              },
+              {
+                "box-shadow": "[[[ return `0 3px 0 ${variables.c3}, inset 0 2px 2px rgba(255,255,255,.35), inset 0 -2px 3px rgba(0,0,0,.3)` ]]]"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "filter": "drop-shadow(0 1px 1px rgba(0,0,0,.5))"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "15px"
+              },
+              {
+                "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "text-align": "left"
+              }
+            ]
+          }
+        },
+        "cc_title": {
+          "show_label": true,
+          "tap_action": {
+            "action": "none"
+          },
+          "variables": {
+            "lights": []
+          },
+          "label": "[[[ const L=variables.lights||[]; if(!L.length) return variables.sub||\"\"; const n=L.filter(e=>states[e]&&states[e].state===\"on\").length; return (variables.sub?variables.sub+\" · \":\"\")+(n?`💡 ${n} allumée${n>1?\"s\":\"\"}`:\"Tout est éteint\") ]]]",
+          "styles": {
+            "card": [
+              {
+                "background": "rgba(25,18,38,.72)"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "border-radius": "14px"
+              },
+              {
+                "border": "none"
+              },
+              {
+                "border-bottom": "2px solid rgba(246,214,138,.55)"
+              },
+              {
+                "box-shadow": "none"
+              },
+              {
+                "padding": "10px 14px"
+              },
+              {
+                "cursor": "default"
+              },
+              {
+                "margin-top": "10px"
+              },
+              {
+                "margin-bottom": "4px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "40px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "26px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "17px"
+              },
+              {
+                "color": "#f6d68a"
+              },
+              {
+                "text-shadow": "0 1px 3px rgba(0,0,0,.9)"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "12px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_chip": {
+          "template": "cc_card",
+          "show_label": true,
+          "tap_action": {
+            "action": "more-info"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "8px 10px"
+              },
+              {
+                "border": "1px solid rgba(246,214,138,.22)"
+              },
+              {
+                "box-shadow": "0 4px 0 rgba(12,8,22,.75)"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n\" \"i l\""
+              },
+              {
+                "grid-template-columns": "34px 1fr"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#f6d68a"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "700"
+              },
+              {
+                "font-size": "16px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ]
+          }
+        },
+        "cc_room": {
+          "template": "cc_card",
+          "show_label": true,
+          "variables": {
+            "attr": null,
+            "path": null
+          },
+          "label": "[[[ return variables.sub||\"\" ]]]",
+          "custom_fields": {
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+          },
+          "styles": {
+            "card": [
+              {
+                "padding": "10px 12px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i n t\" \"i l t\""
+              },
+              {
+                "grid-template-columns": "40px 1fr auto"
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "#d9c4f0"
+              }
+            ],
+            "name": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "font-size": "14px"
+              },
+              {
+                "color": "#fff"
+              }
+            ],
+            "label": [
+              {
+                "justify-self": "start"
+              },
+              {
+                "font-size": "11px"
+              },
+              {
+                "color": "#9d8fb3"
+              }
+            ],
+            "custom_fields": {
+              "t": [
+                {
+                  "justify-self": "end"
+                },
+                {
+                  "padding-right": "14px"
+                }
+              ]
+            }
+          },
+          "extra_styles": "ha-card{position:relative}ha-card::after{content:'›';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:20px;color:#f6d68a;opacity:.7}"
+        },
+        "cc_seg": {
+          "variables": {
+            "ent": "",
+            "opt": ""
+          },
+          "show_label": false,
+          "extra_styles": "ha-card{transition:transform .08s} ha-card:active{transform:translateY(3px)}",
+          "styles": {
+            "card": [
+              {
+                "border-radius": "14px"
+              },
+              {
+                "padding": "8px 4px"
+              },
+              {
+                "background": "[[[ return states[variables.ent]?.state===variables.opt?\"linear-gradient(180deg,#f6d68a,#d4a23c)\":\"rgba(38,28,58,.55)\" ]]]"
+              },
+              {
+                "border": "[[[ return states[variables.ent]?.state===variables.opt?\"1px solid #f6d68a\":\"1px solid rgba(246,214,138,.22)\" ]]]"
+              },
+              {
+                "box-shadow": "[[[ return states[variables.ent]?.state===variables.opt?\"0 0 14px rgba(246,214,138,.45), 0 2px 0 #7a5a1c\":\"0 4px 0 rgba(12,8,22,.75)\" ]]]"
+              },
+              {
+                "backdrop-filter": "blur(16px)"
+              },
+              {
+                "margin-bottom": "6px"
+              }
+            ],
+            "grid": [
+              {
+                "grid-template-areas": "\"i\" \"n\""
+              }
+            ],
+            "icon": [
+              {
+                "width": "22px"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#d9c4f0\" ]]]"
+              }
+            ],
+            "name": [
+              {
+                "font-size": "12px"
+              },
+              {
+                "font-weight": "600"
+              },
+              {
+                "color": "[[[ return states[variables.ent]?.state===variables.opt?\"#2a1d44\":\"#fff\" ]]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
