@@ -70,8 +70,68 @@
     "version": "1.5.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "four Siemens iQ700 - alertes, demarrage programme, securite, favoris, 100 recettes, carnet de cuisson et dashboard test (nouvelle charte)",
-    "last_update": "2026-09-27T11:18:12.127908+02:00",
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.2.0"
+  },
+  ".storage/lovelace.ma_maison": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_accueil": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_courses": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_eclairage": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_energie": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_pollution": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_securite": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_streaming": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.maison_taches": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.meteo_belgique": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.mon_confort": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
+    "version": "0.1.0"
+  },
+  ".storage/lovelace.reseau_infra": {
+    "last_change": "nouvelle charte sur tous les dashboards, URL sans prefixe 1- (anciens masques), pieces repliables dans Ma maison",
+    "last_update": "2026-09-27T11:28:51.892326+02:00",
     "version": "0.1.0"
   },
   "automations.yaml": {
