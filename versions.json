@@ -70,9 +70,9 @@
     "version": "1.5.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "recorder allege, bticino silencieux, speedtest 30min",
-    "last_update": "2026-09-19T21:53:13.219425+02:00",
-    "version": "0.0.1"
+    "last_change": "four Siemens iQ700 - alertes, demarrage programme, securite, favoris, 100 recettes, carnet de cuisson et dashboard test (nouvelle charte)",
+    "last_update": "2026-09-27T11:18:12.127908+02:00",
+    "version": "0.1.0"
   },
   "automations.yaml": {
     "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
@@ -113,6 +113,11 @@
     "last_change": "maintenance - journal nettoye (Todoist robuste, entites orphelines, flight radar)",
     "last_update": "2026-09-25T13:29:13.817947+02:00",
     "version": "0.4.1"
+  },
+  "packages/four.yaml": {
+    "last_change": "four Siemens iQ700 - alertes, demarrage programme, securite, favoris, 100 recettes, carnet de cuisson et dashboard test (nouvelle charte)",
+    "last_update": "2026-09-27T11:18:12.127908+02:00",
+    "version": "0.1.0"
   },
   "packages/horaires_pro.yaml": {
     "last_change": "maintenance - journal nettoye (Todoist robuste, entites orphelines, flight radar)",
@@ -175,9 +180,9 @@
     "version": "0.0.1"
   },
   "scripts.yaml": {
-    "last_change": "interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal",
-    "last_update": "2026-09-26T23:02:53.634231+02:00",
-    "version": "0.1.0"
+    "last_change": "four Siemens iQ700 - alertes, demarrage programme, securite, favoris, 100 recettes, carnet de cuisson et dashboard test (nouvelle charte)",
+    "last_update": "2026-09-27T11:18:12.127908+02:00",
+    "version": "0.2.0"
   },
   "themes/Alpine-night.yaml": {
     "last_change": "initialisation du versionning par fichier",
