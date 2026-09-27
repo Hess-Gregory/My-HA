@@ -95,11 +95,6 @@
         "type": "module"
       },
       {
-        "id": "b0ef60181990462cb18e78249bcc6890",
-        "url": "/flightradar24/flightradar24-card.js?v=v2.2.0",
-        "type": "module"
-      },
-      {
         "id": "4b2f9ed9480a42658173b44862f5c372",
         "url": "/hacsfiles/flex-table-card/flex-table-card.js?hacstag=15629205814",
         "type": "module"
