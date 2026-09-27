@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 27/09/2026 12:02 | grilles mensuelles famille et horaires pro, lumieres unifiees
 # =====================================================================
 # Calendriers « grille de mois » (même design que le planning de Matteo)
 # Collecteurs en LECTURE SEULE : calendar.get_events -> capteur (6 semaines).
