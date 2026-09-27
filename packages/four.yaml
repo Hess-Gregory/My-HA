@@ -1,0 +1,518 @@
+# =====================================================================
+# Four Siemens HS736G3B1 (Home Connect) – alertes, démarrage programmé,
+# sécurité porte / absence, actions depuis la notification du téléphone.
+# Scripts associés (scripts.yaml, éditables dans l'UI) :
+#   script.four_preparer, script.four_demarrer,
+#   script.four_fav_ajouter, script.four_fav_supprimer
+# Doc : /config/packages/four.md
+# =====================================================================
+
+input_text:
+  four_dernier_programme:
+    name: "Four – Dernier programme lancé"
+    icon: mdi:history
+    max: 120
+  four_recette_choisie:
+    name: "Four – Recette choisie"
+    icon: mdi:book-open-variant
+    max: 120
+  four_recette_en_cours:
+    name: "Four – Recette en cours (nom|retourner|minutes)"
+    icon: mdi:chef-hat
+    max: 255
+
+counter:
+  four_cuissons_nettoyage:
+    name: "Four – Cuissons depuis le dernier nettoyage"
+    icon: mdi:spray-bottle
+    step: 1
+
+automation:
+  # --- Le four affiche un message (réservoir d'eau, trappe, confirmation…) et fin de programme
+  - id: four_alertes_etat
+    alias: "🍳 Four – Action requise / C'est prêt"
+    description: "Basé sur sensor.four_etat (les capteurs d'évènement Home Connect ne remontent pas sur ce four)."
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: actionrequired
+        id: action
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: finished
+        id: fin
+      - trigger: state
+        entity_id: sensor.four_programme_termine
+        to: present
+        id: fin
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: action
+            sequence:
+              - action: notify.mobile_app_smartphone_greg
+                continue_on_error: true
+                data:
+                  title: "🙋 Le four demande une action"
+                  message: "Regardez l'écran du four : remplir le réservoir d'eau, fermer la trappe ou confirmer une étape."
+                  data:
+                    tag: four
+                    channel: Four
+                    importance: high
+                    priority: high
+                    ttl: 0
+              - action: persistent_notification.create
+                data:
+                  notification_id: four
+                  title: "🙋 Le four demande une action"
+                  message: "Regardez l'écran du four : réservoir d'eau, trappe ou confirmation."
+          - conditions:
+              - condition: trigger
+                id: fin
+            sequence:
+              - action: notify.mobile_app_smartphone_greg
+                continue_on_error: true
+                data:
+                  title: "✅ C'est prêt"
+                  message: "Le programme du four est terminé ({{ states('sensor.four_temperature_actuelle_de_la_cavite_du_four') }} °C)."
+                  data:
+                    tag: four
+                    channel: Four
+                    importance: high
+                    priority: high
+                    ttl: 0
+                    actions:
+                      - action: FOUR_PLUS10
+                        title: "+10 min"
+                      - action: FOUR_CHAUD
+                        title: "Maintenir au chaud"
+                      - action: FOUR_OFF
+                        title: "Éteindre"
+              - action: persistent_notification.create
+                data:
+                  notification_id: four
+                  title: "✅ C'est prêt"
+                  message: "Le programme du four est terminé."
+
+  # --- Mémorise le dernier programme lancé (pour « +10 min » après la fin)
+  - id: four_memo_programme
+    alias: "🍳 Four – Mémoriser le programme en cours"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: select.four_programme_actif
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state.startswith('cooking_oven_program_') }}"
+    actions:
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.four_dernier_programme
+        data:
+          value: "{{ trigger.to_state.state }}"
+
+  # --- Température atteinte
+  - id: four_chaud
+    alias: "🍳 Four – Préchauffage atteint"
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: template
+        value_template: >-
+          {% set t = states('sensor.four_temperature_actuelle_de_la_cavite_du_four') | float(0) %}
+          {% set c = states('number.cuisine_four_temperature_de_consigne') | float(0) %}
+          {{ is_state('sensor.four_etat', 'run') and c > 50 and t >= c - 3 }}
+      - trigger: state
+        entity_id:
+          - sensor.four_prechauffage_termine
+          - sensor.four_prechauffage_normal_termine
+        to: present
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ this.attributes.last_triggered is none
+             or (now() - this.attributes.last_triggered).total_seconds() > 1800 }}
+    actions:
+      - action: notify.mobile_app_smartphone_greg
+        continue_on_error: true
+        data:
+          title: "🔥 Le four est chaud"
+          message: >-
+            {% set n = states('input_text.four_recette_en_cours').split('|')[0] %}
+            {{ states('sensor.four_temperature_actuelle_de_la_cavite_du_four') }} °C atteints : {{ 'enfournez maintenant « ' ~ n ~ ' ».' if n not in ['', 'unknown', 'unavailable'] else 'vous pouvez enfourner.' }}
+          data:
+            tag: four
+            channel: Four
+            importance: high
+            priority: high
+            ttl: 0
+      - action: persistent_notification.create
+        data:
+          notification_id: four
+          title: "🔥 Le four est chaud"
+          message: "{{ states('sensor.four_temperature_actuelle_de_la_cavite_du_four') }} °C atteints."
+
+  # --- Minuterie
+  - id: four_reveil
+    alias: "🍳 Four – Minuterie écoulée"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: sensor.four_reveil_depasse
+        to: present
+    actions:
+      - action: notify.mobile_app_smartphone_greg
+        continue_on_error: true
+        data:
+          title: "⏰ Minuterie du four"
+          message: "La minuterie est écoulée."
+          data:
+            tag: four
+            channel: Four
+            importance: high
+            priority: high
+            ttl: 0
+
+  # --- Boutons de la notification « C'est prêt »
+  - id: four_notification_actions
+    alias: "🍳 Four – Actions depuis la notification"
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: FOUR_PLUS10
+        id: plus10
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: FOUR_CHAUD
+        id: chaud
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: FOUR_OFF
+        id: eteindre
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: plus10
+            sequence:
+              - action: script.four_preparer
+                data:
+                  program: >-
+                    {% set p = states('input_text.four_dernier_programme') %}
+                    {{ p if p.startswith('cooking_oven_program_') else states('select.four_programme_selectionne') }}
+                  duree: 10
+              - action: script.four_demarrer
+          - conditions:
+              - condition: trigger
+                id: chaud
+            sequence:
+              - action: script.four_preparer
+                data:
+                  program: heating_mode_keep_warm
+                  temperature: 70
+              - action: script.four_demarrer
+          - conditions:
+              - condition: trigger
+                id: eteindre
+            sequence:
+              - action: switch.turn_off
+                target:
+                  entity_id: switch.four_alimentation
+
+  # --- Démarrer à l'heure choisie
+  - id: four_demarrage_programme
+    alias: "🍳 Four – Démarrage à l'heure choisie"
+    mode: single
+    triggers:
+      - trigger: time
+        at: input_datetime.four_demarrer_a
+    conditions:
+      - condition: state
+        entity_id: input_boolean.four_demarrage_programme
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.four_demarrage_programme
+      - if:
+          - condition: state
+            entity_id: binary_sensor.four_demarrage_a_distance
+            state: "on"
+        then:
+          - action: script.four_demarrer
+          - action: notify.mobile_app_smartphone_greg
+            continue_on_error: true
+            data:
+              title: "▶️ Four démarré"
+              message: "Le four a démarré à l'heure prévue."
+              data:
+                tag: four
+                channel: Four
+        else:
+          - action: notify.mobile_app_smartphone_greg
+            continue_on_error: true
+            data:
+              title: "⚠️ Four non démarré"
+              message: "Le démarrage à distance n'est pas autorisé sur le four : activez-le sur l'appareil."
+              data:
+                tag: four
+                channel: Four
+                importance: high
+                priority: high
+
+  # --- Porte ouverte alors que le four est chaud
+  - id: four_porte_ouverte_chaud
+    alias: "🍳 Four – Porte ouverte four chaud"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: sensor.four_porte
+        to: open
+        for:
+          minutes: 2
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.four_temperature_actuelle_de_la_cavite_du_four
+        above: 80
+    actions:
+      - action: notify.mobile_app_smartphone_greg
+        continue_on_error: true
+        data:
+          title: "🚪 Porte du four ouverte"
+          message: "La porte est ouverte depuis 2 min et le four est à {{ states('sensor.four_temperature_actuelle_de_la_cavite_du_four') }} °C."
+          data:
+            tag: four_porte
+            channel: Four
+            importance: high
+            priority: high
+            ttl: 0
+
+  # --- Plus personne à la maison : on éteint le four
+  - id: four_absence
+    alias: "🍳 Four – Éteindre si tout le monde est parti"
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: zone.home
+        below: 1
+        for:
+          minutes: 5
+    conditions:
+      - condition: state
+        entity_id: switch.four_alimentation
+        state: "on"
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.four_alimentation
+        continue_on_error: true
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.four_demarrage_programme
+      - action: notify.mobile_app_smartphone_greg
+        continue_on_error: true
+        data:
+          title: "🛑 Four éteint"
+          message: "Plus personne à la maison : le four a été éteint par sécurité."
+          data:
+            tag: four
+            channel: Four
+            importance: high
+            priority: high
+
+# --- Plat favori choisi (liste déroulante construite depuis input_text.four_favori_1…16)
+input_number:
+  four_favori_choisi:
+    name: "Four – Favori choisi"
+    icon: mdi:star
+    min: 1
+    max: 16
+    step: 1
+    mode: box
+
+template:
+  - select:
+      - name: "Four – Plat favori"
+        unique_id: four_plat_favori
+        icon: mdi:star
+        state: >-
+          {% set i = states('input_number.four_favori_choisi') | int(1) %}
+          {{ (states('input_text.four_favori_' ~ i) | default('')).split('|')[0] }}
+        options: >-
+          {% set ns = namespace(o=[]) %}
+          {% for i in range(1, 17) %}
+            {% set v = states('input_text.four_favori_' ~ i) %}
+            {% if v not in ['', 'unknown', 'unavailable'] %}{% set ns.o = ns.o + [v.split('|')[0]] %}{% endif %}
+          {% endfor %}
+          {{ ns.o if ns.o else ['—'] }}
+        select_option:
+          - action: input_number.set_value
+            target:
+              entity_id: input_number.four_favori_choisi
+            data:
+              value: >-
+                {% set ns = namespace(s=1) %}
+                {% for i in range(1, 17) %}
+                  {% if states('input_text.four_favori_' ~ i).split('|')[0] == option %}{% set ns.s = i %}{% endif %}
+                {% endfor %}
+                {{ ns.s }}
+
+  # --- Catalogue de recettes (menu « Recettes » du dashboard, classé par type de plat)
+  - sensor:
+      - name: "Four recettes"
+        unique_id: four_recettes
+        icon: mdi:book-open-variant
+        state: "100"
+        attributes:
+          recettes: >-
+            {"🥕 Légumes":[["Légumes rôtis (courgette, poivron, oignon)","heating_mode_hot_air",200,30,0,1,"Morceaux réguliers, huile, sel, herbes de Provence.~Plaque au niveau 2.","mdi:carrot"],["Carottes rôties au miel","heating_mode_hot_air",190,35,0,1,"Bâtonnets, filet d'huile et une cuillère de miel.~Plaque au niveau 2.","mdi:carrot"],["Chou-fleur rôti","heating_mode_hot_air",200,30,0,1,"Bouquets, huile, curcuma ou paprika.~Plaque au niveau 2.","mdi:cauliflower"],["Brocolis rôtis","heating_mode_hot_air",200,18,0,0,"Bouquets, huile d'olive, ail, parmesan en fin de cuisson.~Plaque au niveau 2.","mdi:leaf"],["Tomates provençales","heating_mode_top_bottom_heating",180,30,0,0,"Moitiés de tomates, ail, persil, chapelure, huile.~Plat au niveau 2.","mdi:fruit-cherries"],["Poivrons farcis","heating_mode_hot_air",180,40,0,0,"Farce viande ou riz, couvrez de papier alu les 20 premières minutes.~Plat au niveau 2.","mdi:chili-mild"],["Courgettes farcies","heating_mode_hot_air",180,35,0,0,"Évidez, farcissez, fromage râpé sur le dessus.~Plat au niveau 2.","mdi:food-variant"],["Butternut rôtie","heating_mode_hot_air",200,40,0,1,"En cubes ou en quartiers, huile, sel, muscade.~Plaque au niveau 2.","mdi:food-apple"],["Légumes vapeur","steam_modes_steam",100,20,0,0,"Réservoir rempli ; légumes en morceaux réguliers.~Plaque perforée au niveau 2.","mdi:pot-steam-outline"],["Asperges au four","heating_mode_hot_air",200,15,0,0,"Huile d'olive, sel, un peu de parmesan.~Plaque au niveau 2.","mdi:leaf"]],"🥔 Pommes de terre & frites":[["Pommes de terre grenaille","heating_mode_hot_air",200,50,0,1,"Lavées et bien séchées, huile, sel, romarin.~Plaque au niveau 2.","mdi:food-variant"],["Pommes de terre en robe des champs","heating_mode_hot_air",200,60,0,0,"Piquez-les à la fourchette ; papier alu optionnel.~Grille au niveau 2.","mdi:food-variant"],["Frites maison au four","heating_mode_hot_air",220,30,1,1,"Rincez, séchez bien, 1 c. à soupe d'huile ; une seule couche.~Plaque au niveau 2.","mdi:french-fries"],["Potatoes épicées","heating_mode_hot_air",210,35,0,1,"Quartiers, huile, paprika, ail en poudre.~Plaque au niveau 2.","mdi:french-fries"],["Pommes de terre sautées au four","heating_mode_hot_air",200,35,0,1,"Cubes, huile, lardons en option.~Plaque au niveau 2.","mdi:food-variant"],["Patates douces rôties","heating_mode_hot_air",200,35,0,1,"Cubes ou frites, huile et paprika fumé.~Plaque au niveau 2.","mdi:food-variant"]],"🍗 Volaille":[["Poulet entier rôti (1,5 kg)","heating_mode_hot_air_grilling",190,75,0,0,"Beurre sous la peau, sel ; arrosez à mi-cuisson.~Grille niveau 2, lèchefrite en dessous.","mdi:food-drumstick"],["Cuisses de poulet","heating_mode_hot_air_grilling",200,40,0,1,"Peau vers le haut, huile et épices.~Plat au niveau 2.","mdi:food-drumstick"],["Pilons marinés","heating_mode_hot_air_grilling",200,35,0,1,"Marinade 1 h avant (miel, soja, ail).~Plat au niveau 2.","mdi:food-drumstick"],["Blancs de poulet","heating_mode_hot_air",190,22,0,0,"Huile, épices ; laissez reposer 5 min.~Plat au niveau 2.","mdi:food-drumstick"],["Filets de dinde","heating_mode_hot_air",180,25,0,0,"Moutarde et herbes, papier alu les 10 dernières minutes.~Plat au niveau 2.","mdi:turkey"],["Magret de canard","heating_mode_hot_air_grilling",200,15,1,0,"Quadrillez la peau, saisissez 5 min côté peau à la poêle avant.~Grille au niveau 3.","mdi:duck"],["Canard entier","heating_mode_hot_air",170,90,0,0,"Piquez la peau ; videz la graisse à mi-cuisson.~Grille niveau 2, lèchefrite dessous.","mdi:duck"],["Poulet vapeur puis doré","steam_modes_steam",100,25,0,0,"Réservoir rempli. Vapeur = tendre, gril = peau dorée. Démarre directement.~Grille niveau 2, lèchefrite dessous.","mdi:food-drumstick","heating_mode_hot_air_grilling",220,15]],"🥩 Bœuf":[["Rôti de bœuf saignant (1 kg)","heating_mode_hot_air",200,35,1,0,"Sortez-le 1 h avant ; reposez 10 min sous alu.~Grille niveau 2, lèchefrite dessous.","mdi:food-steak"],["Rôti de bœuf à point (1 kg)","heating_mode_hot_air",200,45,1,0,"Reposez 10 min sous alu avant de trancher.~Grille niveau 2, lèchefrite dessous.","mdi:food-steak"],["Côte de bœuf (finition)","heating_mode_hot_air_grilling",220,12,1,1,"Saisissez à la poêle, finissez au four ; reposez 10 min.~Grille au niveau 3.","mdi:food-steak"],["Boulettes au four","heating_mode_hot_air",190,25,0,1,"Formez des boulettes régulières.~Plaque au niveau 2.","mdi:circle-multiple"],["Bœuf cuisson lente","heating_mode_slow_cook",85,240,0,0,"Saisissez la pièce avant ; cuisson longue et douce.~Plat au niveau 2.","mdi:pot-steam"],["Pain de viande","heating_mode_top_bottom_heating",180,55,0,0,"Moule à cake ; laissez reposer 10 min.~Moule au niveau 2.","mdi:food"]],"🐖 Porc":[["Rôti de porc (1 kg)","heating_mode_hot_air",180,75,0,0,"Moutarde, herbes ; arrosez à mi-cuisson.~Plat au niveau 2.","mdi:pig"],["Côtes de porc","heating_mode_hot_air_grilling",200,25,0,1,"Marinade ou huile et épices.~Grille au niveau 3, lèchefrite dessous.","mdi:pig"],["Travers de porc (ribs)","heating_mode_hot_air",160,90,0,0,"Couverts d'alu 60 min, puis sauce barbecue à découvert.~Plat au niveau 2.","mdi:pig"],["Filet mignon","heating_mode_hot_air",190,30,0,0,"Saisissez à la poêle avant ; reposez 5 min.~Plat au niveau 2.","mdi:pig"],["Saucisses de campagne (vapeur → gril)","steam_modes_steam",100,15,0,0,"Réservoir rempli ; piquez légèrement. Démarre directement.~Grille niveau 2, lèchefrite dessous.","mdi:sausage","heating_mode_hot_air_grilling",220,15],["Chipolatas / merguez","heating_mode_hot_air_grilling",220,18,0,1,"Espacées sur la grille.~Grille au niveau 3, lèchefrite dessous.","mdi:sausage"],["Jambon à l'os (réchauffer)","heating_mode_hot_air",160,30,0,0,"Couvert d'alu pour ne pas dessécher.~Plat au niveau 2.","mdi:pig"]],"🐑 Agneau & veau":[["Gigot d'agneau (1,5 kg)","heating_mode_hot_air",180,60,1,0,"Piqué d'ail, romarin ; reposez 10 min.~Grille niveau 2, lèchefrite dessous.","mdi:sheep"],["Épaule d'agneau confite","heating_mode_slow_cook",120,240,0,0,"Couverte, avec ail et un peu de bouillon.~Plat au niveau 2.","mdi:sheep"],["Carré d'agneau","heating_mode_hot_air",200,25,1,0,"Saisissez avant ; rosé à cœur.~Plat au niveau 2.","mdi:sheep"],["Rôti de veau","heating_mode_hot_air",180,60,0,0,"Bardé ou couvert ; arrosez souvent.~Plat au niveau 2.","mdi:cow"]],"🐟 Poisson & fruits de mer":[["Dorade entière en papillote","heating_mode_hot_air",180,25,0,0,"Citron, herbes, huile ; papillote bien fermée.~Plaque au niveau 2.","mdi:fish"],["Saumon en papillote","heating_mode_hot_air",180,20,0,0,"Aneth, citron, un peu de crème.~Plaque au niveau 2.","mdi:fish"],["Pavé de saumon rôti","heating_mode_hot_air",200,15,0,0,"Peau en dessous, huile et sel.~Plat au niveau 2.","mdi:fish"],["Dos de cabillaud","heating_mode_hot_air",190,15,0,0,"Beurre, citron, persil.~Plat au niveau 2.","mdi:fish"],["Colin d’Alaska croûte parmesan","heating_mode_hot_air_grilling",200,18,0,0,"Épongez ; chapelure, parmesan et beurre fondu dessus.~Plat au niveau 3.","mdi:fish"],["Poisson vapeur","steam_modes_steam",100,15,0,0,"Réservoir rempli ; assaisonnez après cuisson.~Plaque perforée au niveau 2.","mdi:pot-steam-outline"],["Crevettes gratinées","heating_mode_hot_air_grilling",220,8,1,0,"Beurre à l'ail, persil, surveillez la fin.~Plat au niveau 3.","mdi:fish"],["Moules au four","heating_mode_hot_air",220,10,1,0,"Ouvertes, beurre persillé, chapelure.~Plat au niveau 3.","mdi:fish"]],"🧀 Gratins & plats au four":[["Gratin dauphinois","heating_mode_top_bottom_heating",180,70,0,0,"Tranches fines, crème et lait, ail ; couvrez si ça dore trop vite.~Plat au niveau 2.","mdi:food-variant"],["Gratin de pâtes","heating_mode_hot_air_grilling",200,20,0,0,"Pâtes un peu fermes, sauce généreuse, fromage dessus.~Plat au niveau 2.","mdi:pasta"],["Lasagnes","heating_mode_top_bottom_heating",180,45,0,0,"Couvert d'alu 30 min puis à découvert.~Plat au niveau 2.","mdi:pasta"],["Chicons au gratin","heating_mode_hot_air_grilling",200,25,0,0,"Chicons bien égouttés, roulés au jambon, béchamel.~Plat au niveau 2.","mdi:food-variant"],["Hachis parmentier","heating_mode_top_bottom_heating",200,30,0,0,"Purée bien lisse, fromage râpé dessus.~Plat au niveau 2.","mdi:food"],["Moussaka","heating_mode_top_bottom_heating",180,50,0,0,"Laissez reposer 10 min avant de servir.~Plat au niveau 2.","mdi:food"],["Gratin de chou-fleur","heating_mode_hot_air_grilling",200,25,0,0,"Chou-fleur précuit, béchamel, fromage.~Plat au niveau 2.","mdi:cauliflower"],["Cannellonis","heating_mode_top_bottom_heating",180,35,0,0,"Couverts de sauce pour ne pas sécher.~Plat au niveau 2.","mdi:pasta"],["Tartiflette","heating_mode_top_bottom_heating",200,30,0,0,"Reblochon coupé en deux, croûte vers le haut.~Plat au niveau 2.","mdi:cheese"]],"🥧 Quiches & tartes salées":[["Quiche lorraine","heating_mode_bottom_heating",190,35,0,0,"Piquez la pâte ; sole pour un fond bien cuit.~Moule au niveau 1.","mdi:pie"],["Tarte aux poireaux","heating_mode_bottom_heating",190,35,0,0,"Poireaux bien égouttés.~Moule au niveau 1.","mdi:pie"],["Tarte fine tomate-moutarde","heating_mode_top_bottom_heating",210,25,1,0,"Pâte feuilletée, moutarde, tomates, fromage.~Plaque au niveau 2.","mdi:pie"],["Feuilletés saucisse","heating_mode_hot_air",200,20,1,0,"Dorure à l'œuf.~Plaque au niveau 2.","mdi:pie"]],"🍕 Pizza & snacks":[["Pizza maison","heating_mode_pizza_setting",250,12,1,0,"Pâte fine, four bien chaud.~Plaque ou pierre au niveau 1.","mdi:pizza"],["Pizza fraîche (rayon frais)","heating_mode_pizza_setting",220,12,1,0,"Sortez-la du frigo 10 min avant.~Grille au niveau 1.","mdi:pizza"],["Croque-monsieur","heating_mode_hot_air_grilling",220,10,1,0,"Beurrez l'extérieur du pain.~Grille au niveau 3.","mdi:bread-slice"],["Hot-dogs au four","heating_mode_hot_air",200,10,1,0,"Pains garnis, fromage en option.~Plaque au niveau 2.","mdi:food-hot-dog"],["Nachos gratinés","heating_mode_hot_air_grilling",200,8,1,0,"Fromage râpé et jalapeños.~Plaque au niveau 3.","mdi:food-variant"],["Bruschetta","heating_mode_hot_air_grilling",220,6,1,0,"Pain, huile, ail ; garniture après.~Grille au niveau 3.","mdi:bread-slice"]],"❄️ Surgelés":[["Pizza surgelée","heating_mode_pizza_setting",220,15,1,0,"Directement sans décongeler.~Grille au niveau 1.","mdi:pizza"],["Frites surgelées","heating_mode_frozen_heatup_special",220,22,0,1,"Une seule couche, sans huile.~Plaque au niveau 2.","mdi:french-fries"],["Nems & croustillants","heating_mode_frozen_heatup_special",200,15,0,1,"Sans décongeler, espacés sur papier cuisson.~Plaque au niveau 2.","mdi:food-takeout-box"],["Croquettes de pommes de terre","heating_mode_frozen_heatup_special",200,18,0,1,"Une couche, sans huile.~Plaque au niveau 2.","mdi:circle-multiple"],["Nuggets de poulet","heating_mode_frozen_heatup_special",200,15,0,1,"Espacés sur papier cuisson.~Plaque au niveau 2.","mdi:food-drumstick"],["Lasagnes surgelées","heating_mode_hot_air",180,50,0,0,"Film retiré ; couvrez d'alu si besoin.~Plat au niveau 2.","mdi:pasta"],["Poisson pané surgelé","heating_mode_frozen_heatup_special",200,20,0,1,"Sans décongeler.~Plaque au niveau 2.","mdi:fish"],["Légumes grillés surgelés","heating_mode_frozen_heatup_special",200,20,0,1,"Étalez bien, filet d'huile.~Plaque au niveau 2.","mdi:carrot"]],"🥖 Pain & viennoiseries":[["Pain maison","heating_mode_top_bottom_heating",230,35,1,0,"Bol d'eau dans le four ou jet de vapeur au début.~Plaque au niveau 1.","mdi:bread-slice"],["Baguette précuite","heating_mode_hot_air",200,10,1,0,"Four chaud ; reposez 5 min avant de couper.~Grille au niveau 2.","mdi:baguette"],["Baguette de la veille","heating_mode_hot_air",200,5,1,0,"Passez-la 2-3 s sous l'eau avant d'enfourner.~Grille au niveau 2.","mdi:baguette"],["Viennoiseries de la veille","heating_mode_hot_air",160,5,1,0,"Four chaud ; 5 min max pour ne pas dessécher.~Grille au niveau 2.","mdi:food-croissant"],["Croissants à cuire","heating_mode_hot_air",180,16,1,0,"Dorure à l'œuf.~Plaque au niveau 2.","mdi:food-croissant"],["Pains au chocolat à cuire","heating_mode_hot_air",180,16,1,0,"Dorure à l'œuf.~Plaque au niveau 2.","mdi:food-croissant"],["Brioche","heating_mode_top_bottom_heating",170,30,0,0,"Dorure à l'œuf ; couvrez si elle dore trop vite.~Moule au niveau 1.","mdi:bread-slice"],["Pain vapeur puis croûte","steam_modes_steam",100,10,0,0,"Réservoir rempli. Vapeur = pousse et moelleux, puis croûte dorée. Démarre directement.~Plaque au niveau 1.","mdi:bread-slice","heating_mode_top_bottom_heating",220,25]],"🍰 Pâtisserie & desserts":[["Gâteau au chocolat","heating_mode_top_bottom_heating",180,25,0,0,"Centre encore fondant ; laissez tiédir avant de démouler.~Moule au niveau 1.","mdi:cake-variant"],["Cake / quatre-quarts","heating_mode_top_bottom_heating",160,50,0,0,"Lame de couteau sèche = cuit.~Moule au niveau 1.","mdi:cake"],["Tarte aux pommes","heating_mode_bottom_heating",190,35,0,0,"Piquez la pâte ; sole pour un fond croustillant.~Moule au niveau 1.","mdi:pie"],["Cookies","heating_mode_hot_air",175,12,1,0,"Encore mous en sortant, ils durcissent en refroidissant.~Plaque au niveau 2.","mdi:cookie"],["Muffins","heating_mode_hot_air",180,22,1,0,"Moules remplis aux 2/3.~Plaque au niveau 2.","mdi:cupcake"],["Crumble","heating_mode_hot_air",180,30,0,0,"Beurre froid pour une pâte sableuse.~Plat au niveau 2.","mdi:food-apple"],["Meringues","heating_mode_hot_air",100,90,0,0,"Laissez-les refroidir dans le four entrouvert.~Plaque au niveau 2.","mdi:cloud"],["Crème brûlée","heating_mode_top_bottom_heating",150,40,0,0,"Au bain-marie ; caramélisez au chalumeau après.~Plat au niveau 2.","mdi:egg"],["Clafoutis","heating_mode_top_bottom_heating",180,40,0,0,"Moule beurré, fruits au fond.~Plat au niveau 2.","mdi:fruit-cherries"],["Gaufres / crêpes (réchauffer)","heating_mode_hot_air",160,5,1,0,"Directement sur la grille.~Grille au niveau 2.","mdi:waffle"],["Fondant vapeur (moelleux)","steam_modes_steam",100,20,0,0,"Réservoir rempli ; ramequins couverts.~Plaque au niveau 2.","mdi:cake-variant"]],"🍽️ Pratique":[["Maintenir au chaud","heating_mode_keep_warm",70,60,0,0,"Couvrez les plats pour ne pas dessécher.~Plat au niveau 2.","mdi:thermometer-low"],["Chauffer les assiettes","heating_mode_preheat_ovenware",70,15,0,0,"Assiettes empilées sur la grille.~Grille au niveau 1.","mdi:bowl-mix-outline"],["Préchauffer le four","heating_mode_pre_heating",200,10,1,0,"Pour enfourner dans un four bien chaud.~—","mdi:thermometer-chevron-up"],["Réchauffer un plat","heating_mode_hot_air",160,20,0,0,"Couvert d'alu pour garder le moelleux.~Plat au niveau 2.","mdi:microwave"],["Réchauffer à la vapeur","steam_modes_steam",100,15,0,0,"Réservoir rempli ; idéal pour ne pas dessécher.~Plat au niveau 2.","mdi:pot-steam-outline"]]}
+
+  - select:
+      - name: "Four – Recette"
+        unique_id: four_recette
+        icon: mdi:book-open-variant
+        state: >-
+          {% set ns = namespace(l=[]) %}
+          {% set R = state_attr('sensor.four_recettes', 'recettes') %}{% set R = (R | from_json) if R is string else (R or {}) %}{% for r in R.get(states('input_select.four_recette_categorie'), []) %}{% set ns.l = ns.l + [r[0]] %}{% endfor %}
+          {% set s = states('input_text.four_recette_choisie') %}
+          {{ s if s in ns.l else (ns.l[0] if ns.l else '—') }}
+        options: >-
+          {% set ns = namespace(l=[]) %}
+          {% set R = state_attr('sensor.four_recettes', 'recettes') %}{% set R = (R | from_json) if R is string else (R or {}) %}{% for r in R.get(states('input_select.four_recette_categorie'), []) %}{% set ns.l = ns.l + [r[0]] %}{% endfor %}
+          {{ ns.l if ns.l else ['—'] }}
+        select_option:
+          - action: input_text.set_value
+            target:
+              entity_id: input_text.four_recette_choisie
+            data:
+              value: "{{ option }}"
+
+  # --- Carnet de cuisson : chaque cuisson terminée (≥ 3 min) est mémorisée (20 dernières)
+  - triggers:
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: run
+        id: debut
+      - trigger: state
+        entity_id: sensor.four_temperature_actuelle_de_la_cavite_du_four
+        id: temp
+      - trigger: state
+        entity_id: sensor.four_etat
+        from: run
+        to:
+          - finished
+          - inactive
+          - ready
+        id: fin
+    actions:
+      - variables:
+          cur: "{{ state_attr('sensor.four_carnet', 'liste') or [] }}"
+          deb: "{{ state_attr('sensor.four_carnet', 'debut') or '' }}"
+          tmax: "{{ state_attr('sensor.four_carnet', 'tmax') | int(0) }}"
+          t: "{{ states('sensor.four_temperature_actuelle_de_la_cavite_du_four') | int(0) }}"
+          en_cours: "{{ states('input_text.four_recette_en_cours') }}"
+          prog: "{{ states('input_text.four_dernier_programme') }}"
+    sensor:
+      - name: "Four carnet"
+        unique_id: four_carnet
+        icon: mdi:notebook-outline
+        state: >-
+          {{ (state_attr('sensor.four_carnet', 'liste') or []) | count }}
+        attributes:
+          debut: "{{ now().isoformat() if trigger.id == 'debut' else deb }}"
+          tmax: >-
+            {% if trigger.id == 'debut' %}{{ t }}
+            {% elif trigger.id == 'temp' and is_state('sensor.four_etat', 'run') %}{{ [tmax, t] | max }}
+            {% else %}{{ tmax }}{% endif %}
+          liste: >-
+            {% if trigger.id == 'fin' and deb != '' %}
+              {% set m = ((now() - as_datetime(deb)).total_seconds() / 60) | round(0) | int %}
+              {% set n = en_cours.split('|')[0] if en_cours not in ['', 'unknown', 'unavailable'] else '' %}
+              {% if m >= 3 %}{{ (cur + [{'d': deb, 'n': n, 'p': prog if prog.startswith('cooking_oven_program_') else '', 'm': m, 't': [tmax, t] | max, 'fin': trigger.to_state.state}])[-20:] }}
+              {% else %}{{ cur }}{% endif %}
+            {% else %}{{ cur }}{% endif %}
+
+automation four_plus:
+  # --- Rappel « retournez à mi-cuisson » pour les recettes qui le demandent
+  - id: four_mi_cuisson
+    alias: "🍳 Four – Retourner à mi-cuisson"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: run
+        for:
+          seconds: 30
+    conditions:
+      - condition: template
+        value_template: "{{ (states('input_text.four_recette_en_cours') ~ '||').split('|')[1] == '1' }}"
+    actions:
+      - variables:
+          nom: "{{ states('input_text.four_recette_en_cours').split('|')[0] }}"
+          minutes: "{{ (states('input_text.four_recette_en_cours') ~ '||0').split('|')[2] | int(0) }}"
+      - delay:
+          minutes: "{{ [ (minutes / 2) | round(0) | int - 1, 1 ] | max }}"
+      - condition: state
+        entity_id: sensor.four_etat
+        state: run
+      - action: notify.mobile_app_smartphone_greg
+        continue_on_error: true
+        data:
+          title: "↩️ Mi-cuisson"
+          message: "Retournez « {{ nom }} » pour une cuisson uniforme."
+          data:
+            tag: four
+            channel: Four
+            importance: high
+            priority: high
+            ttl: 0
+
+  # --- Fin de cuisson : compteur de nettoyage + oubli de la recette en cours
+  - id: four_fin_suivi
+    alias: "🍳 Four – Suivi fin de cuisson / nettoyage"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: sensor.four_etat
+        from: run
+        to: finished
+        id: fin
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: inactive
+        id: arret
+    actions:
+      - if:
+          - condition: trigger
+            id: fin
+        then:
+          - action: counter.increment
+            continue_on_error: true
+            target:
+              entity_id: counter.four_cuissons_nettoyage
+          - if:
+              - condition: numeric_state
+                entity_id: counter.four_cuissons_nettoyage
+                above: 14
+            then:
+              - action: notify.mobile_app_smartphone_greg
+                continue_on_error: true
+                data:
+                  title: "🧽 Nettoyage du four"
+                  message: "{{ states('counter.four_cuissons_nettoyage') }} cuissons depuis le dernier nettoyage : pensez à lancer un nettoyage (sur le four)."
+                  data:
+                    tag: four_nettoyage
+                    channel: Four
+      - delay:
+          seconds: 15
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.four_recette_en_cours
+        data:
+          value: ""

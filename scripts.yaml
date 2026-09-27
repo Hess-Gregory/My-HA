@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.1.0 | 26/09/2026 23:02 | interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
@@ -223,6 +222,11 @@ je_pars:
       - light.evier
       - light.cuisine_etagere_cafe
       - light.salle_de_bain_salle_de_bain
+  - action: switch.turn_off
+    target:
+      entity_id: switch.four_alimentation
+    alias: Éteindre le four
+    continue_on_error: true
   - action: media_player.turn_off
     target:
       entity_id: media_player.fire_tv_192_168_80_103
@@ -465,3 +469,505 @@ sono_dj_basculer:
     - action: script.1786831774432
     else:
     - action: script.demarrage_mixer
+four_preparer:
+  alias: "\U0001F373 Four – Préparer un réglage"
+  icon: mdi:stove
+  mode: single
+  description: Allume le four si besoin, sélectionne le programme puis règle température,
+    durée et préchauffage rapide. Ne démarre pas la cuisson (voir script.four_demarrer).
+  fields:
+    program:
+      description: Clé du programme (ex. heating_mode_hot_air) ou clé complète
+      required: true
+      selector:
+        text: {}
+    temperature:
+      description: °C
+      selector:
+        number:
+          min: 30
+          max: 250
+    duree:
+      description: minutes
+      selector:
+        number:
+          min: 0
+          max: 1440
+    prechauffage:
+      description: Préchauffage rapide
+      selector:
+        boolean: {}
+  sequence:
+  - variables:
+      prog: '{{ program if program.startswith(''cooking_oven_program_'') else ''cooking_oven_program_''
+        ~ program }}'
+  - if:
+    - condition: state
+      entity_id: switch.four_alimentation
+      state: 'off'
+    then:
+    - action: switch.turn_on
+      target:
+        entity_id: switch.four_alimentation
+    - delay:
+        seconds: 4
+  - action: select.select_option
+    target:
+      entity_id: select.four_programme_selectionne
+    data:
+      option: '{{ prog }}'
+  - delay:
+      seconds: 3
+  - if:
+    - condition: template
+      value_template: '{{ temperature is defined and temperature | int(0) > 0 and
+        states(''number.cuisine_four_temperature_de_consigne'') not in [''unavailable'',''unknown'']
+        }}'
+    then:
+    - action: number.set_value
+      target:
+        entity_id: number.cuisine_four_temperature_de_consigne
+      data:
+        value: '{{ temperature | int }}'
+      continue_on_error: true
+  - if:
+    - condition: template
+      value_template: '{{ duree is defined and duree | int(0) > 0 and states(''number.cuisine_four_duree'')
+        not in [''unavailable'',''unknown''] }}'
+    then:
+    - action: number.set_value
+      target:
+        entity_id: number.cuisine_four_duree
+      data:
+        value: '{{ (duree | int) * 60 }}'
+      continue_on_error: true
+  - if:
+    - condition: template
+      value_template: '{{ prechauffage is defined and states(''switch.cuisine_four_prechauffage_rapide'')
+        not in [''unavailable'',''unknown''] }}'
+    then:
+    - action: '{{ ''switch.turn_on'' if prechauffage else ''switch.turn_off'' }}'
+      target:
+        entity_id: switch.cuisine_four_prechauffage_rapide
+      continue_on_error: true
+four_demarrer:
+  alias: "\U0001F373 Four – Démarrer le programme choisi"
+  icon: mdi:play
+  mode: single
+  sequence:
+  - variables:
+      prog: '{% set s = states(''select.four_programme_selectionne'') %}{% set d =
+        states(''input_text.four_dernier_programme'') %}{{ s if s.startswith(''cooking_oven_program_'')
+        else (d if d.startswith(''cooking_oven_program_'') else '''') }}'
+  - if:
+    - condition: template
+      value_template: '{{ prog == '''' }}'
+    then:
+    - action: persistent_notification.create
+      data:
+        notification_id: four
+        title: Four
+        message: Choisissez d’abord un programme (ou une recette) avant de démarrer.
+    - stop: Aucun programme choisi
+  - if:
+    - condition: state
+      entity_id: switch.four_alimentation
+      state: 'off'
+    then:
+    - action: switch.turn_on
+      target:
+        entity_id: switch.four_alimentation
+    - delay:
+        seconds: 4
+  - action: select.select_option
+    target:
+      entity_id: select.four_programme_actif
+    data:
+      option: '{{ prog }}'
+four_fav_ajouter:
+  alias: "\U0001F373 Four – Enregistrer le réglage en favori"
+  icon: mdi:star-plus
+  mode: single
+  sequence:
+  - variables:
+      nom: '{{ states(''input_text.four_favori_nom'') | trim | replace(''|'',''/'')
+        }}'
+      prog: '{{ states(''select.four_programme_selectionne'') | replace(''cooking_oven_program_'','''')
+        }}'
+      temp: '{{ states(''number.cuisine_four_temperature_de_consigne'') | int(0) }}'
+      dur: '{{ (states(''number.cuisine_four_duree'') | int(0) / 60) | round(0) |
+        int }}'
+      pre: '{{ 1 if is_state(''switch.cuisine_four_prechauffage_rapide'',''on'') else
+        0 }}'
+      slot: '{% set ns = namespace(s='''') %}{% for i in range(1,17) %}{% if ns.s
+        == '''' and states(''input_text.four_favori_'' ~ i) in ['''', ''unknown'']
+        %}{% set ns.s = i %}{% endif %}{% endfor %}{{ ns.s }}'
+  - if:
+    - condition: template
+      value_template: '{{ nom in ['''',''unknown''] or prog in ['''',''unknown'',''unavailable'']
+        }}'
+    then:
+    - action: persistent_notification.create
+      data:
+        notification_id: four_favori
+        title: Four – favori
+        message: Donnez un nom et choisissez un programme avant d’enregistrer.
+    - stop: incomplet
+  - if:
+    - condition: template
+      value_template: '{{ slot == '''' }}'
+    then:
+    - action: persistent_notification.create
+      data:
+        notification_id: four_favori
+        title: Four – favori
+        message: 'Les 16 favoris sont pris : supprimez-en un d’abord.'
+    - stop: plein
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.four_favori_{{ slot }}
+    data:
+      value: '{{ nom }}|{{ prog }}|{{ temp }}|{{ dur }}|{{ pre }}'
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.four_favori_nom
+    data:
+      value: ''
+four_fav_supprimer:
+  alias: "\U0001F373 Four – Supprimer un favori"
+  icon: mdi:star-remove
+  mode: queued
+  fields:
+    slot:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 8
+  sequence:
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.four_favori_{{ slot | int }}
+    data:
+      value: ''
+four_favori:
+  alias: "\U0001F373 Four – Lancer un favori"
+  icon: mdi:star
+  mode: single
+  fields:
+    program:
+      required: true
+      selector:
+        text: {}
+    temperature:
+      selector:
+        number:
+          min: 0
+          max: 250
+    duree:
+      selector:
+        number:
+          min: 0
+          max: 1440
+    prechauffage:
+      selector:
+        boolean: {}
+    program2:
+      selector:
+        text: {}
+    temperature2:
+      selector:
+        number:
+          min: 0
+          max: 250
+    duree2:
+      selector:
+        number:
+          min: 0
+          max: 1440
+    nom:
+      selector:
+        text: {}
+    retourner:
+      selector:
+        boolean: {}
+  sequence:
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.four_recette_en_cours
+    data:
+      value: '{{ (nom | default('''')) | replace(''|'',''/'') }}|{{ 1 if (retourner
+        | default(false)) in [true,''true'',''1'',1] else 0 }}|{{ duree | int(0) }}'
+  - action: script.four_preparer
+    data:
+      program: '{{ program }}'
+      temperature: '{{ temperature | int(0) }}'
+      duree: '{{ duree | int(0) }}'
+      prechauffage: '{{ prechauffage | default(false) }}'
+  - if:
+    - condition: template
+      value_template: '{{ program2 is defined and program2 | string | length > 3 }}'
+    then:
+    - action: script.four_demarrer
+    - action: persistent_notification.create
+      data:
+        notification_id: four
+        title: "\U0001F373 Recette en 2 étapes"
+        message: Étape 1 lancée ({{ duree }} min). L'étape 2 démarrera automatiquement.
+    - delay:
+        seconds: 20
+    - wait_for_trigger:
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: finished
+      timeout:
+        minutes: '{{ duree | int(0) + 30 }}'
+      continue_on_timeout: false
+    - delay:
+        seconds: 5
+    - action: script.four_preparer
+      data:
+        program: '{{ program2 }}'
+        temperature: '{{ temperature2 | int(0) }}'
+        duree: '{{ duree2 | int(0) }}'
+    - action: script.four_demarrer
+    - action: notify.mobile_app_smartphone_greg
+      continue_on_error: true
+      data:
+        title: "\U0001F373 Étape 2 lancée"
+        message: 'Fin de cuisson : {{ duree2 }} min.'
+        data:
+          tag: four
+          channel: Four
+four_fav_copier:
+  alias: "\U0001F373 Four – Copier une recette en favori"
+  icon: mdi:star-plus
+  mode: single
+  fields:
+    valeur:
+      required: true
+      selector:
+        text: {}
+  sequence:
+  - variables:
+      slot: '{% set ns = namespace(s='''') %}{% for i in range(1,17) %}{% if ns.s
+        == '''' and states(''input_text.four_favori_'' ~ i) in ['''', ''unknown'']
+        %}{% set ns.s = i %}{% endif %}{% endfor %}{{ ns.s }}'
+  - if:
+    - condition: template
+      value_template: '{{ slot == '''' }}'
+    then:
+    - action: persistent_notification.create
+      data:
+        notification_id: four_favori
+        title: Four – favori
+        message: 'Les 16 favoris sont pris : supprimez-en un d’abord.'
+    - stop: plein
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.four_favori_{{ slot }}
+    data:
+      value: '{{ valeur[:255] }}'
+  - action: persistent_notification.create
+    data:
+      notification_id: four_favori
+      title: ⭐ Favori ajouté
+      message: « {{ valeur.split('|')[0] }} » est dans vos favoris.
+four_alexa_1:
+  alias: Four Pommes de terre grenaille
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°1 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_1'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_2:
+  alias: Four Pizza fraîche
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°2 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_2'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_3:
+  alias: Four Gratin de pâtes
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°3 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_3'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_4:
+  alias: Four Baguette précuite
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°4 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_4'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_5:
+  alias: Four Nems & croustillants
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°5 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_5'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_6:
+  alias: Four Dorade entière en papillote
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°6 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_6'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_7:
+  alias: Four Colin d’Alaska croûte parmesan
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°7 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_7'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_8:
+  alias: Four Saucisses de campagne
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°8 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_8'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_9:
+  alias: Four Croque-monsieur
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°9 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_9'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_10:
+  alias: Four Viennoiseries de la veille
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°10 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_10'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_alexa_11:
+  alias: Four Baguette de la veille
+  icon: mdi:account-voice
+  mode: single
+  description: 'Commande vocale : prépare le favori n°11 du four.'
+  sequence:
+  - variables:
+      v: '{{ states(''input_text.four_favori_11'').split(''|'') }}'
+  - action: script.four_favori
+    data:
+      nom: '{{ v[0] }}'
+      program: '{{ v[1] }}'
+      temperature: '{{ v[2] | int(0) }}'
+      duree: '{{ v[3] | int(0) }}'
+      prechauffage: '{{ v[4] == ''1'' }}'
+      program2: '{{ v[5] if v|count > 5 else '''' }}'
+      temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
+      duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
