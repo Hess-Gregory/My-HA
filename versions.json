@@ -100,9 +100,9 @@
     "version": "0.3.0"
   },
   ".storage/lovelace.maison_pollution": {
-    "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
-    "last_update": "2026-10-01T18:41:24.194696+02:00",
-    "version": "0.3.0"
+    "last_change": "journal imprimable genere sur Home Assistant, conseils et risques par polluant et par niveau",
+    "last_update": "2026-10-01T20:31:50.605696+02:00",
+    "version": "0.4.0"
   },
   ".storage/lovelace.maison_securite": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
@@ -232,6 +232,11 @@
   "packages/matteo/matteo_tiers.yaml": {
     "last_change": "trajet fait par une autre personne (Catherine, autres), hors banque ou compte",
     "last_update": "2026-10-01T19:17:08.059138+02:00",
+    "version": "0.1.0"
+  },
+  "packages/pollution_journal.yaml": {
+    "last_change": "journal imprimable genere sur Home Assistant, conseils et risques par polluant et par niveau",
+    "last_update": "2026-10-01T20:31:50.605696+02:00",
     "version": "0.1.0"
   },
   "packages/pollution_meteo.yaml": {
