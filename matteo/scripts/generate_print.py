@@ -98,7 +98,7 @@ h2{margin:0 0 12px;font-size:20px}table{width:100%;border-collapse:collapse}
 <label>À partir de <input type="month" id="m"></label>
 <select id="n"><option value="1">1 mois</option><option value="3">3 mois</option><option value="6">6 mois</option><option value="12">12 mois</option></select>
 <select id="v"><option value="cal">Calendrier</option><option value="list">Liste</option><option value="both">Calendrier + liste</option></select>
-<button onclick="window.print()">Imprimer / PDF</button><button onclick="location.href=location.pathname.replace('imprimer_','planning_').replace('.html','.csv')">Excel (.csv)</button></div><main id="out"></main>
+<button onclick="window.print()">Imprimer / PDF</button><button onclick="location.href=location.pathname.replace('imprimer_','planning_').replace('.html','.csv')+'?t='+Date.now()">Excel (.csv)</button></div><main id="out"></main>
 <script>
 const D=__DATA__;const TC=x=>x&&(x.indexOf('(hors banque)')>=0||x.indexOf('(compté comme')>=0)?'<span style="color:#00838F;font-weight:700">'+x+'</span>':x;const MO=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const CAT={WG:'Week-end chez papa',WE:'Week-end chez maman',VG:'Congé chez papa',VE:'Congé chez maman',AG:'Autre date chez papa',AE:'Autre date chez maman'};
@@ -115,7 +115,7 @@ let c=0;for(let i=0;i<lead;i++){h+='<td class="out"></td>';c++;}const today=iso(
 for(let d=1;d<=n;d++){const k=Y*10000+(M+1)*100+d,o=day[k];let st='',cl=[];const isv=o&&o.p.k.startsWith('VAC_');
 if(o){const col=COL[o.p.cat];st=o.first?'background:repeating-linear-gradient(135deg,'+hex2(col,.55)+' 0 5px,'+hex2(col,.12)+' 5px 10px)':'background:'+hex2(col,.35);}else if(off[k])st='background:rgba(255,179,0,.12)';
 if(off[k]&&!isv)cl.push('und');else if(fri[k]&&!isv)cl.push('fri');if(k===today)cl.push('today');
-let lab='';if(o&&o.first)lab+='<div class="lab"><b>'+(o.p.papa?'Papa':'Maman')+'</b> · '+o.p.t+(o.p.a?'<br>↗ '+TC(o.p.a):'')+'</div>';if(o&&o.first&&(o.p.mo||o.p.no))lab+='<div class="lab">'+(o.p.mo?'⚖️ '+o.p.mo:'')+(o.p.no?(o.p.mo?'<br>':'')+'📝 '+o.p.no:'')+'</div>';if(o&&o.last&&o.p.r)lab+='<div class="lab">↘ '+TC(o.p.r)+'</div>';
+let lab='';if(o&&o.first)lab+='<div class="lab"><b>'+(o.p.papa?'Papa':'Maman')+'</b> · '+o.p.t+(o.p.a?'<br>↗ '+TC(o.p.a):'')+'</div>';if(o&&o.last&&o.p.r)lab+='<div class="lab">↘ '+TC(o.p.r)+'</div>';
 if(off[k]&&(!day[k-1]||!off[k-1]))lab+='<div class="lab">📚 '+off[k]+'</div>';(ev[k]||[]).forEach(t=>lab+='<div class="lab">'+t+'</div>');
 h+='<td class="'+cl.join(' ')+'" style="'+st+'"><div class="n">'+d+'</div>'+lab+'</td>';c++;if(c%7===0&&d<n)h+='</tr><tr>';}
 while(c%7){h+='<td class="out"></td>';c++;}h+='</tr></table>'+legend()+'</div>';return h;}
