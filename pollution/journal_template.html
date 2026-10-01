@@ -40,7 +40,7 @@ function concEst(k,a){const b=BP[k];if(!b||a==null)return null;let i=IB.findInde
 function sciTxt(p,catf,LBLs){const k=p.dom;if(!k||!CAUT[k])return '';const lv=CAT.indexOf(catf(p[k]!=null?p[k]:p.aqi)),c=catf(p.aqi);const ce=concEst(k,p[k]);
  let s=c[2]+' <b>'+c[1]+'</b> à cause de '+LBLs[k]+' (indice '+(p[k]!=null?Math.round(p[k]):'—')+') — '+CAUT[k][Math.max(0,lv)];
  if(lv>=1)s+='<br>👥 Personnes les plus exposées : '+GRP[k]+'.';
- s+='<br>🔬 <b>'+(POL[k]?POL[k][0]:LBLs[k])+'</b> : '+EFF[k];
+ s+='<br>🔬 <b>'+(POL[k]?POL[k][0]:LBLs[k])+'</b> : '+EFF[k];if(k=='pm10'||k=='pm25')s+='<br>🪟 <b>Retombées sur vitrages et véhicules</b> : les particules les plus grosses se déposent sur les vitres, carrosseries, mobilier de jardin et potagers. Selon leur composition, qui ne peut être connue que par analyse, ces dépôts peuvent être acides, alcalins ou abrasifs. Frotter à sec peut rayer les surfaces : rincer à l’eau avant de nettoyer, et laver légumes et mains. Pour documenter : photos datées au même endroit, et prélèvement sur une surface propre (lingette ou ruban adhésif, sachet fermé, date et heure). Seule une analyse en laboratoire ou une jauge de retombées (ISSeP) établit la composition et l’origine.';
  if(ce!=null){const o=OMS[k],u=UE[k],r=ce/o[0];s+='<br>📏 Concentration estimée ≈ <b>'+Math.round(ce)+' µg/m³</b> (pic horaire) — valeur guide OMS 2021 : '+o[0]+' µg/m³ ('+o[1]+')'+(r>=1?', soit <b>×'+r.toFixed(1)+'</b>':'')+' ; limite UE : '+u[0]+' µg/m³ ('+u[1]+').';}
  return s;}
 
