@@ -33,6 +33,10 @@ def main(a):
     lieu_a, lieu_r = arg(a, 23, None), arg(a, 24, None)
     ml_code, ml = arg(a, 25, None), arg(a, 26, "Aucun")
     inv, comp = arg(a, 27, None), arg(a, 28, "")
+    # Trajet fait par une autre personne (Catherine, autre côté Grégory / Élodie) : hors banque
+    tiers_a, tiers_r = arg(a, 29, "").strip(), arg(a, 30, "").strip()
+    _tc = (arg(a, 31, "off") + "::").split(":")
+    tiers_c = _tc[0] == "on"   # coché : le trajet compte comme s'il était fait par le parent choisi
 
     content = load(); data = content["data"]
     ts = now_iso()
@@ -86,6 +90,24 @@ def main(a):
         entry["motif_lieu_code"], entry["motif_lieu"] = (ml_code, ml) if diff and ml_code != "NONE" else ("NONE", "Aucun")
     entry["reason_code"] = "BANK_PLUS_1" if code_retour == "C" else ("COMPENSATION" if code_retour == "D" or code_aller == "B" else "NONE")
     entry["bank_delta"] = (1 if code_retour == "C" else 0) - (1 if code_retour == "D" else 0) - (1 if code_aller == "B" else 0)
+    if len(a) > 29:
+        entry["tiers_aller"], entry["tiers_retour"] = tiers_a, tiers_r
+    if len(a) > 31:
+        entry["tiers_compte"] = tiers_c
+        entry["tiers_comme_aller"], entry["tiers_comme_retour"] = (_tc[1] if tiers_a else ""), (_tc[2] if tiers_r else "")
+    tiers_a, tiers_r = entry.get("tiers_aller", ""), entry.get("tiers_retour", "")
+    if entry.get("tiers_compte"):
+        tiers_a, tiers_r = "", ""
+    if tiers_a or tiers_r:
+        ba = 0 if tiers_a else (1 if code_aller == "B" else 0)
+        br = 0 if tiers_r else ((1 if code_retour == "C" else 0) - (1 if code_retour == "D" else 0))
+        entry["bank_delta"] = br - ba
+        if tiers_a:
+            entry["motif_aller"], entry["report_date_aller"] = "", ""
+        if tiers_r:
+            entry["report_date"] = ""
+        entry["reason_code"] = ("BANK_PLUS_1" if code_retour == "C" and not tiers_r else
+                                ("COMPENSATION" if (code_retour == "D" and not tiers_r) or (code_aller == "B" and not tiers_a) else "TIERS"))
 
     # Inversion permanente des retours : ce retour passe à l'autre parent et l'alternance repart d'ici
     # (ancre reprise_alternance) pour toutes les dates suivantes. Le parent qui fait ainsi un retour de plus
@@ -131,14 +153,14 @@ def main(a):
         e2 = data.get(k2, {})
         if e2.get("hide") or k2 in MASQ:
             return 0
-        u = (1 if e2.get("code_retour") == "D" and not e2.get("report_date") else 0) + \
-            (1 if e2.get("code_aller") == "B" and not e2.get("report_date_aller") else 0)
+        u = (1 if e2.get("code_retour") == "D" and not e2.get("report_date") and not (e2.get("tiers_retour") and not e2.get("tiers_compte")) else 0) + \
+            (1 if e2.get("code_aller") == "B" and not e2.get("report_date_aller") and not (e2.get("tiers_aller") and not e2.get("tiers_compte")) else 0)
         return u - len([x for x in e2.get("soldee_par", []) if x != key])
     old_sd = entry.get("solde_dette", "")
     if old_sd and old_sd in data:
         data[old_sd]["soldee_par"] = [x for x in data[old_sd].get("soldee_par", []) if x != key]
     entry["solde_dette"] = ""
-    if code_retour == "C" and not entry.get("compense_inversion"):
+    if code_retour == "C" and not entry.get("compense_inversion") and not tiers_r:
         dettes = sorted([k2 for k2 in data if k2 != key and unites(k2) > 0],
                         key=lambda k2: entry_start(data[k2]) or datetime.max.date())
         if dettes:

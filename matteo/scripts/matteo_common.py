@@ -244,7 +244,7 @@ def compenser_inversion(data, comp, pivot, code_pivot, date_pivot, user, ts):
     e.update({"code_retour": cc, "acteur_retour": "Grégory (+1 Banque)" if cc == "C" else "Élodie / Olivier (Rattrapage)",
               "acteur_retour_code": "GREGORY" if cc == "C" else "ELODIE", "compense_inversion": pivot, "compense_inversion_au": date_pivot,
               "reason_code": "COMPENSATION_INVERSION", "report_date": pivot if cc == "D" else "", "solde_dette": "",
-              "bank_delta": (1 if cc == "C" else -1) - (1 if e.get("code_aller") == "B" else 0),
+              "bank_delta": (1 if cc == "C" else -1) - (1 if e.get("code_aller") == "B" and not (e.get("tiers_aller") and not e.get("tiers_compte")) else 0),
               "motif-2": "Autre (saisir motif libre, remplir champ libre)", "motif-2_code": "AUTRE REPORT",
               "motif_libre": lib, "lieu_retour": "MAURAGE" if cc == "C" else "",
               "modified_at": ts, "modification_count": e.get("modification_count", 0) + 1})
@@ -264,7 +264,7 @@ def nettoyer_inversions(data):
         e["code_retour"] = n
         if n in _RET:
             e["acteur_retour"], e["acteur_retour_code"] = _RET[n]
-        e["bank_delta"] = -(1 if e.get("code_aller") == "B" else 0)
+        e["bank_delta"] = -(1 if e.get("code_aller") == "B" and not (e.get("tiers_aller") and not e.get("tiers_compte")) else 0)
         e["reason_code"] = "COMPENSATION" if e.get("code_aller") == "B" else "NONE"
         e["report_date"] = ""; e.pop("compense_inversion", None); e.pop("compense_inversion_au", None)
         if str(e.get("motif_libre", "")).startswith("Compensation de l'inversion"):
@@ -335,7 +335,7 @@ def ecrire_moteur(content):
             "date_key": k, "du": it.get("date_du", ""), "au": it.get("date_au", ""),
             "type": it.get("type_action", ""), "type_code": it.get("type_action_code", ""),
             "gardien": it.get("gardien_force", ""), "aller": it.get("acteur_aller", ""), "retour": it.get("acteur_retour", ""),
-            "code_aller": it.get("code_aller", ""), "code_retour": it.get("code_retour", ""),
+            "code_aller": it.get("code_aller", ""), "code_retour": it.get("code_retour", ""), "tiers_aller": it.get("tiers_aller", ""), "tiers_compte": bool(it.get("tiers_compte", False)), "tiers_comme_aller": it.get("tiers_comme_aller", ""), "tiers_comme_retour": it.get("tiers_comme_retour", ""), "tiers_retour": it.get("tiers_retour", ""), "tiers_aller_label": {"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(it.get("tiers_aller", ""), ""), "tiers_retour_label": {"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(it.get("tiers_retour", ""), ""),
             "motif": it.get("motif-1", "Aucun"), "motif_code": it.get("motif-1_code", "NONE"),
             "motif_libre": it.get("motif_libre", ""), "motif2": it.get("motif-2", "Aucun"),
             "motif2_code": it.get("motif-2_code", "NONE"), "motif_aller": it.get("motif_aller", ""),

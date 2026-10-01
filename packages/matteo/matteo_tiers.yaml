@@ -1,0 +1,84 @@
+# =====================================================================
+# Planning Matteo – trajet (aller / retour) fait par une autre personne
+# Catherine, une autre personne côté Grégory ou côté Élodie.
+# Par défaut le trajet est HORS BANQUE. Si la case « Compter » est cochée,
+# il compte comme s'il avait été fait par le parent choisi (Catherine :
+# Élodie / Olivier par défaut, modifiable ; autre côté Grégory : Grégory ;
+# autre côté Élodie : Élodie / Olivier) et les champs Aller / Retour sont
+# mis à jour en conséquence (A/B pour l'aller, A/B/C/D selon le tour pour le retour).
+# =====================================================================
+input_select:
+  matteo_form_tiers_comme_aller:
+    name: "Compter l'aller comme"
+    icon: mdi:scale-balance
+    options:
+      - "Élodie / Olivier"
+      - "Grégory"
+  matteo_form_tiers_comme_retour:
+    name: "Compter le retour comme"
+    icon: mdi:scale-balance
+    options:
+      - "Élodie / Olivier"
+      - "Grégory"
+
+automation:
+  - id: matteo_form_tiers_sync
+    alias: "Matteo – Formulaire : trajet fait par une autre personne"
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: input_select.matteo_form_tiers_aller
+        id: ta
+      - trigger: state
+        entity_id: input_select.matteo_form_tiers_retour
+        id: tr
+      - trigger: state
+        entity_id:
+          - input_boolean.matteo_form_tiers_compte
+          - input_select.matteo_form_tiers_comme_aller
+          - input_select.matteo_form_tiers_comme_retour
+        id: compte
+    variables:
+      ta: "{{ states('input_select.matteo_form_tiers_aller') }}"
+      tr: "{{ states('input_select.matteo_form_tiers_retour') }}"
+      non: "Non — le titulaire"
+    actions:
+      # Personne choisie -> parent pris en compte par défaut
+      - if:
+          - condition: template
+            value_template: "{{ trigger.id == 'ta' and ta != non }}"
+        then:
+          - action: input_select.select_option
+            target: { entity_id: input_select.matteo_form_tiers_comme_aller }
+            data: { option: "{{ 'Grégory' if 'Grégory' in ta else 'Élodie / Olivier' }}" }
+      - if:
+          - condition: template
+            value_template: "{{ trigger.id == 'tr' and tr != non }}"
+        then:
+          - action: input_select.select_option
+            target: { entity_id: input_select.matteo_form_tiers_comme_retour }
+            data: { option: "{{ 'Grégory' if 'Grégory' in tr else 'Élodie / Olivier' }}" }
+      - condition: state
+        entity_id: input_boolean.matteo_form_tiers_compte
+        state: "on"
+      # Trajet compté : Aller / Retour = parent pris en compte
+      - if:
+          - condition: template
+            value_template: "{{ ta != non }}"
+        then:
+          - action: input_select.select_option
+            target: { entity_id: input_select.matteo_form_aller }
+            data:
+              option: "{{ 'A — Grégory' if is_state('input_select.matteo_form_tiers_comme_aller', 'Grégory') else 'B — Élodie / Olivier' }}"
+      - if:
+          - condition: template
+            value_template: "{{ tr != non }}"
+        then:
+          - action: input_select.select_option
+            target: { entity_id: input_select.matteo_form_retour }
+            data:
+              option: >-
+                {% set att = states('sensor.matteo_form_retour_attendu') %}
+                {% if is_state('input_select.matteo_form_tiers_comme_retour', 'Grégory') %}{% set c = 'C' if att == 'B' else 'A' %}
+                {% else %}{% set c = 'D' if att == 'A' else 'B' %}{% endif %}
+                {{ state_attr('input_select.matteo_form_retour', 'options') | select('match', c ~ ' ') | list | first }}

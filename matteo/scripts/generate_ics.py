@@ -74,8 +74,8 @@ def main():
         elif tc not in ("WEEKEND_GREGORY", "WEEKEND_ELODIE"):
             titre += " — " + e.get("type_action", "")
         desc = []
-        if e.get("code_aller") in nom: desc.append("Aller : " + nom[e["code_aller"]] + (" — " + lieu_label(e.get("lieu_aller")) if e.get("code_aller") == "A" else ""))
-        if e.get("code_retour") in nom: desc.append("Retour : " + nom[e["code_retour"]] + (" — " + lieu_label(e.get("lieu_retour")) if e.get("code_retour") in ("A", "C") else ""))
+        if e.get("code_aller") in nom: desc.append("Aller : " + ({"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(e.get("tiers_aller"), "") + (" (compté)" if e.get("tiers_compte") else " (hors banque)") if e.get("tiers_aller") else nom[e["code_aller"]]) + (" — " + lieu_label(e.get("lieu_aller")) if e.get("code_aller") == "A" else ""))
+        if e.get("code_retour") in nom: desc.append("Retour : " + ({"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(e.get("tiers_retour"), "") + (" (compté)" if e.get("tiers_compte") else " (hors banque)") if e.get("tiers_retour") else nom[e["code_retour"]]) + (" — " + lieu_label(e.get("lieu_retour")) if e.get("code_retour") in ("A", "C") else ""))
         L += ["BEGIN:VEVENT", "UID:%s@planning-matteo" % k, "DTSTAMP:" + now,
               "DTSTART;VALUE=DATE:" + du.strftime("%Y%m%d"), "DTEND;VALUE=DATE:" + (au + timedelta(days=1)).strftime("%Y%m%d"),
               "SUMMARY:" + esc(titre), "DESCRIPTION:" + esc("\n".join(desc)), "TRANSP:TRANSPARENT", "END:VEVENT"]

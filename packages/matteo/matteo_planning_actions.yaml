@@ -33,6 +33,9 @@ input_boolean:
   matteo_a_une_selection:
     name: "Planning Matteo – Une ligne est sélectionnée"
     icon: mdi:cursor-default-click
+  matteo_form_tiers_compte:
+    name: "Compter le trajet fait par l'autre personne"
+    icon: mdi:scale-balance
   matteo_form_inverser_retours:
     name: "Inverser les retours à partir de cette date (permanent)"
     icon: mdi:swap-vertical-bold
@@ -83,6 +86,22 @@ input_select:
       - "C — Grégory (+1 Banque)"
       - "D — Élodie / Olivier (Compensation)"
       - "E — Aucun (Chez Maman)"
+  matteo_form_tiers_aller:
+    name: "Aller fait par une autre personne"
+    icon: mdi:account-switch
+    options:
+      - "Non — le titulaire"
+      - "Catherine"
+      - "Autre (côté Grégory)"
+      - "Autre (côté Élodie)"
+  matteo_form_tiers_retour:
+    name: "Retour fait par une autre personne"
+    icon: mdi:account-switch
+    options:
+      - "Non — le titulaire"
+      - "Catherine"
+      - "Autre (côté Grégory)"
+      - "Autre (côté Élodie)"
   matteo_form_rattrapage:
     name: "Trajet rattrapé"
     icon: mdi:swap-horizontal
@@ -137,7 +156,7 @@ shell_command:
     "{{ acteur_aller }}" "{{ acteur_aller_code }}" "{{ acteur_retour }}" "{{ acteur_retour_code }}"
     "{{ code_aller }}" "{{ code_retour }}" "{{ motif_code }}" "{{ motif }}" "{{ motif_libre }}"
     "{{ report_date }}" "false" "ha" "{{ motif2_code }}" "{{ motif2 }}"
-    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}" "{{ inversion }}" "{{ comp_key }}"
+    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}" "{{ inversion }}" "{{ comp_key }}" "{{ tiers_aller }}" "{{ tiers_retour }}" "{{ tiers_compte }}"
   matteo_override_supprimer: >-
     python3 /config/matteo/scripts/matteo_delete_override.py "{{ date_key }}"
   matteo_override_flags: >-
@@ -242,6 +261,23 @@ script:
             {% set c = w.code_retour | default('') or ('A' if papa else 'E') %}
             {{ state_attr('input_select.matteo_form_retour', 'options')
                | select('match', c ~ ' ') | list | first | default('E — Aucun (Chez Maman)') }}
+      - action: "input_boolean.turn_{{ 'on' if w.tiers_compte | default(false) else 'off' }}"
+        target: { entity_id: input_boolean.matteo_form_tiers_compte }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_tiers_aller }
+        data:
+          option: "{{ {'CATHERINE': 'Catherine', 'AUTRE_GREGORY': 'Autre (côté Grégory)', 'AUTRE_ELODIE': 'Autre (côté Élodie)'}.get(w.tiers_aller | default(''), 'Non — le titulaire') }}"
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_tiers_retour }
+        data:
+          option: "{{ {'CATHERINE': 'Catherine', 'AUTRE_GREGORY': 'Autre (côté Grégory)', 'AUTRE_ELODIE': 'Autre (côté Élodie)'}.get(w.tiers_retour | default(''), 'Non — le titulaire') }}"
+      - delay: { seconds: 1 }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_tiers_comme_aller }
+        data: { option: "{{ 'Grégory' if w.tiers_comme_aller | default('') == 'GREGORY' else 'Élodie / Olivier' }}" }
+      - action: input_select.select_option
+        target: { entity_id: input_select.matteo_form_tiers_comme_retour }
+        data: { option: "{{ 'Grégory' if w.tiers_comme_retour | default('') == 'GREGORY' else 'Élodie / Olivier' }}" }
       - action: input_select.select_option
         target: { entity_id: input_select.matteo_form_motif2 }
         data:
@@ -343,6 +379,8 @@ script:
             - input_select.matteo_form_lieu_aller
             - input_select.matteo_form_lieu_retour
             - input_select.matteo_form_motif_lieu
+            - input_select.matteo_form_tiers_aller
+            - input_select.matteo_form_tiers_retour
       - variables:
           fri: "{{ (now() + timedelta(days=(4 - now().weekday()) % 7)) }}"
       - action: input_datetime.set_datetime
@@ -354,7 +392,7 @@ script:
       - action: input_select.select_first
         target: { entity_id: input_select.matteo_form_garde }
       - action: input_boolean.turn_off
-        target: { entity_id: input_boolean.matteo_form_inverser_retours }
+        target: { entity_id: [input_boolean.matteo_form_inverser_retours, input_boolean.matteo_form_tiers_compte] }
       - action: script.matteo_planning_maj_rattrapage
       - action: script.matteo_planning_maj_echange
 
@@ -575,6 +613,9 @@ script:
           gardien: "{{ 'Maman' if chez_maman else 'Papa' }}"
           echange_avec: "{{ echange_avec | trim }}"
           inversion: "{{ 'on' if inv else 'off' }}"
+          tiers_aller: "{{ {'Catherine': 'CATHERINE', 'Autre (côté Grégory)': 'AUTRE_GREGORY', 'Autre (côté Élodie)': 'AUTRE_ELODIE'}.get(states('input_select.matteo_form_tiers_aller'), '') if ca in ['A', 'B'] else '' }}"
+          tiers_compte: "{{ ('on' if is_state('input_boolean.matteo_form_tiers_compte', 'on') else 'off') ~ ':' ~ ('GREGORY' if is_state('input_select.matteo_form_tiers_comme_aller', 'Grégory') else 'ELODIE') ~ ':' ~ ('GREGORY' if is_state('input_select.matteo_form_tiers_comme_retour', 'Grégory') else 'ELODIE') }}"
+          tiers_retour: "{{ {'Catherine': 'CATHERINE', 'Autre (côté Grégory)': 'AUTRE_GREGORY', 'Autre (côté Élodie)': 'AUTRE_ELODIE'}.get(states('input_select.matteo_form_tiers_retour'), '') if cr in ['A', 'B', 'C', 'D'] else '' }}"
           comp_key: >-
             {{ (ws | selectattr('au', 'eq', comp_sel[0:10]) | map(attribute='date_key') | list | first | default('')) if inv else '' }}
           notes: >-

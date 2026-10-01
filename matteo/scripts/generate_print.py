@@ -8,6 +8,7 @@ from matteo_common import load, lieu_label
 
 TOKEN_FILE = "/config/matteo/data/ics_token"
 OUT_DIR = "/config/www/matteo"
+TIERS = {"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}
 NOM = {"A": "Grégory", "B": "Élodie / Olivier", "C": "Grégory (non respecté)", "D": "Élodie / Olivier (rattrapage)"}
 
 
@@ -19,11 +20,12 @@ def d(s):
 # Motifs lisibles d'une période (aller, retour, lieu, motif libre) ; ignore « Aucun ».
 def motifs(e):
     vals = []
-    for k in ("motif-1", "motif_aller", "motif-2", "motif_lieu", "motif_libre"):
+    seen = set()
+    for k, lab in (("motif-1", "Changement"), ("motif_aller", "Aller"), ("motif-2", "Retour"), ("motif_lieu", "Lieu"), ("motif_libre", "Précision")):
         v = str(e.get(k) or "").strip()
-        if v and v.lower() not in ("aucun", "none") and v not in vals:
-            vals.append(v)
-    return " · ".join(vals)
+        if v and v.lower() not in ("aucun", "none") and v not in seen:
+            seen.add(v); vals.append(lab + " : " + v)
+    return " | ".join(vals)
 
 
 # Écrit la page imprimable HTML (données injectées en JSON) et le CSV Excel ; renvoie l'URL de la page.
@@ -42,6 +44,10 @@ def build():
         per.append({"k": k, "du": du.isoformat(), "au": au.isoformat(), "cat": cat, "papa": papa,
                     "t": e.get("vac_nom") if k.startswith("VAC_") else e.get("type_action", ""),
                     "a": NOM.get(e.get("code_aller"), "") + ((" à " + lieu_label(e.get("lieu_aller"))) if e.get("code_aller") == "A" and (e.get("lieu_aller") or "MAURAGE") != "MAURAGE" else ""), "r": NOM.get(e.get("code_retour"), "") + ((" à " + lieu_label(e.get("lieu_retour"))) if e.get("code_retour") in ("A", "C") and (e.get("lieu_retour") or "MAURAGE") != "MAURAGE" else ""), "cr": e.get("code_retour", ""), "mo": motifs(e), "no": str(e.get("notes") or "").strip()})
+        if e.get("tiers_aller"):
+            per[-1]["a"] = TIERS.get(e["tiers_aller"], "") + (" · compté" if e.get("tiers_compte") else " · hors banque")
+        if e.get("tiers_retour"):
+            per[-1]["r"] = TIERS.get(e["tiers_retour"], "") + (" · compté" if e.get("tiers_compte") else " · hors banque")
     per.sort(key=lambda p: p["du"])
     payload = {"per": per, "vac": c.get("vacances", []), "ev": c.get("evenements", []), "gen": datetime.now().strftime("%d/%m/%Y %H:%M")}
     html = TEMPLATE.replace("__DATA__", json.dumps(payload, ensure_ascii=False))
@@ -92,7 +98,7 @@ h2{margin:0 0 12px;font-size:20px}table{width:100%;border-collapse:collapse}
 <select id="v"><option value="cal">Calendrier</option><option value="list">Liste</option><option value="both">Calendrier + liste</option></select>
 <button onclick="window.print()">Imprimer / PDF</button><button onclick="location.href=location.pathname.replace('imprimer_','planning_').replace('.html','.csv')">Excel (.csv)</button></div><main id="out"></main>
 <script>
-const D=__DATA__;const MO=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const D=__DATA__;const TC=x=>x&&x.indexOf(' · ')>=0?'<span style="color:#00838F;font-weight:700">'+x+'</span>':x;const MO=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const CAT={WG:'Week-end chez papa',WE:'Week-end chez maman',VG:'Congé chez papa',VE:'Congé chez maman',AG:'Autre date chez papa',AE:'Autre date chez maman'};
 const iso=d=>d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();const P=s=>new Date(s+'T00:00:00');
 const fr=d=>String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
@@ -107,13 +113,13 @@ let c=0;for(let i=0;i<lead;i++){h+='<td class="out"></td>';c++;}const today=iso(
 for(let d=1;d<=n;d++){const k=Y*10000+(M+1)*100+d,o=day[k];let st='',cl=[];const isv=o&&o.p.k.startsWith('VAC_');
 if(o){const col=COL[o.p.cat];st=o.first?'background:repeating-linear-gradient(135deg,'+hex2(col,.55)+' 0 5px,'+hex2(col,.12)+' 5px 10px)':'background:'+hex2(col,.35);}else if(off[k])st='background:rgba(255,179,0,.12)';
 if(off[k]&&!isv)cl.push('und');else if(fri[k]&&!isv)cl.push('fri');if(k===today)cl.push('today');
-let lab='';if(o&&o.first)lab+='<div class="lab"><b>'+(o.p.papa?'Papa':'Maman')+'</b> · '+o.p.t+(o.p.a?'<br>↗ '+o.p.a:'')+'</div>';if(o&&o.first&&(o.p.mo||o.p.no))lab+='<div class="lab">'+(o.p.mo?'⚖️ '+o.p.mo:'')+(o.p.no?(o.p.mo?'<br>':'')+'📝 '+o.p.no:'')+'</div>';if(o&&o.last&&o.p.r)lab+='<div class="lab">↘ '+o.p.r+'</div>';
+let lab='';if(o&&o.first)lab+='<div class="lab"><b>'+(o.p.papa?'Papa':'Maman')+'</b> · '+o.p.t+(o.p.a?'<br>↗ '+TC(o.p.a):'')+'</div>';if(o&&o.first&&(o.p.mo||o.p.no))lab+='<div class="lab">'+(o.p.mo?'⚖️ '+o.p.mo:'')+(o.p.no?(o.p.mo?'<br>':'')+'📝 '+o.p.no:'')+'</div>';if(o&&o.last&&o.p.r)lab+='<div class="lab">↘ '+TC(o.p.r)+'</div>';
 if(off[k]&&(!day[k-1]||!off[k-1]))lab+='<div class="lab">📚 '+off[k]+'</div>';(ev[k]||[]).forEach(t=>lab+='<div class="lab">'+t+'</div>');
 h+='<td class="'+cl.join(' ')+'" style="'+st+'"><div class="n">'+d+'</div>'+lab+'</td>';c++;if(c%7===0&&d<n)h+='</tr><tr>';}
 while(c%7){h+='<td class="out"></td>';c++;}h+='</tr></table>'+legend()+'</div>';return h;}
 function legend(){return '<div class="leg">'+Object.keys(CAT).map(k=>'<span><span class="dot" style="background:'+hex2(COL[k],.6)+'"></span>'+CAT[k]+'</span>').join('')+'<span><span class="dot" style="background:rgba(255,179,0,.2);border-bottom:3px solid #FFB300"></span>Congé officiel non défini</span><span>hachuré = 1er jour (arrivée le soir)</span><span>🎂 anniversaire · 🎉 fête · ❤️ Saint-Valentin</span></div><div class="foot">Planning de Matteo — généré le '+D.gen+'</div>';}
 function list(a,b){const rows=D.per.filter(p=>P(p.au)>=a&&P(p.du)<=b);let h='<div class="page"><h2>Liste des périodes — '+fr(a)+' au '+fr(b)+'</h2><table class="list"><tr><th>Du</th><th>Au</th><th>Chez</th><th>Période</th><th>Aller</th><th>Retour</th><th>Motif</th><th>Notes</th></tr>';
-rows.forEach(p=>{const x=P(p.du),y=P(p.au);h+='<tr><td>'+JJ[x.getDay()]+' '+fr(x)+'</td><td>'+JJ[y.getDay()]+' '+fr(y)+'</td><td><span class="dot" style="background:'+hex2(COL[p.cat],.6)+'"></span>'+(p.papa?'Papa':'Maman')+'</td><td>'+p.t+'</td><td>'+p.a+'</td><td>'+p.r+'</td><td>'+(p.mo||'')+'</td><td>'+(p.no||'')+'</td></tr>';});
+rows.forEach(p=>{const x=P(p.du),y=P(p.au);h+='<tr><td>'+JJ[x.getDay()]+' '+fr(x)+'</td><td>'+JJ[y.getDay()]+' '+fr(y)+'</td><td><span class="dot" style="background:'+hex2(COL[p.cat],.6)+'"></span>'+(p.papa?'Papa':'Maman')+'</td><td>'+p.t+'</td><td>'+TC(p.a)+'</td><td>'+TC(p.r)+'</td><td>'+(p.mo||'')+'</td><td>'+(p.no||'')+'</td></tr>';});
 return h+'</table>'+legend()+'</div>';}
 function render(){const [y,m]=document.getElementById('m').value.split('-').map(Number);const n=+document.getElementById('n').value,v=document.getElementById('v').value;let h='';
 if(v!=='list')for(let i=0;i<n;i++){const d=new Date(y,m-1+i,1);h+=month(d.getFullYear(),d.getMonth());}

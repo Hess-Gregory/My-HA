@@ -93,11 +93,11 @@ automation:
         {% for i in rows if i %}
           {% set ca = (i.aller_c | default('|'))[0:1] %}{% set cr = (i.retour_c | default('|'))[0:1] %}
           {% if i.du | default('') == demain and ca in ['A', 'B'] %}
-            {% set ns.l = ns.l + ['🚗 Aller : ' ~ (('tu vas chercher Matteo à ' ~ (i.lieu_a | default('') or 'Maurage')) if ca == 'A' else 'Élodie / Olivier amènent Matteo')] %}
+            {% set ns.l = ns.l + ['🚗 Aller : ' ~ (((i.tiers_aller_label ~ ' fait l’aller' ~ ('' if i.tiers_compte | default(false) else ' (hors banque)')) if i.tiers_aller_label | default('') else ('tu vas chercher Matteo à ' ~ (i.lieu_a | default('') or 'Maurage')) if ca == 'A' else 'Élodie / Olivier amènent Matteo'))] %}
             {% set ns.c = ns.c or i.conge | default('') %}{% set ns.n = ns.n or i.notes | default('') %}
           {% endif %}
           {% if i.au | default('') == demain and cr in ['A', 'B', 'C', 'D'] %}
-            {% set ns.l = ns.l + ['🏠 Retour : ' ~ (('tu ramènes Matteo à ' ~ (i.lieu_r | default('') or 'Maurage')) if cr in ['A', 'C'] else 'Élodie / Olivier viennent chercher Matteo')] %}
+            {% set ns.l = ns.l + ['🏠 Retour : ' ~ (((i.tiers_retour_label ~ ' fait le retour' ~ ('' if i.tiers_compte | default(false) else ' (hors banque)')) if i.tiers_retour_label | default('') else ('tu ramènes Matteo à ' ~ (i.lieu_r | default('') or 'Maurage')) if cr in ['A', 'C'] else 'Élodie / Olivier viennent chercher Matteo'))] %}
             {% set ns.n = ns.n or i.notes | default('') %}
           {% endif %}
         {% endfor %}
