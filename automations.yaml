@@ -167,7 +167,7 @@
 # AJOUT - RÉARMEMENT AUTO ZONE CAVE
 # ==========================================================================
 # Réarme automatiquement la zone alarme de la cave si la porte de la cave
-# est fermée depuis plus de 5 minutes et que la zone est désarmée (oubli ou
+# est fermée depuis plus de 10 minutes et que la zone est désarmée (oubli ou
 # désactivation involontaire).
 # ==========================================================================
 - id: "cave_rearmement_auto"
@@ -180,12 +180,12 @@
       entity_id: binary_sensor.cave_sous_sol_cave_porte
       to: "off"
       for:
-        minutes: 5
+        minutes: 10
     - trigger: state
       entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
       to: disarmed
       for:
-        minutes: 5
+        minutes: 10
   conditions:
     - condition: state
       entity_id: binary_sensor.cave_sous_sol_cave_porte

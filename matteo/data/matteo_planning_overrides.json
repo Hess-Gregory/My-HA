@@ -354,18 +354,18 @@
     },
     "13-11-2026": {
       "date_key": "13-11-2026",
-      "date_du": "13/11/2026",
+      "date_du": "14/11/2026",
       "date_au": "15/11/2026",
       "type_action": "Weekend Gregory (Engis)",
       "type_action_code": "WEEKEND_GREGORY",
       "subtype": "Weekend",
       "site": "Engis",
       "gardien_force": "Papa",
-      "acteur_aller": "Grégory",
-      "acteur_aller_code": "GREGORY",
+      "acteur_aller": "Élodie / Olivier",
+      "acteur_aller_code": "ELODIE",
       "acteur_retour": "Grégory (+1 Banque)",
       "acteur_retour_code": "GREGORY",
-      "code_aller": "A",
+      "code_aller": "B",
       "code_retour": "C",
       "motif-1": "Aucun",
       "motif-1_code": "NONE",
@@ -373,10 +373,10 @@
       "report_date": "",
       "report_agreed": false,
       "reason_code": "BANK_PLUS_1",
-      "bank_delta": 1,
+      "bank_delta": 0,
       "created_at": "2026-09-24T09:36:53+00:00Z",
-      "modified_at": "2026-09-25T10:12:07+02:00",
-      "modification_count": 1,
+      "modified_at": "2026-09-29T19:14:24+02:00",
+      "modification_count": 3,
       "audit": [
         {
           "user": "script",
@@ -389,17 +389,33 @@
           "action": "upsert",
           "at": "2026-09-25T10:12:07+02:00",
           "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-09-29T19:14:19+02:00",
+          "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-09-29T19:14:24+02:00",
+          "note": "enregistré via le dashboard"
         }
       ],
       "hide": false,
       "visible_in_ui": true,
-      "motif_aller": "",
+      "motif_aller": "Compensation (aller fait par Élodie / Olivier)",
       "report_date_aller": "",
       "rattrape_par": "",
       "motif-2": "Olivier est indisponible raison professionnelle",
       "motif-2_code": "INDISPONIBLE PRO",
-      "notes": "",
+      "notes": "Mathéo fête son anniversaire avec Catherine et Gino, Catherine et le déplacement jusqu'à Engis samedi matin samedi matin",
       "solde_dette": "",
+      "lieu_aller": "",
+      "lieu_retour": "MAURAGE",
+      "motif_lieu_code": "NONE",
+      "motif_lieu": "Aucun",
       "evenements_lies": [
         {
           "nom": "Matteo",
@@ -407,7 +423,7 @@
           "date": "13/11/2026",
           "chez": "",
           "ok": null,
-          "avant": false
+          "avant": true
         }
       ],
       "evenement_ok": true
