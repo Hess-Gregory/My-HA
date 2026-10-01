@@ -135,9 +135,9 @@
     "version": "0.2.0"
   },
   "automations.yaml": {
-    "last_change": "suppression complete de flightradar24 et mise a jour de la doc",
-    "last_update": "2026-09-20T21:15:29.547315+02:00",
-    "version": "0.0.4"
+    "last_change": "modifications de Gregory (integrations, cave, planning Matteo)",
+    "last_update": "2026-10-01T18:41:22.917171+02:00",
+    "version": "0.0.5"
   },
   "configuration.yaml": {
     "last_change": "performances - historique allege des entites tres bavardes sans interet",
