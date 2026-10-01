@@ -1,0 +1,21 @@
+# =====================================================================
+# Pollution Engis – journal imprimable / exportable
+# Génère /config/www/pollution/journal.html et journal.csv à partir des
+# statistiques horaires long terme (voir /config/pollution/generate_journal.py).
+# Ouvert par les boutons « Imprimer / PDF » et « Excel » de la vue Journal & export.
+# =====================================================================
+shell_command:
+  pollution_journal: "python3 /config/pollution/generate_journal.py"
+
+automation:
+  - id: pollution_journal_maj
+    alias: "Pollution – Mettre à jour le journal imprimable"
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: "7"
+      - trigger: homeassistant
+        event: start
+    actions:
+      - delay: { seconds: 30 }
+      - action: shell_command.pollution_journal
