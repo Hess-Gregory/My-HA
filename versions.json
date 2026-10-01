@@ -65,9 +65,9 @@
     "version": "0.4.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "la personne qui fait le trajet (Catherine...) s'affiche dans le tableau, le detail et l'export",
-    "last_update": "2026-10-01T19:30:43.071274+02:00",
-    "version": "1.8.1"
+    "last_change": "calendrier imprimable sans motifs ni notes (liste uniquement), liens d'export toujours a jour",
+    "last_update": "2026-10-01T20:05:49.267417+02:00",
+    "version": "1.8.2"
   },
   ".storage/lovelace.dashboard_test": {
     "last_change": "trajet fait par une autre personne (Catherine, autres), hors banque ou compte",
