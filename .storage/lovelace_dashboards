@@ -8,7 +8,7 @@
         "id": "1_accueil",
         "show_in_sidebar": false,
         "title": "Accueil (ancien)",
-        "require_admin": false,
+        "require_admin": true,
         "mode": "storage",
         "url_path": "1-accueil",
         "icon": "mdi:monitor-dashboard"

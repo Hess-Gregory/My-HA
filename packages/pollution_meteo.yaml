@@ -1,0 +1,24 @@
+# =====================================================================
+# Pollution Engis – météo historisée pour le journal de la qualité de l'air
+# Les capteurs météo « sensor.engis_* » d'origine ne sont plus alimentés
+# depuis le 26/09/2026 ; ces copies (state_class: measurement) gardent le
+# vent et sa direction dans les statistiques long terme, lues par la vue
+# « Journal & export » du dashboard Pollution.
+# =====================================================================
+template:
+  - sensor:
+      - name: "Engis vent"
+        unique_id: engis_vent_historise
+        icon: mdi:weather-windy
+        unit_of_measurement: "km/h"
+        device_class: wind_speed
+        state_class: measurement
+        availability: "{{ is_number(states('sensor.maison_current_wind_speed')) }}"
+        state: "{{ states('sensor.maison_current_wind_speed') | float(0) }}"
+      - name: "Engis direction vent"
+        unique_id: engis_direction_vent_historise
+        icon: mdi:compass-outline
+        unit_of_measurement: "°"
+        state_class: measurement
+        availability: "{{ is_number(states('sensor.maison_current_wind_bearing')) }}"
+        state: "{{ states('sensor.maison_current_wind_bearing') | float(0) }}"

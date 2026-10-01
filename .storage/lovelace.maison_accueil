@@ -430,7 +430,7 @@
                   "type": "custom:button-card",
                   "template": "cc_room",
                   "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
-                  "name": "Ch. enfants",
+                  "name": "Chambre enfants",
                   "icon": "mdi:teddy-bear",
                   "variables": {
                     "path": "/mon-confort/chambre-enfants",
@@ -449,7 +449,7 @@
                   "type": "custom:button-card",
                   "template": "cc_room",
                   "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
-                  "name": "Ch. parents",
+                  "name": "Chambre parents",
                   "icon": "mdi:bed-king",
                   "variables": {
                     "path": "/mon-confort/chambre-parents",
@@ -675,119 +675,13 @@
                 },
                 {
                   "type": "custom:mushroom-template-card",
-                  "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
-                  "primary": "Couloir & Entrée",
-                  "icon": "mdi:door",
-                  "secondary": "{% set t = states('sensor.temp_couloir_sonoff_a480146b60_temperature') %}{% set hu = states('sensor.temp_couloir_sonoff_a480146b60_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_couloir') }} °C ({{ states('input_select.mode_couloir') }})",
-                  "icon_color": "{% set e = states('sensor.ecart_couloir') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
-                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.couloir', 'hvac_action') == 'heating' else '' }}",
-                  "badge_color": "red",
+                  "entity": "sensor.maison_distance_de_foudre",
+                  "primary": "{% set n = states('sensor.maison_compteur_de_foudre') | int(0) %}{{ 'Orage détecté' if n > 0 else 'Pas d\\'orage à proximité' }}",
+                  "secondary": "{% set n = states('sensor.maison_compteur_de_foudre') | int(0) %}{% set d = states('sensor.maison_distance_de_foudre') %}{% set a = states('sensor.maison_azimut_de_foudre') %}{% if n > 0 and is_number(d) %}⚡ {{ n }} impact(s) · le plus proche à {{ d | float | round(0) | int }} km{% if is_number(a) %}{% set i = ((((a | float) + 22.5) // 45) | int) % 8 %} · direction {{ ['N','NE','E','SE','S','SO','O','NO'][i] }}{% endif %}{% else %}Aucun impact de foudre détecté récemment{% endif %}",
+                  "icon": "mdi:weather-lightning",
+                  "icon_color": "{% set d = states('sensor.maison_distance_de_foudre') %}{% if not is_number(d) %}grey{% elif d | float < 10 %}red{% elif d | float < 30 %}orange{% else %}amber{% endif %}",
                   "multiline_secondary": true,
                   "tap_action": {
-                    "action": "navigate",
-                    "navigation_path": "/mon-confort/couloir-entree"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": "auto"
-                  },
-                  "card_mod": {
-                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
-                  "primary": "Pièce de vie",
-                  "icon": "mdi:sofa",
-                  "secondary": "{% set t = states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature') %}{% set hu = states('sensor.temp_piece_de_vie_sonoff_a480146b56_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_piece_de_vie') }} °C ({{ states('input_select.mode_piece_de_vie') }})",
-                  "icon_color": "{% set e = states('sensor.ecart_piece_de_vie') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
-                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.living', 'hvac_action') == 'heating' else '' }}",
-                  "badge_color": "red",
-                  "multiline_secondary": true,
-                  "tap_action": {
-                    "action": "navigate",
-                    "navigation_path": "/mon-confort/piece-de-vie"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": "auto"
-                  },
-                  "card_mod": {
-                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
-                  "primary": "Chambre enfants",
-                  "icon": "mdi:teddy-bear",
-                  "secondary": "{% set t = states('sensor.temp_chambre_enfants_sonoff_a480146b58_temperature') %}{% set hu = states('sensor.temp_chambre_enfants_sonoff_a480146b58_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_chambre_enfants') }} °C ({{ states('input_select.mode_chambre_enfants') }})",
-                  "icon_color": "{% set e = states('sensor.ecart_chambre_enfants') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
-                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.chambre_enfants', 'hvac_action') == 'heating' else '' }}",
-                  "badge_color": "red",
-                  "multiline_secondary": true,
-                  "tap_action": {
-                    "action": "navigate",
-                    "navigation_path": "/mon-confort/chambre-enfants"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": "auto"
-                  },
-                  "card_mod": {
-                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
-                  "primary": "Chambre parents",
-                  "icon": "mdi:bed-king",
-                  "secondary": "{% set t = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature') %}{% set hu = states('sensor.temp_chambre_adulte_sonoff_a480146b5b_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_chambre_adulte') }} °C ({{ states('input_select.mode_chambre_adulte') }})",
-                  "icon_color": "{% set e = states('sensor.ecart_chambre_adulte') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
-                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.chambre_adulte', 'hvac_action') == 'heating' else '' }}",
-                  "badge_color": "red",
-                  "multiline_secondary": true,
-                  "tap_action": {
-                    "action": "navigate",
-                    "navigation_path": "/mon-confort/chambre-parents"
-                  },
-                  "hold_action": {
-                    "action": "more-info"
-                  },
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": "auto"
-                  },
-                  "card_mod": {
-                    "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important}\n"
-                  }
-                },
-                {
-                  "type": "custom:mushroom-template-card",
-                  "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
-                  "primary": "Salle de bain",
-                  "icon": "mdi:shower",
-                  "secondary": "{% set t = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature') %}{% set hu = states('sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity') %}{{ (t | float(0)) | round(1) if is_number(t) else '–' }} °C{{ ' · ' ~ ((hu | float(0)) | round(0) | int) ~ ' %' if is_number(hu) }} · consigne {{ states('sensor.consigne_salle_de_bain') }} °C ({{ states('input_select.mode_salle_de_bain') }})",
-                  "icon_color": "{% set e = states('sensor.ecart_salle_de_bain') | float(0) %}{{ 'blue' if e < -0.5 else ('green' if e <= 1.5 else 'orange') }}",
-                  "badge_icon": "{{ 'mdi:fire' if state_attr('climate.salle_de_bain', 'hvac_action') == 'heating' else '' }}",
-                  "badge_color": "red",
-                  "multiline_secondary": true,
-                  "tap_action": {
-                    "action": "navigate",
-                    "navigation_path": "/mon-confort/salle-de-bain"
-                  },
-                  "hold_action": {
                     "action": "more-info"
                   },
                   "grid_options": {
@@ -1226,7 +1120,7 @@
           },
           "label": "[[[ return variables.sub||\"\" ]]]",
           "custom_fields": {
-            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 22px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
           },
           "styles": {
             "card": [
@@ -1239,7 +1133,10 @@
                 "grid-template-areas": "\"i n t\" \"i l t\""
               },
               {
-                "grid-template-columns": "40px 1fr auto"
+                "grid-template-columns": "30px minmax(0,1fr) auto"
+              },
+              {
+                "column-gap": "8px"
               }
             ],
             "icon": [
@@ -1258,10 +1155,25 @@
                 "font-weight": "600"
               },
               {
-                "font-size": "14px"
+                "font-size": "13px"
               },
               {
                 "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "overflow": "visible"
+              },
+              {
+                "text-overflow": "clip"
+              },
+              {
+                "text-align": "left"
+              },
+              {
+                "line-height": "1.15"
               }
             ],
             "label": [
@@ -1281,7 +1193,7 @@
                   "justify-self": "end"
                 },
                 {
-                  "padding-right": "14px"
+                  "padding-right": "12px"
                 }
               ]
             }

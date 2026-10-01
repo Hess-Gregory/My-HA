@@ -159,7 +159,7 @@ automation:
             {{ (now().strftime('%d/%m %H:%M') ~ ' code '
                ~ states('sensor.boiler_servicecodenumber') ~ ' | '
                ~ states('input_text.chaudiere_historique_defauts'))[:255] }}
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "Chaudière : code défaut {{ states('sensor.boiler_servicecodenumber') }}"
           message: >-
@@ -202,7 +202,7 @@ automation:
       - action: persistent_notification.dismiss
         data:
           notification_id: chaudiere_code_defaut
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "Chaudière : défaut résolu"
           message: >-
@@ -229,7 +229,7 @@ automation:
           {{ states('sensor.boiler_maintenancemessage')
              not in ['H00', 'unknown', 'unavailable', ''] }}
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "Chaudière : entretien demandé"
           message: >-
@@ -260,7 +260,7 @@ automation:
         for: "00:30:00"
     conditions: []
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "Chaudière : passerelle injoignable"
           message: >-

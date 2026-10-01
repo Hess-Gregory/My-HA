@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.2.0 | 27/09/2026 11:18 | four Siemens iQ700 - alertes, demarrage programme, securite, favoris, 100 recettes, carnet de cuisson et dashboard test (nouvelle charte)
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
@@ -499,9 +498,35 @@ four_preparer:
       selector:
         boolean: {}
   sequence:
+  - if:
+    - condition: template
+      value_template: '{{ temperature is defined and temperature not in ['''', none]
+        }}'
+    then:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.four_temp_voulue
+      data:
+        value: '{{ temperature }}'
+  - if:
+    - condition: template
+      value_template: '{{ duree is defined and duree not in ['''', none] }}'
+    then:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.four_duree_voulue
+      data:
+        value: '{{ (duree | float(0) * 60) | int }}'
   - variables:
       prog: '{{ program if program.startswith(''cooking_oven_program_'') else ''cooking_oven_program_''
         ~ program }}'
+      opts: '{% set o = dict() %}{% if temperature is defined and temperature | int(0)
+        > 0 %}{% set o = dict(o, cooking_oven_option_setpoint_temperature=temperature
+        | int) %}{% endif %}{% if duree is defined and duree | int(0) > 0 %}{% set
+        o = dict(o, b_s_h_common_option_duration=(duree | int) * 60) %}{% endif %}{%
+        if prechauffage is defined and prechauffage in [true,''true'',''True'',1,''1'']
+        %}{% set o = dict(o, cooking_oven_option_fast_pre_heat=true) %}{% endif %}{{
+        o }}'
   - if:
     - condition: state
       entity_id: switch.four_alimentation
@@ -510,46 +535,40 @@ four_preparer:
     - action: switch.turn_on
       target:
         entity_id: switch.four_alimentation
+    - wait_template: '{{ states(''sensor.four_etat'') in [''ready'',''run'',''pause'']
+        }}'
+      timeout:
+        seconds: 25
+      continue_on_timeout: true
     - delay:
-        seconds: 4
-  - action: select.select_option
-    target:
-      entity_id: select.four_programme_selectionne
+        seconds: 2
+  - action: home_connect.set_program_and_options
     data:
-      option: '{{ prog }}'
+      device_id: ca5d9d9c8f568dd6ce741eb1036c0fc9
+      affects_to: selected_program
+      program: '{{ prog }}'
+      oven_options: '{{ opts }}'
+    continue_on_error: true
   - delay:
       seconds: 3
   - if:
     - condition: template
-      value_template: '{{ temperature is defined and temperature | int(0) > 0 and
-        states(''number.cuisine_four_temperature_de_consigne'') not in [''unavailable'',''unknown'']
-        }}'
+      value_template: '{{ states(''select.four_programme_selectionne'') != prog }}'
     then:
-    - action: number.set_value
+    - action: select.select_option
       target:
-        entity_id: number.cuisine_four_temperature_de_consigne
+        entity_id: select.four_programme_selectionne
       data:
-        value: '{{ temperature | int }}'
+        option: '{{ prog }}'
       continue_on_error: true
-  - if:
-    - condition: template
-      value_template: '{{ duree is defined and duree | int(0) > 0 and states(''number.cuisine_four_duree'')
-        not in [''unavailable'',''unknown''] }}'
-    then:
-    - action: number.set_value
-      target:
-        entity_id: number.cuisine_four_duree
+    - delay:
+        seconds: 3
+    - action: home_connect.set_program_and_options
       data:
-        value: '{{ (duree | int) * 60 }}'
-      continue_on_error: true
-  - if:
-    - condition: template
-      value_template: '{{ prechauffage is defined and states(''switch.cuisine_four_prechauffage_rapide'')
-        not in [''unavailable'',''unknown''] }}'
-    then:
-    - action: '{{ ''switch.turn_on'' if prechauffage else ''switch.turn_off'' }}'
-      target:
-        entity_id: switch.cuisine_four_prechauffage_rapide
+        device_id: ca5d9d9c8f568dd6ce741eb1036c0fc9
+        affects_to: selected_program
+        program: '{{ prog }}'
+        oven_options: '{{ opts }}'
       continue_on_error: true
 four_demarrer:
   alias: "\U0001F373 Four – Démarrer le programme choisi"
@@ -578,13 +597,44 @@ four_demarrer:
     - action: switch.turn_on
       target:
         entity_id: switch.four_alimentation
+    - wait_template: '{{ states(''sensor.four_etat'') in [''ready'',''run'',''pause'']
+        }}'
+      timeout:
+        seconds: 25
+      continue_on_timeout: true
     - delay:
-        seconds: 4
-  - action: select.select_option
-    target:
-      entity_id: select.four_programme_actif
+        seconds: 2
+  - variables:
+      opts: '{% set n_t = states(''number.cuisine_four_temperature_de_consigne'')
+        %}{% set n_d = states(''number.cuisine_four_duree'') %}{% set t = n_t | int(0)
+        if is_number(n_t) else states(''input_number.four_temp_voulue'') | int(0)
+        %}{% set d = n_d | int(0) if is_number(n_d) else states(''input_number.four_duree_voulue'')
+        | int(0) %}{% set o = dict() %}{% if t > 0 %}{% set o = dict(o, cooking_oven_option_setpoint_temperature=t)
+        %}{% endif %}{% if d > 0 %}{% set o = dict(o, b_s_h_common_option_duration=d)
+        %}{% endif %}{{ o }}'
+  - action: home_connect.set_program_and_options
     data:
-      option: '{{ prog }}'
+      device_id: ca5d9d9c8f568dd6ce741eb1036c0fc9
+      affects_to: active_program
+      program: '{{ prog }}'
+      oven_options: '{{ opts }}'
+    continue_on_error: true
+  - wait_template: '{{ states(''sensor.four_etat'') in [''run'',''delayedstart'']
+      }}'
+    timeout:
+      seconds: 12
+    continue_on_timeout: true
+  - if:
+    - condition: template
+      value_template: '{{ states(''sensor.four_etat'') not in [''run'',''delayedstart'']
+        }}'
+    then:
+    - action: select.select_option
+      target:
+        entity_id: select.four_programme_actif
+      data:
+        option: '{{ prog }}'
+      continue_on_error: true
 four_fav_ajouter:
   alias: "\U0001F373 Four – Enregistrer le réglage en favori"
   icon: mdi:star-plus
@@ -724,22 +774,70 @@ four_favori:
       timeout:
         minutes: '{{ duree | int(0) + 30 }}'
       continue_on_timeout: false
-    - delay:
-        seconds: 5
-    - action: script.four_preparer
-      data:
-        program: '{{ program2 }}'
-        temperature: '{{ temperature2 | int(0) }}'
-        duree: '{{ duree2 | int(0) }}'
-    - action: script.four_demarrer
-    - action: notify.mobile_app_smartphone_greg
+    - action: notify.mobile_app_samsung_greg
       continue_on_error: true
       data:
-        title: "\U0001F373 Étape 2 lancée"
-        message: 'Fin de cuisson : {{ duree2 }} min.'
+        title: "\U0001F373 Étape 1 terminée"
+        message: Passage à l'étape 2 dès que le four est prêt (vidange de la vapeur
+          en cours)…
         data:
           tag: four
           channel: Four
+    - repeat:
+        sequence:
+        - wait_template: '{{ states(''sensor.four_etat'') in [''ready'',''inactive'']
+            }}'
+          timeout:
+            seconds: 90
+          continue_on_timeout: true
+        - delay:
+            seconds: 5
+        - action: script.four_preparer
+          data:
+            program: '{{ program2 }}'
+            temperature: '{{ temperature2 | int(0) }}'
+            duree: '{{ duree2 | int(0) }}'
+          continue_on_error: true
+        - action: script.four_demarrer
+          continue_on_error: true
+        - delay:
+            seconds: 15
+        until:
+        - condition: template
+          value_template: '{{ states(''sensor.four_etat'') in [''run'',''delayedstart'']
+            or repeat.index >= 20 }}'
+    - if:
+      - condition: template
+        value_template: '{{ states(''sensor.four_etat'') in [''run'',''delayedstart'']
+          }}'
+      then:
+      - action: notify.mobile_app_samsung_greg
+        continue_on_error: true
+        data:
+          title: "\U0001F373 Étape 2 lancée"
+          message: 'Fin de cuisson : {{ duree2 }} min.'
+          data:
+            tag: four
+            channel: Four
+      else:
+      - action: notify.mobile_app_samsung_greg
+        continue_on_error: true
+        data:
+          title: ⚠️ Étape 2 non lancée
+          message: 'Le four n''a pas accepté l''étape 2 : lancez-la sur le four ({{
+            program2 | replace(''heating_mode_'','''') | replace(''_'','' '') }},
+            {{ temperature2 }} °C, {{ duree2 }} min).'
+          data:
+            tag: four
+            channel: Four
+            importance: high
+            priority: high
+      - action: persistent_notification.create
+        data:
+          notification_id: four
+          title: ⚠️ Étape 2 non lancée
+          message: 'Lancez l''étape 2 sur le four : {{ program2 }}, {{ temperature2
+            }} °C, {{ duree2 }} min.'
 four_fav_copier:
   alias: "\U0001F373 Four – Copier une recette en favori"
   icon: mdi:star-plus
@@ -972,3 +1070,90 @@ four_alexa_11:
       program2: '{{ v[5] if v|count > 5 else '''' }}'
       temperature2: '{{ v[6] | int(0) if v|count > 6 else 0 }}'
       duree2: '{{ v[7] | int(0) if v|count > 7 else 0 }}'
+four_regler:
+  alias: Four – Régler température / durée
+  icon: mdi:tune-vertical
+  mode: queued
+  fields:
+    cible: {}
+    delta: {}
+    valeur: {}
+  sequence:
+  - variables:
+      num: '{{ ''number.cuisine_four_temperature_de_consigne'' if cible == ''temp''
+        else ''number.cuisine_four_duree'' }}'
+      hlp: '{{ ''input_number.four_temp_voulue'' if cible == ''temp'' else ''input_number.four_duree_voulue''
+        }}'
+      optk: '{{ ''cooking_oven_option_setpoint_temperature'' if cible == ''temp''
+        else ''b_s_h_common_option_duration'' }}'
+      enmarche: '{{ states(''sensor.four_etat'') in [''run'',''pause'',''delayedstart'']
+        }}'
+  - variables:
+      base: '{% set a = states[num] %}{% set b = states[hlp] %}{% set aok = a is not
+        none and is_number(a.state) %}{% if cible == ''duree'' and enmarche and not
+        aok %}{% set fin = states(''sensor.four_heure_de_fin_de_programme'') %}{%
+        set p = states(''sensor.four_progression_du_programme'') | float(0) %}{% if
+        as_timestamp(fin, 0) > 0 %}{% set rest = as_timestamp(fin) - as_timestamp(now())
+        %}{{ ((rest / (1 - p / 100)) if p < 99 else rest) | round(0) }}{% else %}{{
+        b.state | float(0) if b is not none else 0 }}{% endif %}{% elif not aok %}{{
+        b.state | float(0) if b is not none else 0 }}{% elif b is not none and b.last_changed
+        > a.last_changed %}{{ b.state | float(0) }}{% else %}{{ a.state | float(0)
+        }}{% endif %}'
+      lo: '{{ 30 if cible == ''temp'' else 60 }}'
+      hi: '{{ 250 if cible == ''temp'' else 86400 }}'
+  - variables:
+      nv: '{% if valeur is defined and valeur not in ['''', none] %}{% set v = valeur
+        | float(0) %}{% else %}{% set v = base | float(0) + (delta | default(0) |
+        float(0)) %}{% endif %}{{ ([[v, lo | float] | max, hi | float] | min) | int
+        }}'
+      pa: '{% set s = states(''select.four_programme_actif'') %}{% set d = states(''input_text.four_dernier_programme'')
+        %}{{ s if s.startswith(''cooking_oven_program_'') else d }}'
+      ps: '{{ states(''select.four_programme_selectionne'') }}'
+  - if:
+    - condition: template
+      value_template: '{{ states(hlp) | float(-1) == nv | float }}'
+    then:
+    - action: input_number.set_value
+      target:
+        entity_id: '{{ hlp }}'
+      data:
+        value: '{{ lo }}'
+  - action: input_number.set_value
+    target:
+      entity_id: '{{ hlp }}'
+    data:
+      value: '{{ nv }}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ enmarche and pa.startswith(''cooking_oven_program_'')
+          }}'
+      sequence:
+      - action: home_connect.set_program_and_options
+        data:
+          device_id: ca5d9d9c8f568dd6ce741eb1036c0fc9
+          affects_to: active_program
+          program: '{{ pa }}'
+          oven_options: '{{ {optk: nv | int} }}'
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ is_number(states(num)) }}'
+      sequence:
+      - action: number.set_value
+        target:
+          entity_id: '{{ num }}'
+        data:
+          value: '{{ nv }}'
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ ps.startswith(''cooking_oven_program_'') }}'
+      sequence:
+      - action: home_connect.set_program_and_options
+        data:
+          device_id: ca5d9d9c8f568dd6ce741eb1036c0fc9
+          affects_to: selected_program
+          program: '{{ ps }}'
+          oven_options: '{{ {optk: nv | int} }}'
+        continue_on_error: true

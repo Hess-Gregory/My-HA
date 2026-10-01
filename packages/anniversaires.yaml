@@ -249,7 +249,7 @@ automation:
             data: { notification_id: anniversaires }
       - if: "{{ trigger.id == 'matin' and a_pousser | count > 0 }}"
         then:
-          - action: notify.mobile_app_smartphone_greg
+          - action: notify.mobile_app_samsung_greg
             data:
               title: "🎂 Anniversaires"
               message: >-

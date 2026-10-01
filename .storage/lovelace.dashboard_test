@@ -5425,11 +5425,9 @@
                           "drc"
                         ],
                         [
-                          [
-                            "volume_up",
-                            "volume_down"
-                          ],
-                          "mute"
+                          "volume_down",
+                          "mute",
+                          "volume_up"
                         ],
                         [
                           "divider_sound"
@@ -5447,10 +5445,8 @@
                         ],
                         [
                           "zone2_power",
-                          [
-                            "zone2_volume_up",
-                            "zone2_volume_down"
-                          ]
+                          "zone2_volume_down",
+                          "zone2_volume_up"
                         ]
                       ],
                       "custom_actions": [
@@ -6890,10 +6886,12 @@
                         "number.cuisine_four_duree",
                         "binary_sensor.four_controle_local",
                         "binary_sensor.four_demarrage_a_distance",
-                        "switch.four_securite_enfant"
+                        "switch.four_securite_enfant",
+                        "input_number.four_temp_voulue",
+                        "input_number.four_duree_voulue"
                       ],
                       "custom_fields": {
-                        "f": "[[[\nconst S=states, st=entity.state, on=e=>S[e]?.state==='on', num=e=>{const v=Number(S[e]?.state);return isNaN(v)?null:v};\nconst PR={steam_modes_steam:['Vapeur','mdi:kettle-steam',{steam:1}],heating_mode_hot_air:['Chaleur tournante','mdi:fan',{fan:1,ring:1}],heating_mode_top_bottom_heating:['Voûte / sole','mdi:dock-top',{top:1,bottom:1}],heating_mode_top_bottom_heating_eco:['Voûte / sole éco','mdi:leaf',{top:1,bottom:1}],heating_mode_hot_air_grilling:['Gril air pulsé','mdi:grill',{grill:1,fan:1}],heating_mode_pizza_setting:['Pizza','mdi:pizza',{fan:1,bottom:1}],heating_mode_frozen_heatup_special:['Surgelés','mdi:snowflake',{fan:1,bottom:1}],heating_mode_slow_cook:['Cuisson lente','mdi:pot-steam-outline',{top:1,bottom:1}],heating_mode_bottom_heating:['Sole','mdi:dock-bottom',{bottom:1}],heating_mode_keep_warm:['Maintien au chaud','mdi:thermometer-low',{top:1,bottom:1}],heating_mode_preheat_ovenware:['Chauffe-plats','mdi:bowl-mix-outline',{fan:1}],heating_mode_pre_heating:['Préchauffage','mdi:thermometer-chevron-up',{fan:1,ring:1}]};\nconst STL={inactive:['Éteint','#9d8fb3'],ready:['Prêt','#7fdc9a'],delayedstart:['Départ différé','#6aa8f0'],run:['Cuisson en cours','#ffb35c'],pause:['En pause','#f3c156'],actionrequired:['Action requise','#f07a7a'],finished:['Terminé','#7fdc9a'],error:['Erreur','#f07a7a'],aborting:['Arrêt…','#f3c156']}[st]||[st,'#fff'];\nconst run=st==='run', paused=st==='pause', power=on('switch.four_alimentation')||['ready','run','pause','delayedstart','finished','actionrequired'].includes(st);\nconst key=((run||paused)?S['select.four_programme_actif']?.state:S['select.four_programme_selectionne']?.state)||''; const p=PR[key.replace('cooking_oven_program_','')]||[(run||paused)?'Programme réglé sur le four':'Aucun programme','mdi:stove',{}]; const fx=p[2];\nconst t=num('sensor.four_temperature_actuelle_de_la_cavite_du_four'), sp=num('number.cuisine_four_temperature_de_consigne'), dur=num('number.cuisine_four_duree'), pr=num('sensor.four_progression_du_programme');\nconst fin=S['sensor.four_heure_de_fin_de_programme']?.state; const finD=fin&&!['unknown','unavailable'].includes(fin)?new Date(fin):null;\nconst left=finD?Math.max(0,Math.round((finD-Date.now())/60000)):null;\nconst hm=m=>m==null?'--:--':(Math.floor(m/60)?Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):m+' min');\nconst heat=Math.max(0,Math.min(1,((t||20)-30)/200)); const lit=on('binary_sensor.four_eclairage_interieur_actif');\nconst door=S['sensor.four_porte']?.state; const open=door==='open';\nconst glow=run?heat:heat*0.6;\nconst el=(y,act,cls)=>`<div class=\"el ${act&&run?'hot':''} ${cls||''}\" style=\"top:${y}\"></div>`;\nconst disp=power?`<span style=\"color:#ffb35c\">${sp!=null&&!fx.steam?Math.round(sp)+'°':''}</span> <span class=\"n\">${p[0].toUpperCase()}</span><span>${run?hm(left):dur!=null?hm(Math.round(dur/60)):''}</span>`:'<span style=\"opacity:.35\">— —</span>';\nconst R=46,C=2*Math.PI*R, frac=pr!=null?pr/100:(run&&sp&&t?Math.min(1,t/sp):0);\nconst tfrac=sp?Math.min(1,(t||0)/sp):0;\nconst pill=(x,col)=>`<span class=\"pill\" style=\"color:${col||'#fff'}\">${x}</span>`;\nreturn `\n<div class=\"wrap\">\n <div class=\"oven ${open?'open':''}\">\n  <div class=\"panel\"><div class=\"knob\"></div><div class=\"tft\">${disp}</div><div class=\"led ${power?'on':''}\"></div></div>\n  <div class=\"door\">\n   <div class=\"handle\"></div>\n   <div class=\"glass\" style=\"--g:${glow};--l:${lit?1:0}\">\n    <div class=\"inner\"></div>\n    ${el('8%',fx.top||fx.grill,fx.grill?'grill':'')}\n    ${el('88%',fx.bottom)}\n    <div class=\"rack\" style=\"top:40%\"></div><div class=\"rack\" style=\"top:62%\"></div>\n    ${fx.fan?`<div class=\"fan ${run?'spin':''}\"><ha-icon icon=\"mdi:fan\"></ha-icon></div>`:''}\n    ${fx.fan&&fx.ring?`<div class=\"ringel ${run?'hot':''}\"></div>`:''}\n    ${fx.steam&&run?'<div class=\"steam s1\"></div><div class=\"steam s2\"></div><div class=\"steam s3\"></div>':''}\n    <div class=\"reflect\"></div>\n   </div>\n  </div>\n  <div class=\"feet\"></div>\n </div>\n <div class=\"info\">\n  <div class=\"brand\"><img src=\"/local/images/logos/siemens.png\" onerror=\"this.remove()\" style=\"height:14px;vertical-align:middle;margin-right:6px\">Siemens · <span>iQ700</span> · HS736G3B1</div>\n  <div class=\"state\" style=\"color:${STL[1]}\">${run?'<span class=\"dot\"></span>':''}${STL[0]}</div>\n  <div class=\"prog\"><ha-icon icon=\"${p[1]}\"></ha-icon>${p[0]}</div>\n  <div class=\"row\">\n   <svg viewBox=\"0 0 120 120\" class=\"ring\"><circle cx=\"60\" cy=\"60\" r=\"${R}\" class=\"bg\"/><circle cx=\"60\" cy=\"60\" r=\"${R}\" class=\"fg\" style=\"stroke-dasharray:${C*frac} ${C};opacity:${frac>0?1:0}\"/>\n    <text x=\"60\" y=\"58\" class=\"big\">${t!=null?Math.round(t):'--'}°</text><text x=\"60\" y=\"78\" class=\"small\">${sp!=null?'objectif '+Math.round(sp)+'°':'cavité'}</text></svg>\n   <div class=\"stats\">\n    <div><small>Temps restant</small><b>${run||paused?hm(left):'—'}</b></div>\n    <div><small>Fin prévue</small><b>${finD?finD.toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}):'—'}</b></div>\n    <div><small>Durée réglée</small><b>${dur!=null?hm(Math.round(dur/60)):'—'}</b></div>\n   </div>\n  </div>\n  ${pr!=null?`<div class=\"bar\"><div style=\"width:${pr}%\"></div></div>`:''}\n  <div class=\"pills\">\n   ${pill(open?'⚠️ Porte ouverte':door==='locked'?'🔒 Porte verrouillée':'🚪 Porte fermée',open?'#f3c156':null)}\n   ${pill(on('binary_sensor.four_connectivite')?'📶 Connecté':'📵 Hors ligne',on('binary_sensor.four_connectivite')?null:'#f07a7a')}\n   ${pill(on('binary_sensor.four_demarrage_a_distance')?'🚀 Démarrage à distance':'🚀 Distance bloquée',on('binary_sensor.four_demarrage_a_distance')?null:'#9d8fb3')}\n   ${pill(on('binary_sensor.four_controle_local')?'✋ Réglage local':'📱 Pilotable',on('binary_sensor.four_controle_local')?'#f3c156':null)}\n   ${pill(lit?'💡 Lumière':'💡 Lumière éteinte',lit?'#f6d68a':'#9d8fb3')}\n   ${on('switch.four_securite_enfant')?pill('🔒 Sécurité enfant','#f6d68a'):''}\n  </div>\n </div>\n</div>` ]]]"
+                        "f": "[[[\nconst S=states, st=entity.state, on=e=>S[e]?.state==='on', num=e=>{const v=Number(S[e]?.state);return isNaN(v)?null:v};\nconst pick=(n,k)=>{const a=S[n],b=S[k];if(!a||['unknown','unavailable'].includes(a.state))return null;return (b&&new Date(b.last_changed)>new Date(a.last_changed))?Number(b.state):Number(a.state)};\nconst PR={steam_modes_steam:['Vapeur','mdi:kettle-steam',{steam:1}],heating_mode_hot_air:['Chaleur tournante','mdi:fan',{fan:1,ring:1}],heating_mode_top_bottom_heating:['Voûte / sole','mdi:dock-top',{top:1,bottom:1}],heating_mode_top_bottom_heating_eco:['Voûte / sole éco','mdi:leaf',{top:1,bottom:1}],heating_mode_hot_air_grilling:['Gril air pulsé','mdi:grill',{grill:1,fan:1}],heating_mode_pizza_setting:['Pizza','mdi:pizza',{fan:1,bottom:1}],heating_mode_frozen_heatup_special:['Surgelés','mdi:snowflake',{fan:1,bottom:1}],heating_mode_slow_cook:['Cuisson lente','mdi:pot-steam-outline',{top:1,bottom:1}],heating_mode_bottom_heating:['Sole','mdi:dock-bottom',{bottom:1}],heating_mode_keep_warm:['Maintien au chaud','mdi:thermometer-low',{top:1,bottom:1}],heating_mode_preheat_ovenware:['Chauffe-plats','mdi:bowl-mix-outline',{fan:1}],heating_mode_pre_heating:['Préchauffage','mdi:thermometer-chevron-up',{fan:1,ring:1}]};\nconst STL={inactive:['Éteint','#9d8fb3'],ready:['Prêt','#7fdc9a'],delayedstart:['Départ différé','#6aa8f0'],run:['Cuisson en cours','#ffb35c'],pause:['En pause','#f3c156'],actionrequired:['Action requise','#f07a7a'],finished:['Terminé','#7fdc9a'],error:['Erreur','#f07a7a'],aborting:['Arrêt…','#f3c156']}[st]||[st,'#fff'];\nconst run=st==='run', paused=st==='pause', power=on('switch.four_alimentation')||['ready','run','pause','delayedstart','finished','actionrequired'].includes(st);\nconst key=((run||paused)?S['select.four_programme_actif']?.state:S['select.four_programme_selectionne']?.state)||''; const p=PR[key.replace('cooking_oven_program_','')]||[(run||paused)?'Programme réglé sur le four':'Aucun programme','mdi:stove',{}]; const fx=p[2];\nconst t=num('sensor.four_temperature_actuelle_de_la_cavite_du_four'), sp=pick('number.cuisine_four_temperature_de_consigne','input_number.four_temp_voulue'), dur=pick('number.cuisine_four_duree','input_number.four_duree_voulue'), pr=num('sensor.four_progression_du_programme');\nconst fin=S['sensor.four_heure_de_fin_de_programme']?.state; const finD=fin&&!['unknown','unavailable'].includes(fin)?new Date(fin):null;\nconst left=finD?Math.max(0,Math.round((finD-Date.now())/60000)):null;\nconst hm=m=>m==null?'--:--':(Math.floor(m/60)?Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):m+' min');\nconst heat=Math.max(0,Math.min(1,((t||20)-30)/200)); const lit=on('binary_sensor.four_eclairage_interieur_actif');\nconst door=S['sensor.four_porte']?.state; const open=door==='open';\nconst glow=run?heat:heat*0.6;\nconst el=(y,act,cls)=>`<div class=\"el ${act&&run?'hot':''} ${cls||''}\" style=\"top:${y}\"></div>`;\nconst disp=power?`<span style=\"color:#ffb35c\">${sp!=null&&!fx.steam?Math.round(sp)+'°':''}</span> <span class=\"n\">${p[0].toUpperCase()}</span><span>${run?hm(left):dur!=null?hm(Math.round(dur/60)):''}</span>`:'<span style=\"opacity:.35\">— —</span>';\nconst R=46,C=2*Math.PI*R, frac=pr!=null?pr/100:(run&&sp&&t?Math.min(1,t/sp):0);\nconst tfrac=sp?Math.min(1,(t||0)/sp):0;\nconst pill=(x,col)=>`<span class=\"pill\" style=\"color:${col||'#fff'}\">${x}</span>`;\nreturn `\n<div class=\"wrap\">\n <div class=\"oven ${open?'open':''}\">\n  <div class=\"panel\"><div class=\"knob\"></div><div class=\"tft\">${disp}</div><div class=\"led ${power?'on':''}\"></div></div>\n  <div class=\"door\">\n   <div class=\"handle\"></div>\n   <div class=\"glass\" style=\"--g:${glow};--l:${lit?1:0}\">\n    <div class=\"inner\"></div>\n    ${el('8%',fx.top||fx.grill,fx.grill?'grill':'')}\n    ${el('88%',fx.bottom)}\n    <div class=\"rack\" style=\"top:40%\"></div><div class=\"rack\" style=\"top:62%\"></div>\n    ${fx.fan?`<div class=\"fan ${run?'spin':''}\"><ha-icon icon=\"mdi:fan\"></ha-icon></div>`:''}\n    ${fx.fan&&fx.ring?`<div class=\"ringel ${run?'hot':''}\"></div>`:''}\n    ${fx.steam&&run?'<div class=\"steam s1\"></div><div class=\"steam s2\"></div><div class=\"steam s3\"></div>':''}\n    <div class=\"reflect\"></div>\n   </div>\n  </div>\n  <div class=\"feet\"></div>\n </div>\n <div class=\"info\">\n  <div class=\"brand\"><img src=\"/local/images/logos/siemens.png\" onerror=\"this.remove()\" style=\"height:14px;vertical-align:middle;margin-right:6px\">Siemens · <span>iQ700</span> · HS736G3B1</div>\n  <div class=\"state\" style=\"color:${STL[1]}\">${run?'<span class=\"dot\"></span>':''}${STL[0]}</div>\n  <div class=\"prog\"><ha-icon icon=\"${p[1]}\"></ha-icon>${p[0]}</div>\n  <div class=\"row\">\n   <div class=\"gauge\" style=\"--p:${Math.round(frac*100)}\"><div class=\"gin\"><b>${t!=null?Math.round(t):'--'}°</b><small>${sp!=null?'objectif '+Math.round(sp)+'°':'cavité'}</small></div></div>\n   <div class=\"stats\">\n    <div><small>Temps restant</small><b>${run||paused?hm(left):'—'}</b></div>\n    <div><small>Fin prévue</small><b>${finD?finD.toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}):'—'}</b></div>\n    <div><small>Durée réglée</small><b>${dur!=null?hm(Math.round(dur/60)):'—'}</b></div>\n   </div>\n  </div>\n  ${pr!=null?`<div class=\"bar\"><div style=\"width:${pr}%\"></div></div>`:''}\n  <div class=\"pills\">\n   ${pill(open?'⚠️ Porte ouverte':door==='locked'?'🔒 Porte verrouillée':'🚪 Porte fermée',open?'#f3c156':null)}\n   ${pill(on('binary_sensor.four_connectivite')?'📶 Connecté':'📵 Hors ligne',on('binary_sensor.four_connectivite')?null:'#f07a7a')}\n   ${pill(on('binary_sensor.four_demarrage_a_distance')?'🚀 Démarrage à distance':'🚀 Distance bloquée',on('binary_sensor.four_demarrage_a_distance')?null:'#9d8fb3')}\n   ${pill(on('binary_sensor.four_controle_local')?'✋ Réglage local':'📱 Pilotable',on('binary_sensor.four_controle_local')?'#f3c156':null)}\n   ${pill(lit?'💡 Lumière':'💡 Lumière éteinte',lit?'#f6d68a':'#9d8fb3')}\n   ${on('switch.four_securite_enfant')?pill('🔒 Sécurité enfant','#f6d68a'):''}\n  </div>\n </div>\n</div>` ]]]"
                       },
                       "styles": {
                         "card": [
@@ -6932,7 +6930,7 @@
                           ]
                         }
                       },
-                      "extra_styles": "\n.wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;text-align:left}\n.oven{width:220px;max-width:100%;border-radius:18px;padding:10px 10px 6px;background:linear-gradient(180deg,#3b3b42,#1f1f24 40%,#18181c);box-shadow:0 12px 30px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.12);position:relative}\n.panel{height:38px;border-radius:10px;background:linear-gradient(180deg,#0b0b0e,#141418);box-shadow:inset 0 1px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.06);display:flex;align-items:center;gap:10px;padding:0 10px}\n.knob{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9d9de,#6b6b72);box-shadow:0 2px 3px rgba(0,0,0,.7)}\n.tft{flex:1;font-size:10px!important;display:flex;gap:8px;min-width:0;font:600 12px ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px;color:#e8e8ee;white-space:nowrap;overflow:hidden;text-shadow:0 0 6px rgba(255,179,92,.35)}\n.led{width:7px;height:7px;border-radius:50%;background:#333}.led.on{background:#7fdc9a;box-shadow:0 0 8px #7fdc9a}\n.door{margin-top:8px;border-radius:12px;padding:22px 12px 12px;background:linear-gradient(180deg,#2a2a30,#121215);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);position:relative;transition:transform .4s;transform-origin:bottom}\n.oven.open .door{transform:perspective(600px) rotateX(-18deg)}\n.handle{position:absolute;top:8px;left:12%;width:76%;height:9px;border-radius:5px;background:linear-gradient(180deg,#f2f2f5,#8d8d95 60%,#5d5d64);box-shadow:0 3px 5px rgba(0,0,0,.6)}\n.glass{position:relative;height:125px;border-radius:10px;overflow:hidden;background:#07070a;box-shadow:inset 0 0 0 2px #000,inset 0 6px 14px rgba(0,0,0,.9)}\n.inner{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(255,150,60,calc(var(--g)*.95)) 0%,rgba(200,70,20,calc(var(--g)*.6)) 45%,transparent 75%),radial-gradient(ellipse at 50% 0%,rgba(255,244,214,calc(var(--l)*.55)),transparent 70%);transition:all 1s}\n.el{position:absolute;left:10%;width:80%;height:4px;border-radius:2px;background:#2a1a14}\n.el.hot{background:#ff6a2a;box-shadow:0 0 10px #ff6a2a,0 0 22px #ff3d00;animation:pulse 2.2s ease-in-out infinite}\n.el.grill{height:6px;background:repeating-linear-gradient(90deg,#2a1a14 0 10px,transparent 10px 14px)}\n.el.grill.hot{background:repeating-linear-gradient(90deg,#ff6a2a 0 10px,transparent 10px 14px)}\n.rack{position:absolute;left:6%;width:88%;height:2px;background:linear-gradient(90deg,transparent,#77777f 10%,#77777f 90%,transparent);opacity:.55}\n.fan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:rgba(220,220,230,.35);--mdc-icon-size:36px}\n.fan.spin ha-icon{animation:spin 1.1s linear infinite;display:block;color:rgba(255,210,160,.55)}\n.ringel{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;border:3px solid #2a1a14}\n.ringel.hot{border-color:#ff6a2a;box-shadow:0 0 12px #ff5a1a,inset 0 0 10px #ff5a1a;animation:pulse 2.2s ease-in-out infinite}\n.steam{position:absolute;bottom:10%;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(6px);animation:rise 3s ease-in infinite}\n.s1{left:25%}.s2{left:48%;animation-delay:1s}.s3{left:70%;animation-delay:2s}\n.reflect{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.03) 30%,transparent 45%,transparent 70%,rgba(255,255,255,.05) 100%);pointer-events:none}\n.feet{height:6px}\n.info{flex:1;min-width:210px;max-width:420px}\n.brand{font:700 11px sans-serif;letter-spacing:3px;color:#9d8fb3}.brand span{color:#f6d68a}\n.state{font:700 20px sans-serif;margin:2px 0;display:flex;align-items:center;gap:8px}\n.dot{width:10px;height:10px;border-radius:50%;background:#ffb35c;box-shadow:0 0 10px #ffb35c;animation:pulse 1.4s infinite}\n.prog{display:flex;align-items:center;gap:8px;color:#d9c4f0;font-size:15px;--mdc-icon-size:20px}\n.prog ha-icon{color:#f6d68a}\n.row{display:flex;align-items:center;gap:14px;margin:12px 0 6px;flex-wrap:wrap}\n.ring{width:96px;height:96px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}\n.ring .bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:10}\n.ring .fg{fill:none;stroke:url(#none);stroke:#ffb35c;stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:60px 60px;transition:stroke-dasharray 1s}\n.ring .big{fill:#fff;font:700 30px sans-serif;text-anchor:middle}.ring .small{fill:#d9c4f0;font:12px sans-serif;text-anchor:middle}\n.stats{display:grid;gap:8px}.stats small{display:block;font-size:11px;color:#9d8fb3}.stats b{font-size:17px;color:#fff}\n.bar{height:8px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin:6px 0}.bar div{height:100%;background:linear-gradient(90deg,#f3c156,#ff8a3c);box-shadow:0 0 10px #ff8a3c}\n.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}\n.pill{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(246,214,138,.22);font-size:12px;white-space:nowrap}\n@keyframes spin{to{transform:rotate(360deg)}}\n@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}\n@keyframes rise{0%{transform:translateY(0) scale(.6);opacity:0}30%{opacity:.8}100%{transform:translateY(-120px) scale(1.6);opacity:0}}\n.tft .n{flex:1;opacity:.8;overflow:hidden;text-overflow:ellipsis}\n.pill{font-size:11px!important;padding:4px 8px!important}.stats b{font-size:15px!important}\n.prog ha-icon{width:20px!important;height:20px!important;flex:0 0 20px;--mdc-icon-size:20px!important;display:inline-flex!important}\n.fan ha-icon{width:36px!important;height:36px!important;--mdc-icon-size:36px!important;display:block!important}\n.info ha-icon, .oven ha-icon{max-width:40px}\n.prog{justify-content:flex-start!important;width:100%}.info{text-align:left!important}.info>*{text-align:left}\n.info ha-icon,.oven ha-icon{margin:0!important}\n.oven{width:clamp(220px,46%,320px)!important}.glass{height:auto!important;aspect-ratio:16/10}.tft{font-size:clamp(10px,1vw,12px)!important}\n.brand span{color:#ff9d2e!important}.prog ha-icon{color:#ff9d2e!important}.ring .fg{stroke:#ff9d2e!important}.info{font-family:ui-monospace,Menlo,Consolas,monospace}.state{font-family:sans-serif}.pill{background:#15151b!important;border-color:#2a2a33!important}"
+                      "extra_styles": "\n.wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;text-align:left}\n.oven{width:220px;max-width:100%;border-radius:18px;padding:10px 10px 6px;background:linear-gradient(180deg,#3b3b42,#1f1f24 40%,#18181c);box-shadow:0 12px 30px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.12);position:relative}\n.panel{height:38px;border-radius:10px;background:linear-gradient(180deg,#0b0b0e,#141418);box-shadow:inset 0 1px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.06);display:flex;align-items:center;gap:10px;padding:0 10px}\n.knob{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9d9de,#6b6b72);box-shadow:0 2px 3px rgba(0,0,0,.7)}\n.tft{flex:1;font-size:10px!important;display:flex;gap:8px;min-width:0;font:600 12px ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px;color:#e8e8ee;white-space:nowrap;overflow:hidden;text-shadow:0 0 6px rgba(255,179,92,.35)}\n.led{width:7px;height:7px;border-radius:50%;background:#333}.led.on{background:#7fdc9a;box-shadow:0 0 8px #7fdc9a}\n.door{margin-top:8px;border-radius:12px;padding:22px 12px 12px;background:linear-gradient(180deg,#2a2a30,#121215);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);position:relative;transition:transform .4s;transform-origin:bottom}\n.oven.open .door{transform:perspective(600px) rotateX(-18deg)}\n.handle{position:absolute;top:8px;left:12%;width:76%;height:9px;border-radius:5px;background:linear-gradient(180deg,#f2f2f5,#8d8d95 60%,#5d5d64);box-shadow:0 3px 5px rgba(0,0,0,.6)}\n.glass{position:relative;height:125px;border-radius:10px;overflow:hidden;background:#07070a;box-shadow:inset 0 0 0 2px #000,inset 0 6px 14px rgba(0,0,0,.9)}\n.inner{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(255,150,60,calc(var(--g)*.95)) 0%,rgba(200,70,20,calc(var(--g)*.6)) 45%,transparent 75%),radial-gradient(ellipse at 50% 0%,rgba(255,244,214,calc(var(--l)*.55)),transparent 70%);transition:all 1s}\n.el{position:absolute;left:10%;width:80%;height:4px;border-radius:2px;background:#2a1a14}\n.el.hot{background:#ff6a2a;box-shadow:0 0 10px #ff6a2a,0 0 22px #ff3d00;animation:pulse 2.2s ease-in-out infinite}\n.el.grill{height:6px;background:repeating-linear-gradient(90deg,#2a1a14 0 10px,transparent 10px 14px)}\n.el.grill.hot{background:repeating-linear-gradient(90deg,#ff6a2a 0 10px,transparent 10px 14px)}\n.rack{position:absolute;left:6%;width:88%;height:2px;background:linear-gradient(90deg,transparent,#77777f 10%,#77777f 90%,transparent);opacity:.55}\n.fan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:rgba(220,220,230,.35);--mdc-icon-size:36px}\n.fan.spin ha-icon{animation:spin 1.1s linear infinite;display:block;color:rgba(255,210,160,.55)}\n.ringel{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;border:3px solid #2a1a14}\n.ringel.hot{border-color:#ff6a2a;box-shadow:0 0 12px #ff5a1a,inset 0 0 10px #ff5a1a;animation:pulse 2.2s ease-in-out infinite}\n.steam{position:absolute;bottom:10%;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(6px);animation:rise 3s ease-in infinite}\n.s1{left:25%}.s2{left:48%;animation-delay:1s}.s3{left:70%;animation-delay:2s}\n.reflect{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.03) 30%,transparent 45%,transparent 70%,rgba(255,255,255,.05) 100%);pointer-events:none}\n.feet{height:6px}\n.info{flex:1;min-width:210px;max-width:420px}\n.brand{font:700 11px sans-serif;letter-spacing:3px;color:#9d8fb3}.brand span{color:#f6d68a}\n.state{font:700 20px sans-serif;margin:2px 0;display:flex;align-items:center;gap:8px}\n.dot{width:10px;height:10px;border-radius:50%;background:#ffb35c;box-shadow:0 0 10px #ffb35c;animation:pulse 1.4s infinite}\n.prog{display:flex;align-items:center;gap:8px;color:#d9c4f0;font-size:15px;--mdc-icon-size:20px}\n.prog ha-icon{color:#f6d68a}\n.row{display:flex;align-items:center;gap:14px;margin:12px 0 6px;flex-wrap:wrap}\n.ring{width:96px;height:96px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}\n.ring .bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:10}\n.ring .fg{fill:none;stroke:url(#none);stroke:#ffb35c;stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:60px 60px;transition:stroke-dasharray 1s}\n.ring .big{fill:#fff;font:700 30px sans-serif;text-anchor:middle}.ring .small{fill:#d9c4f0;font:12px sans-serif;text-anchor:middle}\n.stats{display:grid;gap:8px}.stats small{display:block;font-size:11px;color:#9d8fb3}.stats b{font-size:17px;color:#fff}\n.bar{height:8px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin:6px 0}.bar div{height:100%;background:linear-gradient(90deg,#f3c156,#ff8a3c);box-shadow:0 0 10px #ff8a3c}\n.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}\n.pill{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(246,214,138,.22);font-size:12px;white-space:nowrap}\n@keyframes spin{to{transform:rotate(360deg)}}\n@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}\n@keyframes rise{0%{transform:translateY(0) scale(.6);opacity:0}30%{opacity:.8}100%{transform:translateY(-120px) scale(1.6);opacity:0}}\n.tft .n{flex:1;opacity:.8;overflow:hidden;text-overflow:ellipsis}\n.pill{font-size:11px!important;padding:4px 8px!important}.stats b{font-size:15px!important}\n.prog ha-icon{width:20px!important;height:20px!important;flex:0 0 20px;--mdc-icon-size:20px!important;display:inline-flex!important}\n.fan ha-icon{width:36px!important;height:36px!important;--mdc-icon-size:36px!important;display:block!important}\n.info ha-icon, .oven ha-icon{max-width:40px}\n.prog{justify-content:flex-start!important;width:100%}.info{text-align:left!important}.info>*{text-align:left}\n.info ha-icon,.oven ha-icon{margin:0!important}\n.oven{width:clamp(220px,46%,320px)!important}.glass{height:auto!important;aspect-ratio:16/10}.tft{font-size:clamp(10px,1vw,12px)!important}\n.brand span{color:#ff9d2e!important}.prog ha-icon{color:#ff9d2e!important}.ring .fg{stroke:#ff9d2e!important}.info{font-family:ui-monospace,Menlo,Consolas,monospace}.state{font-family:sans-serif}.pill{background:#15151b!important;border-color:#2a2a33!important}\n.gauge{flex:0 0 112px;width:112px;height:112px;min-width:112px;max-width:112px;aspect-ratio:1/1;border-radius:50%;background:conic-gradient(#ff9d2e calc(var(--p)*1%),rgba(255,255,255,.12) 0);display:grid;place-items:center;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transition:background 1s}\n.gin{width:90px;height:90px;border-radius:50%;background:#111116;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:inset 0 2px 6px rgba(0,0,0,.8)}\n.gin b{font:700 30px Roboto,Arial,sans-serif;color:#fff}\n.gin small{font:600 12px Roboto,Arial,sans-serif;color:#ffcf8a;margin-top:4px;letter-spacing:.3px}\n/* tablette : navigateurs anciens (pas de gap flex / aspect-ratio) */\n.row{gap:0!important}\n.row>*{margin:0 14px 6px 0}\n.gauge{-webkit-flex:0 0 112px!important;flex:0 0 112px!important;width:112px!important;height:112px!important;min-width:112px!important;min-height:112px!important;max-height:112px!important;box-sizing:border-box;display:-webkit-flex!important;display:flex!important;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;overflow:hidden}\n.gin{-webkit-flex:none;flex:none!important;width:90px!important;height:90px!important;min-width:90px!important;min-height:90px!important;box-sizing:border-box;display:-webkit-flex!important;-webkit-flex-direction:column;-webkit-align-items:center;-webkit-justify-content:center}\n.gin b,.gin small{display:block;white-space:nowrap;text-align:center}\n.prog{display:-webkit-flex;-webkit-align-items:center}\n.prog ha-icon{-webkit-flex:none;flex:none!important;position:static!important;margin:0 8px 0 0!important;width:20px;height:20px}\n.stats{min-width:110px}"
                     },
                     {
                       "type": "grid",
@@ -8117,8 +8115,8 @@
                           "conditions": [
                             {
                               "condition": "state",
-                              "entity": "number.cuisine_four_temperature_de_consigne",
-                              "state_not": "unavailable"
+                              "entity": "switch.four_alimentation",
+                              "state": "on"
                             }
                           ],
                           "card": {
@@ -8133,7 +8131,7 @@
                               "action": "none"
                             },
                             "custom_fields": {
-                              "v": "[[[ const v=Number(entity.state); return `${Math.round(v)}<span style='font-size:15px;color:#d9c4f0'> °C</span>` ]]]",
+                              "v": "[[[ const v=(()=>{const b=states['input_number.four_temp_voulue'];const ok=!isNaN(Number(entity.state));return (!ok||(b&&new Date(b.last_changed)>new Date(entity.last_changed)))?Number(b?.state):Number(entity.state)})(); return `${Math.round(v)}<span style='font-size:15px;color:#d9c4f0'> °C</span>` ]]]",
                               "minus": {
                                 "card": {
                                   "type": "custom:button-card",
@@ -8144,12 +8142,10 @@
                                   "show_label": false,
                                   "tap_action": {
                                     "action": "call-service",
-                                    "service": "number.set_value",
-                                    "target": {
-                                      "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                    },
+                                    "service": "script.four_regler",
                                     "data": {
-                                      "value": "[[[ return Math.max(30, Number(entity.state)-5) ]]]"
+                                      "cible": "temp",
+                                      "delta": -5
                                     },
                                     "haptic": "light"
                                   },
@@ -8199,12 +8195,10 @@
                                   "show_label": false,
                                   "tap_action": {
                                     "action": "call-service",
-                                    "service": "number.set_value",
-                                    "target": {
-                                      "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                    },
+                                    "service": "script.four_regler",
                                     "data": {
-                                      "value": "[[[ return Math.min(250, Number(entity.state)+5) ]]]"
+                                      "cible": "temp",
+                                      "delta": 5
                                     },
                                     "haptic": "light"
                                   },
@@ -8258,12 +8252,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 160
+                                          "cible": "temp",
+                                          "valeur": 160
                                         },
                                         "haptic": "light"
                                       },
@@ -8306,12 +8298,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 180
+                                          "cible": "temp",
+                                          "valeur": 180
                                         },
                                         "haptic": "light"
                                       },
@@ -8354,12 +8344,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 200
+                                          "cible": "temp",
+                                          "valeur": 200
                                         },
                                         "haptic": "light"
                                       },
@@ -8402,12 +8390,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 220
+                                          "cible": "temp",
+                                          "valeur": 220
                                         },
                                         "haptic": "light"
                                       },
@@ -8525,7 +8511,11 @@
                                   }
                                 ]
                               }
-                            }
+                            },
+                            "triggers_update": [
+                              "number.cuisine_four_temperature_de_consigne",
+                              "input_number.four_temp_voulue"
+                            ]
                           }
                         },
                         {
@@ -8533,8 +8523,8 @@
                           "conditions": [
                             {
                               "condition": "state",
-                              "entity": "number.cuisine_four_duree",
-                              "state_not": "unavailable"
+                              "entity": "switch.four_alimentation",
+                              "state": "on"
                             }
                           ],
                           "card": {
@@ -8549,7 +8539,7 @@
                               "action": "none"
                             },
                             "custom_fields": {
-                              "v": "[[[ const v=Number(entity.state); const m=Math.round(v/60),hh=Math.floor(m/60),mm=m%60; return hh?`${hh} h ${String(mm).padStart(2,'0')}`:`${mm} min` ]]]",
+                              "v": "[[[ const v=(()=>{const b=states['input_number.four_duree_voulue'];const ok=!isNaN(Number(entity.state));return (!ok||(b&&new Date(b.last_changed)>new Date(entity.last_changed)))?Number(b?.state):Number(entity.state)})(); const m=Math.round(v/60),hh=Math.floor(m/60),mm=m%60; return hh?`${hh} h ${String(mm).padStart(2,'0')}`:`${mm} min` ]]]",
                               "minus": {
                                 "card": {
                                   "type": "custom:button-card",
@@ -8560,12 +8550,10 @@
                                   "show_label": false,
                                   "tap_action": {
                                     "action": "call-service",
-                                    "service": "number.set_value",
-                                    "target": {
-                                      "entity_id": "number.cuisine_four_duree"
-                                    },
+                                    "service": "script.four_regler",
                                     "data": {
-                                      "value": "[[[ return Math.max(60, Number(entity.state)-300) ]]]"
+                                      "cible": "duree",
+                                      "delta": -300
                                     },
                                     "haptic": "light"
                                   },
@@ -8615,12 +8603,10 @@
                                   "show_label": false,
                                   "tap_action": {
                                     "action": "call-service",
-                                    "service": "number.set_value",
-                                    "target": {
-                                      "entity_id": "number.cuisine_four_duree"
-                                    },
+                                    "service": "script.four_regler",
                                     "data": {
-                                      "value": "[[[ return Math.min(86400, Number(entity.state)+300) ]]]"
+                                      "cible": "duree",
+                                      "delta": 300
                                     },
                                     "haptic": "light"
                                   },
@@ -8674,12 +8660,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_duree"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 900
+                                          "cible": "duree",
+                                          "valeur": 900
                                         },
                                         "haptic": "light"
                                       },
@@ -8722,12 +8706,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_duree"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 1800
+                                          "cible": "duree",
+                                          "valeur": 1800
                                         },
                                         "haptic": "light"
                                       },
@@ -8770,12 +8752,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_duree"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 2700
+                                          "cible": "duree",
+                                          "valeur": 2700
                                         },
                                         "haptic": "light"
                                       },
@@ -8818,12 +8798,10 @@
                                       "show_state": false,
                                       "tap_action": {
                                         "action": "call-service",
-                                        "service": "number.set_value",
-                                        "target": {
-                                          "entity_id": "number.cuisine_four_duree"
-                                        },
+                                        "service": "script.four_regler",
                                         "data": {
-                                          "value": 3600
+                                          "cible": "duree",
+                                          "valeur": 3600
                                         },
                                         "haptic": "light"
                                       },
@@ -8941,7 +8919,11 @@
                                   }
                                 ]
                               }
-                            }
+                            },
+                            "triggers_update": [
+                              "number.cuisine_four_duree",
+                              "input_number.four_duree_voulue"
+                            ]
                           }
                         }
                       ]
@@ -13009,11 +12991,9 @@
                           "drc"
                         ],
                         [
-                          [
-                            "volume_up",
-                            "volume_down"
-                          ],
-                          "mute"
+                          "volume_down",
+                          "mute",
+                          "volume_up"
                         ],
                         [
                           "divider_sound"
@@ -13031,10 +13011,8 @@
                         ],
                         [
                           "zone2_power",
-                          [
-                            "zone2_volume_up",
-                            "zone2_volume_down"
-                          ]
+                          "zone2_volume_down",
+                          "zone2_volume_up"
                         ]
                       ],
                       "custom_actions": [
@@ -14808,8 +14786,8 @@
                   "conditions": [
                     {
                       "condition": "state",
-                      "entity": "number.cuisine_four_temperature_de_consigne",
-                      "state_not": "unavailable"
+                      "entity": "switch.four_alimentation",
+                      "state": "on"
                     }
                   ],
                   "card": {
@@ -14824,7 +14802,7 @@
                       "action": "none"
                     },
                     "custom_fields": {
-                      "v": "[[[ const v=Number(entity.state); return `${Math.round(v)}<span style='font-size:15px;color:#d9c4f0'> °C</span>` ]]]",
+                      "v": "[[[ const v=(()=>{const b=states['input_number.four_temp_voulue'];const ok=!isNaN(Number(entity.state));return (!ok||(b&&new Date(b.last_changed)>new Date(entity.last_changed)))?Number(b?.state):Number(entity.state)})(); return `${Math.round(v)}<span style='font-size:15px;color:#d9c4f0'> °C</span>` ]]]",
                       "minus": {
                         "card": {
                           "type": "custom:button-card",
@@ -14835,12 +14813,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_temperature_de_consigne"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.max(30, Number(entity.state)-5) ]]]"
+                              "cible": "temp",
+                              "delta": -5
                             },
                             "haptic": "light"
                           },
@@ -14890,12 +14866,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_temperature_de_consigne"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.min(250, Number(entity.state)+5) ]]]"
+                              "cible": "temp",
+                              "delta": 5
                             },
                             "haptic": "light"
                           },
@@ -14949,12 +14923,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 160
+                                  "cible": "temp",
+                                  "valeur": 160
                                 },
                                 "haptic": "light"
                               },
@@ -14997,12 +14969,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 180
+                                  "cible": "temp",
+                                  "valeur": 180
                                 },
                                 "haptic": "light"
                               },
@@ -15045,12 +15015,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 200
+                                  "cible": "temp",
+                                  "valeur": 200
                                 },
                                 "haptic": "light"
                               },
@@ -15093,12 +15061,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 220
+                                  "cible": "temp",
+                                  "valeur": 220
                                 },
                                 "haptic": "light"
                               },
@@ -15216,7 +15182,11 @@
                           }
                         ]
                       }
-                    }
+                    },
+                    "triggers_update": [
+                      "number.cuisine_four_temperature_de_consigne",
+                      "input_number.four_temp_voulue"
+                    ]
                   },
                   "grid_options": {
                     "columns": 12,
@@ -15228,8 +15198,8 @@
                   "conditions": [
                     {
                       "condition": "state",
-                      "entity": "number.cuisine_four_duree",
-                      "state_not": "unavailable"
+                      "entity": "switch.four_alimentation",
+                      "state": "on"
                     }
                   ],
                   "card": {
@@ -15244,7 +15214,7 @@
                       "action": "none"
                     },
                     "custom_fields": {
-                      "v": "[[[ const v=Number(entity.state); const m=Math.round(v/60),hh=Math.floor(m/60),mm=m%60; return hh?`${hh} h ${String(mm).padStart(2,'0')}`:`${mm} min` ]]]",
+                      "v": "[[[ const v=(()=>{const b=states['input_number.four_duree_voulue'];const ok=!isNaN(Number(entity.state));return (!ok||(b&&new Date(b.last_changed)>new Date(entity.last_changed)))?Number(b?.state):Number(entity.state)})(); const m=Math.round(v/60),hh=Math.floor(m/60),mm=m%60; return hh?`${hh} h ${String(mm).padStart(2,'0')}`:`${mm} min` ]]]",
                       "minus": {
                         "card": {
                           "type": "custom:button-card",
@@ -15255,12 +15225,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_duree"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.max(60, Number(entity.state)-300) ]]]"
+                              "cible": "duree",
+                              "delta": -300
                             },
                             "haptic": "light"
                           },
@@ -15310,12 +15278,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_duree"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.min(86400, Number(entity.state)+300) ]]]"
+                              "cible": "duree",
+                              "delta": 300
                             },
                             "haptic": "light"
                           },
@@ -15369,12 +15335,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 900
+                                  "cible": "duree",
+                                  "valeur": 900
                                 },
                                 "haptic": "light"
                               },
@@ -15417,12 +15381,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 1800
+                                  "cible": "duree",
+                                  "valeur": 1800
                                 },
                                 "haptic": "light"
                               },
@@ -15465,12 +15427,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 2700
+                                  "cible": "duree",
+                                  "valeur": 2700
                                 },
                                 "haptic": "light"
                               },
@@ -15513,12 +15473,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 3600
+                                  "cible": "duree",
+                                  "valeur": 3600
                                 },
                                 "haptic": "light"
                               },
@@ -15636,7 +15594,11 @@
                           }
                         ]
                       }
-                    }
+                    },
+                    "triggers_update": [
+                      "number.cuisine_four_duree",
+                      "input_number.four_duree_voulue"
+                    ]
                   },
                   "grid_options": {
                     "columns": 12,
@@ -18695,8 +18657,8 @@
                   "conditions": [
                     {
                       "condition": "state",
-                      "entity": "number.cuisine_four_temperature_de_consigne",
-                      "state_not": "unavailable"
+                      "entity": "switch.four_alimentation",
+                      "state": "on"
                     }
                   ],
                   "card": {
@@ -18711,7 +18673,7 @@
                       "action": "none"
                     },
                     "custom_fields": {
-                      "v": "[[[ const v=Number(entity.state); return `${Math.round(v)}<span style='font-size:15px;color:#d9c4f0'> °C</span>` ]]]",
+                      "v": "[[[ const v=(()=>{const b=states['input_number.four_temp_voulue'];const ok=!isNaN(Number(entity.state));return (!ok||(b&&new Date(b.last_changed)>new Date(entity.last_changed)))?Number(b?.state):Number(entity.state)})(); return `${Math.round(v)}<span style='font-size:15px;color:#d9c4f0'> °C</span>` ]]]",
                       "minus": {
                         "card": {
                           "type": "custom:button-card",
@@ -18722,12 +18684,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_temperature_de_consigne"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.max(30, Number(entity.state)-5) ]]]"
+                              "cible": "temp",
+                              "delta": -5
                             },
                             "haptic": "light"
                           },
@@ -18777,12 +18737,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_temperature_de_consigne"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.min(250, Number(entity.state)+5) ]]]"
+                              "cible": "temp",
+                              "delta": 5
                             },
                             "haptic": "light"
                           },
@@ -18836,12 +18794,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 160
+                                  "cible": "temp",
+                                  "valeur": 160
                                 },
                                 "haptic": "light"
                               },
@@ -18884,12 +18840,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 180
+                                  "cible": "temp",
+                                  "valeur": 180
                                 },
                                 "haptic": "light"
                               },
@@ -18932,12 +18886,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 200
+                                  "cible": "temp",
+                                  "valeur": 200
                                 },
                                 "haptic": "light"
                               },
@@ -18980,12 +18932,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_temperature_de_consigne"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 220
+                                  "cible": "temp",
+                                  "valeur": 220
                                 },
                                 "haptic": "light"
                               },
@@ -19091,7 +19041,11 @@
                           }
                         ]
                       }
-                    }
+                    },
+                    "triggers_update": [
+                      "number.cuisine_four_temperature_de_consigne",
+                      "input_number.four_temp_voulue"
+                    ]
                   },
                   "grid_options": {
                     "columns": 12,
@@ -19103,8 +19057,8 @@
                   "conditions": [
                     {
                       "condition": "state",
-                      "entity": "number.cuisine_four_duree",
-                      "state_not": "unavailable"
+                      "entity": "switch.four_alimentation",
+                      "state": "on"
                     }
                   ],
                   "card": {
@@ -19119,7 +19073,7 @@
                       "action": "none"
                     },
                     "custom_fields": {
-                      "v": "[[[ const v=Number(entity.state); const m=Math.round(v/60),hh=Math.floor(m/60),mm=m%60; return hh?`${hh} h ${String(mm).padStart(2,'0')}`:`${mm} min` ]]]",
+                      "v": "[[[ const v=(()=>{const b=states['input_number.four_duree_voulue'];const ok=!isNaN(Number(entity.state));return (!ok||(b&&new Date(b.last_changed)>new Date(entity.last_changed)))?Number(b?.state):Number(entity.state)})(); const m=Math.round(v/60),hh=Math.floor(m/60),mm=m%60; return hh?`${hh} h ${String(mm).padStart(2,'0')}`:`${mm} min` ]]]",
                       "minus": {
                         "card": {
                           "type": "custom:button-card",
@@ -19130,12 +19084,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_duree"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.max(60, Number(entity.state)-300) ]]]"
+                              "cible": "duree",
+                              "delta": -300
                             },
                             "haptic": "light"
                           },
@@ -19185,12 +19137,10 @@
                           "show_label": false,
                           "tap_action": {
                             "action": "call-service",
-                            "service": "number.set_value",
-                            "target": {
-                              "entity_id": "number.cuisine_four_duree"
-                            },
+                            "service": "script.four_regler",
                             "data": {
-                              "value": "[[[ return Math.min(86400, Number(entity.state)+300) ]]]"
+                              "cible": "duree",
+                              "delta": 300
                             },
                             "haptic": "light"
                           },
@@ -19244,12 +19194,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 900
+                                  "cible": "duree",
+                                  "valeur": 900
                                 },
                                 "haptic": "light"
                               },
@@ -19292,12 +19240,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 1800
+                                  "cible": "duree",
+                                  "valeur": 1800
                                 },
                                 "haptic": "light"
                               },
@@ -19340,12 +19286,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 2700
+                                  "cible": "duree",
+                                  "valeur": 2700
                                 },
                                 "haptic": "light"
                               },
@@ -19388,12 +19332,10 @@
                               "show_state": false,
                               "tap_action": {
                                 "action": "call-service",
-                                "service": "number.set_value",
-                                "target": {
-                                  "entity_id": "number.cuisine_four_duree"
-                                },
+                                "service": "script.four_regler",
                                 "data": {
-                                  "value": 3600
+                                  "cible": "duree",
+                                  "valeur": 3600
                                 },
                                 "haptic": "light"
                               },
@@ -19499,7 +19441,11 @@
                           }
                         ]
                       }
-                    }
+                    },
+                    "triggers_update": [
+                      "number.cuisine_four_duree",
+                      "input_number.four_duree_voulue"
+                    ]
                   },
                   "grid_options": {
                     "columns": 12,
@@ -31933,7 +31879,7 @@
           },
           "label": "[[[ return variables.sub||\"\" ]]]",
           "custom_fields": {
-            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 22px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
           },
           "styles": {
             "card": [
@@ -31946,7 +31892,10 @@
                 "grid-template-areas": "\"i n t\" \"i l t\""
               },
               {
-                "grid-template-columns": "40px 1fr auto"
+                "grid-template-columns": "30px minmax(0,1fr) auto"
+              },
+              {
+                "column-gap": "8px"
               }
             ],
             "icon": [
@@ -31965,10 +31914,25 @@
                 "font-weight": "600"
               },
               {
-                "font-size": "14px"
+                "font-size": "13px"
               },
               {
                 "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "overflow": "visible"
+              },
+              {
+                "text-overflow": "clip"
+              },
+              {
+                "text-align": "left"
+              },
+              {
+                "line-height": "1.15"
               }
             ],
             "label": [
@@ -31988,7 +31952,7 @@
                   "justify-self": "end"
                 },
                 {
-                  "padding-right": "14px"
+                  "padding-right": "12px"
                 }
               ]
             }

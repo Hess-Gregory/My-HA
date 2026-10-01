@@ -1113,7 +1113,7 @@
           },
           "label": "[[[ return variables.sub||\"\" ]]]",
           "custom_fields": {
-            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 26px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
+            "t": "[[[ const tc=t=>t<18?'#6aa8f0':t<19.5?'#8fd0f0':t<=22.5?'#7fdc9a':t<=24?'#f3c156':'#f07a7a'; const v=Number(variables.attr?entity.attributes[variables.attr]:entity.state); if(isNaN(v)) return '—'; return `<span style=\"font:700 22px sans-serif;color:${tc(v)};text-shadow:0 0 12px ${tc(v)}55\">${v.toFixed(1)}<span style=\"font-size:14px\">°</span></span>` ]]]"
           },
           "styles": {
             "card": [
@@ -1126,7 +1126,10 @@
                 "grid-template-areas": "\"i n t\" \"i l t\""
               },
               {
-                "grid-template-columns": "40px 1fr auto"
+                "grid-template-columns": "30px minmax(0,1fr) auto"
+              },
+              {
+                "column-gap": "8px"
               }
             ],
             "icon": [
@@ -1145,10 +1148,25 @@
                 "font-weight": "600"
               },
               {
-                "font-size": "14px"
+                "font-size": "13px"
               },
               {
                 "color": "#fff"
+              },
+              {
+                "white-space": "normal"
+              },
+              {
+                "overflow": "visible"
+              },
+              {
+                "text-overflow": "clip"
+              },
+              {
+                "text-align": "left"
+              },
+              {
+                "line-height": "1.15"
               }
             ],
             "label": [
@@ -1168,7 +1186,7 @@
                   "justify-self": "end"
                 },
                 {
-                  "padding-right": "14px"
+                  "padding-right": "12px"
                 }
               ]
             }

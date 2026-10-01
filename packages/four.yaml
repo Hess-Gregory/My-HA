@@ -53,7 +53,7 @@ automation:
               - condition: trigger
                 id: action
             sequence:
-              - action: notify.mobile_app_smartphone_greg
+              - action: notify.mobile_app_samsung_greg
                 continue_on_error: true
                 data:
                   title: "🙋 Le four demande une action"
@@ -73,7 +73,7 @@ automation:
               - condition: trigger
                 id: fin
             sequence:
-              - action: notify.mobile_app_smartphone_greg
+              - action: notify.mobile_app_samsung_greg
                 continue_on_error: true
                 data:
                   title: "✅ C'est prêt"
@@ -136,7 +136,7 @@ automation:
           {{ this.attributes.last_triggered is none
              or (now() - this.attributes.last_triggered).total_seconds() > 1800 }}
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         continue_on_error: true
         data:
           title: "🔥 Le four est chaud"
@@ -164,7 +164,7 @@ automation:
         entity_id: sensor.four_reveil_depasse
         to: present
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         continue_on_error: true
         data:
           title: "⏰ Minuterie du four"
@@ -247,7 +247,7 @@ automation:
             state: "on"
         then:
           - action: script.four_demarrer
-          - action: notify.mobile_app_smartphone_greg
+          - action: notify.mobile_app_samsung_greg
             continue_on_error: true
             data:
               title: "▶️ Four démarré"
@@ -256,7 +256,7 @@ automation:
                 tag: four
                 channel: Four
         else:
-          - action: notify.mobile_app_smartphone_greg
+          - action: notify.mobile_app_samsung_greg
             continue_on_error: true
             data:
               title: "⚠️ Four non démarré"
@@ -282,7 +282,7 @@ automation:
         entity_id: sensor.four_temperature_actuelle_de_la_cavite_du_four
         above: 80
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         continue_on_error: true
         data:
           title: "🚪 Porte du four ouverte"
@@ -316,7 +316,7 @@ automation:
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.four_demarrage_programme
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         continue_on_error: true
         data:
           title: "🛑 Four éteint"
@@ -462,7 +462,7 @@ automation four_plus:
       - condition: state
         entity_id: sensor.four_etat
         state: run
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         continue_on_error: true
         data:
           title: "↩️ Mi-cuisson"
@@ -502,7 +502,7 @@ automation four_plus:
                 entity_id: counter.four_cuissons_nettoyage
                 above: 14
             then:
-              - action: notify.mobile_app_smartphone_greg
+              - action: notify.mobile_app_samsung_greg
                 continue_on_error: true
                 data:
                   title: "🧽 Nettoyage du four"

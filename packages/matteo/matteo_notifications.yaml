@@ -108,7 +108,7 @@ automation:
       - condition: template
         value_template: "{{ msg | trim != '' }}"
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "👦 Matteo — demain {{ demain[0:5] }}"
           message: "{{ msg | trim }}"
@@ -140,7 +140,7 @@ automation:
       - condition: template
         value_template: "{{ liste | trim != '' }}"
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "📅 Congé de Matteo à définir"
           message: "Les dates ne sont pas encore fixées : {{ liste | trim }}. Ouvre Calendrier › Matteo & Trajets › ⚙️ Modifier."
@@ -164,7 +164,7 @@ automation:
       - condition: template
         value_template: "{{ j == 3 and '⚠️' in i.conge | default('') }}"
     actions:
-      - action: notify.mobile_app_smartphone_greg
+      - action: notify.mobile_app_samsung_greg
         data:
           title: "⚠️ Matteo — {{ i.du[0:5] }} → {{ i.au[0:5] }}"
           message: "{{ i.conge }} : fêté chez l'autre parent alors que Matteo est chez {{ 'toi' if i.garde == 'Papa' else 'sa maman' }}."
