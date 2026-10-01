@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.1 | 26/09/2026 21:53 | saisie de la date en jour / mois / annee (dates avant 1970)
+# [AUTO-VERSION] v0.2.0 | 01/10/2026 18:41 | four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes
 # =====================================================================
 # Anniversaires & dates récurrentes (dashboard Calendrier › Vue d'ensemble)
 # Liste stockée dans l'attribut « liste » de sensor.anniversaires (capteur déclenché,
