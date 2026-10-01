@@ -100,9 +100,9 @@
     "version": "0.3.0"
   },
   ".storage/lovelace.maison_pollution": {
-    "last_change": "risques des retombees sur vitrages et vehicules",
-    "last_update": "2026-10-01T20:41:21.430079+02:00",
-    "version": "0.5.0"
+    "last_change": "boutons imprimer/excel en liens (app compagnon)",
+    "last_update": "2026-10-01T21:07:19.141251+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.maison_securite": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
