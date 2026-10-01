@@ -61,8 +61,8 @@
   {%- set conge = ([conge] + ns3.t) | reject('eq', '') | join(' · ') -%}
   {%- set la = w.lieu_aller | default('') if w.lieu_aller_code | default('') not in ['MAURAGE', ''] else '' -%}
   {%- set lr = w.lieu_retour | default('') if w.lieu_retour_code | default('') not in ['MAURAGE', ''] else '' -%}
-  {%- set aller = (_nom_aller(w.code_aller) ~ ((' à ' ~ la) if la else '')) if defini else '' -%}
-  {%- set retour = (_nom_retour(w.code_retour) ~ ((' à ' ~ lr) if lr else '')) if defini else '' -%}
+  {%- set aller = w.aller if (defini and w.tiers_aller_label | default('')) else (_nom_aller(w.code_aller) ~ ((' à ' ~ la) if la else '')) if defini else '' -%}
+  {%- set retour = w.retour if (defini and w.tiers_retour_label | default('')) else (_nom_retour(w.code_retour) ~ ((' à ' ~ lr) if lr else '')) if defini else '' -%}
   {%- set typ = (('⏸️ ' if not vis else '') ~ w.type ~ (' 📝' if w.notes | default('') else '')) if defini else '' -%}
   {%- set txt = [w.du, w.au, typ, aller, retour, conge] | join(' ') | lower -%}
   {%- if ok_vis and not ns2.masque and ok_type and ok_garde and ok_etat
@@ -133,11 +133,11 @@
 {%- if defini %}
 | **Type** | {{ w.type }} |
 {%- set chez_maman_d = w.code_aller in ['E', ''] and w.code_retour in ['E', ''] -%}{%- if not chez_maman_d %}
-| **Aller** | {% if w.code_aller in col %}<font color="{{ col[ca] }}"><b>{{ _nom_aller(w.code_aller) }}</b></font>{% else %}—{% endif %} |
+| **Aller** | {% if w.code_aller in col %}<font color="{{ col[ca] }}"><b>{{ w.aller if w.tiers_aller_label | default('') else _nom_aller(w.code_aller) }}</b></font>{% else %}—{% endif %} |
 {%- if w.code_aller == 'A' %}
 | &nbsp;&nbsp;↳ *Lieu* | {% set mlt = (w.motif_libre if w.motif_lieu_code | default('') == 'AUTRE REPORT' else w.motif_lieu | default('')) %}{% if w.lieu_aller_code | default('') not in ['', 'MAURAGE'] %}<font color="#F44336"><b>📍 {{ w.lieu_aller }}</b></font>{% if mlt not in ['', 'Aucun'] %} — <i>{{ mlt }}</i>{% endif %}{% else %}📍 Maurage (Maison Maman){% endif %} |
 {%- endif %}
-| **Retour** | {% if w.code_retour in col %}<font color="{{ col['D' if w.solde_dette | default('') else w.code_retour] }}"><b>{{ _nom_retour(w.code_retour) }}</b></font>{% else %}—{% endif %} |
+| **Retour** | {% if w.code_retour in col %}<font color="{{ col['D' if w.solde_dette | default('') else w.code_retour] }}"><b>{{ w.retour if w.tiers_retour_label | default('') else _nom_retour(w.code_retour) }}</b></font>{% else %}—{% endif %} |
 {%- if w.code_retour in ['A', 'C'] %}
 | &nbsp;&nbsp;↳ *Lieu* | {% set mlt = (w.motif_libre if w.motif_lieu_code | default('') == 'AUTRE REPORT' else w.motif_lieu | default('')) %}{% if w.lieu_retour_code | default('') not in ['', 'MAURAGE'] %}<font color="#F44336"><b>📍 {{ w.lieu_retour }}</b></font>{% if mlt not in ['', 'Aucun'] %} — <i>{{ mlt }}</i>{% endif %}{% else %}📍 Maurage (Maison Maman){% endif %} |
 {%- endif %}

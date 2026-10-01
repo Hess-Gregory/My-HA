@@ -4,7 +4,7 @@
 import os, sys, json
 from datetime import datetime, timedelta
 sys.path.insert(0, "/config/matteo/scripts")
-from matteo_common import load, lieu_label
+from matteo_common import load, lieu_label, _tiers_txt
 
 TOKEN_FILE = "/config/matteo/data/ics_token"
 OUT_DIR = "/config/www/matteo"
@@ -21,6 +21,8 @@ def d(s):
 def motifs(e):
     vals = []
     seen = set()
+    if e.get("tiers_aller"):
+        e = dict(e, motif_aller="")
     for k, lab in (("motif-1", "Changement"), ("motif_aller", "Aller"), ("motif-2", "Retour"), ("motif_lieu", "Lieu"), ("motif_libre", "Précision")):
         v = str(e.get(k) or "").strip()
         if v and v.lower() not in ("aucun", "none") and v not in seen:
@@ -45,9 +47,9 @@ def build():
                     "t": e.get("vac_nom") if k.startswith("VAC_") else e.get("type_action", ""),
                     "a": NOM.get(e.get("code_aller"), "") + ((" à " + lieu_label(e.get("lieu_aller"))) if e.get("code_aller") == "A" and (e.get("lieu_aller") or "MAURAGE") != "MAURAGE" else ""), "r": NOM.get(e.get("code_retour"), "") + ((" à " + lieu_label(e.get("lieu_retour"))) if e.get("code_retour") in ("A", "C") and (e.get("lieu_retour") or "MAURAGE") != "MAURAGE" else ""), "cr": e.get("code_retour", ""), "mo": motifs(e), "no": str(e.get("notes") or "").strip()})
         if e.get("tiers_aller"):
-            per[-1]["a"] = TIERS.get(e["tiers_aller"], "") + (" · compté" if e.get("tiers_compte") else " · hors banque")
+            per[-1]["a"] = _tiers_txt(e, "aller")
         if e.get("tiers_retour"):
-            per[-1]["r"] = TIERS.get(e["tiers_retour"], "") + (" · compté" if e.get("tiers_compte") else " · hors banque")
+            per[-1]["r"] = _tiers_txt(e, "retour")
     per.sort(key=lambda p: p["du"])
     payload = {"per": per, "vac": c.get("vacances", []), "ev": c.get("evenements", []), "gen": datetime.now().strftime("%d/%m/%Y %H:%M")}
     html = TEMPLATE.replace("__DATA__", json.dumps(payload, ensure_ascii=False))
@@ -98,7 +100,7 @@ h2{margin:0 0 12px;font-size:20px}table{width:100%;border-collapse:collapse}
 <select id="v"><option value="cal">Calendrier</option><option value="list">Liste</option><option value="both">Calendrier + liste</option></select>
 <button onclick="window.print()">Imprimer / PDF</button><button onclick="location.href=location.pathname.replace('imprimer_','planning_').replace('.html','.csv')">Excel (.csv)</button></div><main id="out"></main>
 <script>
-const D=__DATA__;const TC=x=>x&&x.indexOf(' · ')>=0?'<span style="color:#00838F;font-weight:700">'+x+'</span>':x;const MO=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const D=__DATA__;const TC=x=>x&&(x.indexOf('(hors banque)')>=0||x.indexOf('(compté comme')>=0)?'<span style="color:#00838F;font-weight:700">'+x+'</span>':x;const MO=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const CAT={WG:'Week-end chez papa',WE:'Week-end chez maman',VG:'Congé chez papa',VE:'Congé chez maman',AG:'Autre date chez papa',AE:'Autre date chez maman'};
 const iso=d=>d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();const P=s=>new Date(s+'T00:00:00');
 const fr=d=>String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();

@@ -375,8 +375,8 @@
       "reason_code": "BANK_PLUS_1",
       "bank_delta": 0,
       "created_at": "2026-09-24T09:36:53+00:00Z",
-      "modified_at": "2026-09-29T19:14:24+02:00",
-      "modification_count": 3,
+      "modified_at": "2026-10-01T19:18:24+02:00",
+      "modification_count": 7,
       "audit": [
         {
           "user": "script",
@@ -401,6 +401,30 @@
           "action": "upsert",
           "at": "2026-09-29T19:14:24+02:00",
           "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-10-01T19:06:51+02:00",
+          "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-10-01T19:07:09+02:00",
+          "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-10-01T19:07:36+02:00",
+          "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-10-01T19:18:24+02:00",
+          "note": "enregistré via le dashboard"
         }
       ],
       "hide": false,
@@ -410,12 +434,17 @@
       "rattrape_par": "",
       "motif-2": "Olivier est indisponible raison professionnelle",
       "motif-2_code": "INDISPONIBLE PRO",
-      "notes": "Mathéo fête son anniversaire avec Catherine et Gino, Catherine et le déplacement jusqu'à Engis samedi matin samedi matin",
+      "notes": "Matteo fête son anniversaire avec Catherine et Gino, Catherine fait le déplacement jusqu'à Engis samedi matin pour le conduire.",
       "solde_dette": "",
       "lieu_aller": "",
       "lieu_retour": "MAURAGE",
       "motif_lieu_code": "NONE",
       "motif_lieu": "Aucun",
+      "tiers_aller": "CATHERINE",
+      "tiers_retour": "",
+      "tiers_compte": true,
+      "tiers_comme_aller": "ELODIE",
+      "tiers_comme_retour": "",
       "evenements_lies": [
         {
           "nom": "Matteo",

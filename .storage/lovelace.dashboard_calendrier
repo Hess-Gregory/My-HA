@@ -4432,12 +4432,12 @@
                         {
                           "name": "Aller géré par",
                           "data": "weekends.aller_c",
-                          "modify": "(function(){var s=String(x);var i=s.indexOf('|');var c=s.slice(0,i);var t=s.slice(i+1);if(!c)return '';if(c==='E')return '';var k=c==='B'?'#9C27B0':'#2196F3';return '<span style=\"color:'+k+';font-weight:600\">'+(c==='B'?'⚖️ ':'')+t.replace(/ à (.+)$/,' <span style=\"color:#F44336;font-weight:700\">à $1</span>')+'</span>';})()"
+                          "modify": "(function(){var s=String(x);var i=s.indexOf('|');var c=s.slice(0,i);var t=s.slice(i+1);if(!c)return '';if(c==='E')return '';if(/\\((hors banque|compté comme)/.test(t))return '<span style=\"color:#00BCD4;font-weight:700\">🚗 '+t+'</span>';var k=c==='B'?'#9C27B0':'#2196F3';return '<span style=\"color:'+k+';font-weight:600\">'+(c==='B'?'⚖️ ':'')+t.replace(/ à (.+)$/,' <span style=\"color:#F44336;font-weight:700\">à $1</span>')+'</span>';})()"
                         },
                         {
                           "name": "Retour géré par",
                           "data": "weekends.retour_c",
-                          "modify": "(function(){var s=String(x);var i=s.indexOf('|');var c=s.slice(0,i);var t=s.slice(i+1);if(!c)return '';var k={A:'#2196F3',B:'#4CAF50',C:'#FF9800',D:'#9C27B0',E:'#9E9E9E'}[c];if(c==='E')return '';var ic=c==='C'?'⚠️ ':(c==='D'?'⚖️ ':'');return '<span style=\"color:'+k+';font-weight:600\">'+ic+t.replace(/ à (.+)$/,' <span style=\"color:#F44336;font-weight:700\">à $1</span>')+'</span>';})()"
+                          "modify": "(function(){var s=String(x);var i=s.indexOf('|');var c=s.slice(0,i);var t=s.slice(i+1);if(!c)return '';var k={A:'#2196F3',B:'#4CAF50',C:'#FF9800',D:'#9C27B0',E:'#9E9E9E'}[c];if(c==='E')return '';if(/\\((hors banque|compté comme)/.test(t))return '<span style=\"color:#00BCD4;font-weight:700\">🚗 '+t+'</span>';var ic=c==='C'?'⚠️ ':(c==='D'?'⚖️ ':'');return '<span style=\"color:'+k+';font-weight:600\">'+ic+t.replace(/ à (.+)$/,' <span style=\"color:#F44336;font-weight:700\">à $1</span>')+'</span>';})()"
                         },
                         {
                           "name": "Congé / événement",

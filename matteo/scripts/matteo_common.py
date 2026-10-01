@@ -334,11 +334,11 @@ def ecrire_moteur(content):
         ws.append({
             "date_key": k, "du": it.get("date_du", ""), "au": it.get("date_au", ""),
             "type": it.get("type_action", ""), "type_code": it.get("type_action_code", ""),
-            "gardien": it.get("gardien_force", ""), "aller": it.get("acteur_aller", ""), "retour": it.get("acteur_retour", ""),
+            "gardien": it.get("gardien_force", ""), "aller": _tiers_txt(it, "aller"), "retour": _tiers_txt(it, "retour"),
             "code_aller": it.get("code_aller", ""), "code_retour": it.get("code_retour", ""), "tiers_aller": it.get("tiers_aller", ""), "tiers_compte": bool(it.get("tiers_compte", False)), "tiers_comme_aller": it.get("tiers_comme_aller", ""), "tiers_comme_retour": it.get("tiers_comme_retour", ""), "tiers_retour": it.get("tiers_retour", ""), "tiers_aller_label": {"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(it.get("tiers_aller", ""), ""), "tiers_retour_label": {"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(it.get("tiers_retour", ""), ""),
             "motif": it.get("motif-1", "Aucun"), "motif_code": it.get("motif-1_code", "NONE"),
             "motif_libre": it.get("motif_libre", ""), "motif2": it.get("motif-2", "Aucun"),
-            "motif2_code": it.get("motif-2_code", "NONE"), "motif_aller": it.get("motif_aller", ""),
+            "motif2_code": it.get("motif-2_code", "NONE"), "motif_aller": ("Aller fait par " + _tiers_txt(it, "aller")) if it.get("tiers_aller") else it.get("motif_aller", ""),
             "report_date": it.get("report_date", ""), "report_date_aller": it.get("report_date_aller", ""),
             "report_agreed": bool(it.get("report_agreed", False)), "rattrape_par": it.get("rattrape_par", ""),
             "echange_avec": it.get("echange_avec", ""), "evenements_lies": it.get("evenements_lies", []),
@@ -370,3 +370,15 @@ def ecrire_moteur(content):
 if __name__ == "__main__":
     # Recalcul complet + régénération du fichier moteur :  python3 /config/matteo/scripts/matteo_common.py
     c = load(); save(c); print("OK moteur", len(c["data"]))
+
+
+# Libellé « qui fait le trajet » : la personne réelle si un tiers l'a fait (Catherine, autres), sinon l'acteur habituel.
+def _tiers_txt(it, sens):
+    t = it.get("tiers_" + sens, "")
+    if not t:
+        return it.get("acteur_" + sens, "")
+    nom = {"CATHERINE": "Catherine", "AUTRE_GREGORY": "Autre (côté Grégory)", "AUTRE_ELODIE": "Autre (côté Élodie)"}.get(t, t)
+    if it.get("tiers_compte"):
+        c = it.get("tiers_comme_" + sens, "")
+        return nom + " (compté comme " + ("Grégory" if c == "GREGORY" else "Élodie / Olivier") + ")"
+    return nom + " (hors banque)"
