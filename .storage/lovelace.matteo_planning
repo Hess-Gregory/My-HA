@@ -344,6 +344,94 @@
             }
           ],
           "background": "linear-gradient(180deg, rgba(8,10,22,0.05) 0%, rgba(8,10,22,0.25) 30%, rgba(8,10,22,0.72) 70%, rgba(8,10,22,0.9) 100%) fixed, url('/api/image/serve/bf005b8933a18be21b5f7c40d68e1f48/original') center 12% / cover no-repeat fixed, #0b0d1a"
+        },
+        {
+          "title": "Mon post-it",
+          "path": "post-it",
+          "icon": "mdi:note-text",
+          "type": "panel",
+          "background": "linear-gradient(180deg, rgba(8,10,22,0.05) 0%, rgba(8,10,22,0.25) 30%, rgba(8,10,22,0.72) 70%, rgba(8,10,22,0.9) 100%) fixed, url('/api/image/serve/bf005b8933a18be21b5f7c40d68e1f48/original') center 12% / cover no-repeat fixed, #0b0d1a",
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return '<div style=\"text-align:center;padding:clamp(10px,4vh,40px) 0 4px\"><div style=\"font-family:Permanent Marker,cursive;font-size:clamp(36px,9vw,60px);line-height:1.05;color:#FFD23F;text-shadow:3px 3px 0 #FF3D8B,6px 6px 0 rgba(0,0,0,.45),0 0 28px rgba(0,0,0,.7)\">Mon post-it</div></div>'; ]]]"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "background": "transparent !important"
+                      },
+                      {
+                        "box-shadow": "none"
+                      },
+                      {
+                        "border": "none"
+                      },
+                      {
+                        "padding": "8px 4px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "custom:vertical-stack-in-card",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  },
+                  "card_mod": {
+                    "style": "ha-card {\n  background: #fff59d !important;\n  color: #3a3a3a !important;\n  border: none !important;\n  border-radius: 3px !important;\n  box-shadow: 3px 4px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2) !important;\n  transform: rotate(-1deg);\n  font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive !important;\n  min-height: 300px !important;\n  height: 100% !important;\n  padding: 10px !important;\n}\n"
+                  },
+                  "cards": [
+                    {
+                      "type": "markdown",
+                      "content": "**👦 Matteo**",
+                      "text_only": true,
+                      "card_mod": {
+                        "style": "ha-card { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 0 6px 0 !important; margin: 0 !important; } ha-markdown { text-align: center !important; font-size: 21px !important; font-weight: 800 !important; color: #3a3a3a !important; border-bottom: 2px dashed rgba(58,58,58,0.45) !important; padding-bottom: 8px !important; }\n"
+                      }
+                    },
+                    {
+                      "type": "custom:simple-sticky-note",
+                      "entity": "input_text.note_matteo",
+                      "card_mod": {
+                        "style": "ha-card { --ha-card-background: transparent !important; background: transparent !important; color: #3a3a3a !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; min-height: 150px !important; }\n"
+                      }
+                    }
+                  ],
+                  "_mtkpost": 1
+                }
+              ],
+              "card_mod": {
+                "style": ":host{display:block;max-width:560px;margin:10px auto 56px;padding:0 16px;box-sizing:border-box}"
+              }
+            }
+          ]
         }
       ],
       "kiosk_mode": {
