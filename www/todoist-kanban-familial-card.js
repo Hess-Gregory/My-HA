@@ -1526,9 +1526,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
 
             <label class="form-field">
 
-              <span>
-                Date d'échéance
-              </span>
+              <span> 📅 À faire pour le </span>
 
               <input
                 type="date"
@@ -1541,9 +1539,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
 
             <label class="form-field">
 
-              <span>
-                Heure d'échéance
-              </span>
+              <span> 🕒 Heure (facultatif) </span>
 
               <input
                 type="time"
@@ -1554,23 +1550,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             </label>
 
 
-            <label class="form-field">
-
-              <span>
-                Date limite
-              </span>
-
-              <input
-                type="date"
-                name="deadline_date"
-                value="${this._escapeHtml(deadlineDate)}"
-              >
-
-              <small>
-                Dernière date possible pour terminer la tâche
-              </small>
-
-            </label>
+            <input type="hidden" name="deadline_date" value="${this._escapeHtml(deadlineDate)}">
 
 
             <div class="form-field">
@@ -2135,7 +2115,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             </div>
 
 
-            <div class="view-item">
+            ${deadline ? `<div class="view-item">
 
               <div class="view-label">
                 ⏳ Date limite
@@ -2147,7 +2127,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
                 )}
               </div>
 
-            </div>
+            </div>` : ""}
 
 
             <div class="view-item">
