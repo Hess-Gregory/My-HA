@@ -1,3 +1,6 @@
+window.__kbPick = function (btn, name, value) { const f = btn.closest("form"); if (!f) { return; } const i = f.querySelector('[name="' + name + '"]'); if (i) { i.value = value; } btn.parentNode.querySelectorAll(".chip").forEach(b => b.classList.toggle("on", b === btn)); };
+window.__kbDate = function (btn, mode) { const f = btn.closest("form"); if (!f) { return; } const i = f.querySelector('[name="due_date"]'); const d = new Date(); if (mode === "tomorrow") { d.setDate(d.getDate() + 1); } if (mode === "weekend") { const w = d.getDay(); d.setDate(d.getDate() + (w === 6 || w === 0 ? 0 : 6 - w)); } const z = n => String(n).padStart(2, "0"); if (i) { i.value = mode === "clear" ? "" : d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate()); } if (mode === "clear") { const t = f.querySelector('[name="due_time"]'); if (t) { t.value = ""; } } btn.parentNode.querySelectorAll(".chip").forEach(b => b.classList.toggle("on", b === btn)); };
+
 const CARD_VERSION = "105";
 const CARD_RELEASE_DATE = "15/09/2026";
 
@@ -1400,8 +1403,8 @@ class TodoistKanbanFamilialCard extends HTMLElement {
           <div class="modal-title">
             ${
               isEdit
-                ? "✎ Modifier la tâche"
-                : "＋ Nouvelle tâche"
+                ? "✏️ Modifier la tâche"
+                : "✨ Nouvelle tâche"
             }
           </div>
 
@@ -1422,288 +1425,77 @@ class TodoistKanbanFamilialCard extends HTMLElement {
           data-form="task"
         >
 
-          <div class="form-grid">${
-              !isEdit
-                ? `
-                  <label class="form-field full">
-
-                    <span> 👤 Pour qui ? </span>
-
-                    <select name="project_key">
-
-                      <option
-                        value="famille"
-                        ${
-                          projectKey === "famille"
-                            ? "selected"
-                            : ""
-                        }
-                      > 👨‍👩‍👦 Toute la famille </option>
-
-                      <option
-                        value="gregory"
-                        ${
-                          projectKey === "gregory"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Grégory
-                      </option>
-
-                      <option
-                        value="matteo"
-                        ${
-                          projectKey === "matteo"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Matteo
-                      </option>
-
-                      <option
-                        value="sandrine"
-                        ${
-                          projectKey === "sandrine"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Sandrine
-                      </option>
-
-                    </select> <small>À qui s’adresse cette tâche (ou qui doit la faire)</small>
-
-                  </label>
-                `
-                : `
-                  <div class="form-info full">
-                    👤 Pour :
-                    <strong>
-                      ${this._escapeHtml(
-                        this._getProjectInfo(
-                          task?.project_id
-                        ).name
-                      )}
-                    </strong>
-                  </div>
-                `
-            }
-
-            <label class="form-field full">
-
-              <span>
-                Tâche *
-              </span>
-
-              <input
-                type="text"
-                name="content"
-                value="${this._escapeHtml(
-                  task?.content || ""
-                )}"
-                required
-                autocomplete="off"
-                placeholder="Nom de la tâche"
-              >
-
-            </label>
-
-
-            <label class="form-field full">
-
-              <span>
-                Description
-              </span>
-
-              <textarea
-                name="description"
-                rows="3"
-                placeholder="Description détaillée"
-              >${this._escapeHtml(description)}</textarea>
-
-            </label>
-
-
-            <label class="form-field">
-
-              <span>
-                Priorité
-              </span>
-
-              <select name="priority">
-
-                <option
-                  value="1"
-                  ${priority === 1 ? "selected" : ""}
-                > 🟢 Pas urgent </option>
-
-                <option
-                  value="2"
-                  ${priority === 2 ? "selected" : ""}
-                > 🟡 À faire bientôt </option>
-
-                <option
-                  value="3"
-                  ${priority === 3 ? "selected" : ""}
-                > 🟠 Important </option>
-
-                <option
-                  value="4"
-                  ${priority === 4 ? "selected" : ""}
-                > 🔴 Très urgent </option>
-
-              </select>
-
-            </label>
-
-
-            <input type="hidden" name="due_string" value="${this._escapeHtml(dueString)}">
-
-
-            <label class="form-field">
-
-              <span> 📅 À faire pour le </span>
-
-              <input
-                type="date"
-                name="due_date"
-                value="${this._escapeHtml(dueInputs.date)}"
-              >
-
-            </label>
-
-
-            <label class="form-field">
-
-              <span> 🕒 Heure (facultatif) </span>
-
-              <input
-                type="time"
-                name="due_time"
-                value="${this._escapeHtml(dueInputs.time)}"
-              >
-
-            </label>
-
-
-            <input type="hidden" name="deadline_date" value="${this._escapeHtml(deadlineDate)}">
-
-
-            <div class="form-field">
-
-              <span>
-                Durée
-              </span>
-
-              <div class="duration-row">
-
-                <input
-                  type="number"
-                  name="duration"
-                  min="1"
-                  step="1"
-                  value="${this._escapeHtml(durationAmount)}"
-                  placeholder="30"
-                >
-
-                <select name="duration_unit">
-
-                  <option
-                    value="minute"
-                    ${
-                      durationUnit === "minute"
-                        ? "selected"
-                        : ""
-                    }
-                  >
-                    minutes
-                  </option>
-
-                  <option
-                    value="day"
-                    ${
-                      durationUnit === "day"
-                        ? "selected"
-                        : ""
-                    }
-                  >
-                    jours
-                  </option>
-
-                </select>
-
+          <div class="form-grid">
+            ${ !isEdit ? `
+            <div class="form-field full">
+              <span class="q">👤 Pour qui ?</span>
+              <input type="hidden" name="project_key" value="${this._escapeHtml(projectKey)}">
+              <div class="chips">
+                ${[["famille","👨‍👩‍👦","Tout le monde"],["gregory","👨","Grégory"],["matteo","👦","Matteo"],["sandrine","👩","Sandrine"]].map(([k, e, n]) => `<button type="button" class="chip who ${projectKey === k ? "on" : ""}" onclick="window.__kbPick(this,'project_key','${k}')"><span class="ce">${e}</span>${n}</button>`).join("")}
               </div>
-
             </div>
-
-
+            ` : `
+            <div class="form-info full">👤 Pour : <strong>${this._escapeHtml(this._getProjectInfo(task?.project_id).name)}</strong></div>
+            ` }
             <label class="form-field full">
-
-              <span>
-                Labels
-              </span>
-
-              <input
-                type="text"
-                name="labels"
-                value="${this._escapeHtml(labels)}"
-                placeholder="maison, urgent, courses"
-                autocomplete="off"
-              >
-
-              <small>
-                Séparer les labels par des virgules
-              </small>
-
+              <span class="q">📝 Qu’y a-t-il à faire ?</span>
+              <input type="text" name="content" value="${this._escapeHtml(task?.content || "")}" required autocomplete="off" placeholder="Ex. Sortir les poubelles, ranger sa chambre…">
             </label>
-
-
+            <div class="form-field full">
+              <span class="q">⚡ C’est pressé ?</span>
+              <input type="hidden" name="priority" value="${priority}">
+              <div class="chips">
+                ${[[1,"🟢","Pas urgent","p1"],[2,"🟡","Bientôt","p2"],[3,"🟠","Important","p3"],[4,"🔴","Très urgent","p4"]].map(([v, e, n, c]) => `<button type="button" class="chip prio ${c} ${priority === v ? "on" : ""}" onclick="window.__kbPick(this,'priority','${v}')">${e} ${n}</button>`).join("")}
+              </div>
+            </div>
+            <div class="form-field full">
+              <span class="q">📅 Pour quand ?</span>
+              <div class="chips">
+                <button type="button" class="chip" onclick="window.__kbDate(this,'today')">Aujourd’hui</button>
+                <button type="button" class="chip" onclick="window.__kbDate(this,'tomorrow')">Demain</button>
+                <button type="button" class="chip" onclick="window.__kbDate(this,'weekend')">Ce week-end</button>
+                <button type="button" class="chip ghost" onclick="window.__kbDate(this,'clear')">Pas de date</button>
+              </div>
+              <div class="date-row">
+                <input type="date" name="due_date" value="${this._escapeHtml(dueInputs.date)}" aria-label="Date">
+                <input type="time" name="due_time" value="${this._escapeHtml(dueInputs.time)}" aria-label="Heure (facultatif)">
+              </div>
+              <small>Choisis un raccourci ou une date précise. L’heure est facultative.</small>
+            </div>
+            <label class="form-field full">
+              <span class="q">💬 Un petit mot ? <em>(facultatif)</em></span>
+              <textarea name="description" rows="2" placeholder="Une précision, où trouver le matériel…">${this._escapeHtml(description)}</textarea>
+            </label>
+            <details class="more full">
+              <summary>⚙️ Plus d’options</summary>
+              <div class="form-grid inner">
+                <div class="form-field">
+                  <span>⏱️ Temps estimé</span>
+                  <div class="duration-row">
+                    <input type="number" name="duration" min="1" step="1" value="${this._escapeHtml(durationAmount)}" placeholder="30">
+                    <select name="duration_unit">
+                      <option value="minute" ${durationUnit === "minute" ? "selected" : ""}>minutes</option>
+                      <option value="day" ${durationUnit === "day" ? "selected" : ""}>jours</option>
+                    </select>
+                  </div>
+                </div>
+                <label class="form-field">
+                  <span>🏷️ Étiquettes</span>
+                  <input type="text" name="labels" value="${this._escapeHtml(labels)}" placeholder="maison, courses…" autocomplete="off">
+                  <small>Séparées par des virgules</small>
+                </label>
+              </div>
+            </details>
+            <input type="hidden" name="due_string" value="${this._escapeHtml(dueString)}">
+            <input type="hidden" name="deadline_date" value="${this._escapeHtml(deadlineDate)}">
             <input type="hidden" name="assignee_id" value="${this._escapeHtml(responsible)}">
-
-
             <input type="hidden" name="section_id" value="">
-
-
-            ${
-              !isEdit
-                ? `
-                  <input type="hidden" name="parent_id" value="${this._escapeHtml(parentId)}">
-                `
-                : ""
-            }
-
-
-            
-
+            ${ !isEdit ? `<input type="hidden" name="parent_id" value="${this._escapeHtml(parentId)}">` : "" }
           </div>
-
-
           <div class="form-actions">
-
-            <button
-              type="button"
-              class="modal-button secondary"
-              data-action="cancel-form"
-            >
-              Annuler
-            </button>
-
-            <button
-              type="button"
-              class="modal-button primary"
-              data-action="save-form"
-            >
-              ${
-                isEdit
-                  ? "Enregistrer"
-                  : "Créer la tâche"
-              }
-            </button>
-
+            <button type="button" class="modal-button secondary" data-action="cancel-form">Annuler</button>
+            <button type="button" class="modal-button primary" data-action="save-form">${ isEdit ? "💾 Enregistrer" : "✅ Ajouter la tâche" }</button>
           </div>
-
         </form>
 
       </div>
@@ -3385,7 +3177,9 @@ _handleClick(event) {
 
 
         .task { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; } .task.dragging { opacity: .35; } .column.drop-target { outline: 2px dashed rgba(246,214,138,.85); outline-offset: -3px; background: rgba(246,214,138,.09); } .drag-ghost { position: fixed !important; z-index: 100000; pointer-events: none; margin: 0 !important; opacity: .95; transform: rotate(2deg) scale(1.03); box-shadow: 0 18px 40px rgba(0,0,0,.55); background: #2a2236 !important; cursor: grabbing; }
-        .column {
+        .task-form .q { font-size: 1em; font-weight: 700; color: #fff; } .task-form .q em { font-weight: 400; opacity: .6; font-style: normal; font-size: .85em; } .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; } .chip { border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); color: #fff; border-radius: 999px; padding: 9px 14px; font: inherit; font-size: .95em; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; transition: background .15s, border-color .15s; } .chip:hover { background: rgba(255,255,255,.12); } .chip.on { background: rgba(246,214,138,.22); border-color: #f6d68a; box-shadow: 0 0 0 2px rgba(246,214,138,.22); } .chip.who .ce { font-size: 1.3em; } .chip.prio.p1.on { background: rgba(76,175,80,.25); border-color: #66bb6a; box-shadow: none; } .chip.prio.p2.on { background: rgba(255,202,40,.22); border-color: #ffca28; box-shadow: none; } .chip.prio.p3.on { background: rgba(255,152,0,.25); border-color: #ffa726; box-shadow: none; } .chip.prio.p4.on { background: rgba(244,67,54,.28); border-color: #ef5350; box-shadow: none; } .chip.ghost { opacity: .7; } .date-row { display: grid; grid-template-columns: 1fr 130px; gap: 8px; margin-top: 8px; } .date-row input, .task-form input[type="text"], .task-form textarea { width: 100%; box-sizing: border-box; } .task-form input[type="date"], .task-form input[type="time"] { color-scheme: dark; } details.more { grid-column: 1 / -1; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 8px 12px; background: rgba(255,255,255,.03); } details.more summary { cursor: pointer; font-weight: 600; opacity: .85; padding: 4px 0; } details.more .inner { margin-top: 10px; } .task-form .form-grid { gap: 16px; } .task-form .form-info { font-size: 1em; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.05); }
+        
+.column {
           min-width: 0;
 
           background:
