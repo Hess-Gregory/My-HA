@@ -63,7 +63,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -455,7 +455,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -673,7 +673,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -854,7 +854,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -974,7 +974,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -1094,7 +1094,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -1215,7 +1215,7 @@
                       "navigation_path": "/matteo-planning/planning"
                     },
                     "custom_fields": {
-                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                      "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
                     },
                     "styles": {
                       "grid": [
@@ -1390,7 +1390,7 @@
                 "navigation_path": "/matteo-planning/planning"
               },
               "custom_fields": {
-                "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},80);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture du planning de Matteo…</div>'; ]]]"
+                "x": "[[[ if(String(user&&user.name).toLowerCase()!=='matteo') return '<div style=\"padding:6px;text-align:center;font-size:12px;opacity:.55\">🔒 Redirection Matteo (sans effet pour toi)</div>'; if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},80);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture du planning de Matteo…</div>'; ]]]"
               },
               "styles": {
                 "grid": [
