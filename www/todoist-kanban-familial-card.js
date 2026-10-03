@@ -1819,9 +1819,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     `;
 
 
-    this.shadowRoot
-      .querySelector("ha-card")
-      ?.appendChild(modal);
+    this.shadowRoot.appendChild(modal);
 
 
     const projectSelect =
@@ -2338,9 +2336,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     `;
 
 
-    this.shadowRoot
-      .querySelector("ha-card")
-      ?.appendChild(modal);
+    this.shadowRoot.appendChild(modal);
   }
 
 
@@ -3864,8 +3860,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             100%
           );
 
-          max-height:
-            calc(100vh - 40px);
+          max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px);
 
           overflow-y: auto;
 

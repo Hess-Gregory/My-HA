@@ -7,7 +7,7 @@
       "title": "Planning Matteo",
       "views": [
         {
-          "title": "Ton planning",
+          "title": "Mon planning",
           "path": "planning",
           "icon": "mdi:calendar-heart",
           "type": "panel",
@@ -343,7 +343,17 @@
               }
             }
           ],
-          "background": "linear-gradient(180deg, rgba(8,10,22,0.05) 0%, rgba(8,10,22,0.25) 30%, rgba(8,10,22,0.72) 70%, rgba(8,10,22,0.9) 100%) fixed, url('/api/image/serve/bf005b8933a18be21b5f7c40d68e1f48/original') center 12% / cover no-repeat fixed, #0b0d1a"
+          "background": {
+            "opacity": 100,
+            "alignment": "center",
+            "size": "cover",
+            "repeat": "no-repeat",
+            "attachment": "fixed",
+            "image": {
+              "media_content_id": "/api/image/serve/bf005b8933a18be21b5f7c40d68e1f48/original"
+            }
+          },
+          "show_icon_and_title": true
         },
         {
           "title": "Mon post-it",
@@ -431,7 +441,8 @@
                 "style": ":host{display:block;max-width:560px;margin:10px auto 56px;padding:0 16px;box-sizing:border-box}"
               }
             }
-          ]
+          ],
+          "show_icon_and_title": true
         }
       ],
       "kiosk_mode": {
