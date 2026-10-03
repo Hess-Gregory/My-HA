@@ -1680,25 +1680,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             ${
               !isEdit
                 ? `
-                  <label class="form-field full">
-
-                    <span>
-                      Tâche parente
-                    </span>
-
-                    <input
-                      type="text"
-                      name="parent_id"
-                      value="${this._escapeHtml(parentId)}"
-                      placeholder="ID de la tâche parente"
-                      autocomplete="off"
-                    >
-
-                    <small>
-                      Permet de créer une sous-tâche
-                    </small>
-
-                  </label>
+                  <input type="hidden" name="parent_id" value="${this._escapeHtml(parentId)}">
                 `
                 : ""
             }
@@ -2093,21 +2075,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             
 
 
-            <div class="view-item">
-
-              <div class="view-label">
-                🌳 Tâche parente
-              </div>
-
-              <div class="view-value">
-                ${
-                  task.parent_id
-                    ? this._escapeHtml(task.parent_id)
-                    : "—"
-                }
-              </div>
-
-            </div>
+            
 
 
             <div class="view-item">
