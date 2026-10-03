@@ -1212,7 +1212,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
 
 
     return `
-      <div class="column">
+      <div class="column" data-col="${columnKey}">
 
         <div class="column-header">
 
@@ -2973,7 +2973,117 @@ class TodoistKanbanFamilialCard extends HTMLElement {
   }
 
 
-  _handleClick(event) {
+  async _moveTaskTo(task, target) {
+    if (!task || !target) { return; }
+    const project = this._getProjectInfo(task.project_id);
+    const sectionId = this._findSectionForColumn(project.key, target);
+    if (!sectionId) { alert(`Impossible de trouver la colonne « ${target} » dans le projet ${project.name}.`); return; }
+    if (String(sectionId) === String(task.section_id || "")) { return; }
+    console.log("[Kanban] GLISSER-DÉPOSER :", { task_id: task.id, cible: target });
+    await this._callScript("kanban_todoist_move_task", { task_id: String(task.id), section_id: String(sectionId) });
+  }
+
+  _setupDnd() {
+    if (this._dndReady || !this.shadowRoot) { return; }
+    this._dndReady = true;
+    const root = this.shadowRoot;
+    const isAction = (path) => path.some(el => el && el.dataset && el.dataset.action);
+    const findTask = (path) => path.find(el => el && el.classList && el.classList.contains("task") && el.dataset && el.dataset.taskId);
+    const colAt = (x, y) => { const el = root.elementFromPoint ? root.elementFromPoint(x, y) : null; return el && el.closest ? el.closest(".column[data-col]") : null; };
+    const clear = () => { root.querySelectorAll(".column.drop-target").forEach(c => c.classList.remove("drop-target")); };
+    const start = (st) => {
+      if (st.active || !st.el.isConnected) { return; }
+      st.active = true;
+      const r = st.el.getBoundingClientRect();
+      st.dx = st.x - r.left; st.dy = st.y - r.top; st.lx = st.x; st.ly = st.y;
+      const g = st.el.cloneNode(true);
+      g.classList.add("drag-ghost");
+      g.style.width = r.width + "px"; g.style.left = r.left + "px"; g.style.top = r.top + "px";
+      root.appendChild(g); st.ghost = g;
+      st.el.classList.add("dragging");
+      const fc = st.el.closest(".column[data-col]"); st.from = fc ? fc.dataset.col : "";
+      if (navigator.vibrate) { try { navigator.vibrate(15); } catch (err) { /* ignore */ } }
+    };
+    const move = (st, x, y) => {
+      st.lx = x; st.ly = y;
+      if (!st.ghost) { return; }
+      st.ghost.style.left = (x - st.dx) + "px"; st.ghost.style.top = (y - st.dy) + "px";
+      clear();
+      const c = colAt(x, y);
+      if (c && c.dataset.col !== st.from) { c.classList.add("drop-target"); }
+    };
+    const end = (st, drop) => {
+      clearTimeout(st.timer);
+      if (st.active) {
+        const c = drop ? colAt(st.lx, st.ly) : null;
+        if (st.ghost) { st.ghost.remove(); }
+        st.el.classList.remove("dragging");
+        clear();
+        this._dragEndAt = Date.now();
+        if (c && c.dataset.col && c.dataset.col !== st.from) {
+          const task = (this._getTasks() || []).find(t => String(t.id) === String(st.id));
+          if (task) { this._moveTaskTo(task, c.dataset.col); }
+        }
+      }
+      this._dnd = null;
+    };
+    /* Souris, pavé tactile, stylet : cliquer-glisser */
+    root.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch" || e.button !== 0) { return; }
+      const path = e.composedPath();
+      if (isAction(path)) { return; }
+      const el = findTask(path);
+      if (!el) { return; }
+      const st = { el, id: el.dataset.taskId, x: e.clientX, y: e.clientY, active: false };
+      this._dnd = st;
+      const onMove = (ev) => {
+        if (!st.active && Math.hypot(ev.clientX - st.x, ev.clientY - st.y) > 6) { start(st); }
+        if (st.active) { ev.preventDefault(); move(st, ev.clientX, ev.clientY); }
+      };
+      const onUp = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        end(st, true);
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    });
+    /* Écran tactile : appui long (0,35 s) puis glisser */
+    root.addEventListener("touchstart", (e) => {
+      if (e.touches.length !== 1) { return; }
+      const path = e.composedPath();
+      if (isAction(path)) { return; }
+      const el = findTask(path);
+      if (!el) { return; }
+      const t = e.touches[0];
+      const st = { el, id: el.dataset.taskId, x: t.clientX, y: t.clientY, active: false };
+      st.timer = setTimeout(() => start(st), 350);
+      this._dnd = st;
+    }, { passive: true });
+    root.addEventListener("touchmove", (e) => {
+      const st = this._dnd;
+      if (!st || !e.touches.length) { return; }
+      const t = e.touches[0];
+      if (!st.active) {
+        if (Math.hypot(t.clientX - st.x, t.clientY - st.y) > 10) { clearTimeout(st.timer); this._dnd = null; }
+        return;
+      }
+      e.preventDefault();
+      move(st, t.clientX, t.clientY);
+    }, { passive: false });
+    root.addEventListener("touchend", (e) => {
+      const st = this._dnd;
+      if (!st) { return; }
+      if (st.active) { e.preventDefault(); }
+      end(st, true);
+    }, { passive: false });
+    root.addEventListener("touchcancel", () => { const st = this._dnd; if (st) { end(st, false); } });
+    root.addEventListener("contextmenu", (e) => { if (this._dnd) { e.preventDefault(); } });
+  }
+
+  
+_handleClick(event) {
+    if (this._dragEndAt && Date.now() - this._dragEndAt < 450) { return; }
 
     if (!event) {
       return;
@@ -3156,7 +3266,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     this.shadowRoot.addEventListener(
       "click",
       this._boundClickHandler
-    );
+    ); this._setupDnd();
   }
 
 
@@ -3317,6 +3427,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
         }
 
 
+        .task { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; } .task.dragging { opacity: .35; } .column.drop-target { outline: 2px dashed rgba(246,214,138,.85); outline-offset: -3px; background: rgba(246,214,138,.09); } .drag-ghost { position: fixed !important; z-index: 100000; pointer-events: none; margin: 0 !important; opacity: .95; transform: rotate(2deg) scale(1.03); box-shadow: 0 18px 40px rgba(0,0,0,.55); background: #2a2236 !important; cursor: grabbing; }
         .column {
           min-width: 0;
 
