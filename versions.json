@@ -1,123 +1,123 @@
 {
   ".storage/lovelace.1_accueil": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.7.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.7.1"
   },
   ".storage/lovelace.1_courses": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_eclairage": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.5.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.1_energie": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_ma_maison": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.5.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.1_meteo_belgique": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_mon_confort": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.1_pollution": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_reseau_infra": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.1_securite": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.1_streaming": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.5.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.1_taches": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.boite_a_outils": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.5.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "1.11.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "1.11.1"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.7.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.7.1"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.5.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.maison_courses": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.maison_eclairage": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.maison_energie": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.maison_pollution": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.7.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.7.1"
   },
   ".storage/lovelace.maison_securite": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.maison_streaming": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.6.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.6.1"
   },
   ".storage/lovelace.maison_taches": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.matteo_planning": {
     "last_change": "boutons tactiles iPhone, espacement hero, masquage barre laterale",
@@ -125,19 +125,19 @@
     "version": "0.3.2"
   },
   ".storage/lovelace.meteo_belgique": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.mon_confort": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   ".storage/lovelace.reseau_infra": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.4.0"
+    "last_change": "redirection forcee vers son planning depuis toutes les vues",
+    "last_update": "2026-10-03T10:04:54.825449+02:00",
+    "version": "0.4.1"
   },
   "automations.yaml": {
     "last_change": "modifications de Gregory (integrations, cave, planning Matteo)",
