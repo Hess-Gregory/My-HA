@@ -34,6 +34,41 @@
               "column_span": 4,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:vertical-stack-in-card",
                   "grid_options": {
                     "columns": 12,
@@ -281,6 +316,41 @@
               "column_span": 4,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "tile",
                   "entity": "timer.minuteur_cuisine",
                   "name": "Cuisine",
@@ -459,6 +529,41 @@
               "column_span": 2,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "iframe",
                   "url": "data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KPG1ldGEgY2hhcnNldD0iVVRGLTgiPgo8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEiPgo8c3R5bGU+CiAgKiB7IGJveC1zaXppbmc6IGJvcmRlci1ib3g7IH0KICBib2R5e21hcmdpbjowO2JhY2tncm91bmQ6IzFhMTIyODtkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXI7bWluLWhlaWdodDoxMDB2aDtmb250LWZhbWlseTonU2Vnb2UgVUknLFJvYm90byxzYW5zLXNlcmlmO30KICAuY2FsY3t3aWR0aDoxMDAlO21heC13aWR0aDozNDBweDtwYWRkaW5nOjE0cHg7fQogIC5kaXNwbGF5e2JhY2tncm91bmQ6cmdiYSgzOCwyOCw1OCwwLjcpO2JvcmRlci1yYWRpdXM6MTJweDtwYWRkaW5nOjE2cHg7bWFyZ2luLWJvdHRvbToxMnB4O3RleHQtYWxpZ246cmlnaHQ7fQogIC5kaXNwbGF5IC5leHBye2NvbG9yOiM5ZDkwYjM7Zm9udC1zaXplOjE0cHg7bWluLWhlaWdodDoxOHB4O292ZXJmbG93OmhpZGRlbjt3aGl0ZS1zcGFjZTpub3dyYXA7fQogIC5kaXNwbGF5IC5yZXN1bHR7Y29sb3I6I2ZmZjtmb250LXNpemU6MzZweDtmb250LXdlaWdodDo2MDA7b3ZlcmZsb3c6aGlkZGVuO3doaXRlLXNwYWNlOm5vd3JhcDt9CiAgLmdyaWR7ZGlzcGxheTpncmlkO2dyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoNCwxZnIpO2dhcDo4cHg7fQogIGJ1dHRvbntib3JkZXI6bm9uZTtib3JkZXItcmFkaXVzOjEwcHg7cGFkZGluZzoxOHB4IDA7Zm9udC1zaXplOjIwcHg7YmFja2dyb3VuZDojMmYyMTQ1O2NvbG9yOiNlZWU7Y3Vyc29yOnBvaW50ZXI7dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIDAuMTVzO30KICBidXR0b246YWN0aXZle2JhY2tncm91bmQ6IzQ0MzI2MDt9CiAgYnV0dG9uLm9we2JhY2tncm91bmQ6IzNkMmI1Yztjb2xvcjojZjZkNjhhO30KICBidXR0b24uZXF7YmFja2dyb3VuZDojZjZkNjhhO2NvbG9yOiMxYTEyMjg7Zm9udC13ZWlnaHQ6NzAwO30KICBidXR0b24uY2xlYXJ7YmFja2dyb3VuZDojNWMyYjJiO2NvbG9yOiNmZmIzYjM7fQogIGJ1dHRvbi56ZXJve2dyaWQtY29sdW1uOnNwYW4gMjt9Cjwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CjxkaXYgY2xhc3M9ImNhbGMiPgogIDxkaXYgY2xhc3M9ImRpc3BsYXkiPgogICAgPGRpdiBjbGFzcz0iZXhwciIgaWQ9ImV4cHIiPiZuYnNwOzwvZGl2PgogICAgPGRpdiBjbGFzcz0icmVzdWx0IiBpZD0icmVzdWx0Ij4wPC9kaXY+CiAgPC9kaXY+CiAgPGRpdiBjbGFzcz0iZ3JpZCI+CiAgICA8YnV0dG9uIGNsYXNzPSJjbGVhciIgb25jbGljaz0iY2xlYXJBbGwoKSI+QzwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0iY2xlYXIiIG9uY2xpY2s9ImJhY2tzcGFjZSgpIj7ijKs8L2J1dHRvbj4KICAgIDxidXR0b24gY2xhc3M9Im9wIiBvbmNsaWNrPSJhcHBlbmQoJyUnKSI+JTwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0ib3AiIG9uY2xpY2s9ImFwcGVuZCgnLycpIj7DtzwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzcnKSI+NzwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzgnKSI+ODwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzknKSI+OTwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0ib3AiIG9uY2xpY2s9ImFwcGVuZCgnKicpIj7DlzwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzQnKSI+NDwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzUnKSI+NTwvYnV0dG9uPgogICAgPGJ1dHRvbiBvbmNsaWNrPSJhcHBlbmQoJzYnKSI+NjwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0ib3AiIG9uY2xpY2s9ImFwcGVuZCgnLScpIj7iiJI8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCcxJykiPjE8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCcyJykiPjI8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCczJykiPjM8L2J1dHRvbj4KICAgIDxidXR0b24gY2xhc3M9Im9wIiBvbmNsaWNrPSJhcHBlbmQoJysnKSI+KzwvYnV0dG9uPgogICAgPGJ1dHRvbiBjbGFzcz0iemVybyIgb25jbGljaz0iYXBwZW5kKCcwJykiPjA8L2J1dHRvbj4KICAgIDxidXR0b24gb25jbGljaz0iYXBwZW5kKCcuJykiPi48L2J1dHRvbj4KICAgIDxidXR0b24gY2xhc3M9ImVxIiBvbmNsaWNrPSJjYWxjdWxhdGUoKSI+PTwvYnV0dG9uPgogIDwvZGl2Pgo8L2Rpdj4KPHNjcmlwdD4KbGV0IGV4cHIgPSAnJzsKZnVuY3Rpb24gYXBwZW5kKHYpewogIGV4cHIgKz0gdjsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZXhwcicpLnRleHRDb250ZW50ID0gZXhwcjsKfQpmdW5jdGlvbiBjbGVhckFsbCgpewogIGV4cHIgPSAnJzsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZXhwcicpLnRleHRDb250ZW50ID0gJ8KgJzsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmVzdWx0JykudGV4dENvbnRlbnQgPSAnMCc7Cn0KZnVuY3Rpb24gYmFja3NwYWNlKCl7CiAgZXhwciA9IGV4cHIuc2xpY2UoMCwtMSk7CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2V4cHInKS50ZXh0Q29udGVudCA9IGV4cHIgfHwgJ8KgJzsKfQpmdW5jdGlvbiBjYWxjdWxhdGUoKXsKICBpZighZXhwcikgcmV0dXJuOwogIHRyeXsKICAgIGxldCBzYWZlID0gZXhwci5yZXBsYWNlKC9bXi0oKVxkLyorLiVdL2csICcnKTsKICAgIGxldCB2YWwgPSBGdW5jdGlvbignInVzZSBzdHJpY3QiO3JldHVybiAoJyArIHNhZmUgKyAnKScpKCk7CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncmVzdWx0JykudGV4dENvbnRlbnQgPSBOdW1iZXIuaXNGaW5pdGUodmFsKSA/IChNYXRoLnJvdW5kKHZhbCoxMDAwMDApLzEwMDAwMCkudG9TdHJpbmcoKSA6ICdFcnJldXInOwogIH1jYXRjaChlKXsKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdyZXN1bHQnKS50ZXh0Q29udGVudCA9ICdFcnJldXInOwogIH0KfQpkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdrZXlkb3duJywgZnVuY3Rpb24oZSl7CiAgaWYoL1swLTkuK1wtKi8lXS8udGVzdChlLmtleSkpIGFwcGVuZChlLmtleSk7CiAgZWxzZSBpZihlLmtleSA9PT0gJ0VudGVyJykgY2FsY3VsYXRlKCk7CiAgZWxzZSBpZihlLmtleSA9PT0gJ0JhY2tzcGFjZScpIGJhY2tzcGFjZSgpOwogIGVsc2UgaWYoZS5rZXkgPT09ICdFc2NhcGUnKSBjbGVhckFsbCgpOwp9KTsKPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPgo=",
                   "aspect_ratio": "140%",
@@ -526,6 +631,41 @@
               "type": "grid",
               "column_span": 1,
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:mushroom-title-card",
                   "grid_options": {

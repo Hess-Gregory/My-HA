@@ -32,6 +32,41 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:button-card",
                   "template": "cc_title",
                   "name": "Résumé rapide",
@@ -369,6 +404,41 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:button-card",
                   "template": "cc_title",
@@ -1044,6 +1114,41 @@
               "type": "grid",
               "column_span": 1,
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:button-card",
                   "template": "cc_title",
@@ -1885,6 +1990,41 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:button-card",
                   "template": "cc_title",
                   "name": "Mesures & état",
@@ -2641,6 +2781,41 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:button-card",
                   "template": "cc_title",
@@ -3516,6 +3691,41 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:button-card",
                   "template": "cc_title",
                   "name": "Mesures & état",
@@ -4224,6 +4434,41 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:button-card",
                   "template": "cc_title",
                   "name": "État général",
@@ -4780,6 +5025,41 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:button-card",
                   "template": "cc_title",

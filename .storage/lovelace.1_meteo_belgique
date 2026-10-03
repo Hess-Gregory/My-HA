@@ -44,6 +44,41 @@
               "column_span": 4,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:mushroom-template-card",
                   "entity": "weather.forecast_maison",
                   "layout": "vertical",
@@ -401,6 +436,41 @@
               "column_span": 2,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:mushroom-title-card",
                   "alignment": "center",
                   "title": "📊 Met.no — Engis",
@@ -584,6 +654,41 @@
               "column_span": 1,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:mushroom-title-card",
                   "alignment": "center",
                   "title": "Radar animé — Belgique",
@@ -730,6 +835,41 @@
               "column_span": 1,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:mushroom-title-card",
                   "alignment": "center",
                   "title": "Couverture nuageuse — Belgique",
@@ -814,6 +954,41 @@
             {
               "column_span": 1,
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:mushroom-title-card",
                   "alignment": "center",
@@ -900,6 +1075,41 @@
               "column_span": 1,
               "cards": [
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
+                {
                   "type": "custom:mushroom-title-card",
                   "alignment": "center",
                   "title": "Carte des vents — Belgique",
@@ -985,6 +1195,41 @@
               "type": "grid",
               "column_span": 2,
               "cards": [
+                {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "27b37491ab9d46e0983dda25b47cb355"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "navigate",
+                      "navigation_path": "/matteo-planning/planning"
+                    },
+                    "custom_fields": {
+                      "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},30);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture de ton planning…</div>'; ]]]"
+                    },
+                    "styles": {
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ]
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  },
+                  "_mtk": 1
+                },
                 {
                   "type": "custom:mushroom-title-card",
                   "alignment": "center",
