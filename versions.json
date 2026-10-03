@@ -120,9 +120,9 @@
     "version": "0.4.1"
   },
   ".storage/lovelace.matteo_planning": {
-    "last_change": "formulaire kanban centre a l ecran (hors du ha-card floute)",
-    "last_update": "2026-10-03T10:26:20.117579+02:00",
-    "version": "0.4.1"
+    "last_change": "vue Mes missions (kanban lecture seule, glisser-deposer)",
+    "last_update": "2026-10-03T12:02:42.973157+02:00",
+    "version": "0.5.0"
   },
   ".storage/lovelace.meteo_belgique": {
     "last_change": "redirection forcee vers son planning depuis toutes les vues",
