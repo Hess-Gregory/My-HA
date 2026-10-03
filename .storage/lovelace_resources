@@ -193,6 +193,11 @@
         "id": "9f7a8a36d8b34d6fbfbd184d5e216b01",
         "url": "/hacsfiles/kiosk-mode/kiosk-mode.js?hacstag=4973191281421",
         "type": "module"
+      },
+      {
+        "id": "152cc179e1e34d1b8186a1e54f076170",
+        "url": "/local/matteo-missions-card.js?v=1",
+        "type": "module"
       }
     ]
   }
