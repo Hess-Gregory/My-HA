@@ -277,10 +277,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     }
 
     const labels = {
-      4: "P1",
-      3: "P2",
-      2: "P3",
-      1: "P4",
+      4: "🔴 Très urgent", 3: "🟠 Important", 2: "🟡 Bientôt", 1: "🟢 Pas urgent",
     };
 
     return labels[task.priority] || "";
@@ -1540,30 +1537,22 @@ class TodoistKanbanFamilialCard extends HTMLElement {
                 <option
                   value="1"
                   ${priority === 1 ? "selected" : ""}
-                >
-                  P4 — normale
-                </option>
+                > 🟢 Pas urgent </option>
 
                 <option
                   value="2"
                   ${priority === 2 ? "selected" : ""}
-                >
-                  P3
-                </option>
+                > 🟡 À faire bientôt </option>
 
                 <option
                   value="3"
                   ${priority === 3 ? "selected" : ""}
-                >
-                  P2
-                </option>
+                > 🟠 Important </option>
 
                 <option
                   value="4"
                   ${priority === 4 ? "selected" : ""}
-                >
-                  P1 — urgente
-                </option>
+                > 🔴 Très urgent </option>
 
               </select>
 
@@ -1937,7 +1926,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
 
             <span class="view-badge">
               ${this._escapeHtml(
-                this._priorityLabel(task) || "P4"
+                this._priorityLabel(task) || "🟢 Pas urgent"
               )}
             </span>
 
@@ -2003,7 +1992,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
 
               <div class="view-value">
                 ${this._escapeHtml(
-                  this._priorityLabel(task) || "P4"
+                  this._priorityLabel(task) || "🟢 Pas urgent"
                 )}
               </div>
 
