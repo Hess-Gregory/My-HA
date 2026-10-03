@@ -65,14 +65,14 @@
     "version": "0.4.0"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "calendrier imprimable sans motifs ni notes (liste uniquement), liens d'export toujours a jour",
-    "last_update": "2026-10-01T20:05:49.267417+02:00",
-    "version": "1.8.2"
+    "last_change": "dashboard Planning Matteo (lecture seule) + notes visibles par Matteo",
+    "last_update": "2026-10-03T08:58:19.776533+02:00",
+    "version": "1.9.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "trajet fait par une autre personne (Catherine, autres), hors banque ou compte",
-    "last_update": "2026-10-01T19:17:08.059138+02:00",
-    "version": "0.5.0"
+    "last_change": "dashboard Planning Matteo (lecture seule) + notes visibles par Matteo",
+    "last_update": "2026-10-03T08:58:19.776533+02:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "trajet fait par une autre personne (Catherine, autres), hors banque ou compte",
@@ -100,9 +100,9 @@
     "version": "0.3.0"
   },
   ".storage/lovelace.maison_pollution": {
-    "last_change": "boutons imprimer/excel en liens (app compagnon)",
-    "last_update": "2026-10-01T21:07:19.141251+02:00",
-    "version": "0.5.1"
+    "last_change": "dashboard Planning Matteo (lecture seule) + notes visibles par Matteo",
+    "last_update": "2026-10-03T08:58:19.776533+02:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.maison_securite": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
@@ -110,14 +110,19 @@
     "version": "0.3.0"
   },
   ".storage/lovelace.maison_streaming": {
-    "last_change": "trajet fait par une autre personne (Catherine, autres), hors banque ou compte",
-    "last_update": "2026-10-01T19:17:08.059138+02:00",
-    "version": "0.4.0"
+    "last_change": "dashboard Planning Matteo (lecture seule) + notes visibles par Matteo",
+    "last_update": "2026-10-03T08:58:19.776533+02:00",
+    "version": "0.5.0"
   },
   ".storage/lovelace.maison_taches": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
     "last_update": "2026-10-01T18:41:24.194696+02:00",
     "version": "0.3.0"
+  },
+  ".storage/lovelace.matteo_planning": {
+    "last_change": "dashboard Planning Matteo (lecture seule) + notes visibles par Matteo",
+    "last_update": "2026-10-03T08:58:19.776533+02:00",
+    "version": "0.1.0"
   },
   ".storage/lovelace.meteo_belgique": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
@@ -215,9 +220,9 @@
     "version": "1.2.0"
   },
   "packages/matteo/matteo_planning_actions.yaml": {
-    "last_change": "trajet fait par une autre personne (Catherine, autres), hors banque ou compte",
-    "last_update": "2026-10-01T19:17:08.059138+02:00",
-    "version": "1.2.0"
+    "last_change": "dashboard Planning Matteo (lecture seule) + notes visibles par Matteo",
+    "last_update": "2026-10-03T08:58:19.776533+02:00",
+    "version": "1.3.0"
   },
   "packages/matteo/matteo_planning_options.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
