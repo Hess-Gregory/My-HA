@@ -1425,7 +1425,74 @@ class TodoistKanbanFamilialCard extends HTMLElement {
           data-form="task"
         >
 
-          <div class="form-grid">
+          <div class="form-grid">${
+              !isEdit
+                ? `
+                  <label class="form-field full">
+
+                    <span> 👤 Pour qui ? </span>
+
+                    <select name="project_key">
+
+                      <option
+                        value="famille"
+                        ${
+                          projectKey === "famille"
+                            ? "selected"
+                            : ""
+                        }
+                      > 👨‍👩‍👦 Toute la famille </option>
+
+                      <option
+                        value="gregory"
+                        ${
+                          projectKey === "gregory"
+                            ? "selected"
+                            : ""
+                        }
+                      >
+                        Grégory
+                      </option>
+
+                      <option
+                        value="matteo"
+                        ${
+                          projectKey === "matteo"
+                            ? "selected"
+                            : ""
+                        }
+                      >
+                        Matteo
+                      </option>
+
+                      <option
+                        value="sandrine"
+                        ${
+                          projectKey === "sandrine"
+                            ? "selected"
+                            : ""
+                        }
+                      >
+                        Sandrine
+                      </option>
+
+                    </select> <small>À qui s’adresse cette tâche (ou qui doit la faire)</small>
+
+                  </label>
+                `
+                : `
+                  <div class="form-info full">
+                    👤 Pour :
+                    <strong>
+                      ${this._escapeHtml(
+                        this._getProjectInfo(
+                          task?.project_id
+                        ).name
+                      )}
+                    </strong>
+                  </div>
+                `
+            }
 
             <label class="form-field full">
 
@@ -1503,25 +1570,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             </label>
 
 
-            <label class="form-field">
-
-              <span>
-                Échéance Todoist avancée
-              </span>
-
-              <input
-                type="text"
-                name="due_string"
-                value="${this._escapeHtml(dueString)}"
-                placeholder="demain à 18:00"
-                autocomplete="off"
-              >
-
-              <small>
-                Ex. demain à 18:00 · chaque lundi
-              </small>
-
-            </label>
+            <input type="hidden" name="due_string" value="${this._escapeHtml(dueString)}">
 
 
             <label class="form-field">
@@ -1622,48 +1671,10 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             </label>
 
 
-            <label class="form-field">
-
-              <span>
-                Responsable
-              </span>
-
-              <input
-                type="text"
-                name="assignee_id"
-                value="${this._escapeHtml(responsible)}"
-                placeholder="ID utilisateur Todoist"
-                autocomplete="off"
-              >
-
-              <small>
-                ID utilisateur numérique Todoist
-              </small>
-
-            </label>
+            <input type="hidden" name="assignee_id" value="${this._escapeHtml(responsible)}">
 
 
-            <label class="form-field">
-
-              <span>
-                Section
-              </span>
-
-              <select name="section_id">
-
-                <option value="">
-                  ${
-                    isEdit
-                      ? "Conserver la section"
-                      : "Choisir une section"
-                  }
-                </option>
-
-                ${sectionOptions}
-
-              </select>
-
-            </label>
+            <input type="hidden" name="section_id" value="">
 
 
             ${
@@ -1693,78 +1704,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             }
 
 
-            ${
-              !isEdit
-                ? `
-                  <label class="form-field full">
-
-                    <span>
-                      Projet
-                    </span>
-
-                    <select name="project_key">
-
-                      <option
-                        value="famille"
-                        ${
-                          projectKey === "famille"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Famille
-                      </option>
-
-                      <option
-                        value="gregory"
-                        ${
-                          projectKey === "gregory"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Grégory
-                      </option>
-
-                      <option
-                        value="matteo"
-                        ${
-                          projectKey === "matteo"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Matteo
-                      </option>
-
-                      <option
-                        value="sandrine"
-                        ${
-                          projectKey === "sandrine"
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        Sandrine
-                      </option>
-
-                    </select>
-
-                  </label>
-                `
-                : `
-                  <div class="form-info full">
-                    📁 Projet :
-                    <strong>
-                      ${this._escapeHtml(
-                        this._getProjectInfo(
-                          task?.project_id
-                        ).name
-                      )}
-                    </strong>
-                  </div>
-                `
-            }
+            
 
           </div>
 
@@ -2060,7 +2000,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             <div class="view-item">
 
               <div class="view-label">
-                📁 Projet
+                👤 Pour
               </div>
 
               <div class="view-value">
@@ -2070,17 +2010,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             </div>
 
 
-            <div class="view-item">
-
-              <div class="view-label">
-                📂 Section
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(section || "—")}
-              </div>
-
-            </div>
+            
 
 
             <div class="view-item">
@@ -2160,19 +2090,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
             </div>
 
 
-            <div class="view-item">
-
-              <div class="view-label">
-                👤 Responsable
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  responsible || "—"
-                )}
-              </div>
-
-            </div>
+            
 
 
             <div class="view-item">
