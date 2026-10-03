@@ -809,6 +809,8 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     return { rank, color: (map[rank] || map[1])[0], label: (map[rank] || map[1])[1], icon: (map[rank] || map[1])[2] };
   }
 
+  _kbCol(task) { if (this._isTaskDone(task)) { return "done"; } const project = this._getProjectInfo(task.project_id); const sec = String(this._getSectionName(task.section_id, project.key) || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); return sec.includes("cours") ? "doing" : "todo"; }
+
   _kbWho(project) {
     return { gregory: "👨", matteo: "👦", sandrine: "👩", famille: "👨‍👩‍👦" }[project?.key] || "👨‍👩‍👦";
   }
@@ -858,7 +860,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
       this.config.show_item_edit ? btn("edit", "✏️", "Modifier") : "",
       this.config.show_item_move ? btn("move", "↔", "Déplacer") : "",
       this.config.show_item_delete ? btn("delete", "🗑", "Supprimer", "danger") : "",
-      this.config.show_item_complete ? btn(done ? "reopen" : "complete", done ? "↩" : "✓", done ? "Rouvrir" : "C’est fait !", "primary") : "",
+      this.config.show_item_complete ? (done ? btn("reopen", "↩", "Rouvrir", "primary") : this._kbCol(task) === "doing" ? btn("complete", "✓ C’est fait !", "C’est fait !", "primary wide") : btn("start", "▶ Je m’en occupe", "Je m’en occupe", "start wide")) : "",
     ].join("");
     const chips = [
       pr.rank > 1 ? `<span class="kc" style="color:${pr.color};border-color:${pr.color}66;background:${pr.color}1f">${pr.icon} ${pr.label}</span>` : "",
@@ -1360,8 +1362,8 @@ _renderColumnHtml(
           <div class="view-actions">
             <button type="button" class="modal-button secondary" data-action="close-view">Fermer</button>
             ${this.config.show_item_edit ? `<button type="button" class="modal-button secondary" data-action="edit" data-task-id="${esc(task.id)}">✏️ Modifier</button>` : ""}
-            ${this.config.show_item_complete ? `<button type="button" class="modal-button primary" data-action="${done ? "reopen" : "complete"}" data-task-id="${esc(task.id)}">${done ? "↩ Rouvrir" : "✓ C’est fait !"}</button>` : ""}
-            ${taskUrl ? `<a class="v-link" href="${esc(taskUrl)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Todoist ↗</a>` : ""}
+            ${this.config.show_item_complete ? `<button type="button" class="modal-button primary" data-action="${done ? "reopen" : (this._kbCol(task) === "doing" ? "complete" : "start")}" data-task-id="${esc(task.id)}">${done ? "↩ Rouvrir" : (this._kbCol(task) === "doing" ? "✓ C’est fait !" : "▶ Je m’en occupe")}</button>` : ""}
+            ${taskUrl && this._hass && this._hass.user && this._hass.user.is_admin ? `<a class="v-link" href="${esc(taskUrl)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Todoist ↗</a>` : ""}
           </div>
         </div>
       </div>`;
@@ -2122,6 +2124,7 @@ _closeTaskView() {
     const findTask = (path) => path.find(el => el && el.classList && el.classList.contains("task") && el.dataset && el.dataset.taskId);
     const colAt = (x, y) => { const el = root.elementFromPoint ? root.elementFromPoint(x, y) : null; return el && el.closest ? el.closest(".column[data-col]") : null; };
     const clear = () => { root.querySelectorAll(".column.drop-target").forEach(c => c.classList.remove("drop-target")); };
+    const tick = (st) => { if (!st.active) { return; } if (st.vy) { window.scrollBy(0, st.vy); clear(); const c2 = colAt(st.lx, st.ly); if (c2 && c2.dataset.col !== st.from) { c2.classList.add("drop-target"); } } st.raf = requestAnimationFrame(() => tick(st)); };
     const start = (st) => {
       if (st.active || !st.el.isConnected) { return; }
       st.active = true;
@@ -2131,12 +2134,12 @@ _closeTaskView() {
       g.classList.add("drag-ghost");
       g.style.width = r.width + "px"; g.style.left = r.left + "px"; g.style.top = r.top + "px";
       root.appendChild(g); st.ghost = g;
-      st.el.classList.add("dragging");
+      st.el.classList.add("dragging"); st.raf = requestAnimationFrame(() => tick(st));
       const fc = st.el.closest(".column[data-col]"); st.from = fc ? fc.dataset.col : "";
       if (navigator.vibrate) { try { navigator.vibrate(15); } catch (err) { /* ignore */ } }
     };
     const move = (st, x, y) => {
-      st.lx = x; st.ly = y;
+      st.lx = x; st.ly = y; const edge = 80; st.vy = y < edge ? -Math.ceil((edge - y) / 4) : (y > window.innerHeight - edge ? Math.ceil((y - (window.innerHeight - edge)) / 4) : 0);
       if (!st.ghost) { return; }
       st.ghost.style.left = (x - st.dx) + "px"; st.ghost.style.top = (y - st.dy) + "px";
       clear();
@@ -2144,7 +2147,7 @@ _closeTaskView() {
       if (c && c.dataset.col !== st.from) { c.classList.add("drop-target"); }
     };
     const end = (st, drop) => {
-      clearTimeout(st.timer);
+      clearTimeout(st.timer); if (st.raf) { cancelAnimationFrame(st.raf); }
       if (st.active) {
         const c = drop ? colAt(st.lx, st.ly) : null;
         if (st.ghost) { st.ghost.remove(); }
@@ -2274,7 +2277,7 @@ _handleClick(event) {
 
 
     const action =
-      button.dataset.action; if (button.closest && button.closest(".view-modal") && ["edit", "complete", "reopen"].includes(action)) { this._closeTaskView(); }
+      button.dataset.action; if (button.closest && button.closest(".view-modal") && ["edit", "complete", "reopen", "start"].includes(action)) { this._closeTaskView(); } if (action === "start") { const t0 = (this._getTasks() || []).find(t => String(t.id) === String(button.dataset.taskId)); if (t0) { this._moveTaskTo(t0, "doing"); } return; }
 
 
     console.log(
@@ -3535,7 +3538,8 @@ _handleClick(event) {
         .v-link { margin-left: auto; font-size: .85em; color: #f6d68a; text-decoration: none; opacity: .85; }
         .modal-button { min-height: 42px; }
       
-</style>
+.tb.wide { width: auto; padding: 0 14px; font-weight: 600; font-size: .9em; } .tb.start { background: rgba(96,165,250,.22); border-color: rgba(96,165,250,.55); } .tb.start:hover { background: rgba(96,165,250,.35); }
+      </style>
 
 
       <ha-card>
