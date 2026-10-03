@@ -120,9 +120,9 @@
     "version": "0.4.0"
   },
   ".storage/lovelace.matteo_planning": {
-    "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
-    "last_update": "2026-10-03T09:46:34.806995+02:00",
-    "version": "0.3.0"
+    "last_change": "design graffiti lisible (hero, Nunito/Permanent Marker, cartes contrastées)",
+    "last_update": "2026-10-03T09:56:03.667599+02:00",
+    "version": "0.3.1"
   },
   ".storage/lovelace.meteo_belgique": {
     "last_change": "compte Matteo limite au dashboard Planning (vues masquees + redirection + kiosk-mode), design graffiti",
