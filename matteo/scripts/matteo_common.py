@@ -342,7 +342,7 @@ def ecrire_moteur(content):
             "report_date": it.get("report_date", ""), "report_date_aller": it.get("report_date_aller", ""),
             "report_agreed": bool(it.get("report_agreed", False)), "rattrape_par": it.get("rattrape_par", ""),
             "echange_avec": it.get("echange_avec", ""), "evenements_lies": it.get("evenements_lies", []),
-            "evenement_ok": it.get("evenement_ok", True), "notes": it.get("notes", ""), "notes_visible": bool(it.get("notes_visible", False)),
+            "evenement_ok": it.get("evenement_ok", True), "notes": it.get("notes", ""), "notes_visible": bool(it.get("notes_visible", True)),
             "solde_dette": it.get("solde_dette", ""), "soldee_par": it.get("soldee_par", []),
             "bank_delta": 0 if k in m else int(it.get("bank_delta", 0) or 0), "subtype": it.get("subtype", ""),
             "vac_nom": it.get("vac_nom", ""), "vac_debut": it.get("vac_debut", ""), "vac_fin": it.get("vac_fin", ""),

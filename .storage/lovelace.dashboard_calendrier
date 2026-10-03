@@ -2456,7 +2456,7 @@
                                                     },
                                                     {
                                                       "entity": "input_boolean.matteo_form_notes_visible",
-                                                      "name": "👦 Note visible par Matteo (laisser décoché si c’est une surprise)"
+                                                      "name": "👦 Note visible par Matteo (décocher pour la cacher, ex. une surprise)"
                                                     },
                                                     {
                                                       "entity": "input_boolean.matteo_form_actif",
@@ -3511,7 +3511,7 @@
                                                     },
                                                     {
                                                       "entity": "input_boolean.matteo_form_notes_visible",
-                                                      "name": "👦 Note visible par Matteo (laisser décoché si c’est une surprise)"
+                                                      "name": "👦 Note visible par Matteo (décocher pour la cacher, ex. une surprise)"
                                                     },
                                                     {
                                                       "entity": "input_boolean.matteo_form_actif",

@@ -295,7 +295,7 @@ script:
       - action: input_text.set_value
         target: { entity_id: input_text.matteo_form_notes }
         data: { value: "{{ w.notes | default('') }}" }
-      - action: "input_boolean.turn_{{ 'on' if w.notes_visible | default(false) else 'off' }}"
+      - action: "input_boolean.turn_{{ 'off' if w.notes_visible is defined and not w.notes_visible else 'on' }}"
         target: { entity_id: input_boolean.matteo_form_notes_visible }
       - action: "input_boolean.turn_{{ 'off' if w.visible is defined and not w.visible else 'on' }}"
         target: { entity_id: input_boolean.matteo_form_actif }
@@ -397,7 +397,9 @@ script:
       - action: input_select.select_first
         target: { entity_id: input_select.matteo_form_garde }
       - action: input_boolean.turn_off
-        target: { entity_id: [input_boolean.matteo_form_inverser_retours, input_boolean.matteo_form_tiers_compte, input_boolean.matteo_form_notes_visible] }
+        target: { entity_id: [input_boolean.matteo_form_inverser_retours, input_boolean.matteo_form_tiers_compte] }
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.matteo_form_notes_visible }
       - action: script.matteo_planning_maj_rattrapage
       - action: script.matteo_planning_maj_echange
 

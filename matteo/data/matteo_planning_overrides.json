@@ -375,8 +375,8 @@
       "reason_code": "BANK_PLUS_1",
       "bank_delta": 0,
       "created_at": "2026-09-24T09:36:53+00:00Z",
-      "modified_at": "2026-10-03T08:57:26+02:00",
-      "modification_count": 9,
+      "modified_at": "2026-10-03T09:03:56+02:00",
+      "modification_count": 11,
       "audit": [
         {
           "user": "script",
@@ -437,6 +437,18 @@
           "action": "upsert",
           "at": "2026-10-03T08:57:26+02:00",
           "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-10-03T09:01:26+02:00",
+          "note": "enregistré via le dashboard"
+        },
+        {
+          "user": "ha",
+          "action": "upsert",
+          "at": "2026-10-03T09:03:56+02:00",
+          "note": "enregistré via le dashboard"
         }
       ],
       "hide": false,
@@ -457,7 +469,7 @@
       "tiers_compte": true,
       "tiers_comme_aller": "ELODIE",
       "tiers_comme_retour": "",
-      "notes_visible": false,
+      "notes_visible": true,
       "evenements_lies": [
         {
           "nom": "Matteo",
