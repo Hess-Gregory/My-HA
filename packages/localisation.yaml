@@ -1,0 +1,104 @@
+# Localisation - faire sonner les smartphones jusqu'a "Stopper"
+input_boolean:
+  loc_sonne_sandrine:
+    name: "Sonnerie smartphone Sandrine"
+    icon: mdi:bell-ring
+  loc_sonne_greg:
+    name: "Sonnerie smartphone Greg"
+    icon: mdi:bell-ring
+  loc_sonne_matteo:
+    name: "Sonnerie iPhone Matteo"
+    icon: mdi:bell-ring
+
+script:
+  localisation_sonner:
+    alias: "Localisation - faire sonner un smartphone"
+    icon: mdi:bell-ring
+    mode: parallel
+    max: 10
+    fields:
+      qui:
+        description: "sandrine, greg ou matteo"
+        example: greg
+    variables:
+      cfg:
+        sandrine: { svc: notify.mobile_app_sandrine_smartphone, ios: false }
+        greg: { svc: notify.mobile_app_samsung_greg, ios: false }
+        matteo: { svc: notify.mobile_app_iphone, ios: true }
+      c: "{{ cfg[qui] }}"
+      flag: "input_boolean.loc_sonne_{{ qui }}"
+      debut: "{{ now().timestamp() }}"
+    sequence:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: "{{ flag }}"
+      - if: "{{ not c.ios }}"
+        then:
+          - action: "{{ c.svc }}"
+            data:
+              title: "🔔 On cherche ce téléphone !"
+              message: "Touche « J'ai trouvé » pour arrêter la sonnerie."
+              data:
+                tag: loc_sonne
+                sticky: true
+                ttl: 0
+                priority: high
+                actions:
+                  - action: "LOC_STOP_{{ qui }}"
+                    title: "✋ J'ai trouvé, stop !"
+      - repeat:
+          while:
+            - condition: template
+              value_template: "{{ is_state(flag, 'on') and (now().timestamp() - debut) < 300 }}"
+          sequence:
+            - if: "{{ c.ios }}"
+              then:
+                - action: "{{ c.svc }}"
+                  data:
+                    title: "🔔 On cherche ton iPhone !"
+                    message: "Appuie longuement puis « J'ai trouvé » pour arrêter."
+                    data:
+                      tag: loc_sonne
+                      push:
+                        sound:
+                          name: matteo_sonnerie.wav
+                          critical: 1
+                          volume: 1.0
+                        interruption-level: critical
+                      actions:
+                        - action: "LOC_STOP_{{ qui }}"
+                          title: "✋ J'ai trouvé, stop !"
+                - delay: { seconds: 12 }
+              else:
+                - action: "{{ c.svc }}"
+                  data:
+                    message: TTS
+                    data:
+                      tts_text: "Je suis ici ! Le téléphone est ici !"
+                      media_stream: alarm_stream_max
+                      ttl: 0
+                      priority: high
+                - delay: { seconds: 5 }
+      - action: input_boolean.turn_off
+        target:
+          entity_id: "{{ flag }}"
+      - action: "{{ c.svc }}"
+        data:
+          message: clear_notification
+          data:
+            tag: loc_sonne
+
+automation:
+  - id: localisation_stop_sonnerie_depuis_telephone
+    alias: "Localisation - stop sonnerie depuis le téléphone"
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+    conditions:
+      - condition: template
+        value_template: "{{ (trigger.event.data.action | default('')).startswith('LOC_STOP_') }}"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: "input_boolean.loc_sonne_{{ trigger.event.data.action[9:] }}"
