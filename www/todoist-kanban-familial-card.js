@@ -67,7 +67,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
         ].join("|")
       : "none";
 
-    if (signature !== this._lastSignature) {
+    if (signature !== this._lastSignature || (this._kbDefer && !this.shadowRoot?.querySelector(".modal-overlay"))) { this._kbDefer = false;
       this._lastSignature = signature;
       this._render();
     }
@@ -1316,7 +1316,10 @@ _renderColumnHtml(
     this._modalMode = null;
     this._modalTask = null;
     this._modalColumn = null;
+    this._kbFlush();
   }
+
+  _kbFlush() { setTimeout(() => { if (this._kbDefer && !this.shadowRoot?.querySelector(".modal-overlay")) { this._kbDefer = false; this._render(); } }, 0); }
 
 
   _openTaskView(task) {
@@ -1383,6 +1386,7 @@ _closeTaskView() {
     if (modal) {
       modal.remove();
     }
+    this._kbFlush();
   }
 
 
@@ -2438,6 +2442,7 @@ _handleClick(event) {
     if (!this.shadowRoot) {
       return;
     }
+    if (this.shadowRoot.querySelector(".modal-overlay")) { this._kbDefer = true; return; }
 
 
     const state =
