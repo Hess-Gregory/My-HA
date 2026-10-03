@@ -33,6 +33,9 @@ input_boolean:
   matteo_a_une_selection:
     name: "Planning Matteo – Une ligne est sélectionnée"
     icon: mdi:cursor-default-click
+  matteo_form_notes_visible:
+    name: "Note visible par Matteo"
+    icon: mdi:eye-outline
   matteo_form_tiers_compte:
     name: "Compter le trajet fait par l'autre personne"
     icon: mdi:scale-balance
@@ -156,7 +159,7 @@ shell_command:
     "{{ acteur_aller }}" "{{ acteur_aller_code }}" "{{ acteur_retour }}" "{{ acteur_retour_code }}"
     "{{ code_aller }}" "{{ code_retour }}" "{{ motif_code }}" "{{ motif }}" "{{ motif_libre }}"
     "{{ report_date }}" "false" "ha" "{{ motif2_code }}" "{{ motif2 }}"
-    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}" "{{ inversion }}" "{{ comp_key }}" "{{ tiers_aller }}" "{{ tiers_retour }}" "{{ tiers_compte }}"
+    "{{ date_du }}" "{{ date_au }}" "{{ report_date_aller }}" "{{ echange_avec }}" "{{ notes }}" "{{ lieu_aller }}" "{{ lieu_retour }}" "{{ motif_lieu_code }}" "{{ motif_lieu }}" "{{ inversion }}" "{{ comp_key }}" "{{ tiers_aller }}" "{{ tiers_retour }}" "{{ tiers_compte }}" "{{ notes_visible }}"
   matteo_override_supprimer: >-
     python3 /config/matteo/scripts/matteo_delete_override.py "{{ date_key }}"
   matteo_override_flags: >-
@@ -292,6 +295,8 @@ script:
       - action: input_text.set_value
         target: { entity_id: input_text.matteo_form_notes }
         data: { value: "{{ w.notes | default('') }}" }
+      - action: "input_boolean.turn_{{ 'on' if w.notes_visible | default(false) else 'off' }}"
+        target: { entity_id: input_boolean.matteo_form_notes_visible }
       - action: "input_boolean.turn_{{ 'off' if w.visible is defined and not w.visible else 'on' }}"
         target: { entity_id: input_boolean.matteo_form_actif }
       - action: input_select.select_option
@@ -392,7 +397,7 @@ script:
       - action: input_select.select_first
         target: { entity_id: input_select.matteo_form_garde }
       - action: input_boolean.turn_off
-        target: { entity_id: [input_boolean.matteo_form_inverser_retours, input_boolean.matteo_form_tiers_compte] }
+        target: { entity_id: [input_boolean.matteo_form_inverser_retours, input_boolean.matteo_form_tiers_compte, input_boolean.matteo_form_notes_visible] }
       - action: script.matteo_planning_maj_rattrapage
       - action: script.matteo_planning_maj_echange
 
@@ -614,6 +619,7 @@ script:
           echange_avec: "{{ echange_avec | trim }}"
           inversion: "{{ 'on' if inv else 'off' }}"
           tiers_aller: "{{ {'Catherine': 'CATHERINE', 'Autre (côté Grégory)': 'AUTRE_GREGORY', 'Autre (côté Élodie)': 'AUTRE_ELODIE'}.get(states('input_select.matteo_form_tiers_aller'), '') if ca in ['A', 'B'] else '' }}"
+          notes_visible: "{{ 'on' if is_state('input_boolean.matteo_form_notes_visible', 'on') else 'off' }}"
           tiers_compte: "{{ ('on' if is_state('input_boolean.matteo_form_tiers_compte', 'on') else 'off') ~ ':' ~ ('GREGORY' if is_state('input_select.matteo_form_tiers_comme_aller', 'Grégory') else 'ELODIE') ~ ':' ~ ('GREGORY' if is_state('input_select.matteo_form_tiers_comme_retour', 'Grégory') else 'ELODIE') }}"
           tiers_retour: "{{ {'Catherine': 'CATHERINE', 'Autre (côté Grégory)': 'AUTRE_GREGORY', 'Autre (côté Élodie)': 'AUTRE_ELODIE'}.get(states('input_select.matteo_form_tiers_retour'), '') if cr in ['A', 'B', 'C', 'D'] else '' }}"
           comp_key: >-

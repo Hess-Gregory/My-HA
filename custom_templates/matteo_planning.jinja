@@ -153,7 +153,7 @@
 | **Motif du trajet** | {{ m2 }} |
 {%- endif %}
 {%- if w.notes | default('') %}
-| **📝 Notes** | {{ w.notes }} |
+| **📝 Notes** | {{ w.notes }}{{ ' <small>· 👦 visible par Matteo</small>' if w.notes_visible | default(false) else ' <small>· 🔒 cachée à Matteo</small>' }} |
 {%- endif %}
 | **Suspendu** | {{ 'Oui' if not w.visible else 'Non' }} |
 {%- set raw = w -%}

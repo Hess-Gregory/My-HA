@@ -245,6 +245,15 @@
         "show_in_sidebar": true,
         "require_admin": false,
         "mode": "storage"
+      },
+      {
+        "id": "matteo_planning",
+        "url_path": "matteo-planning",
+        "title": "Planning Matteo",
+        "icon": "mdi:account-child",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "mode": "storage"
       }
     ]
   }

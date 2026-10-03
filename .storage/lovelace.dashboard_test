@@ -31320,6 +31320,637 @@
             "size": "cover",
             "attachment": "fixed"
           }
+        },
+        {
+          "title": "Labo — Idées",
+          "path": "labo-idees",
+          "icon": "mdi:flask-outline",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [
+                    "sensor.engis_belgium_indice_de_qualite_de_l_air",
+                    "weather.maison",
+                    "sensor.buanderie_local_tech_compteur_general_maison_puissance"
+                  ],
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "padding": "16px 18px"
+                      },
+                      {
+                        "border-radius": "18px"
+                      },
+                      {
+                        "background": "rgba(25,18,38,.72) !important"
+                      },
+                      {
+                        "backdrop-filter": "blur(16px)"
+                      },
+                      {
+                        "cursor": "default"
+                      },
+                      {
+                        "pointer-events": "auto"
+                      },
+                      {
+                        "overflow": "hidden"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      },
+                      {
+                        "min-width": "0"
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        },
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "pointer-events": "auto"
+                        },
+                        {
+                          "white-space": "normal"
+                        },
+                        {
+                          "overflow": "visible"
+                        },
+                        {
+                          "min-width": "0"
+                        },
+                        {
+                          "width": "100%"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return (function A(card,hass,states){const css=\"<style>.lb{font-family:Roboto,sans-serif;color:#ece8f4}.lb h1{font-size:22px;margin:0 0 2px;color:#f6d68a;font-weight:700}.lb h2{font-size:17px;margin:0 0 2px;color:#f6d68a}.lb .sub{opacity:.72;font-size:12.5px;margin-bottom:8px;line-height:1.4}.lb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:10px 0}.lb .kp{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}.lb .kp b{display:block;font-size:19px;margin-top:2px}.lb .kp span{font-size:11.5px;opacity:.7}.lb .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:rgba(255,255,255,.1)}.lb .btn{font:600 13px Roboto,sans-serif;padding:8px 14px;border-radius:10px;border:0;cursor:pointer;background:#f6d68a;color:#1f1830;pointer-events:auto}.lb .tip{font-size:13px;line-height:1.5;opacity:.92}.lb .note{font-size:12.5px;line-height:1.45;background:rgba(246,214,138,.08);border-left:3px solid #f6d68a;padding:7px 10px;border-radius:8px;margin-top:10px}.lb table{width:100%;border-collapse:collapse;font-size:13px}.lb td,.lb th{padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}.lb th{font-size:11.5px;opacity:.65;font-weight:500}.lb .ov{overflow-x:auto}.lb ul{margin:4px 0;padding-left:18px}.lb li{margin:3px 0;line-height:1.45}</style>\";\nconst L=window.__lab=window.__lab||{};L.hass=hass;L.cardA=card;\nconst st=e=>states[e]?states[e].state:null,nu=e=>{const x=parseFloat(st(e));return isNaN(x)?null:x;};\nconst R=[['Pièce de vie','piece_de_vie_sonoff_a480146b56','climate.living'],['Chambre parents','chambre_adulte_sonoff_a480146b5b','climate.chambre_adulte'],['Chambre enfants','chambre_enfants_sonoff_a480146b58','climate.chambre_enfants'],['Salle de bain','salle_de_bain_sonoff_a480146b5d','climate.salle_de_bain'],['Couloir','couloir_sonoff_a480146b60','climate.couloir']];\nL.tarif=function(){const S=L.hass.states,p=S['sensor.buanderie_local_tech_compteur_general_maison_heures_pleines_depuis_dernier_releve'],c=S['sensor.buanderie_local_tech_compteur_general_maison_heures_creuses_depuis_dernier_releve'];if(!p||!c)return 'inconnu';return new Date(c.last_changed)>new Date(p.last_changed)?'heures creuses':'heures pleines';};\nL.data=function(){const S=L.hass.states,g=e=>S[e]?S[e].state:'n/d',a=(e,k)=>(S[e]&&S[e].attributes[k]!=null)?S[e].attributes[k]:'n/d';\n const ids=Object.keys(S),unav=ids.filter(i=>S[i].state=='unavailable').length;\n const bat=ids.filter(i=>S[i].attributes.device_class=='battery'&&i.indexOf('sensor.')==0&&+S[i].state<25).map(i=>(S[i].attributes.friendly_name||i)+' '+S[i].state+'%');\n const hs=+g('sensor.boiler_heatstarts'),hw=+g('sensor.boiler_heatworkmin');const l=[];\n l.push('Date et heure : '+new Date().toLocaleString('fr-BE',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}));\n l.push('Météo Engis : '+g('weather.maison')+', '+a('weather.maison','temperature')+' °C, humidité '+a('weather.maison','humidity')+' %, vent '+g('sensor.engis_vent')+' km/h venant de '+g('sensor.engis_direction_vent')+'°');\n R.forEach(r=>l.push('Pièce '+r[0]+' : '+g('sensor.temp_'+r[1]+'_temperature')+' °C, '+g('sensor.temp_'+r[1]+'_humidity')+' % HR, consigne '+a(r[2],'temperature')+' °C, vanne '+a(r[2],'hvac_action')));\n l.push('Qualité de l’air (indices AQI, station WAQI Engis) : global '+g('sensor.engis_belgium_indice_de_qualite_de_l_air')+', PM2.5 '+g('sensor.engis_belgium_pm2_5')+', PM10 '+g('sensor.engis_belgium_pm10')+', NO2 '+g('sensor.engis_belgium_dioxyde_d_azote')+', SO2 '+g('sensor.engis_belgium_dioxyde_de_soufre')+', O3 '+g('sensor.engis_belgium_ozone')+', dominant '+g('sensor.engis_belgium_polluant_dominant'));\n l.push('Électricité : puissance '+g('sensor.buanderie_local_tech_compteur_general_maison_puissance')+' kW, aujourd’hui '+(+g('sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui')).toFixed(1)+' kWh, cette semaine '+(+g('sensor.buanderie_local_tech_compteur_general_maison_cette_semaine')).toFixed(0)+' kWh, réseau belge '+g('sensor.electricity_maps_intensite_carbone')+' gCO2/kWh ('+g('sensor.electricity_maps_pourcentage_d_energies_fossiles_du_reseau')+' % fossile), prix HP '+g('input_number.prix_heures_pleines')+' €/kWh, HC '+g('input_number.prix_heures_creuses')+' €/kWh, tarif en cours : '+L.tarif());\n l.push('Chaudière gaz 28 kW : départ '+g('sensor.boiler_curflowtemp')+' °C, eau chaude '+g('sensor.boiler_dhw_curtemp')+' °C (consigne '+g('sensor.boiler_dhw_settemp')+' °C), chauffage actif : '+g('binary_sensor.boiler_heatingactive')+', durée moyenne d’un cycle de chauffage depuis la mise en service : '+(hw/hs).toFixed(1)+' min, entretien légal dépassé depuis le 10/02/2026');\n l.push('Présence : Grégory '+g('person.gregory_hess')+', Sandrine '+g('person.sandrine'));\n l.push('Système : '+unav+' entités indisponibles ; batteries faibles : '+(bat.join(', ')||'aucune')+' ; dernière sauvegarde '+g('sensor.backup_last_successful_automatic_backup'));\n return l.join('\\n');};\nL.md=t=>{const esc=s=>s.replace(/[&<>]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[ch]);let out='',inl=false;String(t).split('\\n').forEach(x=>{x=esc(x.trim()).replace(/\\*\\*(.+?)\\*\\*/g,'<b>$1</b>');if(!x||/^-{3,}$/.test(x))return;if(/^[-•*]\\s/.test(x)){if(!inl){out+='<ul>';inl=true;}out+='<li>'+x.replace(/^[-•*]\\s/,'')+'</li>';}else{if(inl){out+='</ul>';inl=false;}out+='<p style=\"margin:4px 0\">'+x.replace(/^#+\\s*/,'')+'</p>';}});if(inl)out+='</ul>';return out;};\nif(!L.last){try{L.last=JSON.parse(localStorage.getItem('labBrief')||'null');}catch(e){}}\nL.out=()=>{if(L.busy)return '<div class=\"tip\">⏳ Claude lit vos capteurs et rédige le briefing…</div>';if(!L.last)return '<div class=\"tip\">Claude lit en direct les pièces, la chaudière, l’électricité, la pollution et la météo, puis rédige un briefing avec des conseils concrets pour la journée.</div>';return L.md(L.last.t)+'<div style=\"font-size:11px;opacity:.6;margin-top:6px\">Généré le '+new Date(L.last.ts).toLocaleString('fr-BE')+' par Claude</div>';};\nL.paint=()=>{const o=L.cardA&&L.cardA.shadowRoot&&L.cardA.shadowRoot.getElementById('lbB');if(o)o.innerHTML=L.out();};\nL.brief=async function(){if(L.busy)return;L.busy=true;L.paint();\n const P='Tu es l’assistant domotique de la maison de Grégory à Engis (Belgique, vallée de la Meuse, sites industriels dans la commune). Données en direct :\\n'+L.data()+'\\n\\nRédige un briefing en français : 6 à 8 puces courtes commençant chacune par un emoji, ton chaleureux et concret. Priorise les alertes, puis l’aération (selon pollution et températures), le confort par pièce, le meilleur moment pour l’électroménager, la chaudière et la maintenance. N’invente aucune donnée absente. Précisions techniques : une vanne « idle » signifie que la pièce est déjà au-dessus de sa consigne (pas un défaut) ; la chaudière produit l’eau chaude en instantané, donc la température d’eau chaude au repos n’est pas significative ; ne mets pas de titre ni de ligne de séparation. Termine par une ligne « À faire aujourd’hui : … ».';\n try{const r=await L.hass.callWS({type:'execute_script',sequence:[{action:'ai_task.generate_data',data:{entity_id:'ai_task.claude_ai_task',task_name:'Briefing maison',instructions:P},response_variable:'r'},{stop:'fin',response_variable:'r'}]});const t=r&&r.response&&(r.response.data||r.response.text);L.last={t:String(t),ts:Date.now()};try{localStorage.setItem('labBrief',JSON.stringify(L.last));}catch(e){}}catch(e){L.last={t:'Erreur : '+(e.message||JSON.stringify(e)),ts:Date.now()};}\n L.busy=false;L.paint();};\nconst tins=R.map(r=>nu('sensor.temp_'+r[1]+'_temperature')).filter(x=>x!=null),tin=tins.reduce((a,b)=>a+b,0)/tins.length;\nconst W=states['weather.maison']?states['weather.maison'].attributes:{};\nconst aqi=nu('sensor.engis_belgium_indice_de_qualite_de_l_air'),pw=nu('sensor.buanderie_local_tech_compteur_general_maison_puissance');\nconst ac=aqi==null?'#999':aqi<=50?'#66bb6a':aqi<=100?'#ffca28':aqi<=150?'#ffa726':'#ef5350';\nconst kp=(i,v,l)=>'<div class=\"kp\"><span>'+i+' '+l+'</span><b>'+v+'</b></div>';\nreturn css+'<style>.brief{background:linear-gradient(135deg,rgba(246,214,138,.13),rgba(124,92,214,.14));border:1px solid rgba(246,214,138,.28);border-radius:14px;padding:12px 14px;margin-top:4px}.bh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}</style><div class=\"lb\"><h1>🧪 Labo — votre maison, version plus intelligente</h1><div class=\"sub\">Idées construites sur vos propres capteurs ('+Object.keys(states).length+' entités analysées) : briefing IA, coach d’aération, surveillance de la chaudière, énergie en direct et santé du système.</div><div class=\"k\">'+kp('🏠',tin.toFixed(1)+' °C','Intérieur moyen')+kp('🌤️',(W.temperature!=null?W.temperature:'—')+' °C','Extérieur')+kp('🌫️','<i style=\"font-style:normal;color:'+ac+'\">'+(aqi==null?'—':aqi)+'</i>','Indice air Engis')+kp('⚡',pw==null?'—':Math.round(pw*1000)+' W','Conso maison')+kp('🔌',L.tarif(),'Tarif en cours')+'</div><div class=\"brief\"><div class=\"bh\"><b>✨ Briefing IA de la maison</b><button class=\"btn\" onclick=\"window.__lab.brief()\">Générer maintenant</button></div><div id=\"lbB\">'+L.out()+'</div></div></div>';})(this,hass,states); ]]]"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [
+                    "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
+                    "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
+                    "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
+                    "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
+                    "sensor.temp_couloir_sonoff_a480146b60_temperature",
+                    "sensor.temp_salle_de_bain_sonoff_a480146b5d_humidity",
+                    "weather.maison",
+                    "sensor.engis_belgium_indice_de_qualite_de_l_air",
+                    "sensor.engis_direction_vent"
+                  ],
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "padding": "16px 18px"
+                      },
+                      {
+                        "border-radius": "18px"
+                      },
+                      {
+                        "background": "rgba(25,18,38,.72) !important"
+                      },
+                      {
+                        "backdrop-filter": "blur(16px)"
+                      },
+                      {
+                        "cursor": "default"
+                      },
+                      {
+                        "pointer-events": "auto"
+                      },
+                      {
+                        "overflow": "hidden"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      },
+                      {
+                        "min-width": "0"
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        },
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "pointer-events": "auto"
+                        },
+                        {
+                          "white-space": "normal"
+                        },
+                        {
+                          "overflow": "visible"
+                        },
+                        {
+                          "min-width": "0"
+                        },
+                        {
+                          "width": "100%"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return (function B(card,hass,states){const css=\"<style>.lb{font-family:Roboto,sans-serif;color:#ece8f4}.lb h1{font-size:22px;margin:0 0 2px;color:#f6d68a;font-weight:700}.lb h2{font-size:17px;margin:0 0 2px;color:#f6d68a}.lb .sub{opacity:.72;font-size:12.5px;margin-bottom:8px;line-height:1.4}.lb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:10px 0}.lb .kp{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}.lb .kp b{display:block;font-size:19px;margin-top:2px}.lb .kp span{font-size:11.5px;opacity:.7}.lb .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:rgba(255,255,255,.1)}.lb .btn{font:600 13px Roboto,sans-serif;padding:8px 14px;border-radius:10px;border:0;cursor:pointer;background:#f6d68a;color:#1f1830;pointer-events:auto}.lb .tip{font-size:13px;line-height:1.5;opacity:.92}.lb .note{font-size:12.5px;line-height:1.45;background:rgba(246,214,138,.08);border-left:3px solid #f6d68a;padding:7px 10px;border-radius:8px;margin-top:10px}.lb table{width:100%;border-collapse:collapse;font-size:13px}.lb td,.lb th{padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}.lb th{font-size:11.5px;opacity:.65;font-weight:500}.lb .ov{overflow-x:auto}.lb ul{margin:4px 0;padding-left:18px}.lb li{margin:3px 0;line-height:1.45}</style>\";\nconst st=e=>states[e]?states[e].state:null,nu=e=>{const x=parseFloat(st(e));return isNaN(x)?null:x;};\nconst AH=(t,h)=>6.112*Math.exp(17.67*t/(t+243.5))*h*2.1674/(273.15+t);\nconst DP=(t,h)=>{const g=Math.log(h/100)+17.62*t/(243.12+t);return 243.12*g/(17.62-g);};\nconst R=[['Pièce de vie','piece_de_vie_sonoff_a480146b56'],['Chambre parents','chambre_adulte_sonoff_a480146b5b'],['Chambre enfants','chambre_enfants_sonoff_a480146b58'],['Salle de bain','salle_de_bain_sonoff_a480146b5d'],['Couloir','couloir_sonoff_a480146b60']];\nconst W=states['weather.maison']?states['weather.maison'].attributes:{};const To=+W.temperature,Ho=+W.humidity,AHo=AH(To,Ho);\nconst rows=R.map(r=>{const t=nu('sensor.temp_'+r[1]+'_temperature'),h=nu('sensor.temp_'+r[1]+'_humidity');return {n:r[0],t:t,h:h,ah:(t!=null&&h!=null)?AH(t,h):null,dp:(t!=null&&h!=null)?DP(t,h):null};}).filter(x=>x.t!=null&&x.h!=null);\nconst Ti=rows.reduce((a,b)=>a+b.t,0)/rows.length,Hi=Math.max.apply(null,rows.map(x=>x.h)),AHi=rows.reduce((a,b)=>a+b.ah,0)/rows.length;\nconst aqi=nu('sensor.engis_belgium_indice_de_qualite_de_l_air')||0,pm=nu('sensor.engis_belgium_pm2_5')||0,dom=st('sensor.engis_belgium_polluant_dominant')||'';\nconst wd=nu('sensor.engis_direction_vent'),ws=nu('sensor.engis_vent');\nconst D16=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];const dn=wd==null?'—':D16[Math.round(wd/22.5)%16];\nlet col,ttl;const why=[];const cool=Ti>23.5&&To<Ti-2,dry=AHo<AHi-1&&Hi>55,wet=AHo>AHi+1;\nif(aqi>100||pm>100){col='#ef5350';ttl='Gardez les fenêtres fermées';why.push('Air extérieur dégradé (indice '+aqi+', '+dom+')');}\nelse{if(aqi>50){col='#ffca28';ttl=(cool||dry)?'Aération courte seulement (5 min)':'Inutile d’aérer maintenant';why.push('Air extérieur moyen (indice '+aqi+', '+dom+')');}\n else if(cool||dry){col='#66bb6a';ttl='Bon moment pour aérer';}\n else if(To<12){col='#64b5f6';ttl='Aération éclair de 5 à 10 min';why.push('Dehors '+To+' °C : ouvrir grand mais brièvement renouvelle l’air sans refroidir les murs');}\n else{col='#66bb6a';ttl='Air extérieur correct';}\n if(cool)why.push('Rafraîchit : '+Ti.toFixed(1)+' °C dedans, '+To+' °C dehors');\n if(dry)why.push('Assèche : '+AHi.toFixed(1)+' g d’eau/m³ dedans contre '+AHo.toFixed(1)+' dehors');\n if(wet)why.push('L’air extérieur contient plus d’eau ('+AHo.toFixed(1)+' g/m³ contre '+AHi.toFixed(1)+') : aérer longtemps humidifierait la maison');\n if(aqi<=50)why.push('Air extérieur bon (indice '+aqi+')');}\nconst comp='<svg viewBox=\"0 0 80 80\" width=\"78\" height=\"78\"><circle cx=\"40\" cy=\"40\" r=\"35\" fill=\"rgba(255,255,255,.04)\" stroke=\"rgba(255,255,255,.18)\"/><text x=\"40\" y=\"14\" text-anchor=\"middle\" font-size=\"9\" fill=\"#bbb\">N</text><text x=\"70\" y=\"43\" text-anchor=\"middle\" font-size=\"9\" fill=\"#777\">E</text><text x=\"40\" y=\"74\" text-anchor=\"middle\" font-size=\"9\" fill=\"#777\">S</text><text x=\"10\" y=\"43\" text-anchor=\"middle\" font-size=\"9\" fill=\"#777\">O</text>'+(wd==null?'':'<g transform=\"rotate('+(wd+180)+' 40 40)\"><path d=\"M40 16 L48 46 L40 40 L32 46 Z\" fill=\"'+col+'\"/></g>')+'</svg>';\nconst tag=r=>{const t=[];if(r.t>24)t.push('🔥 chaud');if(r.t<18)t.push('🧊 frais');if(r.h>60)t.push('💧 humide');if(r.h<35)t.push('🏜️ sec');return t.map(x=>'<span class=\"chip\">'+x+'</span>').join('')||'<span class=\"chip\">✓ ok</span>';};\nconst tb='<div class=\"ov\"><table><tr><th>Pièce</th><th>Temp.</th><th>Humidité</th><th>Eau dans l’air</th><th>Point de rosée</th><th></th></tr>'+rows.map(r=>'<tr><td>'+r.n+'</td><td>'+r.t.toFixed(1)+' °C</td><td>'+Math.round(r.h)+' %</td><td>'+r.ah.toFixed(1)+' g/m³</td><td>'+r.dp.toFixed(1)+' °C</td><td>'+tag(r)+'</td></tr>').join('')+'<tr style=\"opacity:.8\"><td>🌳 Dehors</td><td>'+To+' °C</td><td>'+Ho+' %</td><td>'+AHo.toFixed(1)+' g/m³</td><td>'+DP(To,Ho).toFixed(1)+' °C</td><td></td></tr></table></div>';\nreturn css+'<div class=\"lb\"><h2>🪟 Coach d’aération</h2><div class=\"sub\">Croise températures, humidité absolue (la vraie quantité d’eau dans l’air), pollution et vent pour dire s’il faut ouvrir.</div><div style=\"display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:6px 0 10px\"><div style=\"flex:1;min-width:200px;border-radius:14px;padding:12px 14px;background:'+col+'22;border:1px solid '+col+'66\"><div style=\"font-size:19px;font-weight:700;color:'+col+'\">'+ttl+'</div><div style=\"margin-top:4px\">'+why.map(x=>'<div class=\"tip\">• '+x+'</div>').join('')+'</div></div><div style=\"text-align:center\">'+comp+'<div style=\"font-size:12px;opacity:.75\">Vent de '+dn+' · '+(ws==null?'—':ws)+' km/h</div></div></div>'+tb+'<div class=\"note\">💡 <b>Idée :</b> des détecteurs d’ouverture Ajax sur les fenêtres (votre centrale Ajax est déjà là) permettraient de couper automatiquement les vannes Bosch pendant l’aération et de vous dire « fermez » dès qu’un pic de pollution arrive.</div></div>';})(this,hass,states); ]]]"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [
+                    "sensor.backup_last_successful_automatic_backup",
+                    "update.home_assistant_core_update"
+                  ],
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "padding": "16px 18px"
+                      },
+                      {
+                        "border-radius": "18px"
+                      },
+                      {
+                        "background": "rgba(25,18,38,.72) !important"
+                      },
+                      {
+                        "backdrop-filter": "blur(16px)"
+                      },
+                      {
+                        "cursor": "default"
+                      },
+                      {
+                        "pointer-events": "auto"
+                      },
+                      {
+                        "overflow": "hidden"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      },
+                      {
+                        "min-width": "0"
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        },
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "pointer-events": "auto"
+                        },
+                        {
+                          "white-space": "normal"
+                        },
+                        {
+                          "overflow": "visible"
+                        },
+                        {
+                          "min-width": "0"
+                        },
+                        {
+                          "width": "100%"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return (function E(card,hass,states){const css=\"<style>.lb{font-family:Roboto,sans-serif;color:#ece8f4}.lb h1{font-size:22px;margin:0 0 2px;color:#f6d68a;font-weight:700}.lb h2{font-size:17px;margin:0 0 2px;color:#f6d68a}.lb .sub{opacity:.72;font-size:12.5px;margin-bottom:8px;line-height:1.4}.lb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:10px 0}.lb .kp{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}.lb .kp b{display:block;font-size:19px;margin-top:2px}.lb .kp span{font-size:11.5px;opacity:.7}.lb .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:rgba(255,255,255,.1)}.lb .btn{font:600 13px Roboto,sans-serif;padding:8px 14px;border-radius:10px;border:0;cursor:pointer;background:#f6d68a;color:#1f1830;pointer-events:auto}.lb .tip{font-size:13px;line-height:1.5;opacity:.92}.lb .note{font-size:12.5px;line-height:1.45;background:rgba(246,214,138,.08);border-left:3px solid #f6d68a;padding:7px 10px;border-radius:8px;margin-top:10px}.lb table{width:100%;border-collapse:collapse;font-size:13px}.lb td,.lb th{padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}.lb th{font-size:11.5px;opacity:.65;font-weight:500}.lb .ov{overflow-x:auto}.lb ul{margin:4px 0;padding-left:18px}.lb li{margin:3px 0;line-height:1.45}</style>\";\nconst ids=Object.keys(states),ent=hass.entities||{},dev=hass.devices||{};\nconst un=ids.filter(i=>states[i].state=='unavailable'&&!(ent[i]&&ent[i].hidden));const grp={};\nun.forEach(i=>{const e=ent[i];const d=e&&e.device_id?dev[e.device_id]:null;const k=d?(d.name_by_user||d.name):(e?e.platform:i.split('.')[0]);grp[k]=(grp[k]||0)+1;});\nconst top=Object.entries(grp).sort((a,b)=>b[1]-a[1]).slice(0,7);\nconst bat=ids.filter(i=>i.indexOf('sensor.')==0&&states[i].attributes.device_class=='battery'&&!isNaN(parseFloat(states[i].state))&&+states[i].state<25);\nconst upd=ids.filter(i=>i.indexOf('update.')==0&&states[i].state=='on');\nconst lb=states['sensor.backup_last_successful_automatic_backup'];const age=lb?(Date.now()-new Date(lb.state).getTime())/36e5:999;\nlet sc=100-Math.min(30,un.length*0.3)-bat.length*8-upd.length*2-(age>48?20:0);sc=Math.max(0,Math.round(sc));\nconst col=sc>=85?'#66bb6a':sc>=65?'#ffca28':'#ef5350';const C2=2*Math.PI*42;\nconst ring='<svg viewBox=\"0 0 100 100\" width=\"110\" height=\"110\"><circle cx=\"50\" cy=\"50\" r=\"42\" fill=\"none\" stroke=\"rgba(255,255,255,.1)\" stroke-width=\"9\"/><circle cx=\"50\" cy=\"50\" r=\"42\" fill=\"none\" stroke=\"'+col+'\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-dasharray=\"'+(C2*sc/100)+' '+C2+'\" transform=\"rotate(-90 50 50)\"/><text x=\"50\" y=\"55\" text-anchor=\"middle\" font-size=\"24\" font-weight=\"700\" fill=\"'+col+'\">'+sc+'</text></svg>';\nconst li=(i,t)=>'<div class=\"tip\" style=\"margin:3px 0\">'+i+' '+t+'</div>';\nreturn css+'<div class=\"lb\"><h2>🩺 Santé du système</h2><div style=\"display:flex;align-items:center;gap:12px;margin:6px 0\">'+ring+'<div>'+li('🔌','<b>'+un.length+'</b> entités indisponibles')+li('🔋','<b>'+bat.length+'</b> batterie(s) faible(s)')+li('⬆️','<b>'+upd.length+'</b> mise(s) à jour')+li('💾','Sauvegarde il y a <b>'+(age<999?Math.round(age)+' h':'—')+'</b>')+'</div></div><div style=\"font-size:12px;opacity:.7;margin:8px 0 4px\">Appareils les plus touchés</div>'+top.map(x=>'<div style=\"display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)\"><span>'+x[0]+'</span><span class=\"chip\">'+x[1]+'</span></div>').join('')+(bat.length?'<div style=\"font-size:12px;opacity:.7;margin:10px 0 4px\">Batteries</div>'+bat.map(i=>'<div class=\"tip\">🔋 '+(states[i].attributes.friendly_name||i)+' : <b>'+states[i].state+' %</b></div>').join(''):'')+(upd.length?'<div style=\"font-size:12px;opacity:.7;margin:10px 0 4px\">Mises à jour</div>'+upd.map(i=>'<div class=\"tip\">⬆️ '+(states[i].attributes.title||states[i].attributes.friendly_name||i)+'</div>').join(''):'')+'</div>';})(this,hass,states); ]]]"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [
+                    "sensor.boiler_heatstarts",
+                    "sensor.boiler_dhw_starts",
+                    "sensor.boiler_curflowtemp"
+                  ],
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "padding": "16px 18px"
+                      },
+                      {
+                        "border-radius": "18px"
+                      },
+                      {
+                        "background": "rgba(25,18,38,.72) !important"
+                      },
+                      {
+                        "backdrop-filter": "blur(16px)"
+                      },
+                      {
+                        "cursor": "default"
+                      },
+                      {
+                        "pointer-events": "auto"
+                      },
+                      {
+                        "overflow": "hidden"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      },
+                      {
+                        "min-width": "0"
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        },
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "pointer-events": "auto"
+                        },
+                        {
+                          "white-space": "normal"
+                        },
+                        {
+                          "overflow": "visible"
+                        },
+                        {
+                          "min-width": "0"
+                        },
+                        {
+                          "width": "100%"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return (function C(card,hass,states){const css=\"<style>.lb{font-family:Roboto,sans-serif;color:#ece8f4}.lb h1{font-size:22px;margin:0 0 2px;color:#f6d68a;font-weight:700}.lb h2{font-size:17px;margin:0 0 2px;color:#f6d68a}.lb .sub{opacity:.72;font-size:12.5px;margin-bottom:8px;line-height:1.4}.lb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:10px 0}.lb .kp{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}.lb .kp b{display:block;font-size:19px;margin-top:2px}.lb .kp span{font-size:11.5px;opacity:.7}.lb .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:rgba(255,255,255,.1)}.lb .btn{font:600 13px Roboto,sans-serif;padding:8px 14px;border-radius:10px;border:0;cursor:pointer;background:#f6d68a;color:#1f1830;pointer-events:auto}.lb .tip{font-size:13px;line-height:1.5;opacity:.92}.lb .note{font-size:12.5px;line-height:1.45;background:rgba(246,214,138,.08);border-left:3px solid #f6d68a;padding:7px 10px;border-radius:8px;margin-top:10px}.lb table{width:100%;border-collapse:collapse;font-size:13px}.lb td,.lb th{padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}.lb th{font-size:11.5px;opacity:.65;font-weight:500}.lb .ov{overflow-x:auto}.lb ul{margin:4px 0;padding-left:18px}.lb li{margin:3px 0;line-height:1.45}</style>\";\nconst L=window.__lab=window.__lab||{};L.cardC=card;\nconst nu=e=>{const x=parseFloat(states[e]?states[e].state:'');return isNaN(x)?null:x;};\nconst hs=nu('sensor.boiler_heatstarts'),hw=nu('sensor.boiler_heatworkmin'),ds=nu('sensor.boiler_dhw_starts'),bs=nu('sensor.boiler_burnstarts'),up=nu('sensor.boiler_ubauptime');\nconst avgH=hw/hs;const yrs=up/525600;\nconst E=['sensor.boiler_heatstarts','sensor.boiler_dhw_starts','sensor.boiler_heatworkmin'];\nconst draw=()=>{const H=L.bh;if(!H)return '<div class=\"tip\">Chargement de l’historique sur 7 jours…</div>';\n const mx=Math.max.apply(null,[1].concat(H.days.map(x=>x.heat+x.dhw)));const bw=34,gap=10,hh=90;\n let s='<svg viewBox=\"0 0 '+(7*(bw+gap))+' '+(hh+30)+'\" width=\"100%\" style=\"max-width:420px\">';\n H.days.forEach((o,i)=>{const x=i*(bw+gap)+gap/2,h1=o.dhw/mx*hh,h2=o.heat/mx*hh;s+='<rect x=\"'+x+'\" y=\"'+(hh-h1)+'\" width=\"'+bw+'\" height=\"'+h1+'\" rx=\"4\" fill=\"#4fc3f7\"/><rect x=\"'+x+'\" y=\"'+(hh-h1-h2)+'\" width=\"'+bw+'\" height=\"'+h2+'\" rx=\"4\" fill=\"#ff7043\"/><text x=\"'+(x+bw/2)+'\" y=\"'+(hh-h1-h2-4)+'\" text-anchor=\"middle\" font-size=\"10\" fill=\"#ddd\">'+(o.heat+o.dhw)+'</text><text x=\"'+(x+bw/2)+'\" y=\"'+(hh+14)+'\" text-anchor=\"middle\" font-size=\"10\" fill=\"#aaa\">'+o.d.toLocaleDateString('fr-BE',{weekday:'short'})+'</text>';});\n s+='</svg>';const th=H.days.reduce((a,b)=>a+b.heat,0),tm=H.days.reduce((a,b)=>a+b.hmin,0);\n const live=th?'<b>'+(tm/th).toFixed(1)+' min</b> par cycle de chauffage sur 7 jours ('+th+' démarrages)':'Aucun cycle de chauffage sur 7 jours : la saison de chauffe n’a pas encore commencé. Ce graphique montrera dès les premiers froids si le court-cycle continue.';\n return s+'<div style=\"font-size:12px;margin:2px 0 6px\"><span class=\"chip\" style=\"background:#ff704333\">■ chauffage</span><span class=\"chip\" style=\"background:#4fc3f733\">■ eau chaude</span></div><div class=\"tip\">'+live+'</div>';};\nif(!L.bhT||Date.now()-L.bhT>600000){L.bhT=Date.now();const start=new Date(Date.now()-6*864e5);start.setHours(0,0,0,0);\n hass.callApi('GET','history/period/'+start.toISOString()+'?filter_entity_id='+E.join(',')+'&minimal_response&no_attributes').then(res=>{const by={};res.forEach(a=>{if(a.length)by[a[0].entity_id]=a;});\n  const val=(id,t)=>{const a=by[id];if(!a)return null;let v=null;for(let k=0;k<a.length;k++){const p=a[k];if(new Date(p.last_changed)<=t){const x=parseFloat(p.state);if(!isNaN(x))v=x;}else break;}return v;};\n  const days=[];for(let i=0;i<7;i++){const d0=new Date(start.getTime()+i*864e5);const t1=new Date(Math.min(Date.now(),d0.getTime()+864e5));const df=id=>{const a=val(id,new Date(Math.max(d0.getTime(),start.getTime()+1000))),b=val(id,t1);return (a!=null&&b!=null)?Math.max(0,b-a):0;};days.push({d:d0,heat:df('sensor.boiler_heatstarts'),dhw:df('sensor.boiler_dhw_starts'),hmin:df('sensor.boiler_heatworkmin')});}\n  L.bh={days:days};const el=L.cardC&&L.cardC.shadowRoot&&L.cardC.shadowRoot.getElementById('lbC7');if(el)el.innerHTML=draw();}).catch(()=>{L.bhT=0;});}\nconst kp=(i,v,l)=>'<div class=\"kp\"><span>'+i+' '+l+'</span><b>'+v+'</b></div>';\nconst bad=avgH<3;const g=e=>states[e]?states[e].state:'—';\nreturn css+'<div class=\"lb\"><h2>🔥 Chaudière — surveillance du court-cycle</h2><div class=\"sub\">Calculé à partir des compteurs internes de votre chaudière (EMS-ESP).</div><div class=\"k\">'+kp('⏱️','<span style=\"color:'+(bad?'#ef5350':'#66bb6a')+'\">'+Math.round(avgH*60)+' s</span>','Cycle de chauffage moyen')+kp('🔁',Math.round(hs).toLocaleString('fr-BE'),'Démarrages chauffage')+kp('🚿',Math.round(ds).toLocaleString('fr-BE'),'Démarrages eau chaude')+kp('📅',yrs.toFixed(1)+' ans','En service')+kp('🌡️',g('sensor.boiler_curflowtemp')+' °C','Départ actuel')+'</div>'+(bad?'<div style=\"border-radius:12px;padding:10px 12px;background:#ef535022;border:1px solid #ef535066;font-size:13px;line-height:1.5\"><b style=\"color:#ef9a9a\">Court-cycle probable.</b> Depuis la mise en service, un cycle de chauffage dure en moyenne <b>'+Math.round(avgH*60)+' secondes</b> ('+Math.round(hw).toLocaleString('fr-BE')+' min de chauffe pour '+Math.round(hs).toLocaleString('fr-BE')+' démarrages). On vise en général des cycles de 10 minutes ou plus : des cycles très courts usent l’allumage et le ventilateur et font perdre du rendement.</div>':'')+'<div style=\"margin-top:10px\" id=\"lbC7\">'+draw()+'</div><div class=\"note\"><b>À voir avec le chauffagiste</b> (réglages modifiables depuis Home Assistant une fois validés) :<ul><li>allonger l’anti-court-cycle (actuellement <b>'+g('number.boiler_burnminperiod')+' min</b>) ;</li><li>adapter la puissance maximale en chauffage (actuellement <b>'+g('number.boiler_burnmaxpower')+' %</b> de 28 kW) aux besoins réels de la maison ;</li><li>faire l’entretien légal, dépassé depuis le 10/02/2026, avec contrôle de l’échangeur (pics à 96,8 °C le 30/09).</li></ul></div></div>';})(this,hass,states); ]]]"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 1,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [
+                    "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                    "sensor.electricity_maps_intensite_carbone",
+                    "sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui"
+                  ],
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "padding": "16px 18px"
+                      },
+                      {
+                        "border-radius": "18px"
+                      },
+                      {
+                        "background": "rgba(25,18,38,.72) !important"
+                      },
+                      {
+                        "backdrop-filter": "blur(16px)"
+                      },
+                      {
+                        "cursor": "default"
+                      },
+                      {
+                        "pointer-events": "auto"
+                      },
+                      {
+                        "overflow": "hidden"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      },
+                      {
+                        "min-width": "0"
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        },
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "pointer-events": "auto"
+                        },
+                        {
+                          "white-space": "normal"
+                        },
+                        {
+                          "overflow": "visible"
+                        },
+                        {
+                          "min-width": "0"
+                        },
+                        {
+                          "width": "100%"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return (function D(card,hass,states){const css=\"<style>.lb{font-family:Roboto,sans-serif;color:#ece8f4}.lb h1{font-size:22px;margin:0 0 2px;color:#f6d68a;font-weight:700}.lb h2{font-size:17px;margin:0 0 2px;color:#f6d68a}.lb .sub{opacity:.72;font-size:12.5px;margin-bottom:8px;line-height:1.4}.lb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:10px 0}.lb .kp{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}.lb .kp b{display:block;font-size:19px;margin-top:2px}.lb .kp span{font-size:11.5px;opacity:.7}.lb .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:rgba(255,255,255,.1)}.lb .btn{font:600 13px Roboto,sans-serif;padding:8px 14px;border-radius:10px;border:0;cursor:pointer;background:#f6d68a;color:#1f1830;pointer-events:auto}.lb .tip{font-size:13px;line-height:1.5;opacity:.92}.lb .note{font-size:12.5px;line-height:1.45;background:rgba(246,214,138,.08);border-left:3px solid #f6d68a;padding:7px 10px;border-radius:8px;margin-top:10px}.lb table{width:100%;border-collapse:collapse;font-size:13px}.lb td,.lb th{padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}.lb th{font-size:11.5px;opacity:.65;font-weight:500}.lb .ov{overflow-x:auto}.lb ul{margin:4px 0;padding-left:18px}.lb li{margin:3px 0;line-height:1.45}</style>\";\nconst nu=e=>{const x=parseFloat(states[e]?states[e].state:'');return isNaN(x)?null:x;};\nconst pw=(nu('sensor.buanderie_local_tech_compteur_general_maison_puissance')||0)*1000,td=nu('sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui'),wk=nu('sensor.buanderie_local_tech_compteur_general_maison_cette_semaine'),ci=nu('sensor.electricity_maps_intensite_carbone'),fo=nu('sensor.electricity_maps_pourcentage_d_energies_fossiles_du_reseau');\nconst p=states['sensor.buanderie_local_tech_compteur_general_maison_heures_pleines_depuis_dernier_releve'],c=states['sensor.buanderie_local_tech_compteur_general_maison_heures_creuses_depuis_dernier_releve'];\nconst hc=!!(p&&c&&new Date(c.last_changed)>new Date(p.last_changed));const php=nu('input_number.prix_heures_pleines'),phc=nu('input_number.prix_heures_creuses');const pr=hc?phc:php;\nlet col,ttl,txt;\nif(hc&&fo<60){col='#66bb6a';ttl='🟢 Moment idéal';txt='Heures creuses et électricité belge peu carbonée : lancez lave-vaisselle, lessive, sèche-linge.';}\nelse if(hc){col='#66bb6a';ttl='🟢 Heures creuses';txt='Bon moment pour l’électroménager (réseau à '+Math.round(fo)+' % fossile).';}\nelse if(fo<40){col='#ffca28';ttl='🟡 Heures pleines, réseau vert';txt='Plus cher mais peu carboné. Si ça peut attendre, attendez les heures creuses.';}\nelse{col='#ffa726';ttl='🟠 Attendez si possible';txt='Heures pleines et réseau à '+Math.round(fo)+' % fossile.';}\nconst kp=(i,v,l)=>'<div class=\"kp\"><span>'+i+' '+l+'</span><b>'+v+'</b></div>';\nreturn css+'<div class=\"lb\"><h2>⚡ Feu vert électroménager</h2><div style=\"border-radius:12px;padding:10px 12px;margin:8px 0;background:'+col+'22;border:1px solid '+col+'66\"><div style=\"font-weight:700;color:'+col+';font-size:16px\">'+ttl+'</div><div class=\"tip\">'+txt+'</div></div><div class=\"k\">'+kp('⚡',Math.round(pw)+' W','Maintenant')+kp('💶',(pw/1000*pr).toFixed(2)+' €/h','Coût actuel')+kp('📆',td==null?'—':td.toFixed(1)+' kWh','Aujourd’hui')+kp('🗓️',wk==null?'—':Math.round(wk)+' kWh','Semaine')+kp('🏭',ci==null?'—':Math.round(ci)+' g','CO₂/kWh réseau')+'</div><div class=\"tip\" style=\"font-size:12px;opacity:.75\">Écart HP/HC : '+((php-phc)*100).toFixed(1)+' c€/kWh, soit environ '+((php-phc)).toFixed(2)+' € de moins par kWh consommé en heures creuses.</div></div>';})(this,hass,states); ]]]"
+                  }
+                },
+                {
+                  "type": "custom:apexcharts-card",
+                  "graph_span": "24h",
+                  "header": {
+                    "show": true,
+                    "title": "Puissance maison et CO₂ du réseau, 24 h",
+                    "show_states": false
+                  },
+                  "apex_config": {
+                    "chart": {
+                      "height": 210,
+                      "background": "transparent"
+                    },
+                    "theme": {
+                      "mode": "dark"
+                    },
+                    "legend": {
+                      "show": true,
+                      "position": "bottom"
+                    },
+                    "grid": {
+                      "borderColor": "rgba(255,255,255,.08)"
+                    },
+                    "tooltip": {
+                      "theme": "dark"
+                    }
+                  },
+                  "yaxis": [
+                    {
+                      "id": "w",
+                      "decimals": 0,
+                      "min": 0
+                    },
+                    {
+                      "id": "c",
+                      "opposite": true,
+                      "decimals": 0
+                    }
+                  ],
+                  "series": [
+                    {
+                      "entity": "sensor.buanderie_local_tech_compteur_general_maison_puissance",
+                      "name": "Puissance (W)",
+                      "type": "area",
+                      "color": "#f6d68a",
+                      "transform": "return x*1000;",
+                      "unit": "W",
+                      "yaxis_id": "w",
+                      "group_by": {
+                        "func": "avg",
+                        "duration": "10min"
+                      },
+                      "stroke_width": 2,
+                      "opacity": 0.25
+                    },
+                    {
+                      "entity": "sensor.electricity_maps_intensite_carbone",
+                      "name": "CO₂ réseau (g/kWh)",
+                      "type": "line",
+                      "color": "#81c784",
+                      "yaxis_id": "c",
+                      "stroke_width": 1.5,
+                      "group_by": {
+                        "func": "avg",
+                        "duration": "30min"
+                      }
+                    }
+                  ],
+                  "card_mod": {
+                    "style": "ha-card{background:rgba(25,18,38,.72)!important;border-radius:18px;backdrop-filter:blur(16px)}"
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "triggers_update": [],
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "padding": "16px 18px"
+                      },
+                      {
+                        "border-radius": "18px"
+                      },
+                      {
+                        "background": "rgba(25,18,38,.72) !important"
+                      },
+                      {
+                        "backdrop-filter": "blur(16px)"
+                      },
+                      {
+                        "cursor": "default"
+                      },
+                      {
+                        "pointer-events": "auto"
+                      },
+                      {
+                        "overflow": "hidden"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"x\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      },
+                      {
+                        "min-width": "0"
+                      }
+                    ],
+                    "custom_fields": {
+                      "x": [
+                        {
+                          "justify-self": "stretch"
+                        },
+                        {
+                          "text-align": "left"
+                        },
+                        {
+                          "pointer-events": "auto"
+                        },
+                        {
+                          "white-space": "normal"
+                        },
+                        {
+                          "overflow": "visible"
+                        },
+                        {
+                          "min-width": "0"
+                        },
+                        {
+                          "width": "100%"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "x": "[[[ return (function F(card,hass,states){const css=\"<style>.lb{font-family:Roboto,sans-serif;color:#ece8f4}.lb h1{font-size:22px;margin:0 0 2px;color:#f6d68a;font-weight:700}.lb h2{font-size:17px;margin:0 0 2px;color:#f6d68a}.lb .sub{opacity:.72;font-size:12.5px;margin-bottom:8px;line-height:1.4}.lb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:10px 0}.lb .kp{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}.lb .kp b{display:block;font-size:19px;margin-top:2px}.lb .kp span{font-size:11.5px;opacity:.7}.lb .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:rgba(255,255,255,.1)}.lb .btn{font:600 13px Roboto,sans-serif;padding:8px 14px;border-radius:10px;border:0;cursor:pointer;background:#f6d68a;color:#1f1830;pointer-events:auto}.lb .tip{font-size:13px;line-height:1.5;opacity:.92}.lb .note{font-size:12.5px;line-height:1.45;background:rgba(246,214,138,.08);border-left:3px solid #f6d68a;padding:7px 10px;border-radius:8px;margin-top:10px}.lb table{width:100%;border-collapse:collapse;font-size:13px}.lb td,.lb th{padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}.lb th{font-size:11.5px;opacity:.65;font-weight:500}.lb .ov{overflow-x:auto}.lb ul{margin:4px 0;padding-left:18px}.lb li{margin:3px 0;line-height:1.45}</style>\";\nconst I=[['🪟','Détecteurs d’ouverture sur les fenêtres','Avec votre centrale Ajax : coupure automatique des vannes Bosch pendant l’aération, et notification « fermez les fenêtres » dès qu’un pic de pollution arrive.','Achat'],\n['🌫️','Votre propre capteur de particules extérieur','Un capteur PM2.5/PM10 citoyen (type AirGradient ou Sensor.Community) mesurerait l’air à votre adresse plutôt qu’à la station WAQI, et ces données publiques renforceraient votre dossier pollution.','Achat · fort impact'],\n['🫁','Capteur de CO₂ intérieur','Le coach d’aération se baserait aussi sur l’air intérieur (chambres et pièce de vie), pas seulement sur la température et l’humidité.','Achat'],\n['🔌','Consommation par appareil','Le tableau Énergie n’a aucun appareil suivi. Des prises Shelly sur lave-linge, sèche-linge et frigo rempliraient ce tableau et préviendraient en fin de cycle.','Achat · Shelly déjà en place'],\n['☀️','Briefing IA chaque matin','Le même briefing qu’en haut de cette vue, envoyé automatiquement sur votre téléphone à 7 h les jours ouvrables.','Rapide'],\n['🛡️','Tableau Sécurité 2026.9','Nouveauté de septembre : section « Alertes actives » et favoris épinglés. Votre Ajax, vos Reolink et votre BTicino y ont leur place. Les nouvelles « traces d’activité » montrent aussi pourquoi un appareil a changé d’état.','Rapide · nouveauté'],\n['🔋','Tablette du salon','Elle est hors ligne avec une batterie à 1 %. Une prise connectée qui la recharge entre 20 et 80 % prolongerait sa batterie et éviterait les coupures.','Rapide'],\n['🧹','Grand ménage des entités','Des dizaines d’entités sont indisponibles (voir « Santé du système »). Les supprimer ou les réparer allège les tableaux et fiabilise les automatisations.','Rapide']];\nreturn css+'<div class=\"lb\"><h2>💡 Idées pour la suite</h2><div class=\"sub\">Choisies pour votre installation (Ajax, Bosch, Shelly, chaudière EMS, Home Connect, Reolink, IA Claude) et pour votre environnement à Engis.</div><div style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px\">'+I.map(x=>'<div style=\"background:rgba(255,255,255,.06);border-radius:14px;padding:11px 12px\"><div style=\"font-size:22px\">'+x[0]+'</div><div style=\"font-weight:700;margin:4px 0;color:#f6d68a\">'+x[1]+'</div><div class=\"tip\" style=\"font-size:12.5px\">'+x[2]+'</div><div style=\"margin-top:6px\"><span class=\"chip\">'+x[3]+'</span></div></div>').join('')+'</div></div>';})(this,hass,states); ]]]"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "decluttering_templates": {

@@ -81,6 +81,9 @@ def main(a):
     })
     if notes is not None:
         entry["notes"] = notes.strip()
+    _nv = arg(a, 32, None)
+    if _nv in ("on", "off"):
+        entry["notes_visible"] = _nv == "on"
     if lieu_a is not None:   # lieu où Grégory va chercher Matteo (par défaut Maurage)
         entry["lieu_aller"] = (lieu_a.strip() or "MAURAGE") if code_aller == "A" else ""
     if lieu_r is not None:   # lieu où Grégory ramène Matteo (par défaut Maurage)

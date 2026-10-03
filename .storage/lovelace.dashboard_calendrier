@@ -2455,6 +2455,10 @@
                                                       "name": "📝 Notes (activité, chose à ne pas oublier…)"
                                                     },
                                                     {
+                                                      "entity": "input_boolean.matteo_form_notes_visible",
+                                                      "name": "👦 Note visible par Matteo (laisser décoché si c’est une surprise)"
+                                                    },
+                                                    {
                                                       "entity": "input_boolean.matteo_form_actif",
                                                       "name": "Date active (décocher = suspendre, sans supprimer)"
                                                     }
@@ -3504,6 +3508,10 @@
                                                     {
                                                       "entity": "input_text.matteo_form_notes",
                                                       "name": "📝 Notes (activité, chose à ne pas oublier…)"
+                                                    },
+                                                    {
+                                                      "entity": "input_boolean.matteo_form_notes_visible",
+                                                      "name": "👦 Note visible par Matteo (laisser décoché si c’est une surprise)"
                                                     },
                                                     {
                                                       "entity": "input_boolean.matteo_form_actif",
