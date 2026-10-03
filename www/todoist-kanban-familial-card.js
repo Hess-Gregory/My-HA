@@ -862,7 +862,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
       this.config.show_item_edit ? btn("edit", "✏️", "Modifier") : "",
       "",
       this.config.show_item_delete ? btn("delete", "🗑", "Supprimer", "danger") : "",
-      this.config.show_item_complete ? (done ? btn("reopen", "↩", "Rouvrir", "primary") : this._kbCol(task) === "doing" ? btn("complete", "✓ C’est fait !", "C’est fait !", "primary wide") : btn("start", "▶ Je m’en occupe", "Je m’en occupe", "start wide")) : "",
+      this.config.show_item_complete ? (done ? btn("back", "↩ À refaire", "Remettre dans À faire", "wide") : this._kbCol(task) === "doing" ? btn("finish", "✓ C’est fait !", "C’est fait !", "primary wide") : btn("start", "▶ Je m’en occupe", "Je m’en occupe", "start wide")) : "",
     ].join("");
     const chips = [
       pr.rank > 1 ? `<span class="kc" style="color:${pr.color};border-color:${pr.color}66;background:${pr.color}1f">${pr.icon} ${pr.label}</span>` : "",
@@ -1364,7 +1364,7 @@ _renderColumnHtml(
           <div class="view-actions">
             <button type="button" class="modal-button secondary" data-action="close-view">Fermer</button>
             ${this.config.show_item_edit ? `<button type="button" class="modal-button secondary" data-action="edit" data-task-id="${esc(task.id)}">✏️ Modifier</button>` : ""}
-            ${this.config.show_item_complete ? `<button type="button" class="modal-button primary" data-action="${done ? "reopen" : (this._kbCol(task) === "doing" ? "complete" : "start")}" data-task-id="${esc(task.id)}">${done ? "↩ Rouvrir" : (this._kbCol(task) === "doing" ? "✓ C’est fait !" : "▶ Je m’en occupe")}</button>` : ""}
+            ${this.config.show_item_complete ? `<button type="button" class="modal-button primary" data-action="${done ? "back" : (this._kbCol(task) === "doing" ? "finish" : "start")}" data-task-id="${esc(task.id)}">${done ? "↩ À refaire" : (this._kbCol(task) === "doing" ? "✓ C’est fait !" : "▶ Je m’en occupe")}</button>` : ""}
             ${taskUrl && this._hass && this._hass.user && this._hass.user.is_admin ? `<a class="v-link" href="${esc(taskUrl)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Todoist ↗</a>` : ""}
           </div>
         </div>
@@ -2280,7 +2280,7 @@ _handleClick(event) {
 
 
     const action =
-      button.dataset.action; if (button.closest && button.closest(".view-modal") && ["edit", "complete", "reopen", "start"].includes(action)) { this._closeTaskView(); } if (action === "start") { const t0 = (this._getTasks() || []).find(t => String(t.id) === String(button.dataset.taskId)); if (t0) { this._moveTaskTo(t0, "doing"); } return; }
+      button.dataset.action; if (button.closest && button.closest(".view-modal") && ["edit", "complete", "reopen", "start", "finish", "back"].includes(action)) { this._closeTaskView(); } const kbTarget = { start: "doing", finish: "done", back: "todo" }[action]; if (kbTarget) { const t0 = (this._getTasks() || []).find(t => String(t.id) === String(button.dataset.taskId)); if (t0) { this._moveTaskTo(t0, kbTarget); } return; }
 
 
     console.log(
