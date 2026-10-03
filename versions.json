@@ -120,9 +120,9 @@
     "version": "0.4.1"
   },
   ".storage/lovelace.matteo_planning": {
-    "last_change": "boutons tactiles iPhone, espacement hero, masquage barre laterale",
-    "last_update": "2026-10-03T10:01:25.482320+02:00",
-    "version": "0.3.2"
+    "last_change": "vue Mon post-it dans son dashboard",
+    "last_update": "2026-10-03T10:12:04.003164+02:00",
+    "version": "0.4.0"
   },
   ".storage/lovelace.meteo_belgique": {
     "last_change": "redirection forcee vers son planning depuis toutes les vues",
