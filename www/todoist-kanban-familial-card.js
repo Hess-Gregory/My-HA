@@ -809,6 +809,8 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     return { rank, color: (map[rank] || map[1])[0], label: (map[rank] || map[1])[1], icon: (map[rank] || map[1])[2] };
   }
 
+  _kbToast(msg) { const old = this.shadowRoot.querySelector(".kb-toast"); if (old) { old.remove(); } const t = document.createElement("div"); t.className = "kb-toast"; t.textContent = msg; this.shadowRoot.appendChild(t); setTimeout(() => t.remove(), 2800); }
+
   _kbCol(task) { if (this._isTaskDone(task)) { return "done"; } const project = this._getProjectInfo(task.project_id); const sec = String(this._getSectionName(task.section_id, project.key) || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); return sec.includes("cours") ? "doing" : "todo"; }
 
   _kbWho(project) {
@@ -858,7 +860,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     const actions = [
       this.config.show_item_view ? btn("view", "👁", "Voir le détail") : "",
       this.config.show_item_edit ? btn("edit", "✏️", "Modifier") : "",
-      this.config.show_item_move ? btn("move", "↔", "Déplacer") : "",
+      "",
       this.config.show_item_delete ? btn("delete", "🗑", "Supprimer", "danger") : "",
       this.config.show_item_complete ? (done ? btn("reopen", "↩", "Rouvrir", "primary") : this._kbCol(task) === "doing" ? btn("complete", "✓ C’est fait !", "C’est fait !", "primary wide") : btn("start", "▶ Je m’en occupe", "Je m’en occupe", "start wide")) : "",
     ].join("");
@@ -2107,7 +2109,7 @@ _closeTaskView() {
 
 
   async _moveTaskTo(task, target) {
-    if (!task || !target) { return; }
+    if (!task || !target) { return; } if (this._kbCol(task) === "todo" && target === "done") { this._kbToast("Passe d’abord la tâche dans « En cours » 😉"); return; }
     const project = this._getProjectInfo(task.project_id);
     const sectionId = this._findSectionForColumn(project.key, target);
     if (!sectionId) { alert(`Impossible de trouver la colonne « ${target} » dans le projet ${project.name}.`); return; }
@@ -2120,11 +2122,12 @@ _closeTaskView() {
     if (this._dndReady || !this.shadowRoot) { return; }
     this._dndReady = true;
     const root = this.shadowRoot;
+    const allowed = (f, t) => !(f === "todo" && t === "done");
     const isAction = (path) => path.some(el => el && el.dataset && el.dataset.action);
     const findTask = (path) => path.find(el => el && el.classList && el.classList.contains("task") && el.dataset && el.dataset.taskId);
     const colAt = (x, y) => { const el = root.elementFromPoint ? root.elementFromPoint(x, y) : null; return el && el.closest ? el.closest(".column[data-col]") : null; };
-    const clear = () => { root.querySelectorAll(".column.drop-target").forEach(c => c.classList.remove("drop-target")); };
-    const tick = (st) => { if (!st.active) { return; } if (st.vy) { window.scrollBy(0, st.vy); clear(); const c2 = colAt(st.lx, st.ly); if (c2 && c2.dataset.col !== st.from) { c2.classList.add("drop-target"); } } st.raf = requestAnimationFrame(() => tick(st)); };
+    const clear = () => { root.querySelectorAll(".column.drop-target, .column.drop-no").forEach(c => c.classList.remove("drop-target", "drop-no")); };
+    const tick = (st) => { if (!st.active) { return; } if (st.vy) { window.scrollBy(0, st.vy); clear(); const c2 = colAt(st.lx, st.ly); if (c2 && c2.dataset.col !== st.from) { c2.classList.add(allowed(st.from, c2.dataset.col) ? "drop-target" : "drop-no"); } } st.raf = requestAnimationFrame(() => tick(st)); };
     const start = (st) => {
       if (st.active || !st.el.isConnected) { return; }
       st.active = true;
@@ -2144,7 +2147,7 @@ _closeTaskView() {
       st.ghost.style.left = (x - st.dx) + "px"; st.ghost.style.top = (y - st.dy) + "px";
       clear();
       const c = colAt(x, y);
-      if (c && c.dataset.col !== st.from) { c.classList.add("drop-target"); }
+      if (c && c.dataset.col !== st.from) { c.classList.add(allowed(st.from, c.dataset.col) ? "drop-target" : "drop-no"); }
     };
     const end = (st, drop) => {
       clearTimeout(st.timer); if (st.raf) { cancelAnimationFrame(st.raf); }
@@ -2154,7 +2157,7 @@ _closeTaskView() {
         st.el.classList.remove("dragging");
         clear();
         this._dragEndAt = Date.now();
-        if (c && c.dataset.col && c.dataset.col !== st.from) {
+        if (c && c.dataset.col && c.dataset.col !== st.from && !allowed(st.from, c.dataset.col)) { this._kbToast("Passe d’abord la tâche dans « En cours » 😉"); } else if (c && c.dataset.col && c.dataset.col !== st.from) {
           const task = (this._getTasks() || []).find(t => String(t.id) === String(st.id));
           if (task) { this._moveTaskTo(task, c.dataset.col); }
         }
@@ -3539,6 +3542,7 @@ _handleClick(event) {
         .modal-button { min-height: 42px; }
       
 .tb.wide { width: auto; padding: 0 14px; font-weight: 600; font-size: .9em; } .tb.start { background: rgba(96,165,250,.22); border-color: rgba(96,165,250,.55); } .tb.start:hover { background: rgba(96,165,250,.35); }
+      .column.drop-no { outline: 2px dashed rgba(239,83,80,.8); outline-offset: -3px; background: rgba(239,83,80,.08); } .kb-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 100001; background: #2a2236; color: #fff; padding: 12px 18px; border-radius: 12px; border: 1px solid rgba(246,214,138,.45); box-shadow: 0 10px 30px rgba(0,0,0,.5); font-size: .95em; max-width: 90vw; text-align: center; }
       </style>
 
 
