@@ -100,9 +100,9 @@
     "version": "0.4.1"
   },
   ".storage/lovelace.maison_localisation": {
-    "last_change": "sonnerie continue jusqu a Stopper, vocal iPhone Matteo",
-    "last_update": "2026-10-03T12:39:00.855666+02:00",
-    "version": "0.2.0"
+    "last_change": "alertes vocales urgence et appel manque, sons iPhone",
+    "last_update": "2026-10-03T13:01:41.758964+02:00",
+    "version": "0.3.0"
   },
   ".storage/lovelace.maison_pollution": {
     "last_change": "redirection forcee vers son planning depuis toutes les vues",
@@ -210,9 +210,9 @@
     "version": "0.1.0"
   },
   "packages/localisation.yaml": {
-    "last_change": "sonnerie continue jusqu a Stopper, vocal iPhone Matteo",
-    "last_update": "2026-10-03T12:39:00.855666+02:00",
-    "version": "0.1.0"
+    "last_change": "alertes vocales urgence et appel manque, sons iPhone",
+    "last_update": "2026-10-03T13:01:41.758964+02:00",
+    "version": "0.2.0"
   },
   "packages/matteo/matteo_calendar.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
