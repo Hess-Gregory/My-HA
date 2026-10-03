@@ -99,6 +99,11 @@
     "last_update": "2026-10-03T10:04:54.825449+02:00",
     "version": "0.4.1"
   },
+  ".storage/lovelace.maison_localisation": {
+    "last_change": "dashboard Localisation (carte temps reel, localiser, faire sonner)",
+    "last_update": "2026-10-03T12:28:20.192873+02:00",
+    "version": "0.1.0"
+  },
   ".storage/lovelace.maison_pollution": {
     "last_change": "redirection forcee vers son planning depuis toutes les vues",
     "last_update": "2026-10-03T10:04:54.825449+02:00",
