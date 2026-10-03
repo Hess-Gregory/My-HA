@@ -1751,6 +1751,56 @@
                 }
               ]
             }
+          ],
+          "visible": [
+            {
+              "user": "a8d03195e7eb4b36a625eb3c0fb3468d"
+            },
+            {
+              "user": "e825e82f685f4d829d1b4f7e66c022db"
+            },
+            {
+              "user": "3d6a26b6b25045a99cf89cd56c8c8cc3"
+            },
+            {
+              "user": "3c63ae801ed34154aa67f44ef472a03c"
+            },
+            {
+              "user": "72011b7b659b4d9497908e4fbb4539ce"
+            }
+          ]
+        },
+        {
+          "title": "Planning",
+          "path": "matteo-redirection",
+          "icon": "mdi:account-child",
+          "type": "panel",
+          "visible": [
+            {
+              "user": "27b37491ab9d46e0983dda25b47cb355"
+            }
+          ],
+          "cards": [
+            {
+              "type": "custom:button-card",
+              "show_name": false,
+              "show_icon": false,
+              "show_state": false,
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/matteo-planning/planning"
+              },
+              "custom_fields": {
+                "x": "[[[ if(!window.__mtkRedir||Date.now()-window.__mtkRedir>1500){window.__mtkRedir=Date.now();setTimeout(()=>{history.replaceState(null,'','/matteo-planning/planning');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:true}}));},80);} return '<div style=\"padding:30px;text-align:center;font-size:18px\">➡️ Ouverture du planning de Matteo…</div>'; ]]]"
+              },
+              "styles": {
+                "grid": [
+                  {
+                    "grid-template-areas": "\"x\""
+                  }
+                ]
+              }
+            }
           ]
         }
       ],

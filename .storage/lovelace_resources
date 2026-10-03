@@ -188,6 +188,11 @@
         "id": "7e41074cca9d439aa8197f111754b53e",
         "url": "/hacsfiles/lovelace-html-card/html-card.js?hacstag=193408399100",
         "type": "module"
+      },
+      {
+        "id": "9f7a8a36d8b34d6fbfbd184d5e216b01",
+        "url": "/hacsfiles/kiosk-mode/kiosk-mode.js?hacstag=4973191281421",
+        "type": "module"
       }
     ]
   }
