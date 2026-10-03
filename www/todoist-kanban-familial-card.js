@@ -803,378 +803,85 @@ class TodoistKanbanFamilialCard extends HTMLElement {
   }
 
 
-  _renderTaskHtml(task) {
-
-    const project =
-      this._getProjectInfo(
-        task.project_id
-      );
-
-    const due =
-      this._formatDue(task);
-
-    const priority =
-      this._priorityColor(task);
-
-    const priorityHtml =
-      this._priorityHtml(task);
-
-    const personColor =
-      project.color;
-
-
-    const dueHtml =
-      due
-        ? `
-          <span
-            class="task-due ${due.overdue ? "overdue" : ""}"
-          >
-            📅 ${this._escapeHtml(due.label)}
-            ${
-              due.recurring
-                ? ` <span class="recurring">↻</span>`
-                : ""
-            }
-          </span>
-        `
-        : "";
-
-
-    const deadline =
-      this._formatDeadline(task);
-
-
-    const deadlineHtml =
-      deadline
-        ? `
-          <span class="task-deadline">
-            ⏳ ${this._escapeHtml(deadline)}
-          </span>
-        `
-        : "";
-
-
-    const duration =
-      this._formatDuration(task);
-
-
-    const durationHtml =
-      duration
-        ? `
-          <span class="task-duration">
-            ⏱️ ${this._escapeHtml(duration)}
-          </span>
-        `
-        : "";
-
-
-    const labels =
-      this._formatLabels(task);
-
-
-    const labelsHtml =
-      labels
-        ? `
-          <span class="task-labels">
-            🏷️ ${this._escapeHtml(labels)}
-          </span>
-        `
-        : "";
-
-
-    const responsible =
-      task.responsible_uid ||
-      task.assignee_id;
-
-
-    const responsibleHtml =
-      responsible
-        ? `
-          <span class="task-responsible">
-            👤 ${this._escapeHtml(responsible)}
-          </span>
-        `
-        : "";
-
-
-    const description =
-      typeof task.description === "string"
-        ? task.description.trim()
-        : "";
-
-
-    const descriptionHtml =
-      description
-        ? `
-          <div class="task-description">
-            ${this._escapeHtml(description)}
-          </div>
-        `
-        : "";
-
-
-    const parentHtml =
-      task.parent_id
-        ? `
-          <span class="task-parent">
-            🌳 Sous-tâche
-          </span>
-        `
-        : "";
-
-
-    const noteCount =
-      Number(task.note_count);
-
-
-    const notesHtml =
-      Number.isFinite(noteCount) &&
-      noteCount > 0
-        ? `
-          <span class="task-notes">
-            💬 ${noteCount}
-          </span>
-        `
-        : "";
-
-
-    const createdAt =
-      task.added_at ||
-      task.created_at;
-
-
-    const updatedAt =
-      task.updated_at;
-
-
-    const timestamps = [];
-
-
-    if (createdAt) {
-
-      const formatted =
-        this._formatDateTime(
-          createdAt
-        );
-
-      if (formatted) {
-        timestamps.push(
-          `créée ${formatted}`
-        );
-      }
-    }
-
-
-    if (
-      updatedAt &&
-      updatedAt !== createdAt
-    ) {
-
-      const formatted =
-        this._formatDateTime(
-          updatedAt
-        );
-
-      if (formatted) {
-        timestamps.push(
-          `modifiée ${formatted}`
-        );
-      }
-    }
-
-
-    const timestampsHtml =
-      timestamps.length
-        ? `
-          <span class="task-timestamps">
-            🕘 ${this._escapeHtml(
-              timestamps.join(" · ")
-            )}
-          </span>
-        `
-        : "";
-
-
-    const taskUrl =
-      this._taskUrl(task);
-
-
-    const urlHtml =
-      taskUrl
-        ? `
-          <a
-            class="task-link"
-            href="${this._escapeHtml(taskUrl)}"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Ouvrir dans Todoist"
-          >
-            ↗
-          </a>
-        `
-        : "";
-
-
-    const viewButton =
-      this.config.show_item_view
-        ? `
-          <button
-            type="button"
-            class="task-button"
-            data-action="view"
-            data-task-id="${this._escapeHtml(task.id)}"
-            title="Voir les détails"
-          >
-            👁
-          </button>
-        `
-        : "";
-
-
-    const completeButton =
-      this.config.show_item_complete
-        ? `
-          <button
-            type="button"
-            class="task-button"
-            data-action="${
-              this._isTaskDone(task)
-                ? "reopen"
-                : "complete"
-            }"
-            data-task-id="${this._escapeHtml(task.id)}"
-            title="${
-              this._isTaskDone(task)
-                ? "Rouvrir"
-                : "Terminer"
-            }"
-          >
-            ${
-              this._isTaskDone(task)
-                ? "↩"
-                : "✓"
-            }
-          </button>
-        `
-        : "";
-
-
-    const editButton =
-      this.config.show_item_edit
-        ? `
-          <button
-            type="button"
-            class="task-button"
-            data-action="edit"
-            data-task-id="${this._escapeHtml(task.id)}"
-            title="Modifier"
-          >
-            ✎
-          </button>
-        `
-        : "";
-
-
-    const moveButton =
-      this.config.show_item_move
-        ? `
-          <button
-            type="button"
-            class="task-button"
-            data-action="move"
-            data-task-id="${this._escapeHtml(task.id)}"
-            title="Déplacer"
-          >
-            ↔
-          </button>
-        `
-        : "";
-
-
-    const deleteButton =
-      this.config.show_item_delete
-        ? `
-          <button
-            type="button"
-            class="task-button delete-button"
-            data-action="delete"
-            data-task-id="${this._escapeHtml(task.id)}"
-            title="Supprimer"
-          >
-            🗑
-          </button>
-        `
-        : "";
-
-
-    return `
-      <div
-        class="task"
-        data-task-id="${this._escapeHtml(task.id)}"
-        style="
-          border-left-color:${priority};
-          border-right-color:${priority};
-          background:${personColor}22;
-        "
-      >
-
-        <div class="task-main">
-
-          <div class="task-content-row">
-
-            <div class="task-content">
-              ${this._escapeHtml(task.content)}
-            </div>
-
-            ${urlHtml}
-
-          </div>
-
-          ${descriptionHtml}
-
-          <div class="task-meta">
-
-            <span
-              class="task-owner"
-              style="
-                background:${project.color}22;
-                color:${project.color};
-                border:1px solid ${project.color}55;
-              "
-            >
-              ${this._escapeHtml(project.name)}
-            </span>
-
-            ${priorityHtml}
-            ${dueHtml}
-            ${deadlineHtml}
-            ${durationHtml}
-            ${labelsHtml}
-            ${responsibleHtml}
-            ${parentHtml}
-            ${notesHtml}
-            ${timestampsHtml}
-
-          </div>
-
-        </div>
-
-        <div class="task-actions">
-
-          ${viewButton}
-          ${completeButton}
-          ${editButton}
-          ${moveButton}
-          ${deleteButton}
-
-        </div>
-
-      </div>
-    `;
+  _kbPrio(task) {
+    const rank = typeof task?.priority === "number" ? task.priority : 1;
+    const map = { 4: ["#ef5350", "Très urgent", "🔴"], 3: ["#ffa726", "Important", "🟠"], 2: ["#ffca28", "Bientôt", "🟡"], 1: ["#66bb6a", "Pas urgent", "🟢"] };
+    return { rank, color: (map[rank] || map[1])[0], label: (map[rank] || map[1])[1], icon: (map[rank] || map[1])[2] };
   }
 
+  _kbWho(project) {
+    return { gregory: "👨", matteo: "👦", sandrine: "👩", famille: "👨‍👩‍👦" }[project?.key] || "👨‍👩‍👦";
+  }
 
-  _renderColumnHtml(
+  _kbDue(task) {
+    const d = task?.due;
+    if (!d || !d.date) { return null; }
+    const raw = String(d.datetime || d.date);
+    const p = raw.slice(0, 10).split("-").map(Number);
+    if (p.length !== 3 || p.some(v => Number.isNaN(v))) { return null; }
+    const day = new Date(p[0], p[1] - 1, p[2]);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diff = Math.round((day - today) / 864e5);
+    let label = diff === 0 ? "Aujourd’hui" : diff === 1 ? "Demain" : diff === -1 ? "Hier"
+      : day.toLocaleDateString("fr-BE", { weekday: "short", day: "numeric", month: "short", year: day.getFullYear() !== now.getFullYear() ? "numeric" : undefined });
+    let tm = "";
+    const m = raw.match(/T(\d{2}):(\d{2})/);
+    if (m) {
+      if (/(Z|[+-]\d{2}:?\d{2})$/.test(raw)) {
+        tm = new Date(raw).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+      } else {
+        tm = m[1] + ":" + m[2];
+      }
+    }
+    if (tm) { label += " · " + tm; }
+    let overdue = diff < 0;
+    if (!overdue && diff === 0 && m) { overdue = new Date(raw) < now; }
+    const full = day.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) + (tm ? " à " + tm : "");
+    return { label, overdue, recurring: !!d.is_recurring, full };
+  }
+
+  _renderTaskHtml(task) {
+    const esc = v => this._escapeHtml(v);
+    const project = this._getProjectInfo(task.project_id);
+    const done = this._isTaskDone(task);
+    const pr = this._kbPrio(task);
+    const due = this._kbDue(task);
+    const duration = this._formatDuration(task);
+    const labels = Array.isArray(task.labels) ? task.labels : [];
+    const noteCount = Number(task.note_count);
+    const description = typeof task.description === "string" ? task.description.trim() : "";
+    const id = esc(task.id);
+    const btn = (action, icon, title, cls) => `<button type="button" class="tb ${cls || ""}" data-action="${action}" data-task-id="${id}" title="${title}" aria-label="${title}">${icon}</button>`;
+    const actions = [
+      this.config.show_item_view ? btn("view", "👁", "Voir le détail") : "",
+      this.config.show_item_edit ? btn("edit", "✏️", "Modifier") : "",
+      this.config.show_item_move ? btn("move", "↔", "Déplacer") : "",
+      this.config.show_item_delete ? btn("delete", "🗑", "Supprimer", "danger") : "",
+      this.config.show_item_complete ? btn(done ? "reopen" : "complete", done ? "↩" : "✓", done ? "Rouvrir" : "C’est fait !", "primary") : "",
+    ].join("");
+    const chips = [
+      pr.rank > 1 ? `<span class="kc" style="color:${pr.color};border-color:${pr.color}66;background:${pr.color}1f">${pr.icon} ${pr.label}</span>` : "",
+      due ? `<span class="kc ${due.overdue && !done ? "late" : ""}">📅 ${esc(due.label)}${due.recurring ? " ↻" : ""}</span>` : "",
+      duration ? `<span class="kc">⏱️ ${esc(duration)}</span>` : "",
+      ...labels.slice(0, 3).map(l => `<span class="kc">🏷️ ${esc(l)}</span>`),
+      Number.isFinite(noteCount) && noteCount > 0 ? `<span class="kc">💬 ${noteCount}</span>` : "",
+    ].join("");
+    return `
+      <div class="task ${done ? "is-done" : ""}" data-task-id="${id}" style="--pc:${pr.color};--uc:${project.color}">
+        <div class="t-head">
+          <span class="t-who">${this._kbWho(project)} <b>${esc(project.name)}</b></span>
+          <span class="t-grip" aria-hidden="true" title="Glisser pour déplacer">⠿</span>
+        </div>
+        <div class="t-title">${esc(task.content)}</div>
+        ${description ? `<div class="t-desc">${esc(description)}</div>` : ""}
+        ${chips ? `<div class="t-chips">${chips}</div>` : ""}
+        ${actions ? `<div class="t-actions">${actions}</div>` : ""}
+      </div>`;
+  }
+
+  
+_renderColumnHtml(
     columnKey,
     emoji,
     title,
@@ -1200,9 +907,7 @@ class TodoistKanbanFamilialCard extends HTMLElement {
     const content =
       tasks.length === 0
         ? `
-          <div class="empty">
-            Aucune tâche
-          </div>
+          <div class="empty">${ ({ todo: "🎉 Rien à faire pour l’instant", doing: "Glisse ici une tâche commencée", done: "Rien de terminé pour l’instant" })[columnKey] || "Aucune tâche" }</div>
         `
         : tasks
             .map(task =>
@@ -1611,383 +1316,60 @@ class TodoistKanbanFamilialCard extends HTMLElement {
 
 
   _openTaskView(task) {
-
-    if (!task) {
-      return;
-    }
-
-    const project =
-      this._getProjectInfo(
-        task.project_id
-      );
-
-    const section =
-      this._getSectionName(
-        task.section_id,
-        project.key
-      );
-
-    const due =
-      this._formatDue(task);
-
-    const deadline =
-      this._formatDeadline(task);
-
-    const duration =
-      this._formatDuration(task);
-
-    const labels =
-      this._formatLabels(task);
-
-    const responsible =
-      task.responsible_uid ||
-      task.assignee_id ||
-      "";
-
-    const taskUrl =
-      this._taskUrl(task);
-
-    const createdAt =
-      task.added_at ||
-      task.created_at ||
-      "";
-
-    const updatedAt =
-      task.updated_at ||
-      "";
-
-    const description =
-      typeof task.description === "string" &&
-      task.description.trim()
-        ? task.description.trim()
-        : "";
-
-    const noteCount =
-      Number(task.note_count);
-
-    const modal =
-      document.createElement("div");
-
-    modal.className =
-      "modal-overlay";
-
+    if (!task) { return; }
+    const esc = v => this._escapeHtml(v);
+    const project = this._getProjectInfo(task.project_id);
+    const done = this._isTaskDone(task);
+    const pr = this._kbPrio(task);
+    const due = this._kbDue(task);
+    const deadline = this._formatDeadline(task);
+    const duration = this._formatDuration(task);
+    const labels = Array.isArray(task.labels) ? task.labels : [];
+    const description = typeof task.description === "string" ? task.description.trim() : "";
+    const noteCount = Number(task.note_count);
+    const taskUrl = this._taskUrl(task);
+    const created = this._formatDateTime(task.added_at || task.created_at || "");
+    const updated = this._formatDateTime(task.updated_at || "");
+    const row = (icon, label, value) => value ? `<div class="v-row"><span class="v-ic">${icon}</span><div><div class="v-lb">${label}</div><div class="v-val">${value}</div></div></div>` : "";
+    const modal = document.createElement("div");
+    modal.className = "modal-overlay";
     modal.innerHTML = `
-      <div
-        class="modal view-modal"
-        role="dialog"
-        aria-modal="true"
-      >
-
+      <div class="modal view-modal" role="dialog" aria-modal="true" style="--pc:${pr.color};--uc:${project.color}">
         <div class="modal-header">
-
-          <div class="modal-title">
-            👁 Détails de la tâche
-          </div>
-
-          <button
-            type="button"
-            class="modal-close"
-            data-action="close-view"
-            title="Fermer"
-          >
-            ×
-          </button>
-
+          <div class="modal-title">📋 Détail de la tâche</div>
+          <button type="button" class="modal-close" data-action="close-view" title="Fermer">×</button>
         </div>
-
-
-        <div class="view-content">
-
-          <div class="view-title">
-            ${this._escapeHtml(task.content || "")}
+        <div class="view-content v2">
+          <div class="v-hero">
+            <div class="v-title">${esc(task.content || "")}</div>
+            <div class="v-tags">
+              <span class="v-tag who">${this._kbWho(project)} Pour ${esc(project.name)}</span>
+              <span class="v-tag" style="color:${pr.color};border-color:${pr.color}66;background:${pr.color}1f">${pr.icon} ${pr.label}</span>
+              <span class="v-tag ${done ? "ok" : ""}">${done ? "✅ Terminée" : "⏳ À faire"}</span>
+            </div>
           </div>
-
-
-          <div class="view-badges">
-
-            <span
-              class="view-badge"
-              style="
-                color:${project.color};
-                border-color:${project.color}55;
-                background:${project.color}18;
-              "
-            >
-              ${this._escapeHtml(project.name)}
-            </span>
-
-            <span class="view-badge">
-              ${this._escapeHtml(
-                this._priorityLabel(task) || "🟢 Pas urgent"
-              )}
-            </span>
-
-            ${
-              this._isTaskDone(task)
-                ? `
-                  <span class="view-badge done">
-                    ✓ Terminée
-                  </span>
-                `
-                : `
-                  <span class="view-badge">
-                    ⏳ En cours
-                  </span>
-                `
-            }
-
+          ${description ? `<div class="v-note">💬 ${esc(description)}</div>` : ""}
+          <div class="v-rows">
+            ${row("📅", "Pour quand", due ? esc(due.full) + (due.overdue && !done ? ` <span class="late-tag">en retard</span>` : "") + (due.recurring ? " ↻" : "") : "Pas de date")}
+            ${row("⏳", "Date limite", deadline ? esc(deadline) : "")}
+            ${row("⏱️", "Temps estimé", duration ? esc(duration) : "")}
+            ${row("🏷️", "Étiquettes", labels.length ? labels.map(l => `<span class="kc">${esc(l)}</span>`).join(" ") : "")}
+            ${row("💬", "Commentaires", Number.isFinite(noteCount) && noteCount > 0 ? String(noteCount) : "")}
           </div>
-
-
-          ${
-            description
-              ? `
-                <div class="view-section">
-
-                  <div class="view-label">
-                    📝 Description
-                  </div>
-
-                  <div class="view-value description-value">
-                    ${this._escapeHtml(description)}
-                  </div>
-
-                </div>
-              `
-              : ""
-          }
-
-
-          <div class="view-grid">
-
-            <div class="view-item">
-
-              <div class="view-label">
-                👤 Pour
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(project.name)}
-              </div>
-
-            </div>
-
-
-            
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                🚩 Priorité
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  this._priorityLabel(task) || "🟢 Pas urgent"
-                )}
-              </div>
-
-            </div>
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                📅 Échéance
-              </div>
-
-              <div class="view-value">
-                ${
-                  due
-                    ? this._escapeHtml(due.label)
-                    : "—"
-                }
-              </div>
-
-            </div>
-
-
-            ${deadline ? `<div class="view-item">
-
-              <div class="view-label">
-                ⏳ Date limite
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  deadline || "—"
-                )}
-              </div>
-
-            </div>` : ""}
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                ⏱️ Durée
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  duration || "—"
-                )}
-              </div>
-
-            </div>
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                🏷️ Labels
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  labels || "—"
-                )}
-              </div>
-
-            </div>
-
-
-            
-
-
-            
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                💬 Commentaires
-              </div>
-
-              <div class="view-value">
-                ${
-                  Number.isFinite(noteCount)
-                    ? String(noteCount)
-                    : "—"
-                }
-              </div>
-
-            </div>
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                🕘 Créée
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  this._formatDateTime(createdAt) || "—"
-                )}
-              </div>
-
-            </div>
-
-
-            <div class="view-item">
-
-              <div class="view-label">
-                🔄 Modifiée
-              </div>
-
-              <div class="view-value">
-                ${this._escapeHtml(
-                  this._formatDateTime(updatedAt) || "—"
-                )}
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="view-technical">
-
-            <div class="view-label">
-              Informations techniques
-            </div>
-
-            <div class="technical-row">
-              <span>ID Todoist</span>
-              <code>
-                ${this._escapeHtml(task.id || "—")}
-              </code>
-            </div>
-
-            ${
-              task.section_id
-                ? `
-                  <div class="technical-row">
-                    <span>ID section</span>
-                    <code>
-                      ${this._escapeHtml(task.section_id)}
-                    </code>
-                  </div>
-                `
-                : ""
-            }
-
-            ${
-              task.project_id
-                ? `
-                  <div class="technical-row">
-                    <span>ID projet</span>
-                    <code>
-                      ${this._escapeHtml(task.project_id)}
-                    </code>
-                  </div>
-                `
-                : ""
-            }
-
-          </div>
-
-
+          <div class="v-meta">${created ? "Créée le " + esc(created) : ""}${updated && updated !== created ? " · modifiée le " + esc(updated) : ""}</div>
           <div class="view-actions">
-
-            <button
-              type="button"
-              class="modal-button secondary"
-              data-action="close-view"
-            >
-              Fermer
-            </button>
-
-            ${
-              taskUrl
-                ? `
-                  <a
-                    class="modal-button primary view-link-button"
-                    href="${this._escapeHtml(taskUrl)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ↗ Ouvrir dans Todoist
-                  </a>
-                `
-                : ""
-            }
-
+            <button type="button" class="modal-button secondary" data-action="close-view">Fermer</button>
+            ${this.config.show_item_edit ? `<button type="button" class="modal-button secondary" data-action="edit" data-task-id="${esc(task.id)}">✏️ Modifier</button>` : ""}
+            ${this.config.show_item_complete ? `<button type="button" class="modal-button primary" data-action="${done ? "reopen" : "complete"}" data-task-id="${esc(task.id)}">${done ? "↩ Rouvrir" : "✓ C’est fait !"}</button>` : ""}
+            ${taskUrl ? `<a class="v-link" href="${esc(taskUrl)}" target="_blank" rel="noopener noreferrer">Ouvrir dans Todoist ↗</a>` : ""}
           </div>
-
         </div>
-
-      </div>
-    `;
-
-
+      </div>`;
     this.shadowRoot.appendChild(modal);
   }
 
-
-  _closeTaskView() {
+  
+_closeTaskView() {
 
     const modal =
       this.shadowRoot?.querySelector(
@@ -2892,7 +2274,7 @@ _handleClick(event) {
 
 
     const action =
-      button.dataset.action;
+      button.dataset.action; if (button.closest && button.closest(".view-modal") && ["edit", "complete", "reopen"].includes(action)) { this._closeTaskView(); }
 
 
     console.log(
@@ -4109,7 +3491,51 @@ _handleClick(event) {
             1px solid rgba(255,255,255,.07);
         }
 
-      </style>
+      
+        /* ===== Refonte UI (cartes, colonnes, détail) ===== */
+        .board { gap: 16px; }
+        .column { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 16px; }
+        .column-header { padding: 12px 14px; font-weight: 700; }
+        .column-body { padding: 10px; display: flex; flex-direction: column; gap: 10px; min-height: 80px; }
+        .empty { padding: 22px 10px; text-align: center; opacity: .6; font-size: .92em; border: 1.5px dashed rgba(255,255,255,.14); border-radius: 12px; }
+        .task { display: block !important; position: relative; padding: 12px 12px 10px 14px !important; border: 1px solid rgba(255,255,255,.08) !important; border-left: 4px solid var(--pc) !important; border-radius: 14px !important; background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035)) !important; box-shadow: 0 4px 14px rgba(0,0,0,.25); transition: transform .12s, box-shadow .12s; }
+        .task:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0,0,0,.35); }
+        .task.is-done { opacity: .6; }
+        .task.is-done .t-title { text-decoration: line-through; }
+        .t-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .t-who { display: inline-flex; align-items: center; gap: 5px; font-size: .78em; padding: 3px 10px 3px 7px; border-radius: 999px; background: color-mix(in srgb, var(--uc) 18%, transparent); color: var(--uc); border: 1px solid color-mix(in srgb, var(--uc) 40%, transparent); }
+        .t-who b { font-weight: 600; }
+        .t-grip { opacity: .3; font-size: 1.1em; }
+        .t-title { font-size: 1.02em; font-weight: 650; line-height: 1.35; color: #fff; word-break: break-word; }
+        .t-desc { margin-top: 4px; font-size: .86em; opacity: .72; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .t-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .kc { display: inline-flex; align-items: center; gap: 4px; font-size: .78em; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); white-space: nowrap; }
+        .kc.late { color: #ff8a80; border-color: rgba(255,82,82,.45); background: rgba(255,82,82,.14); }
+        .t-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.06); }
+        .tb { width: 36px; height: 36px; border-radius: 10px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); color: #fff; cursor: pointer; font-size: .95em; display: inline-flex; align-items: center; justify-content: center; transition: background .12s; padding: 0; }
+        .tb:hover { background: rgba(255,255,255,.14); }
+        .tb.primary { background: rgba(102,187,106,.22); border-color: rgba(102,187,106,.5); }
+        .tb.danger:hover { background: rgba(239,83,80,.25); }
+        .view-content.v2 { padding: 18px; }
+        .v-hero { padding: 2px 0 12px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 12px; }
+        .v-title { font-size: 1.3em; font-weight: 700; line-height: 1.3; color: #fff; }
+        .v-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .v-tag { font-size: .85em; padding: 5px 11px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); }
+        .v-tag.who { color: var(--uc); border-color: color-mix(in srgb, var(--uc) 45%, transparent); background: color-mix(in srgb, var(--uc) 16%, transparent); }
+        .v-tag.ok { color: #a5d6a7; border-color: rgba(102,187,106,.5); }
+        .v-note { background: rgba(246,214,138,.08); border-left: 3px solid #f6d68a; padding: 10px 12px; border-radius: 10px; line-height: 1.5; margin-bottom: 12px; white-space: pre-wrap; }
+        .v-rows { display: flex; flex-direction: column; }
+        .v-row { display: flex; gap: 12px; align-items: flex-start; padding: 9px 4px; border-bottom: 1px solid rgba(255,255,255,.05); }
+        .v-ic { font-size: 1.15em; width: 26px; text-align: center; }
+        .v-lb { font-size: .78em; opacity: .6; }
+        .v-val { font-size: .98em; }
+        .late-tag { font-size: .75em; color: #ff8a80; border: 1px solid rgba(255,82,82,.45); border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
+        .v-meta { font-size: .78em; opacity: .5; margin: 12px 0 4px; }
+        .view-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+        .v-link { margin-left: auto; font-size: .85em; color: #f6d68a; text-decoration: none; opacity: .85; }
+        .modal-button { min-height: 42px; }
+      
+</style>
 
 
       <ha-card>
