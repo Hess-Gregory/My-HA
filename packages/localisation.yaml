@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 03/10/2026 12:39 | sonnerie continue jusqu a Stopper, vocal iPhone Matteo
 # Localisation - faire sonner les smartphones jusqu'a "Stopper"
 input_boolean:
   loc_sonne_sandrine:

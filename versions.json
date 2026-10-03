@@ -100,9 +100,9 @@
     "version": "0.4.1"
   },
   ".storage/lovelace.maison_localisation": {
-    "last_change": "dashboard Localisation (carte temps reel, localiser, faire sonner)",
-    "last_update": "2026-10-03T12:28:20.192873+02:00",
-    "version": "0.1.0"
+    "last_change": "sonnerie continue jusqu a Stopper, vocal iPhone Matteo",
+    "last_update": "2026-10-03T12:39:00.855666+02:00",
+    "version": "0.2.0"
   },
   ".storage/lovelace.maison_pollution": {
     "last_change": "redirection forcee vers son planning depuis toutes les vues",
@@ -207,6 +207,11 @@
   "packages/horaires_pro_feries.yaml": {
     "last_change": "plage mode Manuel 24->30C (plafond reel des vannes Bosch)",
     "last_update": "2026-09-19T22:17:32.080787+02:00",
+    "version": "0.1.0"
+  },
+  "packages/localisation.yaml": {
+    "last_change": "sonnerie continue jusqu a Stopper, vocal iPhone Matteo",
+    "last_update": "2026-10-03T12:39:00.855666+02:00",
     "version": "0.1.0"
   },
   "packages/matteo/matteo_calendar.yaml": {
