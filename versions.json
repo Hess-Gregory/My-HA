@@ -65,14 +65,14 @@
     "version": "0.5.2"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "1.11.2"
+    "last_change": "liens agenda iPhone (webcals) et Google (https)",
+    "last_update": "2026-10-04T10:27:17.653016+02:00",
+    "version": "1.11.3"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "0.7.2"
+    "last_change": "liens agenda iPhone (webcals) et Google (https)",
+    "last_update": "2026-10-04T10:27:17.653016+02:00",
+    "version": "0.7.3"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
