@@ -75,7 +75,7 @@ def main():
     nom = {"A": "Grégory", "B": "Élodie / Olivier", "C": "Grégory (retour non respecté)", "D": "Élodie / Olivier (rattrapage)"}
     now = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Planning Matteo//HA//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
-         "X-WR-CALNAME:Planning de Matteo", "NAME:Planning de Matteo", "X-WR-CALDESC:Garde alternée et dates importantes de Matteo", "X-WR-TIMEZONE:Europe/Brussels", "REFRESH-INTERVAL;VALUE=DURATION:PT6H"]
+         "X-WR-CALNAME:Planning de Matteo", "NAME:Planning de Matteo", "X-WR-CALDESC:Garde alternée et vacances scolaires de Matteo", "X-WR-TIMEZONE:Europe/Brussels", "REFRESH-INTERVAL;VALUE=DURATION:PT6H"]
     for k, e in sorted(act.items(), key=lambda kv: d(kv[1]["date_du"])):
         du, au = d(e["date_du"]), d(e["date_au"])
         tc = e.get("type_action_code", "")
@@ -93,6 +93,8 @@ def main():
         L += ["BEGIN:VEVENT", "UID:%s@planning-matteo" % k, "DTSTAMP:" + now,
               "DTSTART;VALUE=DATE:" + du.strftime("%Y%m%d"), "DTEND;VALUE=DATE:" + (au + timedelta(days=1)).strftime("%Y%m%d"),
               "SUMMARY:" + esc(titre), "DESCRIPTION:" + esc("\n".join(desc)), "TRANSP:TRANSPARENT", "END:VEVENT"]
+    # Agenda partagé : uniquement l'organisation de Matteo (garde + vacances), sans anniversaires ni fêtes
+    L_partage = L + ["END:VCALENDAR"]
     ans = sorted({d(e["date_du"]).year for e in act.values()})
     for ev in c.get("evenements", []):
         if not ev.get("jour"):
@@ -112,7 +114,7 @@ def main():
         if f.startswith("planning_") and f != "planning_%s.ics" % token:
             os.remove(os.path.join(OUT_DIR, f))
     with open(os.path.join(OUT_DIR, "planning_%s.ics" % token), "w", encoding="utf-8", newline="") as f:
-        f.write("\r\n".join(fold(x) for x in L) + "\r\n")
+        f.write("\r\n".join(fold(x) for x in L_partage) + "\r\n")
     print("/local/matteo/planning_%s.ics" % token)
     ecrire_calendrier_local(L)
     import generate_print
