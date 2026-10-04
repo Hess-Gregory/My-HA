@@ -11,6 +11,20 @@ OUT_DIR = "/config/www/matteo"
 
 
 # Échappement des caractères spéciaux du format iCalendar.
+def fold(line):
+    # RFC 5545 : lignes de 75 octets max, continuation par CRLF + espace
+    if len(line.encode("utf-8")) <= 75:
+        return line
+    parts, cur, lim = [], b"", 75
+    for ch in line:
+        e = ch.encode("utf-8")
+        if len(cur) + len(e) > lim:
+            parts.append(cur.decode("utf-8")); cur = b""; lim = 74
+        cur += e
+    parts.append(cur.decode("utf-8"))
+    return "\r\n ".join(parts)
+
+
 def esc(s):
     return str(s).replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
 
@@ -44,7 +58,7 @@ def ecrire_calendrier_local(L):
     out = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Planning Matteo//HA//FR"] + garder + ev + ["END:VCALENDAR"]
     tmp = LOCAL_CAL + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="") as f:
-        f.write("\r\n".join(out) + "\r\n")
+        f.write("\r\n".join(fold(x) for x in out) + "\r\n")
     os.replace(tmp, LOCAL_CAL)
 
 
@@ -60,7 +74,7 @@ def main():
     parts = [(d(e["date_du"]), d(e["date_au"])) for k, e in act.items() if k.startswith("VAC_")]
     nom = {"A": "Grégory", "B": "Élodie / Olivier", "C": "Grégory (retour non respecté)", "D": "Élodie / Olivier (rattrapage)"}
     now = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Planning Matteo//HA//FR", "CALSCALE:GREGORIAN",
+    L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Planning Matteo//HA//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
          "X-WR-CALNAME:Planning Matteo", "X-WR-TIMEZONE:Europe/Brussels", "REFRESH-INTERVAL;VALUE=DURATION:PT6H"]
     for k, e in sorted(act.items(), key=lambda kv: d(kv[1]["date_du"])):
         du, au = d(e["date_du"]), d(e["date_au"])
@@ -98,7 +112,7 @@ def main():
         if f.startswith("planning_") and f != "planning_%s.ics" % token:
             os.remove(os.path.join(OUT_DIR, f))
     with open(os.path.join(OUT_DIR, "planning_%s.ics" % token), "w", encoding="utf-8", newline="") as f:
-        f.write("\r\n".join(L) + "\r\n")
+        f.write("\r\n".join(fold(x) for x in L) + "\r\n")
     print("/local/matteo/planning_%s.ics" % token)
     ecrire_calendrier_local(L)
     import generate_print

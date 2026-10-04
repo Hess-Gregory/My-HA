@@ -249,7 +249,7 @@
       {
         "id": "matteo_planning",
         "url_path": "matteo-planning",
-        "title": "Planning Matteo",
+        "title": "Dashboard Matteo",
         "icon": "mdi:account-child",
         "require_admin": false,
         "show_in_sidebar": true,
