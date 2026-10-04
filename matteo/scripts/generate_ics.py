@@ -75,7 +75,7 @@ def main():
     nom = {"A": "Grégory", "B": "Élodie / Olivier", "C": "Grégory (retour non respecté)", "D": "Élodie / Olivier (rattrapage)"}
     now = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Planning Matteo//HA//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
-         "X-WR-CALNAME:Planning Matteo", "X-WR-TIMEZONE:Europe/Brussels", "REFRESH-INTERVAL;VALUE=DURATION:PT6H"]
+         "X-WR-CALNAME:Planning de Matteo", "NAME:Planning de Matteo", "X-WR-CALDESC:Garde alternée et dates importantes de Matteo", "X-WR-TIMEZONE:Europe/Brussels", "REFRESH-INTERVAL;VALUE=DURATION:PT6H"]
     for k, e in sorted(act.items(), key=lambda kv: d(kv[1]["date_du"])):
         du, au = d(e["date_du"]), d(e["date_au"])
         tc = e.get("type_action_code", "")
