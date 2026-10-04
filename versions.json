@@ -125,9 +125,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.matteo_planning": {
-    "last_change": "vue Mes missions (kanban lecture seule, glisser-deposer)",
-    "last_update": "2026-10-03T12:02:42.973157+02:00",
-    "version": "0.5.0"
+    "last_change": "ics conforme RFC 5545 (lignes pliees, METHOD:PUBLISH)",
+    "last_update": "2026-10-04T10:26:04.015777+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.meteo_belgique": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
