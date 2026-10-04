@@ -65,14 +65,14 @@
     "version": "0.5.2"
   },
   ".storage/lovelace.dashboard_calendrier": {
-    "last_change": "bouton Android via Google Agenda > ajouter par URL",
-    "last_update": "2026-10-04T10:41:39.007762+02:00",
-    "version": "1.11.4"
+    "last_change": "partage du calendrier par QR code (popup)",
+    "last_update": "2026-10-04T10:46:08.692655+02:00",
+    "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "bouton Android via Google Agenda > ajouter par URL",
-    "last_update": "2026-10-04T10:41:39.007762+02:00",
-    "version": "0.7.4"
+    "last_change": "partage du calendrier par QR code (popup)",
+    "last_update": "2026-10-04T10:46:08.692655+02:00",
+    "version": "0.8.0"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
