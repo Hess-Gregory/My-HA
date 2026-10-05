@@ -62,6 +62,63 @@
                   "_mtk": 1
                 },
                 {
+                  "type": "conditional",
+                  "_samdock": 1,
+                  "conditions": [
+                    {
+                      "condition": "user",
+                      "users": [
+                        "3c63ae801ed34154aa67f44ef472a03c",
+                        "a8d03195e7eb4b36a625eb3c0fb3468d"
+                      ]
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "none"
+                    },
+                    "styles": {
+                      "card": [
+                        {
+                          "height": "0px"
+                        },
+                        {
+                          "min-height": "0px"
+                        },
+                        {
+                          "padding": "0"
+                        },
+                        {
+                          "margin": "0"
+                        },
+                        {
+                          "background": "none"
+                        },
+                        {
+                          "box-shadow": "none"
+                        },
+                        {
+                          "border": "none"
+                        },
+                        {
+                          "overflow": "hidden"
+                        }
+                      ]
+                    },
+                    "custom_fields": {
+                      "x": "[[[ try{ if(localStorage.getItem('dockedSidebar')!=='\"docked\"'){ this.dispatchEvent(new CustomEvent('hass-dock-sidebar',{bubbles:true,composed:true,detail:{dock:'docked'}})); } }catch(e){} return ''; ]]]"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
                   "type": "custom:button-card",
                   "show_icon": false,
                   "show_name": false,
