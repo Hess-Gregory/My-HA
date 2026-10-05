@@ -80,9 +80,9 @@
     "version": "0.5.2"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "0.4.2"
+    "last_change": "barre laterale toujours depliee sur la tablette du salon",
+    "last_update": "2026-10-05T14:10:21.208748+02:00",
+    "version": "0.5.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
