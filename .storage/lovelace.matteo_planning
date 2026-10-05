@@ -468,7 +468,9 @@
             "hide_menubutton": true,
             "hide_search": true,
             "hide_assistant": true,
-            "hide_overflow": true
+            "hide_overflow": true,
+            "hide_notifications": true,
+            "hide_account": true
           }
         ]
       }
