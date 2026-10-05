@@ -125,9 +125,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.matteo_planning": {
-    "last_change": "ics conforme RFC 5545 (lignes pliees, METHOD:PUBLISH)",
-    "last_update": "2026-10-04T10:26:04.015777+02:00",
-    "version": "0.5.1"
+    "last_change": "notifications HA masquees sur le compte Matteo (kiosk)",
+    "last_update": "2026-10-05T17:42:55.025269+02:00",
+    "version": "0.5.2"
   },
   ".storage/lovelace.meteo_belgique": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
