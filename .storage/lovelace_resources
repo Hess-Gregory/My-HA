@@ -198,6 +198,11 @@
         "id": "152cc179e1e34d1b8186a1e54f076170",
         "url": "/local/matteo-missions-card.js?v=1",
         "type": "module"
+      },
+      {
+        "id": "08acb56b62a74ea88bbc7f63e1f234ed",
+        "url": "/local/plan3d/floorplan-3d-card.js?v=1",
+        "type": "module"
       }
     ]
   }

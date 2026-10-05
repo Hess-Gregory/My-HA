@@ -32769,6 +32769,17 @@
               }
             }
           ]
+        },
+        {
+          "title": "Plan 3D",
+          "path": "plan-3d",
+          "icon": "mdi:floor-plan",
+          "type": "panel",
+          "cards": [
+            {
+              "type": "custom:floorplan-3d-card"
+            }
+          ]
         }
       ],
       "decluttering_templates": {
