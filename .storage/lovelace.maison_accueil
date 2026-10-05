@@ -120,6 +120,60 @@
                 },
                 {
                   "type": "custom:button-card",
+                  "_clock": 1,
+                  "show_name": false,
+                  "show_icon": false,
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "none"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "background": "none"
+                      },
+                      {
+                        "box-shadow": "none"
+                      },
+                      {
+                        "border": "none"
+                      },
+                      {
+                        "padding": "0"
+                      },
+                      {
+                        "cursor": "default"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "\"c\""
+                      },
+                      {
+                        "grid-template-columns": "1fr"
+                      }
+                    ],
+                    "custom_fields": {
+                      "c": [
+                        {
+                          "justify-self": "center"
+                        }
+                      ]
+                    }
+                  },
+                  "custom_fields": {
+                    "c": "[[[ const f=()=>{const d=new Date();return {t:d.toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}),dt:(s=>s.charAt(0).toUpperCase()+s.slice(1))(d.toLocaleDateString('fr-BE',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))};}; if(!this._clk){this._clk=setInterval(()=>{const r=this.shadowRoot;if(!r)return;const v=f();const a=r.getElementById('clkT'),b=r.getElementById('clkD');if(a&&a.textContent!==v.t)a.textContent=v.t;if(b&&b.textContent!==v.dt)b.textContent=v.dt;},1000);} const v=f(); return '<div style=\"text-align:center;line-height:1;display:inline-block;padding:12px 30px 12px;border-radius:24px;background:rgba(26,20,44,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.35)\"><div id=\"clkT\" style=\"font-size:clamp(46px,7vw,76px);font-weight:300;letter-spacing:3px;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.5)\">'+v.t+'</div><div id=\"clkD\" style=\"margin-top:8px;font-size:clamp(14px,2vw,19px);font-weight:500;letter-spacing:.5px;color:rgba(255,255,255,.88);text-shadow:0 1px 8px rgba(0,0,0,.55)\">'+v.dt+'</div></div>'; ]]]"
+                  },
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
                   "show_icon": false,
                   "show_name": false,
                   "tap_action": {
