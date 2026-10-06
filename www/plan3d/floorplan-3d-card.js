@@ -46,9 +46,13 @@ class Floorplan3DCard extends HTMLElement {
     const root = this.attachShadow({ mode: 'open' });
     root.innerHTML = `<style>
       :host{display:block}
-      .wrap{position:relative;width:100%;height:${this.cfg.height || 'calc(100vh - 112px)'};min-height:420px;border-radius:22px;overflow:hidden;background:#17151f;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+      .wrap{position:relative;width:100%;height:${this.cfg.height || 'calc(100vh - 112px)'};min-height:420px;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#6fa8e0 0%,#a9cdef 55%,#eef5fb 100%);transition:background 1.5s;box-shadow:0 10px 30px rgba(0,0,0,.35)}
       canvas{display:block;width:100%;height:100%;touch-action:none}
       .ov{position:absolute;inset:0;pointer-events:none}
+      .stars{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 2s;background-image:radial-gradient(1.6px 1.6px at 0% 7%,#fff 60%,transparent),radial-gradient(1px 1px at 37% 60%,#fff 60%,transparent),radial-gradient(1px 1px at 74% 51%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 11% 42%,#fff 60%,transparent),radial-gradient(1px 1px at 48% 33%,#fff 60%,transparent),radial-gradient(1px 1px at 85% 24%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 22% 15%,#fff 60%,transparent),radial-gradient(1px 1px at 59% 6%,#fff 60%,transparent),radial-gradient(1px 1px at 96% 59%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 33% 50%,#fff 60%,transparent),radial-gradient(1px 1px at 70% 41%,#fff 60%,transparent),radial-gradient(1px 1px at 7% 32%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 44% 23%,#fff 60%,transparent),radial-gradient(1px 1px at 81% 14%,#fff 60%,transparent),radial-gradient(1px 1px at 18% 5%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 55% 58%,#fff 60%,transparent),radial-gradient(1px 1px at 92% 49%,#fff 60%,transparent),radial-gradient(1px 1px at 29% 40%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 66% 31%,#fff 60%,transparent),radial-gradient(1px 1px at 3% 22%,#fff 60%,transparent),radial-gradient(1px 1px at 40% 13%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 77% 4%,#fff 60%,transparent),radial-gradient(1px 1px at 14% 57%,#fff 60%,transparent),radial-gradient(1px 1px at 51% 48%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 88% 39%,#fff 60%,transparent),radial-gradient(1px 1px at 25% 30%,#fff 60%,transparent),radial-gradient(1px 1px at 62% 21%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 99% 12%,#fff 60%,transparent),radial-gradient(1px 1px at 36% 3%,#fff 60%,transparent),radial-gradient(1px 1px at 73% 56%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 10% 47%,#fff 60%,transparent),radial-gradient(1px 1px at 47% 38%,#fff 60%,transparent),radial-gradient(1px 1px at 84% 29%,#fff 60%,transparent),radial-gradient(1.6px 1.6px at 21% 20%,#fff 60%,transparent),radial-gradient(1px 1px at 58% 11%,#fff 60%,transparent),radial-gradient(1px 1px at 95% 2%,#fff 60%,transparent);animation:tw 5s ease-in-out infinite alternate}
+      @keyframes tw{from{filter:brightness(.7)}to{filter:brightness(1.3)}}
+      .vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 55%,rgba(10,12,30,.38) 100%)}
+      canvas{position:relative}
       .lb{position:absolute;transform:translate(-50%,-50%);padding:5px 12px;border-radius:999px;font:600 13px/1.2 system-ui,Roboto,sans-serif;white-space:nowrap;background:rgba(24,20,34,.72);color:#f3eee6;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 12px rgba(0,0,0,.3);transition:opacity .2s}
       .lb b{font-weight:800;color:#ffd27a;margin-left:6px}
       .lb.alert{background:rgba(220,40,60,.85);border-color:rgba(255,255,255,.3)}
@@ -83,7 +87,7 @@ class Floorplan3DCard extends HTMLElement {
       @media (max-width:600px){.t{font-size:15px}.views button{padding:6px 10px;font-size:12px}.info{display:none}.amb{top:auto;bottom:56px}
         .pn{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto;transform-origin:bottom center}}
     </style>
-    <div class="wrap"><canvas></canvas><div class="ov"></div>
+    <div class="wrap"><div class="stars"></div><canvas></canvas><div class="vig"></div><div class="ov"></div>
       <div class="bar"><div class="t">🏠 Ma maison en 3D<small>Touchez une lampe ou un radiateur · glissez pour tourner · pincez pour zoomer</small></div>
         <button class="walls">🧱 Murs bas</button><button class="mode">🌓 Auto</button><button class="alarm">🛡️ …</button></div>
       <div class="amb"><button data-a="cine">🎬 Cinéma</button><button data-a="diner">🍽️ Dîner</button><button data-a="off">⚫ Tout éteindre</button></div>
@@ -95,7 +99,7 @@ class Floorplan3DCard extends HTMLElement {
         <button class="more">⚙️ Plus d’options</button></div></div>`;
     this.$ = (s) => root.querySelector(s);
     const canvas = this.$('canvas'), wrap = this.$('.wrap');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true; renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -124,6 +128,8 @@ class Floorplan3DCard extends HTMLElement {
     sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -11, right: 11, top: 8, bottom: -8, near: 1, far: 40 }); sun.shadow.bias = -0.0005;
     scene.add(sun); this.sun = sun;
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.18 })); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    { const cv = document.createElement('canvas'); cv.width = cv.height = 256; const g = cv.getContext('2d'); const gr = g.createRadialGradient(128, 128, 20, 128, 128, 128); gr.addColorStop(0, 'rgba(255,255,255,0.95)'); gr.addColorStop(0.55, 'rgba(255,255,255,0.6)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+      const t = new THREE.CanvasTexture(cv); this.plinth = new THREE.Mesh(new THREE.CircleGeometry(14, 64), new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, color: '#f3f1ec' })); this.plinth.rotation.x = -Math.PI / 2; this.plinth.position.set(0.4, -0.004, 0.3); this.plinth.renderOrder = -1; scene.add(this.plinth); }
     this.night = 0; this.nightTarget = 0; this.mode = 'auto';
     // UI
     const views = this.$('.views');
@@ -484,6 +490,7 @@ class Floorplan3DCard extends HTMLElement {
     this._renderPanel();
     (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.22 : 0; });
     this._drawTablet(H);
+    this._sky(H);
     (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
     if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
@@ -529,6 +536,18 @@ class Floorplan3DCard extends HTMLElement {
       g.strokeStyle = '#000'; g.lineWidth = 2; g.strokeRect(x, y, tw, th); });
     g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(W - 92, 0, 92, 14); g.fillStyle = '#fff'; g.font = '10px system-ui,sans-serif'; g.textAlign = 'right';
     g.fillText(new Date().toLocaleTimeString('fr-BE'), W - 4, 10); this.nvrTex.needsUpdate = true; this._dirty = true;
+  }
+  /* ciel de fond selon la hauteur réelle du soleil (aube, jour, coucher, heure bleue, nuit étoilée) */
+  _sky(H) {
+    const sa = H['sun.sun'] && H['sun.sun'].attributes; let el = sa && sa.elevation !== undefined ? sa.elevation : (this.nightTarget ? -12 : 30); const rising = sa ? sa.rising : true;
+    if (this.mode === 'nuit') el = -12; if (this.mode === 'jour') el = 35;
+    let g, st;
+    if (el <= -8) { g = ['#060a1c', '#101833', '#1b2647']; st = 1; }
+    else if (el <= -2) { g = rising ? ['#141c3f', '#4a4a86', '#d98a8a'] : ['#101736', '#3b3a72', '#c46a5e']; st = 0.45; }
+    else if (el <= 8) { g = rising ? ['#5b86c4', '#f2b39a', '#fbd9b5'] : ['#4e6fae', '#ef9a6a', '#f8c48e']; st = 0; }
+    else if (el <= 20) { g = ['#6c9fd8', '#b9d4ee', '#f6ead8']; st = 0; }
+    else { g = ['#6fa8e0', '#a9cdef', '#eef5fb']; st = 0; }
+    const k = g.join(); if (k !== this._skyKey) { this._skyKey = k; this.$('.wrap').style.background = `linear-gradient(180deg,${g[0]} 0%,${g[1]} 55%,${g[2]} 100%)`; this.$('.stars').style.opacity = st; }
   }
   _drawTablet(H) {
     if (!this.tabCv) return; const on = H['switch.salon_sam_tablette_ecran'], ss = H['switch.salon_sam_tablette_economiseur_d_ecran'];
@@ -664,7 +683,7 @@ class Floorplan3DCard extends HTMLElement {
       const dn = this.nightTarget - this.night; if (Math.abs(dn) > 0.002) { this.night += dn * 0.06; anim = true; }
       const n = this.night;
       this.hemi.intensity = 1.05 - 0.85 * n; this.hemi.color.set(n > 0.5 ? '#8a8fb8' : '#ffffff'); this.sun.intensity = 1.8 * (1 - n) + 0.15 * n;
-      this.renderer.toneMappingExposure = 1.05 + 0.2 * n; this.scene.background = new THREE.Color('#f1ede6').lerp(new THREE.Color('#15131c'), n);
+      this.renderer.toneMappingExposure = 1.05 + 0.2 * n; if (this.plinth) { this.plinth.material.opacity = 0.85 - 0.6 * n; }
       this.decor.forEach((m) => (m.emissiveIntensity = m.userData.base * (0.2 + 0.8 * n)));
       // ombres des lampes : les murs bloquent la lumière (8 lampes allumées max, carte d'ombre recalculée seulement si nécessaire)
       { const lit = []; for (const rec of Object.values(this.lights)) if (rec.cur && rec.cur.bri > 0.03) rec.pls.forEach((pl) => lit.push([pl, rec.base * rec.cur.bri])); lit.sort((a, b) => b[1] - a[1]);
