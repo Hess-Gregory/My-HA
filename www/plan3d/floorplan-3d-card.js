@@ -378,7 +378,6 @@ class Floorplan3DCard extends HTMLElement {
       // 2) armoire à persiennes (blanc cassé, montants anthracite) contre le mur de gauche + planche bois au-dessus
       box(329.8, 131, 349.5, 166, 0, 1.72, M('#2e2f31', { roughness: 0.6 })); box(349.5, 132, 350.1, 148.3, 0.05, 1.68, wh, false); box(349.5, 148.7, 350.1, 165, 0.05, 1.68, wh, false);
       for (let z = 0.15; z < 1.62; z += 0.06) box(350.1, 133, 350.3, 164, z, z + 0.012, M('#e2e2de'), false); box(350.1, 132, 350.4, 165, 1.08, 1.11, M('#2e2f31'), false); box(350.4, 145.5, 351.1, 151.5, 1.04, 1.1, blk, false);
-      box(329.8, 112, 352, 168, 1.73, 1.76, M('#c9a57a', { roughness: 0.7 }));
       // 3) chaudière murale Junkers dans l'angle nord-ouest (LED bleue, conduits vers le plafond)
       this.boilerLed = M('#111', { emissive: '#2f6bff', emissiveIntensity: 1 });
       clickable(box(329.8, 113, 345, 130.5, 1.18, 1.98, wh), 'sensor.chaudiere_etat'); box(344.9, 113, 345.2, 130.5, 1.18, 1.42, M('#e6e6e2'), false);
