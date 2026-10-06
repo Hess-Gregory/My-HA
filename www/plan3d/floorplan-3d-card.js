@@ -504,11 +504,11 @@ class Floorplan3DCard extends HTMLElement {
       box(476, 14.5, 506, 15.5, 0, WH, back, false); for (let x = 476.3; x < 505.6; x += 1.95) box(x, 15.5, x + 1.35, 16.7, 0, WH, slat, false);
       clickable(box(493.5, 16.8, 608.5, 19.2, 0.74, 1.9, L('light.salon_panneau_mural', '#ffd27a', [551, 34, 1.35], 2.4, 3.6), false), 'light.salon_panneau_mural');
       clickable(box(491, 19.2, 611, 20.4, 0.72, 1.92, MAT.white), 'light.salon_panneau_mural');
-      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 27, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
+      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 27, 1.38], 4.2, 3.6), false), 'light.salon_ambilight_tv');
       { // halo Ambilight projeté sur le panneau blanc et les lattes autour du téléviseur (suit la couleur/luminosité réelle)
         const tex = (rr) => { const c = document.createElement('canvas'); c.width = 256; c.height = 160; const g = c.getContext('2d'); g.filter = 'blur(' + rr + 'px)'; g.fillStyle = '#fff'; g.fillRect(64, 44, 128, 72); return new THREE.CanvasTexture(c); };
         const rec = this.lights['light.salon_ambilight_tv'], [a, b] = P(551, 20.5), [a2, b2] = P(551, 19.15);
-        for (const [w, h, rr, k, y, add] of [[2.5, 1.62, 18, 0.9, b, false], [2.7, 1.8, 26, 0.8, b + 0.003, true], [3.6, 2.3, 36, 0.5, b2, true]]) { const m = new THREE.MeshBasicMaterial({ map: tex(rr), transparent: true, opacity: 0, blending: add ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: false, toneMapped: false });
+        for (const [w, h, rr, k, y, add] of [[2.6, 1.7, 16, 1.5, b, false], [2.9, 1.95, 24, 1.8, b + 0.003, true], [4.4, 2.8, 34, 1.15, b2, true]]) { const m = new THREE.MeshBasicMaterial({ map: tex(rr), transparent: true, opacity: 0, blending: add ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: false, toneMapped: false });
           const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(a, 1.375, y); me.visible = false; me.renderOrder = 2; scene.add(me); if (rec) (rec.glows = rec.glows || []).push({ m, mesh: me, k }); } }
       this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(518, 21.2, 584, 22.2, 1.0, 1.75, this.tvMat, false);
       for (const x of [503.5, 593.5]) { box(x, 20.4, x + 5, 21.4, 1.15, 1.62, kefW); box(x + 0.4, 21.4, x + 4.6, 21.5, 1.18, 1.59, kefG, false); }
