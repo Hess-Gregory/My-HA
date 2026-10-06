@@ -504,12 +504,20 @@ class Floorplan3DCard extends HTMLElement {
       box(476, 14.5, 506, 15.5, 0, WH, back, false); for (let x = 476.3; x < 505.6; x += 1.95) box(x, 15.5, x + 1.35, 16.7, 0, WH, slat, false);
       clickable(box(493.5, 16.8, 608.5, 19.2, 0.74, 1.9, L('light.salon_panneau_mural', '#ffd27a', [551, 34, 1.35], 2.4, 3.6), false), 'light.salon_panneau_mural');
       clickable(box(491, 19.2, 611, 20.4, 0.72, 1.92, MAT.white), 'light.salon_panneau_mural');
-      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 27, 1.38], 4.2, 3.6), false), 'light.salon_ambilight_tv');
-      { // halo Ambilight projeté sur le panneau blanc et les lattes autour du téléviseur (suit la couleur/luminosité réelle)
-        const tex = (rr) => { const c = document.createElement('canvas'); c.width = 256; c.height = 160; const g = c.getContext('2d'); g.filter = 'blur(' + rr + 'px)'; g.fillStyle = '#fff'; g.fillRect(64, 44, 128, 72); return new THREE.CanvasTexture(c); };
-        const rec = this.lights['light.salon_ambilight_tv'], [a, b] = P(551, 20.5), [a2, b2] = P(551, 19.15);
-        for (const [w, h, rr, k, y, add] of [[2.6, 1.7, 16, 1.5, b, false], [2.9, 1.95, 24, 1.8, b + 0.003, true], [4.4, 2.8, 34, 1.15, b2, true]]) { const m = new THREE.MeshBasicMaterial({ map: tex(rr), transparent: true, opacity: 0, blending: add ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: false, toneMapped: false });
-          const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(a, 1.375, y); me.visible = false; me.renderOrder = 2; scene.add(me); if (rec) (rec.glows = rec.glows || []).push({ m, mesh: me, k }); } }
+      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 34, 1.7], 1.6, 2.0), false), 'light.salon_ambilight_tv');
+      { // halo Ambilight : ruban en U inversé derrière la TV (côtés + haut, rien dessous) -> lumière concentrée sur le panneau blanc entre les enceintes + léger reflet au bord du plafond
+        const rec = this.lights['light.salon_ambilight_tv'], add = (m) => { if (rec) (rec.glows = rec.glows || []).push(m); };
+        const mk = (cv, w, h, pos, rot, k, additive) => { const m = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, opacity: 0, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: false, toneMapped: false });
+          const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(...pos); me.rotation.set(...rot); me.visible = false; me.renderOrder = 2; scene.add(me); add({ m, mesh: me, k }); };
+        // panneau : x 500..602 px, z 0.72..1.92 m (200 px/m) ; TV x 518..584, z 1.0..1.75
+        const cv = document.createElement('canvas'); cv.width = 408; cv.height = 240; const g = cv.getContext('2d'); g.strokeStyle = '#fff'; g.lineJoin = 'round'; g.lineCap = 'round';
+        const U = () => { g.beginPath(); g.moveTo(80, 176); g.lineTo(80, 42); g.lineTo(328, 42); g.lineTo(328, 176); g.stroke(); };
+        g.filter = 'blur(42px)'; g.lineWidth = 150; g.globalAlpha = 0.7; U(); g.filter = 'blur(22px)'; g.lineWidth = 70; g.globalAlpha = 0.85; U(); g.filter = 'blur(10px)'; g.lineWidth = 28; g.globalAlpha = 1; U();
+        g.globalCompositeOperation = 'destination-in'; g.filter = 'none'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.62, '#fff'); fd.addColorStop(0.86, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240);
+        const [pa, pb] = P(551, 20.48); mk(cv, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 1.15, false); mk(cv, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 0.7, true);
+        // bord du plafond : léger reflet au-dessus du panneau (mur + plafond)
+        const cv2 = document.createElement('canvas'); cv2.width = 256; cv2.height = 128; const g2 = cv2.getContext('2d'); const rg = g2.createRadialGradient(128, 0, 6, 128, 0, 128); rg.addColorStop(0, 'rgba(255,255,255,.9)'); rg.addColorStop(1, 'rgba(255,255,255,0)'); g2.fillStyle = rg; g2.fillRect(0, 0, 256, 128);
+        const [ca, cb] = P(551, 30); mk(cv2, 1.9, 0.6, [ca, WH - 0.012, cb], [Math.PI / 2, 0, 0], 0.5, true); }
       this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(518, 21.2, 584, 22.2, 1.0, 1.75, this.tvMat, false);
       for (const x of [503.5, 593.5]) { box(x, 20.4, x + 5, 21.4, 1.15, 1.62, kefW); box(x + 0.4, 21.4, x + 4.6, 21.5, 1.18, 1.59, kefG, false); }
       box(541, 20.4, 561, 21.4, 0.83, 0.93, kefW); box(541.4, 21.4, 560.6, 21.5, 0.845, 0.915, kefG, false); }
