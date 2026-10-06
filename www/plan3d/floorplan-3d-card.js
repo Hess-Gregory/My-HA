@@ -352,49 +352,65 @@ class Floorplan3DCard extends HTMLElement {
       this.tabMat = new THREE.MeshBasicMaterial({ map: this.tabTex, toneMapped: false }); const [a, b] = P(441.1, 224);
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(16 * S, 0.2), this.tabMat); scr.position.set(a, 1.4, b); scr.rotation.y = Math.PI / 2; scene.add(scr); clickable(scr, 'switch.salon_sam_tablette_ecran'); }
     { const [a, b] = P(676.5, 102); const c = new THREE.Mesh(new THREE.CircleGeometry(13 * S, 40), M('#efe9df')); c.position.set(a, 1.75, b); c.rotation.y = -Math.PI / 2; scene.add(c); }
-    along(wB1, 0.15, 0.85, 1, 18, 0, 0.95, MAT.white);
-    // coin DJ réaliste : buffet patiné, plateau blanc, platine Pioneer – lecteur Denon – table de mixage – lecteur Denon – platine, enceintes Adam
-    { const groove = M('#cfc6b6');
-      along(wB2, 0.04, 0.655, 1, 22, 0, 0.86, MAT.patine); along(wB2, 0.04, 0.655, 1, 22, 0, 0.05, groove);
-      for (const t of [0.195, 0.35, 0.505]) along(wB2, t - 0.002, t + 0.002, 22.5, 0.4, 0.08, 0.84, groove, false);
-      along(wB2, 0.04, 0.655, 22.5, 0.4, 0.62, 0.635, groove, false); along(wB2, 0.035, 0.66, 1, 25, 0.86, 0.96, MAT.white);
+    // meubles à vinyles blancs (3 colonnes x 2) sous la fenêtre de la baie + clavier rouge, stores blancs
+    { const wh = M('#f4f4f2', { roughness: 0.4 }), sleeve = M('#2a2a2e', { roughness: 0.5 }), whiteB = M('#efeeea', { roughness: 0.9 });
+      along(wB1, 0.42, 0.98, 4.6, 17, 0, 0.82, wh);
+      for (let k = 0; k < 3; k++) { const t0 = 0.42 + k * 0.1867, t1 = t0 + 0.1867; for (const z of [0.04, 0.43]) { along(wB1, t0 + 0.012, t1 - 0.012, 21.4, 0.4, z + 0.12, z + 0.36, sleeve, false); along(wB1, t0 + 0.012, t1 - 0.012, 21.6, 0.5, z, z + 0.12, wh, false); } along(wB1, t1 - 0.003, t1 + 0.003, 21.6, 0.4, 0, 0.82, M('#dcdcd8'), false); }
+      along(wB1, 0.56, 0.84, 7, 13, 0.82, 0.86, M('#c62f2f', { roughness: 0.4 })); along(wB1, 0.6, 0.83, 15, 5, 0.86, 0.865, M('#f2f2f2'), false); along(wB1, 0.57, 0.66, 8, 6, 0.86, 0.866, M('#ff9a2f'), false);
+      for (let t = 0.155; t < 0.85; t += 0.022) along(wB1, t, t + 0.017, 5, 0.6, 0.92, 2.12, whiteB, false); along(wB1, 0.15, 0.85, 4.8, 1.2, 2.12, 2.16, whiteB, false); }
+    // coin DJ (d'après photos) : buffet blanc cérusé à lambris + plateau chêne gris, caisson DJ blanc laqué, Adam A7V aux extrémités, KEF muraux, Hue Play rouges, cadres
+    { const cream = M('#e6e0d4', { roughness: 0.75 }), cream2 = M('#d9d2c4', { roughness: 0.8 }), groove = M('#c9c1b2'), woodTop = M('#8f877b', { roughness: 0.7 }), handle = M('#2a2a2a', { roughness: 0.4, metalness: 0.4 }), gloss = M('#f7f7f5', { roughness: 0.15, metalness: 0.05 });
+      along(wB2, 0.022, 0.668, 5, 23, 0, 0.06, cream2); along(wB2, 0.022, 0.668, 4.5, 24, 0.06, 0.85, cream); along(wB2, 0.018, 0.672, 4.5, 26, 0.85, 0.89, woodTop);
+      const fr = (t0, t1, z0, z1) => { along(wB2, t0, t0 + 0.0025, 28.5, 0.4, z0, z1, groove, false); along(wB2, t1 - 0.0025, t1, 28.5, 0.4, z0, z1, groove, false); along(wB2, t0, t1, 28.5, 0.4, z0, z0 + 0.012, groove, false); along(wB2, t0, t1, 28.5, 0.4, z1 - 0.012, z1, groove, false); };
+      const door = (t0, t1, z0, z1, hx) => { fr(t0, t1, z0, z1); for (let t = t0 + 0.012; t < t1 - 0.006; t += 0.012) along(wB2, t, t + 0.0012, 28.5, 0.3, z0 + 0.04, z1 - 0.04, groove, false); along(wB2, hx - 0.003, hx + 0.003, 28.6, 1, z1 - 0.12, z1 - 0.07, handle, false); };
+      door(0.026, 0.15, 0.1, 0.82, 0.142); door(0.54, 0.664, 0.1, 0.82, 0.548);
+      for (let k = 0; k < 3; k++) { const t0 = 0.15 + k * 0.13; fr(t0, t0 + 0.13, 0.64, 0.82); along(wB2, t0 + 0.055, t0 + 0.075, 28.6, 1.2, 0.71, 0.75, handle, false); }
+      along(wB2, 0.15, 0.54, 28.5, 0.5, 0.615, 0.64, woodTop, false);
+      for (let k = 0; k < 4; k++) { const t0 = 0.15 + k * 0.0975; door(t0, t0 + 0.0975, 0.1, 0.61, k % 2 ? t0 + 0.008 : t0 + 0.0895); }
+      // caisson DJ blanc laqué : 5 compartiments
+      along(wB2, 0.075, 0.615, 6, 22, 0.89, 0.99, gloss); along(wB2, 0.075, 0.615, 6, 1.2, 0.99, 1.065, gloss); along(wB2, 0.075, 0.615, 26.8, 1.2, 0.99, 1.065, gloss);
+      for (const t of [0.075, 0.1948, 0.2905, 0.3958, 0.4915, 0.6112]) along(wB2, t, t + 0.0039, 6, 22, 0.99, 1.065, gloss);
       const ux = (wB2.c - wB2.a) / wB2.len, uz = (wB2.d - wB2.b) / wB2.len;
       const at = (t, off, z) => { const g = new THREE.Group(); g.position.set(wB2.a + ux * t * wB2.len - uz * off * S, z, wB2.b + uz * t * wB2.len + ux * off * S); g.rotation.y = wB2.ang; scene.add(g); return g; };
       const bx = (g, w, h, d, x, y, z, mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; g.add(m); return m; };
       const cy = (g, r, h, x, y, z, mat, seg = 32) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, seg), mat); m.position.set(x, y, z); m.castShadow = true; g.add(m); return m; };
-      const body = M('#1a1a1c', { roughness: 0.35, metalness: 0.3 }), plate = M('#2a2a2e', { roughness: 0.3, metalness: 0.5 }), silver = M('#c8cbcf', { metalness: 0.8, roughness: 0.25 }), vinyl = M('#0b0b0c', { roughness: 0.2 }), rubber = M('#111111');
+      const body = M('#1a1a1c', { roughness: 0.35, metalness: 0.3 }), plate = M('#232326', { roughness: 0.3, metalness: 0.5 }), silver = M('#c8cbcf', { metalness: 0.8, roughness: 0.25 }), vinyl = M('#0b0b0c', { roughness: 0.2 }), rubber = M('#111111');
       this.djLit = [];
       const lit = (color, ent, base = 1) => { const m = new THREE.MeshStandardMaterial({ color: '#111111', emissive: color, emissiveIntensity: 0, roughness: 0.4 }); this.djLit.push({ m, ent, base }); return m; };
       if (!this.djTex) { const cv = document.createElement('canvas'); cv.width = 256; cv.height = 150; const g2 = cv.getContext('2d'); g2.fillStyle = '#05070c'; g2.fillRect(0, 0, 256, 150);
         const wave = (y, h, c1, c2, k) => { for (let x = 0; x < 256; x += 2) { const a = Math.abs(Math.sin(x * 0.21 + k) * 0.55 + Math.sin(x * 0.047 + k) * 0.35 + Math.sin(x * 0.9) * 0.15) * h; g2.fillStyle = x % 6 ? c1 : c2; g2.fillRect(x, y - a, 2, a * 2); } };
-        wave(36, 16, '#2f8cff', '#ff9a2f', 0); wave(76, 12, '#4cd4ff', '#ffffff', 2); g2.fillStyle = '#ff3b3b'; g2.fillRect(127, 16, 2, 80);
-        g2.fillStyle = '#d7e3ff'; g2.font = 'bold 15px sans-serif'; g2.fillText('124.00 BPM', 8, 120); g2.font = '11px sans-serif'; g2.fillText('Engine DJ', 8, 140); g2.fillStyle = '#26324a'; g2.fillRect(150, 106, 98, 36);
+        wave(36, 16, '#2f8cff', '#ff9a2f', 0); wave(76, 12, '#4cd4ff', '#9dff6a', 2); g2.fillStyle = '#ff3b3b'; g2.fillRect(127, 16, 2, 80);
+        g2.fillStyle = '#d7e3ff'; g2.font = 'bold 15px sans-serif'; g2.fillText('122.00', 8, 120); g2.font = '11px sans-serif'; g2.fillText('Engine DJ', 8, 140); g2.fillStyle = '#2b5cff'; g2.fillRect(150, 112, 60, 12);
         this.djTex = new THREE.CanvasTexture(cv); this.djTex.colorSpace = THREE.SRGBColorSpace; }
-      const deck = (t) => { const g = at(t, 13.5, 0.96);
-        clickable(bx(g, 0.45, 0.11, 0.36, 0, 0.055, 0, body), 'light.coin_dj_sono_lecteurs'); bx(g, 0.448, 0.008, 0.358, 0, 0.114, 0, plate);
-        cy(g, 0.15, 0.022, -0.05, 0.13, 0, silver, 48); cy(g, 0.148, 0.004, -0.05, 0.143, 0, vinyl, 48); cy(g, 0.045, 0.002, -0.05, 0.146, 0, M('#b3262e'), 24); cy(g, 0.004, 0.02, -0.05, 0.15, 0, silver, 8);
-        cy(g, 0.028, 0.03, 0.17, 0.13, -0.12, silver, 20); const arm = bx(g, 0.012, 0.012, 0.25, 0.155, 0.152, -0.01, silver); arm.rotation.y = 0.32; bx(g, 0.03, 0.01, 0.045, 0.115, 0.15, 0.11, body);
-        bx(g, 0.012, 0.004, 0.12, 0.195, 0.118, 0.07, rubber); bx(g, 0.022, 0.012, 0.02, 0.195, 0.124, 0.06, silver); bx(g, 0.03, 0.01, 0.02, -0.19, 0.12, 0.15, lit('#ff3030', 'light.coin_dj_sono_lecteurs', 1.5)); };
-      const player = (t, barEnt, barPos) => { const g = at(t, 13.5, 0.96);
-        clickable(bx(g, 0.35, 0.075, 0.42, 0, 0.0375, 0, body), 'light.coin_dj_sono_lecteurs'); bx(g, 0.348, 0.006, 0.418, 0, 0.078, 0, plate);
-        const sg = new THREE.Group(); sg.position.set(0, 0.19, -0.16); sg.rotation.x = -0.45; g.add(sg);
-        const hs = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.19, 0.025), body); hs.castShadow = true; sg.add(hs); clickable(hs, 'light.coin_dj_sono_lecteurs');
+      const deck = (t, label) => { const g = at(t, 16.9, 0.99);
+        clickable(bx(g, 0.47, 0.06, 0.405, 0, 0.03, 0, body), 'light.coin_dj_sono_lecteurs');
+        cy(g, 0.155, 0.02, -0.05, 0.07, 0.005, silver, 48); cy(g, 0.152, 0.004, -0.05, 0.082, 0.005, vinyl, 48); cy(g, 0.045, 0.002, -0.05, 0.085, 0.005, M(label), 24); cy(g, 0.004, 0.02, -0.05, 0.09, 0.005, silver, 8);
+        cy(g, 0.03, 0.03, 0.18, 0.075, -0.13, plate, 20); const arm = bx(g, 0.012, 0.012, 0.25, 0.165, 0.098, -0.02, silver); arm.rotation.y = 0.3; bx(g, 0.03, 0.01, 0.045, 0.125, 0.096, 0.1, silver);
+        bx(g, 0.014, 0.004, 0.13, 0.2, 0.062, 0.09, rubber); bx(g, 0.024, 0.012, 0.022, 0.2, 0.068, 0.08, silver); cy(g, 0.022, 0.012, -0.2, 0.066, 0.165, silver, 24);
+        bx(g, 0.02, 0.006, 0.012, 0.2, 0.063, 0.16, lit('#2f7bff', 'light.coin_dj_sono_lecteurs', 1.6)); bx(g, 0.012, 0.006, 0.012, -0.2, 0.063, -0.13, lit('#2f7bff', 'light.coin_dj_sono_lecteurs', 1.6)); };
+      const player = (t) => { const g = at(t, 16.9, 0.99);
+        clickable(bx(g, 0.36, 0.055, 0.40, 0, 0.0275, 0, body), 'light.coin_dj_sono_lecteurs');
+        const sg = new THREE.Group(); sg.position.set(0, 0.13, -0.15); sg.rotation.x = -0.5; g.add(sg);
+        const hs = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.2, 0.025), body); hs.castShadow = true; sg.add(hs); clickable(hs, 'light.coin_dj_sono_lecteurs');
         const sm = new THREE.MeshBasicMaterial({ map: this.djTex, color: '#000000', toneMapped: false }); this.djLit.push({ m: sm, ent: 'light.coin_dj_sono_lecteurs', screen: true });
-        const sp = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.16), sm); sp.position.z = 0.0131; sg.add(sp); bx(g, 0.05, 0.1, 0.03, 0, 0.11, -0.19, body);
-        cy(g, 0.112, 0.012, 0, 0.084, 0.02, lit('#2f7bff', 'light.coin_dj_sono_lecteurs', 1.6), 48); cy(g, 0.105, 0.03, 0, 0.096, 0.02, plate, 48); cy(g, 0.035, 0.002, 0, 0.112, 0.02, lit('#7fb6ff', 'light.coin_dj_sono_lecteurs', 1.2), 32);
-        ['#ff3b3b', '#ffb02f', '#ffe14a', '#4cd964', '#3bc8ff', '#3b6bff', '#b04bff', '#ff4fb8'].forEach((c, k) => bx(g, 0.042, 0.008, 0.03, -0.075 + (k % 4) * 0.05, 0.082, 0.155 + Math.floor(k / 4) * 0.036, lit(c, 'light.coin_dj_sono_lecteurs', 1.3)));
-        bx(g, 0.012, 0.004, 0.16, 0.152, 0.08, 0.02, rubber); bx(g, 0.03, 0.014, 0.02, 0.152, 0.087, 0.03, silver);
-        cy(g, 0.016, 0.008, -0.15, 0.081, 0.185, lit('#4cd964', 'light.coin_dj_sono_lecteurs', 1.4), 20); cy(g, 0.016, 0.008, -0.15, 0.081, 0.14, lit('#ffb02f', 'light.coin_dj_sono_lecteurs', 1.4), 20);
-        clickable(along(wB2, t - 0.045, t + 0.045, 1.0, 2, 0.98, 1.24, L(barEnt, '#ff2a3a', barPos, 1.8, 2.4), false), barEnt); };
-      const mixer = (t) => { const g = at(t, 13.5, 0.96); clickable(bx(g, 0.4, 0.09, 0.42, 0, 0.045, 0, body), 'light.coin_dj_sono_mixeur'); bx(g, 0.398, 0.006, 0.418, 0, 0.093, 0, plate);
-        for (const x of [-0.13, -0.045, 0.045, 0.13]) { for (const z of [-0.17, -0.13, -0.09, -0.05, -0.01]) cy(g, 0.011, 0.022, x, 0.106, z, silver, 16); bx(g, 0.01, 0.004, 0.11, x, 0.097, 0.1, rubber); bx(g, 0.03, 0.016, 0.02, x, 0.104, 0.11, silver); }
-        for (const x of [-0.0875, 0, 0.0875]) { bx(g, 0.012, 0.004, 0.08, x, 0.0965, 0.02, lit('#3dff6a', 'light.coin_dj_sono_mixeur', 1.4)); bx(g, 0.012, 0.0042, 0.016, x, 0.097, -0.03, lit('#ff3b3b', 'light.coin_dj_sono_mixeur', 1.4)); }
-        bx(g, 0.14, 0.004, 0.012, 0, 0.097, 0.18, rubber); bx(g, 0.02, 0.016, 0.03, 0, 0.104, 0.18, silver); };
-      const adam = (t, off, z) => { const g = at(t, off, z); clickable(bx(g, 0.2, 0.34, 0.28, 0, 0.17, 0, MAT.white), 'light.coin_dj_sono_adams');
-        const w = cy(g, 0.075, 0.01, 0, 0.11, 0.142, M('#1d1d1f'), 32); w.rotation.x = Math.PI / 2; const d2 = cy(g, 0.03, 0.012, 0, 0.11, 0.146, M('#333333'), 24); d2.rotation.x = Math.PI / 2;
-        bx(g, 0.05, 0.05, 0.006, 0, 0.255, 0.142, M('#c9a24a', { metalness: 0.7, roughness: 0.3 })); bx(g, 0.012, 0.012, 0.004, 0.07, 0.04, 0.142, lit('#ffffff', 'light.coin_dj_sono_adams', 1)); };
-      adam(0.0715, 13.5, 0.96); deck(0.1525); player(0.2575, 'light.coin_dj_sono_gauche', [757, 202, 1.15]); mixer(0.365); player(0.4725, 'light.coin_dj_sono_droite', [751, 246, 1.15]); deck(0.5775);
-      along(wB2, 0.67, 0.72, 2, 15, 0, 0.62, MAT.white); adam(0.695, 9.5, 0.62); }
+        const sp = new THREE.Mesh(new THREE.PlaneGeometry(0.28, 0.17), sm); sp.position.z = 0.0131; sg.add(sp); bx(g, 0.2, 0.06, 0.06, 0, 0.07, -0.17, body);
+        cy(g, 0.112, 0.01, 0, 0.06, 0.03, lit('#2f7bff', 'light.coin_dj_sono_lecteurs', 1.8), 48); cy(g, 0.104, 0.024, 0, 0.068, 0.03, plate, 48); cy(g, 0.035, 0.002, 0, 0.081, 0.03, lit('#cfe0ff', 'light.coin_dj_sono_lecteurs', 1), 32);
+        ['#ff3b3b', '#ffb02f', '#ffe14a', '#4cd964', '#3bc8ff', '#3b6bff', '#b04bff', '#ff4fb8'].forEach((c, k) => bx(g, 0.04, 0.006, 0.026, -0.09 + (k % 4) * 0.046, 0.058, 0.155 + Math.floor(k / 4) * 0.032, lit(c, 'light.coin_dj_sono_lecteurs', 1.1)));
+        bx(g, 0.012, 0.004, 0.16, 0.155, 0.056, 0.03, rubber); bx(g, 0.03, 0.014, 0.02, 0.155, 0.063, 0.04, silver);
+        cy(g, 0.016, 0.006, -0.155, 0.057, 0.18, lit('#4cd964', 'light.coin_dj_sono_lecteurs', 1.4), 20); cy(g, 0.016, 0.006, -0.155, 0.057, 0.14, lit('#ffb02f', 'light.coin_dj_sono_lecteurs', 1.4), 20); };
+      const mixer = (t) => { const g = at(t, 16.9, 0.99); clickable(bx(g, 0.4, 0.06, 0.40, 0, 0.03, 0, body), 'light.coin_dj_sono_mixeur');
+        for (const x of [-0.13, -0.045, 0.045, 0.13]) { for (const z of [-0.16, -0.12, -0.08, -0.04, 0]) cy(g, 0.011, 0.02, x, 0.07, z, M('#2b2b2e'), 16); bx(g, 0.01, 0.004, 0.1, x, 0.061, 0.1, rubber); bx(g, 0.03, 0.016, 0.02, x, 0.068, 0.11, silver); }
+        for (const x of [-0.0875, 0, 0.0875]) { bx(g, 0.012, 0.004, 0.08, x, 0.0605, 0.02, lit('#3dff6a', 'light.coin_dj_sono_mixeur', 1.4)); bx(g, 0.012, 0.0042, 0.016, x, 0.061, -0.03, lit('#ff3b3b', 'light.coin_dj_sono_mixeur', 1.4)); }
+        bx(g, 0.14, 0.004, 0.012, 0, 0.061, 0.175, rubber); bx(g, 0.02, 0.016, 0.03, 0, 0.068, 0.175, silver); };
+      const adam = (t) => { const g = at(t, 13, 0.89); clickable(bx(g, 0.205, 0.34, 0.28, 0, 0.17, 0, gloss), 'light.coin_dj_sono_adams'); bx(g, 0.195, 0.33, 0.004, 0, 0.17, 0.141, M('#f2f2f0', { roughness: 0.12 }));
+        const w = cy(g, 0.078, 0.01, 0, 0.12, 0.145, M('#151517'), 40); w.rotation.x = Math.PI / 2; const d2 = cy(g, 0.062, 0.012, 0, 0.12, 0.146, M('#222225'), 40); d2.rotation.x = Math.PI / 2;
+        bx(g, 0.07, 0.055, 0.006, 0, 0.265, 0.144, M('#151517')); bx(g, 0.03, 0.04, 0.007, 0, 0.265, 0.146, M('#3a3220', { metalness: 0.6, roughness: 0.4 })); bx(g, 0.008, 0.008, 0.004, 0, 0.226, 0.146, lit('#5dff7a', 'light.coin_dj_sono_adams', 1.2)); };
+      const kef = (t) => { const g = at(t, 5.6, 1.18); bx(g, 0.16, 0.3, 0.035, 0, 0.15, 0, M('#f2f2f0', { roughness: 0.6 })); };
+      const hue = (t, ent, pos) => clickable(along(wB2, t - 0.03, t + 0.03, 7, 2.5, 1.065, 1.11, L(ent, '#ff2a3a', pos, 1.8, 2.4), false), ent);
+      adam(0.05); adam(0.64); kef(0.055); kef(0.635);
+      deck(0.1368, '#e6c22e'); player(0.2446); mixer(0.3451); player(0.4456); deck(0.5533, '#c8323a');
+      hue(0.2446, 'light.coin_dj_sono_gauche', [755, 199, 1.15]); hue(0.4456, 'light.coin_dj_sono_droite', [750, 240, 1.15]);
+      for (let r = 0; r < 2; r++) for (let k = 0; k < 3; k++) { const t0 = 0.315 + k * 0.022; along(wB2, t0, t0 + 0.019, 4.6, 0.8, 1.45 + r * 0.27, 1.69 + r * 0.27, MAT.white, false); along(wB2, t0 + 0.003, t0 + 0.016, 5.4, 0.2, 1.48 + r * 0.27, 1.66 + r * 0.27, M(['#dfe6df', '#e9ece6', '#d4ddd6'][k]), false); } }
     // vitrine : bas 3 portes, haut 2 vitrines vitrées éclairées + niche centrale ouverte, corniche
     { const glass = M('#eaf3f5', { transparent: true, opacity: 0.22, roughness: 0.05 }), groove = M('#cfc7b8'), shelfG = M('#dfeef0', { transparent: true, opacity: 0.5, roughness: 0.1 });
       box(437, 104, 458, 201, 0, 0.86, MAT.patine); box(436.5, 103, 459, 202, 0.86, 0.9, MAT.patine); box(437, 104, 458.5, 201, 0, 0.06, groove);
