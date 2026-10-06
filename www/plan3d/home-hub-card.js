@@ -8,7 +8,8 @@ const ACTIONS = [['bonne_nuit', '🌙', 'Bonne nuit', 'Éteint tout', null], ['j
   ['sieste_calme', '🤫', 'Sieste / Calme', 'Coupe le coin DJ', null], ['tout_eteindre', '⚫', 'Tout éteindre', 'Toutes les lumières', 'Éteindre toutes les lumières ?']];
 const PEOPLE = [['person.greg', 'Greg'], ['person.sandrine', 'Sandrine'], ['person.matteo', 'Matteo']];
 const ALARM = 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison';
-const CALS = ['calendar.taches_famille', 'calendar.horaire_gregory', 'calendar.greg', 'calendar.sandrine', 'calendar.calendrier', 'calendar.taches_matteo'];
+const MP_CAL = 'calendar.matteo', MP_PATH = '/matteo-planning/planning';
+const SAS = 'lock.hall_dentree_bticino_intercom_greg_et_sandrine_serrure';
 const POWER = 'sensor.buanderie_local_tech_compteur_general_maison_puissance', TODAY = 'sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui';
 
 class HomeHubCard extends HTMLElement {
@@ -44,7 +45,7 @@ class HomeHubCard extends HTMLElement {
       .bar{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#3fbf7f,#ffd27a,#ff7a5c);border-radius:6px;transition:width .8s}
       .media{position:relative;overflow:hidden;cursor:pointer}.media .bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(18px) brightness(.45);transform:scale(1.2)}.media>*:not(.bg){position:relative}
       .mt{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ms{font-size:12px;color:var(--m)}
-      .ag{display:flex;flex-direction:column;gap:6px;overflow:hidden}.ev{display:grid;grid-template-columns:52px 1fr;gap:8px;font-size:13px;align-items:center}.ev i{font-style:normal;color:var(--a);font-weight:700;font-size:12px}.ev span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .ag{display:flex;flex-direction:column;gap:6px;overflow:hidden}.mp .ev{cursor:pointer;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,.04);grid-template-columns:1fr;gap:1px;border-left:3px solid #8aa0ff}.mp .ev.pa{border-left-color:#3fbf7f}.mp .ev span{font-size:12px;color:var(--m)}.mp .h{cursor:pointer}.mp .ev:active{transform:scale(.98)}.ev{display:grid;grid-template-columns:74px 1fr;gap:8px;font-size:13px;align-items:center}.ev i{font-style:normal;color:var(--a);font-weight:700;font-size:12px}.ev span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .dock{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:8px;border-radius:20px;background:var(--g);border:1px solid var(--b);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.dock button{appearance:none;border:1px solid var(--b);background:rgba(255,255,255,.06);color:var(--t);border-radius:14px;padding:10px 4px;font:700 12px system-ui;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
       .dock button i{font-style:normal;font-size:20px}.dock button:active{transform:scale(.95)}.dock button small{font:500 10px system-ui;color:var(--m);text-align:center;line-height:1.15}
       .dock button.arm{background:#ffd27a;color:#1c1826;border-color:#ffd27a}.dock button.arm small{color:#1c1826}.dock button.sim.on{background:linear-gradient(135deg,#b48cff,#7a4fe0);border-color:transparent}
@@ -53,6 +54,8 @@ class HomeHubCard extends HTMLElement {
       .grow{flex:1;min-height:0}
       .mid{display:flex;flex-direction:column;gap:10px;min-height:0}.mid .plan{flex:1}
       .sun{width:100%;height:46px;margin-top:8px;overflow:visible}.sun text{font:600 9px system-ui;fill:rgba(243,238,230,.55)}
+      .sas{display:flex;flex-direction:column}.sasb{flex:1;min-height:64px;appearance:none;border:1px solid var(--b);border-radius:16px;background:rgba(255,255,255,.06);color:var(--t);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 15px system-ui}.sasb i{font-style:normal;font-size:30px}.sasb small{font:500 11px system-ui;color:var(--m)}
+      .sasb.arm{background:#ffd27a;color:#1c1826;border-color:#ffd27a}.sasb.arm small{color:#1c1826}.sasb.ok{background:linear-gradient(135deg,#8be3a5,#3fbf7f);color:#10261a}
       .hero{background:linear-gradient(160deg,rgba(255,210,122,.10),rgba(255,255,255,.04) 45%)}
       @media (max-width:1100px){.hub{grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr);gap:8px}.mid{grid-column:1/3;grid-row:2}.c1{grid-row:1;grid-column:1;gap:8px}.c3{grid-row:1;grid-column:2}.hide-s,.fc,.sun,.hello,.wmeta,.rm em,.dock button small{display:none!important}
         .tile{padding:10px 12px;border-radius:16px}.clock{font-size:44px}.date{font-size:12px;margin-top:2px}.ppl{margin-top:6px;padding-top:6px}.av{width:28px;height:28px}.wico{font-size:30px}.wt{font-size:26px}.wt small{font-size:12px}
@@ -63,13 +66,14 @@ class HomeHubCard extends HTMLElement {
         <div class="tile hero"><div class="clock"></div><div class="date"></div><div class="hello"></div><svg class="sun" viewBox="0 0 200 64"><path d="M10 58 Q100 -18 190 58" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2" stroke-dasharray="3 5"/><path class="arcp" d="M10 58 Q100 -18 190 58" fill="none" stroke="url(#sg)" stroke-width="3" stroke-linecap="round"/><defs><linearGradient id="sg"><stop offset="0" stop-color="#ffb86b"/><stop offset="1" stop-color="#ffd27a"/></linearGradient></defs><circle class="sdot" r="6" fill="#ffd27a"/><text class="sr" x="8" y="63">—</text><text class="ss" x="192" y="63" text-anchor="end">—</text></svg><div class="ppl"></div></div>
         <div class="tile"><div class="h">Météo · Engis</div><div class="wnow"><div class="wico"></div><div class="wt"></div></div><div class="wmeta"></div><div class="fc"></div></div>
         <div class="tile alarm hide-s"><div class="al-i">🛡️</div><div><div class="al-t"></div><div class="al-s">Alarme Ajax · maison</div></div></div>
+        <div class="tile sas grow hide-s"><div class="h">Porte du SAS · BTicino</div><button class="sasb"><i>🔓</i><b>Ouvrir le SAS</b><small>Touchez puis confirmez</small></button></div>
       </div>
       <div class="mid"><div class="plan"></div><div class="dock"></div></div>
       <div class="col c3">
         <div class="tile"><div class="h">Climat <span class="lights"></span></div><div class="rooms"></div></div>
         <div class="tile hide-s"><div class="h">Énergie maison</div><div class="en"><div><b class="pw"></b><small>en ce moment</small></div><div><b class="td" style="font-size:22px"></b><small>aujourd’hui</small></div></div><div class="bar"><i></i></div></div>
         <div class="tile media hide-s"><div class="bg"></div><div class="h">Salon · TV</div><div class="mt"></div><div class="ms"></div></div>
-        <div class="tile grow hide-s"><div class="h">Agenda</div><div class="ag"></div></div>
+        <div class="tile grow hide-s mp"><div class="h">Planning Matteo <span>›</span></div><div class="ag"></div></div>
       </div>
     </div>`;
     this.$ = (s) => r.querySelector(s);
@@ -83,6 +87,10 @@ class HomeHubCard extends HTMLElement {
     { const b = document.createElement('button'); b.className = 'sim'; b.innerHTML = '<i>🎭</i>Simulation<small>présence</small>'; b.onclick = () => this._h.callService('input_boolean', 'toggle', { entity_id: 'input_boolean.simulation_presence' }); amb.appendChild(b); this._sim = b; }
     this.$('.alarm').onclick = () => this._more(ALARM);
     this.$('.media').onclick = () => this._more('media_player.televiseur_du_salon');
+    this.$('.mp .h').onclick = () => this._go(MP_PATH);
+    { const b = this.$('.sasb'), sm = b.querySelector('small'); b.onclick = () => { if (!b.classList.contains('arm')) { b.classList.add('arm'); sm.textContent = 'Retouchez pour ouvrir'; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('arm'); sm.textContent = 'Touchez puis confirmez'; }, 4000); return; }
+      clearTimeout(b._t); b.classList.remove('arm'); const d = SAS.split('.')[0]; this._h.callService(d, d === 'lock' ? 'unlock' : d === 'button' ? 'press' : d === 'script' ? 'turn_on' : 'turn_on', { entity_id: SAS });
+      b.classList.add('ok'); sm.textContent = 'Porte ouverte'; this._toast('🔓 Porte du SAS ouverte'); b._t = setTimeout(() => { b.classList.remove('ok'); sm.textContent = 'Touchez puis confirmez'; }, 3000); }; }
     this._clock(); this._forecast(); this._cal(); this._calT = setInterval(() => this._cal(), 15 * 60000);
   }
   _toast(t) { let el = this.$('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; this.$('.hub').appendChild(el); } el.textContent = t; el.classList.add('show'); clearTimeout(this._tt); this._tt = setTimeout(() => el.classList.remove('show'), 2500); }
@@ -102,9 +110,9 @@ class HomeHubCard extends HTMLElement {
     try { this._unsub = this._h.connection.subscribeMessage((m) => { this._fc = (m.forecast || []).slice(0, 5); this._render(); }, { type: 'weather/subscribe_forecast', entity_id: 'weather.maison', forecast_type: 'daily' }); } catch (e) {}
   }
   async _cal() {
-    if (!this._h) return; const s = new Date(), e = new Date(Date.now() + 3 * 86400000), out = [];
-    await Promise.all(CALS.filter((c) => this._h.states[c]).map(async (c) => { try { const ev = await this._h.callApi('GET', `calendars/${c}?start=${s.toISOString()}&end=${e.toISOString()}`); ev.forEach((x) => out.push(x)); } catch (err) {} }));
-    const t = (x) => new Date(x.start.dateTime || x.start.date); out.sort((a, b) => t(a) - t(b)); this._ev = out.slice(0, 6); this._render();
+    if (!this._h) return; const s = new Date(), e = new Date(Date.now() + 90 * 86400000), out = [];
+    try { (await this._h.callApi('GET', `calendars/${MP_CAL}?start=${s.toISOString()}&end=${e.toISOString()}`)).forEach((x) => out.push(x)); } catch (err) {}
+    const t = (x) => new Date(x.start.dateTime || x.start.date); out.sort((a, b) => t(a) - t(b)); this._ev = out.slice(0, 4); this._render();
   }
   _render() {
     const H = this._h && this._h.states; if (!H || !this.$) return; const $ = this.$, num = (e) => { const v = parseFloat(H[e] && H[e].state); return isNaN(v) ? null : v; };
@@ -134,8 +142,11 @@ class HomeHubCard extends HTMLElement {
     const pic = on ? tv.attributes.entity_picture : null; $('.media .bg').style.backgroundImage = pic ? `url("${pic}")` : 'none';
     // agenda
     if (this._ev) $('.ag').innerHTML = this._ev.length ? this._ev.map((x) => { const st = new Date(x.start.dateTime || x.start.date), today = st.toDateString() === new Date().toDateString();
-      const lab = x.start.dateTime ? (today ? st.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' }) : st.toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '') + ' ' + st.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })) : (today ? 'Auj.' : st.toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', ''));
-      return `<div class="ev"><i>${lab}</i><span>${x.summary || ''}</span></div>`; }).join('') : '<div class="ev"><i>—</i><span>Rien de prévu</span></div>';
+      const en = new Date(x.end ? (x.end.dateTime || x.end.date) : st); if (!x.start.dateTime) en.setDate(en.getDate() - 1); const f = (d, o) => d.toLocaleDateString('fr-BE', o).replace(/\./g, '');
+      const lab = (today ? 'Auj.' : f(st, { weekday: 'short', day: 'numeric' })) + (en > st && en.toDateString() !== st.toDateString() ? ' → ' + f(en, { weekday: 'short', day: 'numeric', month: 'short' }) : ' ' + f(st, { month: 'short' }));
+      const sm = (x.summary || '').replace(/^Matteo\s*/i, ''), papa = /papa/i.test(sm);
+      return `<div class="ev ${papa ? 'pa' : ''}"><i>${lab}</i><span>${sm.charAt(0).toUpperCase() + sm.slice(1)}</span></div>`; }).join('') : '<div class="ev"><i>—</i><span>Aucune date prévue</span></div>';
+    this.shadowRoot.querySelectorAll('.mp .ev').forEach((el) => (el.onclick = () => this._go(MP_PATH)));
   }
 }
 customElements.define('home-hub-card', HomeHubCard);
