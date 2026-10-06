@@ -510,11 +510,14 @@ class Floorplan3DCard extends HTMLElement {
         const mk = (cv, w, h, pos, rot, k, additive) => { const m = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, opacity: 0, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: false, toneMapped: false });
           const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(...pos); me.rotation.set(...rot); me.visible = false; me.renderOrder = 2; scene.add(me); add({ m, mesh: me, k }); };
         // panneau : x 500..602 px, z 0.72..1.92 m (200 px/m) ; TV x 518..584, z 1.0..1.75
-        const cv = document.createElement('canvas'); cv.width = 408; cv.height = 240; const g = cv.getContext('2d'); g.strokeStyle = '#fff'; g.lineJoin = 'round'; g.lineCap = 'round';
-        const U = () => { g.beginPath(); g.moveTo(80, 176); g.lineTo(80, 42); g.lineTo(328, 42); g.lineTo(328, 176); g.stroke(); };
-        const R = () => { g.beginPath(); g.moveTo(74, 178); g.lineTo(74, 37); g.lineTo(334, 37); g.lineTo(334, 178); g.stroke(); }; for (const [bl, lw, al] of [[46, 130, 0.22], [22, 62, 0.5], [9, 26, 1]]) { g.filter = 'blur(' + bl + 'px)'; g.lineWidth = lw; g.globalAlpha = al; R(); } g.globalAlpha = 1;
-        g.globalCompositeOperation = 'destination-in'; g.filter = 'none'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.55, '#fff'); fd.addColorStop(0.78, 'rgba(255,255,255,.35)'); fd.addColorStop(0.9, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240);
-        const [pa, pb] = P(551, 20.48); mk(cv, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 1.1, false); mk(cv, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 2.6, true);
+        const tx = (layers, edges) => { const cv = document.createElement('canvas'); cv.width = 408; cv.height = 240; const g = cv.getContext('2d'); g.strokeStyle = '#fff'; g.lineJoin = 'round'; g.lineCap = 'butt';
+          const R = () => { g.beginPath(); g.moveTo(74, 186); g.lineTo(74, 36); g.lineTo(334, 36); g.lineTo(334, 186); g.stroke(); };
+          for (const [bl, lw, al] of layers) { g.filter = 'blur(' + bl + 'px)'; g.lineWidth = lw; g.globalAlpha = al; R(); }
+          if (edges) { g.filter = 'blur(2px)'; g.lineWidth = 4; g.globalAlpha = 0.8; for (const x of [35, 373]) { g.beginPath(); g.moveTo(x, 60); g.lineTo(x, 154); g.stroke(); } }
+          g.globalAlpha = 1; g.filter = 'none'; g.globalCompositeOperation = 'destination-in'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.7, '#fff'); fd.addColorStop(0.8, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240); return cv; };
+        // photo : liseré rouge saturé très serré contre l'écran (2-4 cm), puis voile rosé qui s'éteint en ~15-20 cm ; haut un peu plus large que les côtés
+        const rim = tx([[5, 14, 1], [11, 34, 0.85]], true), wash = tx([[30, 90, 0.35], [55, 150, 0.18]], false);
+        const [pa, pb] = P(551, 20.48); mk(wash, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 1.0, false); mk(rim, 102 * S, 1.2, [pa, 1.32, pb + 0.001], [0, 0, 0], 1.6, false); mk(rim, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 0.35, true);
         // tranche intérieure des enceintes KEF éclairée côté TV
         const cv3 = document.createElement('canvas'); cv3.width = 8; cv3.height = 64; const g3 = cv3.getContext('2d'); const lg = g3.createLinearGradient(0, 0, 0, 64); lg.addColorStop(0, 'rgba(255,255,255,1)'); lg.addColorStop(0.7, 'rgba(255,255,255,.8)'); lg.addColorStop(1, 'rgba(255,255,255,.15)'); g3.fillStyle = lg; g3.fillRect(0, 0, 8, 64);
         for (const [x, ry] of [[508.55, Math.PI / 2], [593.45, -Math.PI / 2]]) { const [sa, sb] = P(x, 20.9); mk(cv3, 0.02, 0.47, [sa, 1.385, sb], [0, ry, 0], 1.2, true); }
