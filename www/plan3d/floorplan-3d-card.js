@@ -264,8 +264,8 @@ class Floorplan3DCard extends HTMLElement {
       cyl(343, (y0 + y1) / 2, 3, 2.16, 2.18, L('light.cuisine_etagere_cafe', '#fff1d6', null, 1, 1)); }
     // taque + hotte cheminée (mur sud)
     box(381, 342, 409, 362, 0.9, 0.905, MAT.black, false);
-    { const [a, b] = P(395, 354); const g = new THREE.CylinderGeometry(6 * S, 24 * S, 0.3, 4, 1); g.rotateY(Math.PI / 4); g.scale(1, 1, 0.7); const hood = new THREE.Mesh(g, MAT.white); hood.position.set(a, 1.72, b); hood.castShadow = true; scene.add(hood);
-      const rim = new THREE.Mesh(new THREE.BoxGeometry(32 * S, 0.03, 20 * S), MAT.steel); rim.position.set(a, 1.57, b); scene.add(rim); }
+    { const [a, b] = P(395, 354); const g = new THREE.BoxGeometry(34 * S, 0.3, 24 * S); { const pa = g.attributes.position; for (let k = 0; k < pa.count; k++) if (pa.getY(k) > 0) { pa.setX(k, pa.getX(k) * 12 / 34); pa.setZ(k, pa.getZ(k) > 0 ? 12 * S : 4 * S); } g.computeVertexNormals(); } const hood = new THREE.Mesh(g, MAT.white); hood.position.set(a, 1.72, b); hood.castShadow = true; scene.add(hood);
+      const rim = new THREE.Mesh(new THREE.BoxGeometry(34.6 * S, 0.03, 24 * S), MAT.steel); rim.position.set(a, 1.57, b); scene.add(rim); }
     box(389, 358, 401, 366, 1.86, 2.3, MAT.white);
     box(411, 342, 424, 362, 0.9, 1.22, MAT.black);
     box(425, 292, 447, 366, 0, 0.9, MAT.greige); box(423, 290, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 294, 457, 362, 1.06, 1.09, MAT.worktop); box(447, 296, 452, 360, 0.94, 1.06, M('#d8d5cf'));
