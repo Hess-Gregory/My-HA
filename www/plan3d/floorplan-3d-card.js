@@ -279,10 +279,10 @@ class Floorplan3DCard extends HTMLElement {
       box(lx0 + 3, ly1 - 27, lx1 - 1, ly1 - 26, 0, 1.28, white); for (const z of [0, 0.42, 0.85, 1.25]) box(lx0 + 3, ly1 - 26, lx1 - 1, ly1 - 4, z, z + 0.03, white);
       cyl(272, 262, 7, 0, 0.04, white, 5); cyl(272, 262, 1.2, 0.04, 0.45, white, 8); cyl(272, 262, 6, 0.45, 0.5, M('#bcd6cf'), 24); box(266, 267, 278, 268.5, 0.52, 0.85, M('#bcd6cf'));
       // lit bébé (ouest) + posters + caméra Reolink
-      box(206, 222, 241, 224, 0, 0.92, greyOak); box(206, 290, 241, 292, 0, 0.92, greyOak);
-      for (const x0 of [206, 239]) { box(x0, 224, x0 + 2, 290, 0.84, 0.9, greyOak); box(x0, 224, x0 + 2, 290, 0.22, 0.27, greyOak); for (let y = 226; y < 289; y += 3.2) box(x0 + 0.5, y, x0 + 1.5, y + 1, 0.27, 0.84, greyOak, false); }
-      box(208, 224, 239, 290, 0.27, 0.4, M('#c9ced8'));
-      box(204.8, 236, 205.3, 250, 0.95, 1.5, M('#d9534f'), false); box(204.8, 251, 205.3, 266, 0.92, 1.52, M('#a6cf3a'), false); box(204.8, 270, 205.3, 284, 1.0, 1.45, M('#c3cbdb'), false);
+      box(206, 259, 241, 261, 0, 0.92, greyOak); box(206, 327, 241, 329, 0, 0.92, greyOak);
+      for (const x0 of [206, 239]) { box(x0, 261, x0 + 2, 327, 0.84, 0.9, greyOak); box(x0, 261, x0 + 2, 327, 0.22, 0.27, greyOak); for (let y = 263; y < 326; y += 3.2) box(x0 + 0.5, y, x0 + 1.5, y + 1, 0.27, 0.84, greyOak, false); }
+      box(208, 261, 239, 327, 0.27, 0.4, M('#c9ced8'));
+      box(204.8, 253, 205.3, 267, 0.95, 1.5, M('#d9534f'), false); box(204.8, 268, 205.3, 283, 0.92, 1.52, M('#a6cf3a'), false); box(204.8, 285, 205.3, 299, 1.0, 1.45, M('#c3cbdb'), false);
       box(204.8, 291, 206.6, 297, 1.84, 1.96, white); box(204.8, 293.5, 205.6, 294.5, 1.96, WH, white, false);
       clickable(sphere(209, 294, 3.6, 1.9, white), 'camera.chambre_enfant'); clickable(sphere(211.8, 294, 1.5, 1.88, M('#111')), 'camera.chambre_enfant');
       // coin sud-ouest : vitrine blanche (maquettes), tableau, ventilateur colonne ; commode sous la fenêtre
