@@ -13,7 +13,7 @@ const ROOM_TEMPS = [
   ['Buanderie', 380, 180, 'sensor.buanderie_local_tech_detecteur_incendie_temperature'],
   ['WC', 185, 140, null],
 ];
-const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 300, 130], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 640, 330]];
+const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 300, 130], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 665, 340]];
 const VIEWS = {
   'Vue générale': { pos: [0.4, 26, 9.5], tgt: [0.4, 0, 0.3] },
   'Salon': { pos: [6.0, 9.5, 6.5], tgt: [3.3, 0.6, -2.4] },
@@ -223,11 +223,11 @@ class Floorplan3DCard extends HTMLElement {
     { const camW = M('#f2f2f0', { roughness: 0.4 }), camB = M('#151517', { roughness: 0.2 });
       box(626, 14.6, 634, 15.6, 2.18, 2.26, camW, false); box(628.5, 15.6, 631.5, 18, 2.2, 2.24, camW, false); clickable(sphere(630, 19.5, 2.6, 2.19, camB), 'camera.salon_fluide');
       box(474, 364.4, 482, 365.4, 2.18, 2.26, camW, false); box(476.5, 362, 479.5, 364.4, 2.2, 2.24, camW, false); clickable(sphere(478, 360.5, 2.6, 2.19, camB), 'camera.rlc_843a_fluide');
-      clickable(box(645, 364.2, 649.5, 365.5, 0.84, 0.94, camW, false), 'binary_sensor.piece_de_vie_detecteur_living_mouvement'); box(646.5, 364, 648, 364.2, 0.88, 0.91, camB, false); }
+      clickable(box(676.4, 361.6, 680.4, 365.4, 2.12, 2.24, camW, false), 'binary_sensor.piece_de_vie_detecteur_living_mouvement'); box(676.2, 361.4, 678.2, 361.7, 2.15, 2.2, camB, false); }
     // couleurs des murs (gris bleuté clair dans la pièce de vie, gris foncé à gauche du mur TV)
-    { const liv = M('#c3cad0', { roughness: 0.95 }), dark = M('#62666b', { roughness: 0.95 });
+    { const liv = M('#bcc6ce', { roughness: 0.95 }), dark = M('#676c72', { roughness: 0.95 });
       const pw = (x0, y0, x1, y1, z0, z1, m = liv) => this._wall(box(x0, y0, x1, y1, z0, z1, m, false));
-      pw(439.5, 14.6, 474, 14.9, 0, WH, dark); pw(474, 14.6, 675.5, 14.9, 0, WH);
+      pw(439.5, 14.6, 675.5, 14.9, 0, WH, dark);
       pw(675.1, 14.5, 675.4, 34, 0, WH); pw(675.1, 80, 675.4, 125.5, 0, WH); pw(675.1, 34, 675.4, 80, 0, 0.9); pw(675.1, 34, 675.4, 80, 2.15, WH);
       pw(439.6, 14.5, 439.9, 40, 0, WH); pw(439.6, 90, 439.9, 255, 0, WH);
       pw(455, 365.1, 470, 365.4, 0, WH); pw(640, 365.1, 680.5, 365.4, 0, WH); pw(470, 365.1, 640, 365.4, 2.15, WH);
@@ -328,27 +328,29 @@ class Floorplan3DCard extends HTMLElement {
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
     [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
-    box(440, 14, 466, 32, 0, 0.75, MAT.oakDark); box(442, 16, 464, 30, 0.75, 1.0, MAT.white); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false);
+    box(441, 15, 465, 33, 0.56, 0.6, M('#a88b62', { roughness: 0.8 })); for (const [x, y] of [[441.5, 15.5], [463.5, 15.5], [441.5, 31.5], [463.5, 31.5]]) box(x, y, x + 1, y + 1, 0, 0.56, MAT.black); box(444, 17, 462, 31, 0.6, 0.86, MAT.white); box(445, 31, 461, 31.4, 0.66, 0.74, M('#2a2a2c'), false); box(442, 14.6, 462, 24, 1.0, 1.06, MAT.oakLight); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
-    // mur TV : lattes chêne, grand panneau blanc (ruban LED derrière), TV centrée + Ambilight, 2 enceintes colonnes
-    box(474, 14.5, 504, 16.0, 0, 2.28, MAT.oakLight, false); for (let x = 475; x < 503; x += 2.3) box(x, 16.0, x + 1.2, 17.2, 0, 2.28, M('#b8955f'), false);
-    clickable(box(502.5, 15, 617.5, 17.4, 0.8, 1.96, L('light.salon_panneau_mural', '#ffd27a', [560, 32, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
-    clickable(box(500, 17.4, 620, 19.6, 0.78, 1.98, MAT.white), 'light.salon_panneau_mural');
-    clickable(box(521, 19.6, 599, 20.6, 0.97, 1.79, L('light.salon_ambilight_tv', '#7f6bff', [560, 27, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
-    this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(524, 20.6, 596, 21.8, 1.0, 1.76, this.tvMat, false);
-    box(506, 19.6, 512, 22, 1.05, 1.72, MAT.white); box(608, 19.6, 614, 22, 1.05, 1.72, MAT.white);
+    // mur TV (d'après photos) : lattes chêne sol-plafond, panneau blanc 2,4 x 1,2 m posé devant la moitié droite des lattes (LED derrière), TV + Ambilight, KEF colonnes + centrale
+    { const back = M('#2a2522', { roughness: 0.9 }), slat = M('#cdb08a', { roughness: 0.75 }), kefW = M('#eeeeec', { roughness: 0.5 }), kefG = M('#9a9c9e', { roughness: 0.9 });
+      box(476, 14.5, 506, 15.5, 0, WH, back, false); for (let x = 476.3; x < 505.6; x += 1.95) box(x, 15.5, x + 1.35, 16.7, 0, WH, slat, false);
+      clickable(box(493.5, 16.8, 608.5, 19.2, 0.74, 1.9, L('light.salon_panneau_mural', '#ffd27a', [551, 34, 1.35], 2.4, 3.6), false), 'light.salon_panneau_mural');
+      clickable(box(491, 19.2, 611, 20.4, 0.72, 1.92, MAT.white), 'light.salon_panneau_mural');
+      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 27, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
+      this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(518, 21.2, 584, 22.2, 1.0, 1.75, this.tvMat, false);
+      for (const x of [503.5, 593.5]) { box(x, 20.4, x + 5, 21.4, 1.15, 1.62, kefW); box(x + 0.4, 21.4, x + 4.6, 21.5, 1.18, 1.59, kefG, false); }
+      box(541, 20.4, 561, 21.4, 0.83, 0.93, kefW); box(541.4, 21.4, 560.6, 21.5, 0.845, 0.915, kefG, false); }
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.tvCv = cv; this.tvTex = new THREE.CanvasTexture(cv); this.tvTex.colorSpace = THREE.SRGBColorSpace;
-      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(70 * S, 0.74), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(560, 21.9);
-      this.tvScr.position.set(a, 1.38, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
-    // meuble TV suspendu blanc (LED dessous) + caisson chêne ouvert pour l'ampli, colonne chêne à droite
-    { const groove = M('#dcdcd8'); box(472, 14.5, 640, 34.0, 0.16, 0.56, MAT.white); box(474, 16.0, 638, 32.0, 0.145, 0.16, decor('#ffcf88', 0.9), false);
-      for (const x of [514, 556, 598]) box(x - 0.3, 34.0, x + 0.3, 34.3, 0.18, 0.54, groove, false);
-      box(586, 15.0, 588, 33.0, 0.56, 0.86, MAT.oakLight); box(634, 15.0, 636, 33.0, 0.56, 0.86, MAT.oakLight); box(586, 15.0, 636, 33.0, 0.84, 0.86, MAT.oakLight); box(588, 15.0, 634, 33.0, 0.7, 0.715, MAT.oakLight);
-      box(594, 17.0, 628, 30.0, 0.56, 0.645, MAT.black); box(596, 17.0, 626, 30.0, 0.715, 0.8, MAT.black);
-      box(640, 15.0, 676, 34.0, 0, 0.56, MAT.white); box(640, 15.0, 642, 34.0, 0.56, 2.22, MAT.oakLight); box(674, 15.0, 676, 34.0, 0.56, 2.22, MAT.oakLight); box(642, 14.5, 674, 16.0, 0.56, 2.22, MAT.oakLight); box(640, 15.0, 676, 34.0, 2.2, 2.22, MAT.oakLight);
-      for (const z of [0.98, 1.4, 1.8]) box(642, 16.0, 674, 33.0, z, z + 0.03, M('#b8955f'), false);
-      box(636.5, 15.0, 638.5, 17.0, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
+      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(64 * S, 0.71), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(551, 22.3);
+      this.tvScr.position.set(a, 1.375, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
+    // meuble TV blanc suspendu à portes (socle chêne en retrait), caisson chêne ouvert (décodeur + ampli Yamaha), bibliothèque chêne posée sur le meuble
+    { const groove = M('#dcdcd8'); box(478, 15, 670, 28, 0, 0.16, MAT.oakLight); box(472, 14.5, 676, 34, 0.16, 0.56, MAT.white); box(480, 16, 668, 30, 0.145, 0.16, decor('#ffcf88', 0.9), false);
+      for (let x = 502; x < 676; x += 30) box(x - 0.3, 34, x + 0.3, 34.3, 0.18, 0.54, groove, false);
+      box(551, 16, 553, 33, 0.56, 0.9, MAT.oakLight); box(588, 16, 590, 33, 0.56, 0.88, MAT.oakLight); box(551, 16, 636, 33, 0.88, 0.9, MAT.oakLight); box(553, 16, 588, 33, 0.71, 0.725, MAT.oakLight); box(553, 15, 636, 16, 0.56, 0.88, MAT.oakLight);
+      box(557, 18, 584, 30, 0.56, 0.6, MAT.black); box(560, 19, 575, 28, 0.725, 0.76, MAT.black); box(592, 18, 634, 31, 0.56, 0.72, M('#1a1a1c', { roughness: 0.4 })); box(617, 31, 625, 31.3, 0.66, 0.69, decor('#5ab4ff', 1.5), false);
+      box(636, 14.5, 638, 33, 0.56, 2.28, MAT.oakLight); box(674, 14.5, 676, 33, 0.56, 2.28, MAT.oakLight); box(638, 14.5, 674, 15.5, 0.56, 2.28, MAT.oakLight); box(636, 14.5, 676, 33, 2.26, 2.28, MAT.oakLight); box(638, 15.5, 674, 33, 0.56, 0.6, MAT.oakLight);
+      for (const z of [0.95, 1.28, 1.6, 1.93]) box(638, 15.5, 674, 32.5, z, z + 0.025, MAT.oakLight, false);
+      box(634.4, 15, 636, 17, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
     box(510, 52, 640, 140, 0, 0.01, MAT.rug2, false); box(545, 75, 612, 112, 0, 0.36, MAT.white); box(560, 82, 600, 105, 0.36, 0.4, MAT.oakLight);
     box(500, 140, 676, 182, 0, 0.42, MAT.sofa); box(500, 172, 676, 182, 0.42, 0.88, MAT.sofa2); box(634, 55, 676, 140, 0, 0.42, MAT.sofa); box(634, 55, 676, 62, 0.42, 0.62, MAT.sofa2); box(668, 62, 676, 172, 0.42, 0.88, MAT.sofa2);
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
@@ -356,7 +358,7 @@ class Floorplan3DCard extends HTMLElement {
     clickable(sphere(575, 95, 4, 1.98, L('light.salon_l_salon', '#ffcf8a', [575, 95, 1.9], 2.6, 5)), 'light.salon_l_salon');
     // radiateurs (cliquables → thermostat)
     this.rads = [];
-    [[673, 22, 677, 75, 0.15, 0.75, 'climate.living'], [440, 206, 444, 240, 0.15, 0.75, 'climate.living'], [645, 362, 670, 366, 0.15, 0.75, 'climate.living'],
+    [[673, 37, 677, 78, 0.15, 0.75, 'climate.living'], [440, 206, 444, 240, 0.15, 0.75, 'climate.living'], [645, 362, 670, 366, 0.15, 0.75, 'climate.living'],
      [70, 362, 130, 366, 0.15, 0.7, 'climate.chambre_adulte'], [263, 214.6, 279, 218.6, 0.12, 0.72, 'climate.chambre_enfants'], [131, 140, 134, 172, 0.4, 1.6, 'climate.salle_de_bain'], [365, 13, 405, 17, 0.15, 0.75, 'climate.couloir']]
       .forEach(([a0, b0, a1, b1, z0, z1, e]) => { const m = M('#f4f3ef', { roughness: 0.5, emissive: '#ff5a1f', emissiveIntensity: 0 }); clickable(box(a0, b0, a1, b1, z0, z1, m), e); this.rads.push({ m, e }); });
     // tablette murale (écran simulé selon son état)
