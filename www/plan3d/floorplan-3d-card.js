@@ -664,7 +664,7 @@ class Floorplan3DCard extends HTMLElement {
       const gi = M('#d6e8ee', { transparent: true, opacity: 0.45, roughness: 0.05 });
       [['light.salle_a_manger_vit_d', 107.5, 139.5, 124], ['light.salle_a_manger_vit_g', 165.5, 197.5, 181]].forEach(([e, y0, y1, yc]) => {
         box(440, y0, 440.6, y1, 0.92, 2.06, MAT.patine, false); for (let y = y0 + 4; y < y1 - 1; y += 4) box(440.6, y, 440.85, y + 0.3, 0.92, 2.04, groove, false);
-        clickable(box(441, y0 + 1, 452, y1 - 1, 2.02, 2.045, L(e, '#fff1d6', [447, yc, 1.9], 1.1, 1.4), false), e);
+        clickable(box(441, y0 + 1, 452, y1 - 1, 2.02, 2.045, L(e, '#fff1d6', null, 1.1), false), e);
         for (const z of [1.33, 1.72]) box(441, y0, 452, y1, z, z + 0.012, shelfG, false);
         clickable(box(452.6, y0, 453.4, y1, 0.92, 2.06, glass, false), e);
         const fr = (a, b2, z0, z1) => box(452.4, a, 453.6, b2, z0, z1, MAT.patine, false);
@@ -679,6 +679,7 @@ class Floorplan3DCard extends HTMLElement {
         // halo de la réglette : fond éclairé du haut vers le bas + flaques de lumière sur les étagères en verre
         const [ba, bb] = P(440.9, yc), [sa, sb] = P(446.5, yc);
         vglow(e, (y1 - y0 - 2) * S, 1.1, [ba, 1.48, bb], [0, Math.PI / 2, 0], 1.0, false);
+        { const [s0a, s0b] = P(446.5, y0 + 0.15), [s1a, s1b] = P(446.5, y1 - 0.15); vglow(e, 11 * S, 1.1, [s0a, 1.48, s0b], [0, 0, 0], 0.6, false); vglow(e, 11 * S, 1.1, [s1a, 1.48, s1b], [0, Math.PI, 0], 0.6, false); }
         for (const [z, k] of [[1.747, 0.55], [1.357, 0.35], [0.965, 0.22]]) vglow(e, 11 * S, (y1 - y0 - 3) * S, [sa, z, sb], [-Math.PI / 2, 0, 0], k, true); });
     }
     /* ---- salle à manger ---- */
