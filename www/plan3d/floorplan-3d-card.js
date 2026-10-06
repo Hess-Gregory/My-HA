@@ -678,9 +678,9 @@ class Floorplan3DCard extends HTMLElement {
         box(441.6, yc - 5, 442.4, yc + 3, 1.734, 1.87, M('#e2ddd6')); box(441.6, y0 + 3, 442.4, y0 + 9, 0.96, 1.08, M('#cfc6d8'));
         // halo de la réglette : fond éclairé du haut vers le bas + flaques de lumière sur les étagères en verre
         const [ba, bb] = P(440.9, yc), [sa, sb] = P(446.5, yc);
-        vglow(e, (y1 - y0 - 2) * S, 1.1, [ba, 1.48, bb], [0, Math.PI / 2, 0], 1.0, false);
-        { const [s0a, s0b] = P(446.5, y0 + 0.15), [s1a, s1b] = P(446.5, y1 - 0.15); vglow(e, 11 * S, 1.1, [s0a, 1.48, s0b], [0, 0, 0], 0.6, false); vglow(e, 11 * S, 1.1, [s1a, 1.48, s1b], [0, Math.PI, 0], 0.6, false); }
-        for (const [z, k] of [[1.747, 0.55], [1.357, 0.35], [0.965, 0.22]]) vglow(e, 11 * S, (y1 - y0 - 3) * S, [sa, z, sb], [-Math.PI / 2, 0, 0], k, true); });
+        vglow(e, (y1 - y0 - 2) * S, 1.1, [ba, 1.48, bb], [0, Math.PI / 2, 0], 2.0, false); vglow(e, (y1 - y0 - 2) * S, 1.1, [ba + 0.002, 1.48, bb], [0, Math.PI / 2, 0], 1.2, false);
+        { const [s0a, s0b] = P(446.5, y0 + 0.15), [s1a, s1b] = P(446.5, y1 - 0.15); vglow(e, 11 * S, 1.1, [s0a, 1.48, s0b], [0, 0, 0], 1.4, false); vglow(e, 11 * S, 1.1, [s1a, 1.48, s1b], [0, Math.PI, 0], 1.4, false); }
+        for (const [z, k] of [[1.747, 1.3], [1.357, 0.95], [0.965, 0.7]]) vglow(e, 11 * S, (y1 - y0 - 3) * S, [sa, z, sb], [-Math.PI / 2, 0, 0], k, true); });
     }
     /* ---- salle à manger ---- */
     { const top = M('#c9b591', { roughness: 0.6 }); box(546, 250, 650, 290, 0.71, 0.77, top);
