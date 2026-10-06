@@ -108,6 +108,7 @@ class Floorplan3DCard extends HTMLElement {
     ctl.addEventListener('change', () => this._dirty = true);
     this.lights = {}; this.clickables = []; this.decor = []; this.pulses = []; this.walls = []; this.wallF = 1; this.wallTarget = 1; this._lastAct = Date.now();
     this._build();
+    this._roomMask();
     this._goTo('Vue générale', 3500); // vol d'introduction
     // faisceaux lumineux (cônes volumétriques)
     BEAMS.forEach(([e, x, y, z, r]) => { const rec = this.lights[e]; if (!rec) return;
@@ -198,7 +199,7 @@ class Floorplan3DCard extends HTMLElement {
     const L = (entity, color, plPos, base, dist = 4) => {
       if (!this.lights[entity]) this.lights[entity] = { color: new THREE.Color(color), mats: [], pls: [], base };
       const rec = this.lights[entity];
-      if (plPos) { const pl = new THREE.PointLight(color, 0, dist, 1.6); pl.shadow.mapSize.set(512, 512); pl.shadow.bias = -0.004; pl.shadow.camera.near = 0.04; pl.shadow.camera.far = dist + 0.5; const [a, b] = P(plPos[0], plPos[1]); pl.position.set(a, plPos[2], b); scene.add(pl); rec.pls.push(pl); }
+      if (plPos) { const pl = new THREE.PointLight(color, 0, dist, 1.6); pl.shadow.mapSize.set(512, 512); pl.shadow.bias = -0.004; pl.shadow.camera.near = 0.04; pl.shadow.camera.far = dist + 0.5; const [a, b] = P(plPos[0], plPos[1]); pl.position.set(a, plPos[2], b); scene.add(pl); rec.pls.push(pl); (this.plEnts = this.plEnts || []).push(entity); }
       const mat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0, roughness: 0.9 }); rec.mats.push(mat); return mat;
     };
     const clickable = (mesh, entity) => { mesh.userData.entity = entity; this.clickables.push(mesh); return mesh; };
@@ -378,6 +379,21 @@ class Floorplan3DCard extends HTMLElement {
       g.fillStyle = '#fff'; g.font = 'bold 15px system-ui,sans-serif'; g.textAlign = 'left'; g.fillText(String(this._tvTitle).slice(0, 34), 12, H - 12); }
     this.tvTex.needsUpdate = true; this._dirty = true;
   }
+  /* chaque lampe n'éclaire que sa pièce (les murs arrêtent la lumière) */
+  _roomMask() {
+    const Z = { liv: [435, 10, 775, 370], livK: [380, 255, 455, 370], kit: [330, 210, 455, 370], kitD: [435, 255, 560, 370], bath: [10, 105, 135, 210], mat: [200, 210, 330, 370] };
+    const v = (z) => new THREE.Vector4((z[0] - 390) / 50, (z[1] - 190) / 50, (z[2] - 390) / 50, (z[3] - 190) / 50);
+    const zones = (e) => e.includes('cuisine_') ? ['kit', 'kitD'] : e.includes('salle_de_bain') ? ['bath', 'bath'] : e.includes('chambre_matteo') ? ['mat', 'mat'] : ['liv', 'livK'];
+    const A = [], B = []; (this.plEnts || []).forEach((e) => { const [a, b] = zones(e); A.push(v(Z[a])); B.push(v(Z[b])); });
+    if (!A.length) return;
+    const frag = THREE.ShaderChunk.lights_fragment_begin.replace('getPointLightInfo( pointLight, geometryPosition, directLight );', `getPointLightInfo( pointLight, geometryPosition, directLight );
+      { vec3 wp = transpose( mat3( viewMatrix ) ) * ( geometryPosition - viewMatrix[ 3 ].xyz ); vec4 ba = plBoxA[ i ]; vec4 bb = plBoxB[ i ];
+        bool inA = wp.x >= ba.x && wp.x <= ba.z && wp.z >= ba.y && wp.z <= ba.w; bool inB = wp.x >= bb.x && wp.x <= bb.z && wp.z >= bb.y && wp.z <= bb.w;
+        if ( ! ( inA || inB ) ) directLight.color = vec3( 0.0 ); }`);
+    const hook = (sh) => { sh.uniforms.plBoxA = { value: A }; sh.uniforms.plBoxB = { value: B };
+      sh.fragmentShader = sh.fragmentShader.replace('#include <lights_pars_begin>', '#include <lights_pars_begin>\n#if NUM_POINT_LIGHTS > 0\nuniform vec4 plBoxA[ NUM_POINT_LIGHTS ];\nuniform vec4 plBoxB[ NUM_POINT_LIGHTS ];\n#endif').replace('#include <lights_fragment_begin>', frag); };
+    this.scene.traverse((o) => { const m = o.material; if (m && m.isMeshStandardMaterial) { m.onBeforeCompile = hook; m.customProgramCacheKey = () => 'roommask'; } });
+  }
   _rgb(a) { return new THREE.Color(`rgb(${a[0]},${a[1]},${a[2]})`); }
   _wall(m) { m.userData.y0 = m.position.y; this.walls.push(m); }
   _more(ent) { this.dispatchEvent(new CustomEvent('hass-more-info', { bubbles: true, composed: true, detail: { entityId: ent } })); }
@@ -476,7 +492,7 @@ class Floorplan3DCard extends HTMLElement {
       this.decor.forEach((m) => (m.emissiveIntensity = m.userData.base * (0.2 + 0.8 * n)));
       // ombres des lampes : les murs bloquent la lumière (8 lampes allumées max, carte d'ombre recalculée seulement si nécessaire)
       { const lit = []; for (const rec of Object.values(this.lights)) if (rec.cur && rec.cur.bri > 0.03) rec.pls.forEach((pl) => lit.push([pl, rec.base * rec.cur.bri])); lit.sort((a, b) => b[1] - a[1]);
-        const want = new Set(lit.slice(0, 8).map((x) => x[0])); let sig = ''; for (const rec of Object.values(this.lights)) rec.pls.forEach((pl) => { const on = want.has(pl); if (pl.castShadow !== on) pl.castShadow = on; sig += on ? 1 : 0; });
+        const want = new Set(lit.slice(0, 0).map((x) => x[0])); let sig = ''; for (const rec of Object.values(this.lights)) rec.pls.forEach((pl) => { const on = want.has(pl); if (pl.castShadow !== on) pl.castShadow = on; sig += on ? 1 : 0; });
         if (sig !== this._shSig) { this._shSig = sig; this.renderer.shadowMap.needsUpdate = true; } }
       if (this._shadowDirty) { this._shadowDirty = false; this.renderer.shadowMap.needsUpdate = true; }
       // murs bas / hauts
