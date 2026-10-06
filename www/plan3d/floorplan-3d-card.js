@@ -278,11 +278,11 @@ class Floorplan3DCard extends HTMLElement {
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
     // mur TV : lattes chêne, grand panneau blanc (ruban LED derrière), TV centrée + Ambilight, 2 enceintes colonnes
     box(474, 14.5, 495, 16.0, 0, 2.28, MAT.oakLight, false); for (let x = 475; x < 494; x += 2.3) box(x, 16.0, x + 1.2, 17.2, 0, 2.28, M('#b8955f'), false);
-    clickable(box(497, 13.4, 635, 14.6, 0.6, 2.24, L('light.salon_panneau_mural', '#ffd27a', [566, 30, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
-    clickable(box(500, 14.6, 632, 17.2, 0.66, 2.18, MAT.white), 'light.salon_panneau_mural');
+    clickable(box(510, 13.4, 622, 14.6, 0.7, 2.1, L('light.salon_panneau_mural', '#ffd27a', [566, 30, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
+    clickable(box(513, 14.6, 619, 17.2, 0.75, 2.04, MAT.white), 'light.salon_panneau_mural');
     clickable(box(527, 17.2, 605, 18.2, 0.97, 1.79, L('light.salon_ambilight_tv', '#7f6bff', [566, 24, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
     this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(530, 18.2, 602, 19.4, 1.0, 1.76, this.tvMat, false);
-    box(512, 17.2, 519, 19.6, 1.05, 1.75, MAT.white); box(613, 17.2, 620, 19.6, 1.05, 1.75, MAT.white);
+    box(519, 17.2, 525, 19.6, 1.05, 1.72, MAT.white); box(607, 17.2, 613, 19.6, 1.05, 1.72, MAT.white);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.tvCv = cv; this.tvTex = new THREE.CanvasTexture(cv); this.tvTex.colorSpace = THREE.SRGBColorSpace;
       this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(70 * S, 0.74), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(566, 19.5);
       this.tvScr.position.set(a, 1.38, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
