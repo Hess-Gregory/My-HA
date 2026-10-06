@@ -352,7 +352,12 @@ class Floorplan3DCard extends HTMLElement {
       box(427.5, 99, 430.2, 102.2, 2.2, 2.3, dev, false); clickable(sphere(427.6, 99.4, 2.6, 2.17, dev), 'camera.couloir'); clickable(sphere(426, 98.4, 1.3, 2.15, blk), 'camera.couloir');
       this.fireMat = M('#f4f4f2', { roughness: 0.4, emissive: '#ff2a1a', emissiveIntensity: 0 }); clickable(box(408, 70, 416, 78, 2.25, 2.3, this.fireMat), 'binary_sensor.hall_dentree_incendie_couloir_fumee');
       // armoire blanche dans la niche + pilier taupe (côté couloir)
-      box(297, 106, 320.5, 112, 0, WH, taupe); box(301, 112, 320.4, 150, 0, 1.95, wh); box(300, 111.5, 320.5, 151, 1.95, 2.0, M('#2a2725')); box(300.9, 130.7, 301, 131.3, 0.95, 1.05, M('#8a8a8a'), false);
+      // en face de la porte du WC : pilier taupe puis armoire blanche 2 portes + porte miroir étroite, bandeau foncé ; mur bleu clair jusqu'au fond ; plafonnier 2 spots
+      this._wall(box(297, 106, 320.5, 118, 0, WH, taupe)); box(302, 118, 320.4, 172, 0, 1.97, wh); box(299, 111.5, 320.5, 172.5, 1.97, 2.03, M('#2a2725'));
+      for (const y of [139, 160]) box(301.8, y - 0.15, 302.1, y + 0.15, 0.03, 1.94, M('#bdbdb8'), false); box(301.85, 160.4, 302.05, 171.6, 0.06, 1.92, M('#cfe2ea', { roughness: 0.05, metalness: 0.5 }), false);
+      for (const y of [137.8, 140.2]) cyl(301.6, y, 0.45, 0.98, 1.02, M('#9a9a9a'), 12);
+      this._wall(box(320.2, 172.5, 320.5, 205.5, 0, WH, blue));
+      { const nk = M('#a9adb1', { metalness: 0.7, roughness: 0.3 }); cyl(280, 160, 2.6, 2.27, 2.3, nk); cyl(277.5, 160, 1.3, 2.16, 2.25, nk); cyl(282.5, 160, 1.3, 2.16, 2.25, nk); }
     }
     /* ---- buanderie ---- */
     { // buanderie / local technique d'après photos — en entrant (par le sud) : mur de gauche (ouest) = baie réseau + Ajax Hub 2 + tableau électrique,
