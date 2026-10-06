@@ -13,7 +13,7 @@ const ROOM_TEMPS = [
   ['Buanderie', 380, 180, 'sensor.buanderie_local_tech_detecteur_incendie_temperature'],
   ['WC', 185, 140, null],
 ];
-const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 300, 130], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 600, 230]];
+const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 300, 130], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 640, 330]];
 const VIEWS = {
   'Vue générale': { pos: [0.4, 26, 9.5], tgt: [0.4, 0, 0.3] },
   'Salon': { pos: [6.0, 9.5, 6.5], tgt: [3.3, 0.6, -2.4] },
@@ -212,15 +212,28 @@ class Floorplan3DCard extends HTMLElement {
     floor([[330,210],[435,210],[435,255],[455,255],[455,370],[330,370]], MAT.tileGrey);
     floor([[435,10],[680,10],[680,130],[772,150],[745,355],[685,335],[685,370],[455,370],[455,255],[435,255]], MAT.tileGrey);
     /* ---- murs ---- */
-    wall(10, 105, 235, 105); wall(235, 10, 235, 105, [[18, 58]]); wall(235, 10, 680, 10); wall(680, 10, 680, 130, [[22, 75]]); box(675.5, 22, 684.5, 75, 0, 0.9, MAT.wall); box(675.5, 22, 684.5, 75, 2.15, WH, MAT.wall); box(675.5, 22, 684.5, 75, WH, WH + 0.03, MAT.wallTop, false);
+    wall(10, 105, 235, 105); wall(235, 10, 235, 105, [[18, 58]]); wall(235, 10, 680, 10); wall(680, 10, 680, 130, [[34, 80]]); box(675.5, 34, 684.5, 80, 0, 0.9, MAT.wall); box(675.5, 34, 684.5, 80, 2.15, WH, MAT.wall); box(675.5, 34, 684.5, 80, WH, WH + 0.03, MAT.wallTop, false);
     const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0); wallAny(745, 355, 685, 335, 0);
     wall(685, 335, 685, 370); wall(10, 370, 685, 370, [[50, 150], [245, 300], [470, 640]]); for (const [a0, a1, z0] of [[50, 150, 0.9], [245, 300, 0.9], [470, 640, 0.02]]) { box(a0, 365.5, a1, 374.5, 0, z0, MAT.wall); box(a0, 365.5, a1, 374.5, 2.15, WH, MAT.wall); box(a0, 365.5, a1, 374.5, WH, WH + 0.03, MAT.wallTop, false); } wall(10, 105, 10, 370);
     { const occ = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false }); const [a, b] = P(10, 10), [c, d] = P(775, 372); const ce = new THREE.Mesh(new THREE.BoxGeometry(c - a, 0.04, d - b), occ); ce.position.set((a + c) / 2, 2.36, (b + d) / 2); ce.castShadow = true; scene.add(ce); this.ceiling = ce; }
     // stores à lamelles verticales (chambre enfant : beige, salon côté TV : blanc)
     { const beige = M('#d9d2c4', { roughness: 0.9 }), whiteB = M('#efeeea', { roughness: 0.9 });
       for (let x = 245.5; x < 299; x += 3.6) box(x, 363.6, x + 3, 364.1, 0.92, 2.12, beige, false); box(245, 363.3, 300, 364.4, 2.12, 2.16, beige, false);
-      for (let y = 22.5; y < 74; y += 3.6) box(673.6, y, 674.1, y + 3, 0.92, 2.12, whiteB, false); box(673.3, 22, 674.4, 75, 2.12, 2.16, whiteB, false); }
-    windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 22, 680, 75); windowOn(470, 370, 640, 370, 0.02, 2.15);
+      for (let y = 34.5; y < 79; y += 3.6) box(673.6, y, 674.1, y + 3, 0.92, 2.12, whiteB, false); box(673.3, 34, 674.4, 80, 2.12, 2.16, whiteB, false); }
+    { const camW = M('#f2f2f0', { roughness: 0.4 }), camB = M('#151517', { roughness: 0.2 });
+      box(626, 14.6, 634, 15.6, 2.18, 2.26, camW, false); box(628.5, 15.6, 631.5, 18, 2.2, 2.24, camW, false); clickable(sphere(630, 19.5, 2.6, 2.19, camB), 'camera.salon_fluide');
+      box(474, 364.4, 482, 365.4, 2.18, 2.26, camW, false); box(476.5, 362, 479.5, 364.4, 2.2, 2.24, camW, false); clickable(sphere(478, 360.5, 2.6, 2.19, camB), 'camera.rlc_843a_fluide');
+      clickable(box(645, 364.2, 649.5, 365.5, 0.84, 0.94, camW, false), 'binary_sensor.piece_de_vie_detecteur_living_mouvement'); box(646.5, 364, 648, 364.2, 0.88, 0.91, camB, false); }
+    // couleurs des murs (gris bleuté clair dans la pièce de vie, gris foncé à gauche du mur TV)
+    { const liv = M('#c3cad0', { roughness: 0.95 }), dark = M('#62666b', { roughness: 0.95 });
+      const pw = (x0, y0, x1, y1, z0, z1, m = liv) => this._wall(box(x0, y0, x1, y1, z0, z1, m, false));
+      pw(439.5, 14.6, 474, 14.9, 0, WH, dark); pw(474, 14.6, 675.5, 14.9, 0, WH);
+      pw(675.1, 14.5, 675.4, 34, 0, WH); pw(675.1, 80, 675.4, 125.5, 0, WH); pw(675.1, 34, 675.4, 80, 0, 0.9); pw(675.1, 34, 675.4, 80, 2.15, WH);
+      pw(439.6, 14.5, 439.9, 40, 0, WH); pw(439.6, 90, 439.9, 255, 0, WH);
+      pw(455, 365.1, 470, 365.4, 0, WH); pw(640, 365.1, 680.5, 365.4, 0, WH); pw(470, 365.1, 640, 365.4, 2.15, WH);
+      const pa = (wl, t0, t1, z0, z1) => this._wall(along(wl, t0, t1, 4.6, 0.3, z0, z1, liv, false));
+      pa(wB1, 0, 0.15, 0, WH); pa(wB1, 0.85, 1, 0, WH); pa(wB1, 0.15, 0.85, 0, 0.9); pa(wB1, 0.15, 0.85, 2.15, WH); pa(wB2, 0, 1, 0, WH); }
+    windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 34, 680, 80); windowOn(470, 370, 640, 370, 0.02, 2.15);
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
     wall(330, 210, 435, 210, [[365, 410]]); wall(435, 10, 435, 255, [[40, 90]]); wall(200, 210, 200, 370); wall(330, 210, 330, 370);
@@ -311,7 +324,7 @@ class Floorplan3DCard extends HTMLElement {
     box(389, 358, 401, 366, 1.86, 2.3, MAT.white);
     box(411, 342, 424, 362, 0.9, 1.22, MAT.black);
     box(425, 292, 447, 366, 0, 0.9, MAT.greige); box(423, 290, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 294, 457, 362, 1.06, 1.09, MAT.worktop); box(447, 296, 452, 360, 0.94, 1.06, M('#d8d5cf'));
-    for (const y of [312, 344]) { cyl(468, y, 2, 0, 0.72, MAT.black, 10); cyl(468, y, 8, 0.72, 0.78, M('#2b2b2e'), 20); box(462, y - 7, 464, y + 7, 0.78, 1.15, M('#2b2b2e')); }
+    for (const y of [312, 344]) { cyl(468, y, 2, 0, 0.72, MAT.black, 10); cyl(468, y, 8, 0.72, 0.78, M('#2b2b2e'), 20); box(472, y - 7, 474, y + 7, 0.78, 1.15, M('#2b2b2e')); }
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
     [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
@@ -319,14 +332,14 @@ class Floorplan3DCard extends HTMLElement {
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
     // mur TV : lattes chêne, grand panneau blanc (ruban LED derrière), TV centrée + Ambilight, 2 enceintes colonnes
-    box(474, 14.5, 495, 16.0, 0, 2.28, MAT.oakLight, false); for (let x = 475; x < 494; x += 2.3) box(x, 16.0, x + 1.2, 17.2, 0, 2.28, M('#b8955f'), false);
-    clickable(box(504.5, 13.4, 627.5, 14.6, 0.765, 1.995, L('light.salon_panneau_mural', '#ffd27a', [566, 30, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
-    clickable(box(506, 14.6, 626, 17.2, 0.78, 1.98, MAT.white), 'light.salon_panneau_mural');
-    clickable(box(527, 17.2, 605, 18.2, 0.97, 1.79, L('light.salon_ambilight_tv', '#7f6bff', [566, 24, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
-    this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(530, 18.2, 602, 19.4, 1.0, 1.76, this.tvMat, false);
-    box(512, 17.2, 518, 19.6, 1.05, 1.72, MAT.white); box(614, 17.2, 620, 19.6, 1.05, 1.72, MAT.white);
+    box(474, 14.5, 504, 16.0, 0, 2.28, MAT.oakLight, false); for (let x = 475; x < 503; x += 2.3) box(x, 16.0, x + 1.2, 17.2, 0, 2.28, M('#b8955f'), false);
+    clickable(box(502.5, 15, 617.5, 17.4, 0.8, 1.96, L('light.salon_panneau_mural', '#ffd27a', [560, 32, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
+    clickable(box(500, 17.4, 620, 19.6, 0.78, 1.98, MAT.white), 'light.salon_panneau_mural');
+    clickable(box(521, 19.6, 599, 20.6, 0.97, 1.79, L('light.salon_ambilight_tv', '#7f6bff', [560, 27, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
+    this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(524, 20.6, 596, 21.8, 1.0, 1.76, this.tvMat, false);
+    box(506, 19.6, 512, 22, 1.05, 1.72, MAT.white); box(608, 19.6, 614, 22, 1.05, 1.72, MAT.white);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.tvCv = cv; this.tvTex = new THREE.CanvasTexture(cv); this.tvTex.colorSpace = THREE.SRGBColorSpace;
-      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(70 * S, 0.74), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(566, 19.5);
+      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(70 * S, 0.74), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(560, 21.9);
       this.tvScr.position.set(a, 1.38, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
     // meuble TV suspendu blanc (LED dessous) + caisson chêne ouvert pour l'ampli, colonne chêne à droite
     { const groove = M('#dcdcd8'); box(472, 14.5, 640, 34.0, 0.16, 0.56, MAT.white); box(474, 16.0, 638, 32.0, 0.145, 0.16, decor('#ffcf88', 0.9), false);
@@ -354,9 +367,9 @@ class Floorplan3DCard extends HTMLElement {
     { const [a, b] = P(676.5, 102); const c = new THREE.Mesh(new THREE.CircleGeometry(13 * S, 40), M('#efe9df')); c.position.set(a, 1.75, b); c.rotation.y = -Math.PI / 2; scene.add(c); }
     // meubles à vinyles blancs (3 colonnes x 2) sous la fenêtre de la baie + clavier rouge, stores blancs
     { const wh = M('#f4f4f2', { roughness: 0.4 }), sleeve = M('#2a2a2e', { roughness: 0.5 }), whiteB = M('#efeeea', { roughness: 0.9 });
-      along(wB1, 0.42, 0.98, 4.6, 17, 0, 0.82, wh);
-      for (let k = 0; k < 3; k++) { const t0 = 0.42 + k * 0.1867, t1 = t0 + 0.1867; for (const z of [0.04, 0.43]) { along(wB1, t0 + 0.012, t1 - 0.012, 21.4, 0.4, z + 0.12, z + 0.36, sleeve, false); along(wB1, t0 + 0.012, t1 - 0.012, 21.6, 0.5, z, z + 0.12, wh, false); } along(wB1, t1 - 0.003, t1 + 0.003, 21.6, 0.4, 0, 0.82, M('#dcdcd8'), false); }
-      along(wB1, 0.56, 0.84, 7, 13, 0.82, 0.86, M('#c62f2f', { roughness: 0.4 })); along(wB1, 0.6, 0.83, 15, 5, 0.86, 0.865, M('#f2f2f2'), false); along(wB1, 0.57, 0.66, 8, 6, 0.86, 0.866, M('#ff9a2f'), false);
+      along(wB1, 0.15, 0.71, 4.6, 17, 0, 0.82, wh);
+      for (let k = 0; k < 3; k++) { const t0 = 0.15 + k * 0.1867, t1 = t0 + 0.1867; for (const z of [0.04, 0.43]) { along(wB1, t0 + 0.012, t1 - 0.012, 21.4, 0.4, z + 0.12, z + 0.36, sleeve, false); along(wB1, t0 + 0.012, t1 - 0.012, 21.6, 0.5, z, z + 0.12, wh, false); } along(wB1, t1 - 0.003, t1 + 0.003, 21.6, 0.4, 0, 0.82, M('#dcdcd8'), false); }
+      along(wB1, 0.3, 0.58, 7, 13, 0.82, 0.86, M('#c62f2f', { roughness: 0.4 })); along(wB1, 0.34, 0.57, 15, 5, 0.86, 0.865, M('#f2f2f2'), false); along(wB1, 0.31, 0.4, 8, 6, 0.86, 0.866, M('#ff9a2f'), false);
       for (let t = 0.155; t < 0.85; t += 0.022) along(wB1, t, t + 0.017, 5, 0.6, 0.92, 2.12, whiteB, false); along(wB1, 0.15, 0.85, 4.8, 1.2, 2.12, 2.16, whiteB, false); }
     // coin DJ (d'après photos) : buffet blanc cérusé à lambris + plateau chêne gris, caisson DJ blanc laqué, Adam A7V aux extrémités, KEF muraux, Hue Play rouges, cadres
     { const cream = M('#e6e0d4', { roughness: 0.75 }), cream2 = M('#d9d2c4', { roughness: 0.8 }), groove = M('#c9c1b2'), woodTop = M('#8f877b', { roughness: 0.7 }), handle = M('#2a2a2a', { roughness: 0.4, metalness: 0.4 }), gloss = M('#f7f7f5', { roughness: 0.15, metalness: 0.05 });
@@ -426,9 +439,16 @@ class Floorplan3DCard extends HTMLElement {
         box(452.5, yc - 0.6, 453.5, yc + 0.6, 0.92, 2.06, MAT.patine, false); for (const z of [1.25, 1.6, 1.9]) box(452.5, y0, 453.5, y1, z, z + 0.015, MAT.patine, false); });
     }
     /* ---- salle à manger ---- */
-    box(548, 247, 648, 292, 0.72, 0.77, MAT.oakLight); box(593, 262, 603, 277, 0, 0.72, MAT.black);
-    for (const x of [575, 621]) { box(x - 9, 228, x + 9, 241, 0, 0.47, MAT.velvet); box(x - 9, 226, x + 9, 230, 0.47, 0.88, MAT.velvet); box(x - 9, 298, x + 9, 311, 0, 0.47, MAT.velvet); box(x - 9, 308, x + 9, 312, 0.47, 0.88, MAT.velvet); }
-    box(528, 261, 541, 278, 0, 0.47, MAT.velvet); box(526, 261, 530, 278, 0.47, 0.88, MAT.velvet); box(655, 261, 668, 278, 0, 0.47, MAT.velvet); box(665, 261, 669, 278, 0.47, 0.88, MAT.velvet);
+    { const top = M('#c9b591', { roughness: 0.6 }); box(546, 250, 650, 290, 0.71, 0.77, top);
+      for (const x of [562, 634]) for (const sg of [1, -1]) { const [a, b] = P(x, 270); const leg = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.98, 0.05), MAT.black); leg.position.set(a, 0.355, b); leg.rotation.x = sg * 0.72; leg.castShadow = true; scene.add(leg); }
+      box(562, 268.8, 634, 271.2, 0.06, 0.1, MAT.black); }
+    { const velvet = M('#d8cdbb', { roughness: 1 }), [tcx, tcz] = P(598, 270);
+      const chair = (x, y) => { const [a, b] = P(x, y); const g = new THREE.Group(); g.position.set(a, 0, b); g.rotation.y = Math.atan2(-(tcx - a), -(tcz - b)); scene.add(g);
+        const seat = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.09, 28), velvet); seat.position.y = 0.48; seat.scale.z = 0.92; seat.castShadow = true; g.add(seat);
+        const back = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.23, 0.36, 28, 1, true, -Math.PI * 0.62, Math.PI * 1.24), velvet); back.material.side = THREE.DoubleSide; back.position.set(0, 0.7, 0.01); back.castShadow = true; g.add(back);
+        for (const [lx, lz] of [[-0.17, -0.15], [0.17, -0.15], [-0.15, 0.16], [0.15, 0.16]]) { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.009, 0.44, 8), MAT.black); l.position.set(lx, 0.22, lz); l.rotation.x = lz > 0 ? -0.12 : 0.12; g.add(l); } };
+      for (const x of [575, 621]) { chair(x, 236); chair(x, 304); } chair(530, 270); chair(666, 270); }
+
     box(560, 268, 636, 271, 2.28, 2.3, MAT.black, false);
     [['light.salle_a_manger_lg', 568], ['light.salle_a_manger_lc', 598], ['light.salle_a_manger_ld', 628]].forEach(([e, x]) => {
       cyl(x, 269.5, 0.6, 1.95, 2.28, MAT.black, 6); clickable(cyl(x, 269.5, 7, 1.62, 1.95, M('#222226', { roughness: 0.8 })), e);
