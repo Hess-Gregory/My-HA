@@ -551,8 +551,8 @@ class Floorplan3DCard extends HTMLElement {
       for (const [y, m] of [[98, flor], [116, fluffy]]) box(661, y, 667, y + 15, 0.44, 0.78, m);
       // horloge murale mappemonde (bois clair, chiffres romains, cerclage noir) sur le mur de la fenêtre, à droite : aiguilles à l'heure réelle
       const cv = document.createElement('canvas'); cv.width = cv.height = 512; this._clockCv = cv; this._clockTex = new THREE.CanvasTexture(cv);
-      const [ca, cb] = P(674.9, 124), dial = new THREE.Mesh(new THREE.CircleGeometry(0.42, 64), new THREE.MeshStandardMaterial({ map: this._clockTex, roughness: 0.75 })); dial.position.set(ca, 1.78, cb); dial.rotation.y = -Math.PI / 2; scene.add(dial);
-      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.016, 8, 64), M('#1d1d1f', { roughness: 0.4 })); rim.position.set(ca - 0.012, 1.78, cb); rim.rotation.y = -Math.PI / 2; scene.add(rim);
+      const [ca, cb] = P(674.9, 103), dial = new THREE.Mesh(new THREE.CircleGeometry(0.3, 64), new THREE.MeshStandardMaterial({ map: this._clockTex, roughness: 0.75 })); dial.position.set(ca, 1.72, cb); dial.rotation.y = -Math.PI / 2; scene.add(dial);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.013, 8, 64), M('#1d1d1f', { roughness: 0.4 })); rim.position.set(ca - 0.01, 1.72, cb); rim.rotation.y = -Math.PI / 2; scene.add(rim);
       this._drawClock(); clearInterval(this._clkT); this._clkT = setInterval(() => { this._drawClock(); this._dirty = true; }, 30000); }
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
     { const [a, b] = P(575, 95); const hat = new THREE.Mesh(new THREE.ConeGeometry(30 * S, 0.1, 48, 1, true), M('#c8a55e', { transparent: true, opacity: 0.3, side: THREE.DoubleSide, roughness: 1 })); hat.position.set(a, 2.05, b); scene.add(hat); clickable(hat, 'light.salon_l_salon'); }
