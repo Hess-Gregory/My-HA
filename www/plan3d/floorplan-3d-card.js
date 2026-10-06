@@ -3,14 +3,14 @@ import * as THREE from '/local/plan3d/three.module.min.js';
 import { OrbitControls } from '/local/plan3d/OrbitControls.js';
 
 const ROOM_TEMPS = [
-  ['Pièce de vie', 453, 15, 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature', 1.9],
-  ['Cuisine', 395, 250, null],
-  ['Chambre adulte', 90, 357, 'sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature'],
-  ['Chambre enfant', 262, 232, 'sensor.temp_chambre_enfants_sonoff_a480146b58_temperature'],
-  ['Salle de bain', 75, 175, 'sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature'],
-  ['Hall d’entrée', 330, 75, 'sensor.temp_couloir_sonoff_a480146b60_temperature'],
-  ['Buanderie', 380, 180, null],
-  ['WC', 185, 140, null],
+  ['Pièce de vie', 605, 190, 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature'],
+  ['Cuisine', 392, 300, null],
+  ['Chambre adulte', 105, 290, 'sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature'],
+  ['Chambre enfant', 265, 290, 'sensor.temp_chambre_enfants_sonoff_a480146b58_temperature'],
+  ['Salle de bain', 72, 157, 'sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature'],
+  ['Hall d’entrée', 335, 58, 'sensor.temp_couloir_sonoff_a480146b60_temperature'],
+  ['Buanderie', 380, 158, null],
+  ['WC', 185, 130, null],
 ];
 const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 400, 45], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 665, 340]];
 const VIEWS = {
