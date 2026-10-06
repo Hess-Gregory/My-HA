@@ -217,7 +217,7 @@ class Floorplan3DCard extends HTMLElement {
     windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 22, 680, 75); windowOn(470, 370, 640, 370, 0.02, 2.15);
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
-    wall(330, 210, 435, 210, [[398, 430]]); wall(435, 10, 435, 255, [[40, 90]]); wall(200, 210, 200, 370); wall(330, 210, 330, 370);
+    wall(330, 210, 435, 210, [[365, 410]]); wall(435, 10, 435, 255, [[40, 90]]); wall(200, 210, 200, 370); wall(330, 210, 330, 370);
     box(140, 112, 160, 152, 0, WH, M('#cfd3c9')); box(298, 112, 322, 132, 0, WH, M('#cfd3c9'));
     // porte d'entrée (animée selon le capteur)
     { const [a, b] = P(235, 18); const piv = new THREE.Group(); piv.position.set(a + 2 * S, 0, b); scene.add(piv);
@@ -252,26 +252,28 @@ class Floorplan3DCard extends HTMLElement {
     box(335, 262, 365, 366, 0, 0.86, MAT.greige); box(334.5, 262, 366, 366, 0.86, 0.9, MAT.worktop); box(340, 290, 360, 322, 0.86, 0.905, sinkM, false);
     box(335, 314, 337, 318, 0.9, 1.25, MAT.steel, false);
     box(334.6, 262, 335.4, 336, 0.9, 1.43, tiles, false); box(334.6, 336, 335.4, 366, 0.9, 1.45, tiles, false);
-    box(335, 266, 352, 334, 1.45, 2.2, MAT.greige);
-    clickable(box(335, 266, 352, 334, 1.43, 1.45, L('light.cuisine_evier', '#ffd9a0', [348, 300, 1.35], 1.8, 2.4), false), 'light.cuisine_evier');
+    box(335, 266, 352, 330, 1.45, 2.2, MAT.greige);
+    clickable(box(335, 266, 352, 330, 1.43, 1.45, L('light.cuisine_evier', '#ffd9a0', [348, 298, 1.35], 1.8, 2.4), false), 'light.cuisine_evier');
     box(339, 340, 356, 358, 0.9, 1.3, MAT.black); box(341, 341, 354, 352, 1.3, 1.42, M('#d9dee0', { transparent: true, opacity: 0.6 }), false);
     box(365, 336, 425, 366, 0, 0.86, MAT.greige); box(365, 334, 425, 366, 0.86, 0.9, MAT.worktop);
     box(335, 365.2, 425, 365.8, 0.9, 1.5, tiles, false); box(335, 365.2, 425, 365.8, 1.5, 2.3, greyWall, false);
-    // étagères ouvertes éclairées (coin sud-ouest, au-dessus de la machine à café)
-    for (const [x0, x1] of [[336, 353], [354, 371]]) { box(x0, 349, x1, 366, 1.45, 1.47, MAT.white); box(x0, 349, x1, 366, 2.18, 2.2, MAT.white); box(x0, 349, x0 + 1, 366, 1.45, 2.2, MAT.white); box(x1 - 1, 349, x1, 366, 1.45, 2.2, MAT.white);
-      box(x0 + 1, 350, x1 - 1, 366, 1.82, 1.83, M('#cfe6ea', { transparent: true, opacity: 0.45 }), false);
-      clickable(box(x0 + 1, 364.5, x1 - 1, 365.6, 1.47, 2.18, L('light.cuisine_etagere_cafe', '#ffd9a0', x0 === 336 ? [355, 360, 1.95] : null, 1.0, 1.8), false), 'light.cuisine_etagere_cafe');
-      cyl((x0 + x1) / 2, 358, 3, 2.16, 2.18, L('light.cuisine_etagere_cafe', '#fff1d6', null, 1, 1)); }
+    // étagères ouvertes éclairées : mur ouest, coin sud, au-dessus de la machine à café (ouvertes vers l'est)
+    for (const [y0, y1] of [[331, 348], [349, 366]]) { box(335, y0, 352, y1, 1.45, 1.47, MAT.white); box(335, y0, 352, y1, 2.18, 2.2, MAT.white); box(335, y0, 352, y0 + 1, 1.45, 2.2, MAT.white); box(335, y1 - 1, 352, y1, 1.45, 2.2, MAT.white);
+      box(336, y0 + 1, 351, y1 - 1, 1.82, 1.83, M('#cfe6ea', { transparent: true, opacity: 0.45 }), false);
+      clickable(box(335.2, y0 + 1, 336.4, y1 - 1, 1.47, 2.18, L('light.cuisine_etagere_cafe', '#ffd9a0', y0 === 331 ? [345, 348, 1.95] : null, 1.0, 1.8), false), 'light.cuisine_etagere_cafe');
+      cyl(343, (y0 + y1) / 2, 3, 2.16, 2.18, L('light.cuisine_etagere_cafe', '#fff1d6', null, 1, 1)); }
     // taque + hotte cheminée (mur sud)
     box(381, 342, 409, 362, 0.9, 0.905, MAT.black, false);
-    { const [a, b] = P(395, 354); const hood = new THREE.Mesh(new THREE.CylinderGeometry(7 * S, 23 * S, 0.3, 4, 1), MAT.white); hood.rotation.y = Math.PI / 4; hood.scale.set(1, 1, 0.62); hood.position.set(a, 1.72, b); hood.castShadow = true; scene.add(hood);
+    { const [a, b] = P(395, 354); const g = new THREE.CylinderGeometry(6 * S, 24 * S, 0.3, 4, 1); g.rotateY(Math.PI / 4); g.scale(1, 1, 0.7); const hood = new THREE.Mesh(g, MAT.white); hood.position.set(a, 1.72, b); hood.castShadow = true; scene.add(hood);
       const rim = new THREE.Mesh(new THREE.BoxGeometry(32 * S, 0.03, 20 * S), MAT.steel); rim.position.set(a, 1.57, b); scene.add(rim); }
     box(389, 358, 401, 366, 1.86, 2.3, MAT.white);
     box(411, 342, 424, 362, 0.9, 1.22, MAT.black);
-    box(425, 248, 447, 366, 0, 0.9, MAT.greige); box(423, 246, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 250, 456, 362, 1.06, 1.09, MAT.worktop); box(447, 252, 452, 360, 0.94, 1.06, M('#d8d5cf'));
-    for (const y of [280, 312]) { cyl(466, y, 2, 0, 0.72, MAT.black, 10); cyl(466, y, 8, 0.72, 0.78, M('#55565a'), 20); }
-    box(435, 212, 437, 246, 0, 0.75, MAT.white); box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
-    [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3.2, 2.02, 2.16, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
+    box(425, 292, 447, 366, 0, 0.9, MAT.greige); box(423, 290, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 294, 457, 362, 1.06, 1.09, MAT.worktop); box(447, 296, 452, 360, 0.94, 1.06, M('#d8d5cf'));
+    for (const y of [312, 344]) { cyl(468, y, 2, 0, 0.72, MAT.black, 10); cyl(468, y, 8, 0.72, 0.78, M('#2b2b2e'), 20); box(462, y - 7, 464, y + 7, 0.78, 1.15, M('#2b2b2e')); }
+    // barrière enfant à l'entrée de la cuisine (entre le mur et la péninsule)
+    box(455, 256, 457, 290, 0.72, 0.76, MAT.white); box(455, 256, 457, 290, 0.04, 0.08, MAT.white); for (let y = 258; y < 290; y += 3.4) box(455.5, y, 456.5, y + 0.9, 0.08, 0.72, MAT.white, false);
+    box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
+    [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
     box(440, 14, 466, 32, 0, 0.75, MAT.oakDark); box(442, 16, 464, 30, 0.75, 1.0, MAT.white); box(444, 12, 462, 13.5, 1.25, 1.55, MAT.black, false);
     box(474, 11, 490, 13.5, 0.4, 2.25, MAT.oakLight, false); for (let x = 475; x < 490; x += 2.2) box(x, 13.5, x + 1, 14.2, 0.4, 2.25, M('#b8955f'), false);
@@ -307,9 +309,20 @@ class Floorplan3DCard extends HTMLElement {
     along(wB2, 0.02, 0.1, 2, 13, 0, 1.15, MAT.white); along(wB2, 0.9, 0.98, 2, 13, 0, 1.15, MAT.white);
     clickable(along(wB2, 0.285, 0.375, 1.2, 2.5, 1.0, 1.22, L('light.coin_dj_sono_gauche', '#ff2a3a', [758, 205, 1.15], 1.8, 2.4), false), 'light.coin_dj_sono_gauche');
     clickable(along(wB2, 0.625, 0.715, 1.2, 2.5, 1.0, 1.22, L('light.coin_dj_sono_droite', '#ff2a3a', [751, 275, 1.15], 1.8, 2.4), false), 'light.coin_dj_sono_droite');
-    box(438, 105, 456, 200, 0, 0.85, MAT.patine); box(438, 108, 452, 197, 0.85, 2.05, MAT.patine);
-    clickable(box(452, 165, 453.5, 193, 0.95, 1.95, L('light.salle_a_manger_vit_g', '#ff2050', [460, 179, 1.5], 1.4, 2.2), false), 'light.salle_a_manger_vit_g');
-    clickable(box(452, 112, 453.5, 140, 0.95, 1.95, L('light.salle_a_manger_vit_d', '#ff2050', [460, 126, 1.5], 1.4, 2.2), false), 'light.salle_a_manger_vit_d');
+    // vitrine : bas 3 portes, haut 2 vitrines vitrées éclairées + niche centrale ouverte, corniche
+    { const glass = M('#eaf3f5', { transparent: true, opacity: 0.22, roughness: 0.05 }), groove = M('#cfc7b8'), shelfG = M('#dfeef0', { transparent: true, opacity: 0.5, roughness: 0.1 });
+      box(437, 104, 458, 201, 0, 0.86, MAT.patine); box(436.5, 103, 459, 202, 0.86, 0.9, MAT.patine); box(437, 104, 458.5, 201, 0, 0.06, groove);
+      for (const y of [136.3, 168.7]) box(458, y - 0.5, 458.5, y + 0.5, 0.1, 0.82, groove, false);
+      for (const [y0, y1] of [[106, 135], [138, 167], [170, 199]]) { box(458, y0, 458.3, y1, 0.14, 0.16, groove, false); box(458, y0, 458.3, y1, 0.76, 0.78, groove, false); }
+      box(437, 105, 440, 200, 0.9, 2.08, MAT.patine); box(436.5, 103.5, 455.5, 201.5, 2.08, 2.16, MAT.patine);
+      for (const [y0, y1] of [[105, 107.5], [139.5, 142], [163, 165.5], [197.5, 200]]) box(440, y0, 453.5, y1, 0.9, 2.08, MAT.patine);
+      for (const z of [1.33, 1.72]) box(440, 142, 452, 163, z, z + 0.025, MAT.patine);
+      [['light.salle_a_manger_vit_d', 107.5, 139.5, 124], ['light.salle_a_manger_vit_g', 165.5, 197.5, 181]].forEach(([e, y0, y1, yc]) => {
+        clickable(box(440, y0, 441, y1, 0.92, 2.06, L(e, '#ff2050', [456, yc, 1.5], 1.4, 2.2), false), e);
+        for (const z of [1.33, 1.72]) box(441, y0, 452, y1, z, z + 0.012, shelfG, false);
+        clickable(box(452.6, y0, 453.4, y1, 0.92, 2.06, glass, false), e);
+        box(452.5, yc - 0.6, 453.5, yc + 0.6, 0.92, 2.06, MAT.patine, false); for (const z of [1.25, 1.6, 1.9]) box(452.5, y0, 453.5, y1, z, z + 0.015, MAT.patine, false); });
+    }
     /* ---- salle à manger ---- */
     box(548, 247, 648, 292, 0.72, 0.77, MAT.oakLight); box(593, 262, 603, 277, 0, 0.72, MAT.black);
     for (const x of [575, 621]) { box(x - 9, 228, x + 9, 241, 0, 0.47, MAT.velvet); box(x - 9, 226, x + 9, 230, 0.47, 0.88, MAT.velvet); box(x - 9, 298, x + 9, 311, 0, 0.47, MAT.velvet); box(x - 9, 308, x + 9, 312, 0.47, 0.88, MAT.velvet); }
@@ -342,7 +355,7 @@ class Floorplan3DCard extends HTMLElement {
     if (sa && sa.azimuth !== undefined && this.sun) { const az = (sa.azimuth + (this.cfg.north ?? 180)) * Math.PI / 180, el = Math.max(6, sa.elevation) * Math.PI / 180;
       const sp = new THREE.Vector3(Math.sin(az) * Math.cos(el) * 20, Math.sin(el) * 20, -Math.cos(az) * Math.cos(el) * 20); if (sp.distanceTo(this.sun.position) > 0.02) { this.sun.position.copy(sp); this._shadowDirty = true; } this.sun.color.set(sa.elevation < 15 ? '#ffc48a' : '#fff4e6'); this.sunEl = sa.elevation; }
     this._renderPanel();
-    (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.55 : 0; });
+    (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.22 : 0; });
     this._drawTablet(H);
     if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
