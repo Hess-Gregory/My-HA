@@ -97,7 +97,7 @@ class Floorplan3DCard extends HTMLElement {
     const canvas = this.$('canvas'), wrap = this.$('.wrap');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true; renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer = renderer;
     const scene = new THREE.Scene(); this.scene = scene;
@@ -198,7 +198,7 @@ class Floorplan3DCard extends HTMLElement {
     const L = (entity, color, plPos, base, dist = 4) => {
       if (!this.lights[entity]) this.lights[entity] = { color: new THREE.Color(color), mats: [], pls: [], base };
       const rec = this.lights[entity];
-      if (plPos) { const pl = new THREE.PointLight(color, 0, dist, 1.6); const [a, b] = P(plPos[0], plPos[1]); pl.position.set(a, plPos[2], b); scene.add(pl); rec.pls.push(pl); }
+      if (plPos) { const pl = new THREE.PointLight(color, 0, dist, 1.6); pl.shadow.mapSize.set(512, 512); pl.shadow.bias = -0.004; pl.shadow.camera.near = 0.04; pl.shadow.camera.far = dist + 0.5; const [a, b] = P(plPos[0], plPos[1]); pl.position.set(a, plPos[2], b); scene.add(pl); rec.pls.push(pl); }
       const mat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0, roughness: 0.9 }); rec.mats.push(mat); return mat;
     };
     const clickable = (mesh, entity) => { mesh.userData.entity = entity; this.clickables.push(mesh); return mesh; };
@@ -326,7 +326,7 @@ class Floorplan3DCard extends HTMLElement {
     }
     const sa = H['sun.sun'] && H['sun.sun'].attributes;
     if (sa && sa.azimuth !== undefined && this.sun) { const az = (sa.azimuth + (this.cfg.north ?? 180)) * Math.PI / 180, el = Math.max(6, sa.elevation) * Math.PI / 180;
-      this.sun.position.set(Math.sin(az) * Math.cos(el) * 20, Math.sin(el) * 20, -Math.cos(az) * Math.cos(el) * 20); this.sun.color.set(sa.elevation < 15 ? '#ffc48a' : '#fff4e6'); this.sunEl = sa.elevation; }
+      const sp = new THREE.Vector3(Math.sin(az) * Math.cos(el) * 20, Math.sin(el) * 20, -Math.cos(az) * Math.cos(el) * 20); if (sp.distanceTo(this.sun.position) > 0.02) { this.sun.position.copy(sp); this._shadowDirty = true; } this.sun.color.set(sa.elevation < 15 ? '#ffc48a' : '#fff4e6'); this.sunEl = sa.elevation; }
     this._renderPanel();
     (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.55 : 0; });
     this._drawTablet(H);
@@ -474,14 +474,19 @@ class Floorplan3DCard extends HTMLElement {
       this.hemi.intensity = 1.05 - 0.85 * n; this.hemi.color.set(n > 0.5 ? '#8a8fb8' : '#ffffff'); this.sun.intensity = 1.8 * (1 - n) + 0.15 * n;
       this.renderer.toneMappingExposure = 1.05 + 0.2 * n; this.scene.background = new THREE.Color('#f1ede6').lerp(new THREE.Color('#15131c'), n);
       this.decor.forEach((m) => (m.emissiveIntensity = m.userData.base * (0.2 + 0.8 * n)));
+      // ombres des lampes : les murs bloquent la lumière (8 lampes allumées max, carte d'ombre recalculée seulement si nécessaire)
+      { const lit = []; for (const rec of Object.values(this.lights)) if (rec.cur && rec.cur.bri > 0.03) rec.pls.forEach((pl) => lit.push([pl, rec.base * rec.cur.bri])); lit.sort((a, b) => b[1] - a[1]);
+        const want = new Set(lit.slice(0, 8).map((x) => x[0])); let sig = ''; for (const rec of Object.values(this.lights)) rec.pls.forEach((pl) => { const on = want.has(pl); if (pl.castShadow !== on) pl.castShadow = on; sig += on ? 1 : 0; });
+        if (sig !== this._shSig) { this._shSig = sig; this.renderer.shadowMap.needsUpdate = true; } }
+      if (this._shadowDirty) { this._shadowDirty = false; this.renderer.shadowMap.needsUpdate = true; }
       // murs bas / hauts
-      const dw = this.wallTarget - this.wallF; if (Math.abs(dw) > 0.002) { this.wallF += dw * 0.1; if (Math.abs(dw) < 0.003) this.wallF = this.wallTarget; const f = this.wallF; this.walls.forEach((m) => { m.scale.y = f; m.position.y = m.userData.y0 * f; }); if (this.frontDoor) this.frontDoor.scale.y = f; anim = true; }
+      const dw = this.wallTarget - this.wallF; if (Math.abs(dw) > 0.002) { this.wallF += dw * 0.1; if (Math.abs(dw) < 0.003) this.wallF = this.wallTarget; const f = this.wallF; this.walls.forEach((m) => { m.scale.y = f; m.position.y = m.userData.y0 * f; }); if (this.frontDoor) this.frontDoor.scale.y = f; anim = true; this.renderer.shadowMap.needsUpdate = true; }
       // sélection
       if (this.selRing.visible) { const k = (performance.now() / 900) % 1; this.selRing.scale.setScalar(1 + 0.25 * Math.sin(k * Math.PI * 2)); this.selRing.material.opacity = 0.6 + 0.35 * Math.cos(k * Math.PI * 2); anim = true; }
       // rotation vitrine après 60 s d'inactivité
       if (!this.sel && !this.anim && this.cfg.idle_rotate !== false && Date.now() - this._lastAct > 60000) this.ctl.autoRotate = true;
       // porte d'entrée
-      if (this.frontDoor && this.doorTarget !== undefined) { const d = this.doorTarget - this.frontDoor.rotation.y; if (Math.abs(d) > 0.002) { this.frontDoor.rotation.y += d * 0.12; anim = true; } }
+      if (this.frontDoor && this.doorTarget !== undefined) { const d = this.doorTarget - this.frontDoor.rotation.y; if (Math.abs(d) > 0.002) { this.frontDoor.rotation.y += d * 0.12; anim = true; this.renderer.shadowMap.needsUpdate = true; } }
       // mouvements détectés
       const now = performance.now() / 1000;
       this.pulses.forEach((p) => { const st = this._h.states[p.e]; const on = st && st.state === 'on'; if (on) { const k = (now % 1.6) / 1.6; p.r.scale.setScalar(1 + k * 2.2); p.r.material.opacity = 0.75 * (1 - k); anim = true; } else if (p.r.material.opacity > 0) { p.r.material.opacity = 0; anim = true; } });
