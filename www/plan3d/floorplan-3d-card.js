@@ -12,7 +12,7 @@ const ROOM_TEMPS = [
   ['Buanderie', 380, 180, null],
   ['WC', 185, 140, null],
 ];
-const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 300, 130], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 665, 340]];
+const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 400, 45], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 665, 340]];
 const VIEWS = {
   'Vue générale': { pos: [0.4, 26, 9.5], tgt: [0.4, 0, 0.3] },
   'Salon': { pos: [6.0, 9.5, 6.5], tgt: [3.3, 0.6, -2.4] },
@@ -180,6 +180,7 @@ class Floorplan3DCard extends HTMLElement {
       ray.setFromCamera(ptr, cam); const hit = ray.intersectObjects(this.clickables, false)[0];
       if (!hit) { this._closeOven(); return this._closePanel(); }
       const ent = hit.object.userData.entity, st = this._h.states[ent];
+      if (ent === '@alarm') { const al = Object.keys(this._h.states).find((k) => k.startsWith('alarm_control_panel.')); return al && this._more(al); }
       if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
       if ((!st || st.state === 'unavailable') && !(ent.startsWith('light.') && this._grpOf(ent))) return this._toast('Lampe indisponible');
       if (Date.now() - down[2] > 550 || !ent.startsWith('light.')) return this._more(ent);
@@ -278,7 +279,7 @@ class Floorplan3DCard extends HTMLElement {
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
     wall(330, 210, 435, 210, [[365, 410]]); wall(435, 10, 435, 255, [[40, 90]]); wall(200, 210, 200, 370); wall(330, 210, 330, 370);
-    box(298, 112, 322, 132, 0, WH, M('#cfd3c9'));
+    
     // porte d'entrée (animée selon le capteur)
     { const [a, b] = P(235, 22.6); const piv = new THREE.Group(); piv.position.set(a, 0, b); scene.add(piv);
       const leaf = new THREE.Mesh(new THREE.BoxGeometry(4.4 * S, 2.06, 30.8 * S), M('#f3f2ee', { roughness: 0.45 })); leaf.position.set(0, 1.03, 15.4 * S); leaf.castShadow = true; piv.add(leaf);
@@ -328,6 +329,31 @@ class Floorplan3DCard extends HTMLElement {
     }
     /* ---- hall ---- */
     box(300, 14, 350, 26, 0, 0.5, MAT.oakDark);
+    { // hall d'après photos : mur des portes (entrée + WC) taupe avec BTicino Classe 300 EOS, clavier Ajax, radiateur, sirène au-dessus de la porte ;
+      // mur de la porte du séjour taupe, murs latéraux bleu clair ; étagère cubes blanche + meuble bas foncé, chiffonnier, MotionCam dans l'angle, caméra dôme, détecteur incendie au plafond ; armoire blanche + pilier taupe
+      const taupe = M('#a99d90', { roughness: 0.95 }), blue = M('#d2dfe6', { roughness: 0.95 }), wh = M('#f6f6f4', { roughness: 0.45 }), blk = M('#151517', { roughness: 0.3 }), dev = M('#f2f2f0', { roughness: 0.4 });
+      const pw = (x0, y0, x1, y1, m, z0 = 0, z1 = WH) => this._wall(box(x0, y0, x1, y1, z0, z1, m, false));
+      pw(239.5, 14.5, 239.8, 22.5, taupe); pw(239.5, 53.5, 239.8, 120.5, taupe); pw(239.5, 147.5, 239.8, 150.5, taupe); pw(239.5, 22.5, 239.8, 53.5, taupe, 2.08); pw(239.5, 120.5, 239.8, 147.5, taupe, 2.08);
+      pw(430.2, 14.5, 430.5, 44.5, taupe); pw(430.2, 85.5, 430.5, 102.5, taupe); pw(430.2, 44.5, 430.5, 85.5, taupe, 2.08); pw(239.5, 14.5, 430.5, 14.8, blue); pw(325, 102.2, 430.5, 102.5, blue);
+      for (const [a, b] of [[20.5, 55.5], [118.5, 149.5]]) { box(239.6, a, 240.6, a + 2, 0, 2.13, wh, false); box(239.6, b - 2, 240.6, b, 0, 2.13, wh, false); box(239.6, a, 240.6, b, 2.08, 2.13, wh, false); }
+      for (const [a, b] of [[42.5, 87.5]]) { box(429.4, a, 430.4, a + 2, 0, 2.13, wh, false); box(429.4, b - 2, 430.4, b, 0, 2.13, wh, false); box(429.4, a, 430.4, b, 2.08, 2.13, wh, false); }
+      const glow = (c) => M('#0b1a3a', { emissive: c, emissiveIntensity: 0.9, roughness: 0.2 });
+      clickable(box(239.6, 66.5, 240.5, 72.5, 1.33, 1.6, blk), 'camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue'); clickable(box(240.5, 67.5, 240.6, 71.5, 1.37, 1.55, glow('#2f6bff')), 'camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue');
+      clickable(box(239.6, 61, 240.4, 64.4, 1.38, 1.57, blk), '@alarm'); clickable(box(240.4, 61.5, 240.5, 63.9, 1.41, 1.54, glow('#7fd3ff')), '@alarm');
+      box(239.6, 67.5, 240.2, 70.5, 1.1, 1.16, blk, false); box(239.6, 84, 241.8, 92, 1.36, 1.6, wh); box(239.6, 85, 241, 91, 1.6, 1.62, wh, false);
+      clickable(box(239.6, 22, 241, 30, 2.13, 2.27, M('#1c1c1e', { roughness: 0.4 })), '@alarm'); box(241, 25, 241.1, 27, 2.16, 2.24, M('#3a0c0c', { emissive: '#ff2a2a', emissiveIntensity: 0.25 }), false);
+      // étagère murale en cubes blancs (mur sud) + meuble bas foncé + chiffonnier gris
+      const cube = (x, z) => { box(x, 101.6, x + 15, 102.2, z, z + 0.3, wh, false); box(x, 90, x + 0.7, 102.2, z, z + 0.3, wh); box(x + 14.3, 90, x + 15, 102.2, z, z + 0.3, wh); box(x, 90, x + 15, 102.2, z, z + 0.015, wh); box(x, 90, x + 15, 102.2, z + 0.285, z + 0.3, wh); };
+      [[364, 1.62], [373, 1.92], [380, 1.62], [388, 1.77], [396, 1.47], [403, 1.62], [384, 1.32], [404, 1.17]].forEach(([x, z]) => cube(x, z));
+      box(400, 86, 429.5, 102.2, 0, 0.82, M('#2e2b29', { roughness: 0.7 })); box(400, 86, 429.5, 102.2, 0.82, 0.85, M('#3a3634', { roughness: 0.6 }));
+      box(417, 15, 429.5, 28, 0, 0.82, M('#9e978d', { roughness: 0.9 })); box(429.4, 19, 430.4, 34, 1.3, 1.33, wh, false);
+      // détecteurs Ajax
+      clickable(box(426.5, 14.8, 430.2, 18.5, 2.06, 2.27, dev), 'binary_sensor.hall_dentree_mouvement_couloir_mouvement'); clickable(sphere(427.4, 18.7, 0.9, 2.14, blk), 'camera.hall_dentree_mouvement_couloir');
+      box(427.5, 99, 430.2, 102.2, 2.2, 2.3, dev, false); clickable(sphere(427.6, 99.4, 2.6, 2.17, dev), 'camera.couloir'); clickable(sphere(426, 98.4, 1.3, 2.15, blk), 'camera.couloir');
+      this.fireMat = M('#f4f4f2', { roughness: 0.4, emissive: '#ff2a1a', emissiveIntensity: 0 }); clickable(box(408, 70, 416, 78, 2.25, 2.3, this.fireMat), 'binary_sensor.hall_dentree_incendie_couloir_fumee');
+      // armoire blanche dans la niche + pilier taupe (côté couloir)
+      box(297, 106, 320.5, 112, 0, WH, taupe); box(301, 112, 320.4, 150, 0, 1.95, wh); box(300, 111.5, 320.5, 151, 1.95, 2.0, M('#2a2725')); box(300.9, 130.7, 301, 131.3, 0.95, 1.05, M('#8a8a8a'), false);
+    }
     /* ---- buanderie ---- */
     box(400, 112, 432, 144, 0, 0.85, MAT.white); box(400, 112, 432, 144, 0.85, 1.7, MAT.white);
     for (const z of [0.42, 1.27]) { const [a, b] = P(416, 144.6); const d = new THREE.Mesh(new THREE.CircleGeometry(10 * S, 28), MAT.black); d.position.set(a, z, b); scene.add(d); }
@@ -445,7 +471,7 @@ class Floorplan3DCard extends HTMLElement {
     // radiateurs (cliquables → thermostat)
     this.rads = [];
     [[673, 37, 677, 78, 0.15, 0.75, 'climate.living'], [440, 206, 444, 240, 0.15, 0.75, 'climate.living'], [645, 362, 670, 366, 0.15, 0.75, 'climate.living'],
-     [70, 362, 130, 366, 0.15, 0.7, 'climate.chambre_adulte'], [263, 214.6, 279, 218.6, 0.12, 0.72, 'climate.chambre_enfants'], [131, 140, 134, 172, 0.4, 1.6, 'climate.salle_de_bain'], [365, 13, 405, 17, 0.15, 0.75, 'climate.couloir']]
+     [70, 362, 130, 366, 0.15, 0.7, 'climate.chambre_adulte'], [263, 214.6, 279, 218.6, 0.12, 0.72, 'climate.chambre_enfants'], [131, 140, 134, 172, 0.4, 1.6, 'climate.salle_de_bain'], [239.6, 81, 243.6, 101, 0.12, 0.84, 'climate.couloir']]
       .forEach(([a0, b0, a1, b1, z0, z1, e]) => { const m = M('#f4f3ef', { roughness: 0.5, emissive: '#ff5a1f', emissiveIntensity: 0 }); clickable(box(a0, b0, a1, b1, z0, z1, m), e); this.rads.push({ m, e }); });
     // tablette murale (écran simulé selon son état)
     box(439.5, 215, 441, 233, 1.28, 1.52, MAT.black, false);
@@ -569,6 +595,7 @@ class Floorplan3DCard extends HTMLElement {
     (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.22 : 0; });
     this._drawTablet(H);
     this._sky(H);
+    if (this.fireMat) { const f = ['fumee', 'chaleur', 'vapeur'].some((k) => H['binary_sensor.hall_dentree_incendie_couloir_' + k] && H['binary_sensor.hall_dentree_incendie_couloir_' + k].state === 'on'); this.fireMat.emissiveIntensity = f ? 0.9 : 0; }
     this._ovenSync(H);
     (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
