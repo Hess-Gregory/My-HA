@@ -27,7 +27,7 @@ const hsv2rgb = (h, s) => { const f = (n) => { const k = (n + h / 60) % 6; retur
 const RGBM = ['hs', 'rgb', 'rgbw', 'rgbww', 'xy'];
 const SWATCH = [['ct', 2700], ['rgb', [255, 40, 40]], ['rgb', [255, 140, 20]], ['rgb', [255, 0, 150]], ['rgb', [140, 40, 255]], ['rgb', [0, 110, 255]], ['rgb', [0, 220, 130]], ['ct', 6000]];
 const BEAMS = [['light.salon_l_salon', 575, 95, 1.95, 70], ['light.salle_a_manger_lg', 568, 269.5, 1.62, 34], ['light.salle_a_manger_lc', 598, 269.5, 1.62, 34], ['light.salle_a_manger_ld', 628, 269.5, 1.62, 34],
-  ['light.salle_de_bain_salle_de_bain', 75, 160, 2.15, 50], ['light.chambre_matteo', 255, 300, 2.15, 60], ['light.cuisine_evier', 344, 300, 1.43, 20],
+  ['light.salle_de_bain_salle_de_bain', 75, 160, 2.15, 50], ['light.chambre_matteo', 262, 292, 2.15, 60], ['light.cuisine_evier', 344, 300, 1.43, 20],
   ...[287, 306, 326, 344].map((y, i) => ['light.cuisine_s_cuisine_' + (i + 1), 373, y, 2.02, 24])];
 
 class Floorplan3DCard extends HTMLElement {
@@ -184,7 +184,8 @@ class Floorplan3DCard extends HTMLElement {
     };
     const wallAny = (x0, y0, x1, y1, win) => {
       const [a, b] = P(x0, y0), [c, d] = P(x1, y1); const len = Math.hypot(c - a, d - b), ang = -Math.atan2(d - b, c - a);
-      const m = new THREE.Mesh(new THREE.BoxGeometry(len + WT * S, WH, WT * S), MAT.wall); m.position.set((a + c) / 2, WH / 2, (b + d) / 2); m.rotation.y = ang; add(m); this._wall(m);
+      const L0 = len + WT * S, ux = (c - a) / len, uz = (d - b) / len; const piece = (f0, f1, z0, z1) => { const cx = ((f0 + f1) / 2 - 0.5) * L0; const m = new THREE.Mesh(new THREE.BoxGeometry((f1 - f0) * L0, z1 - z0, WT * S), MAT.wall); m.position.set((a + c) / 2 + ux * cx, (z0 + z1) / 2, (b + d) / 2 + uz * cx); m.rotation.y = ang; add(m); this._wall(m); };
+      if (win) { const f = (1 - win) / 2; piece(0, f, 0, WH); piece(1 - f, 1, 0, WH); piece(f, 1 - f, 0, 0.9); piece(f, 1 - f, 2.15, WH); } else piece(0, 1, 0, WH);
       const t = new THREE.Mesh(new THREE.BoxGeometry(len + WT * S, 0.03, WT * S), MAT.wallTop); t.position.set((a + c) / 2, WH + 0.015, (b + d) / 2); t.rotation.y = ang; scene.add(t); this._wall(t);
       if (win) { const w = new THREE.Mesh(new THREE.BoxGeometry(len * win, 1.25, WT * S + 0.03), MAT.window); w.position.set((a + c) / 2, 1.5, (b + d) / 2); w.rotation.y = ang; scene.add(w); this._wall(w); }
       return { a, b, c, d, ang, len };
@@ -207,13 +208,14 @@ class Floorplan3DCard extends HTMLElement {
     /* ---- sols ---- */
     floor([[10,105],[135,105],[135,210],[10,210]], MAT.tile); floor([[135,105],[235,105],[235,155],[135,155]], MAT.tile);
     floor([[235,10],[435,10],[435,107],[325,107],[325,210],[135,210],[135,155],[235,155]], MAT.tileGrey); floor([[325,107],[435,107],[435,210],[325,210]], MAT.tileGrey);
-    floor([[10,210],[200,210],[200,370],[10,370]], MAT.oak); floor([[200,210],[330,210],[330,370],[200,370]], MAT.oak);
+    floor([[10,210],[200,210],[200,370],[10,370]], MAT.oak); floor([[200,210],[330,210],[330,370],[200,370]], M('#bdb6ab', { roughness: 0.8 }));
     floor([[330,210],[435,210],[435,255],[455,255],[455,370],[330,370]], MAT.tileGrey);
     floor([[435,10],[680,10],[680,130],[772,150],[745,355],[685,335],[685,370],[455,370],[455,255],[435,255]], MAT.tileGrey);
     /* ---- murs ---- */
-    wall(10, 105, 235, 105); wall(235, 10, 235, 105, [[18, 58]]); wall(235, 10, 680, 10); wall(680, 10, 680, 130);
+    wall(10, 105, 235, 105); wall(235, 10, 235, 105, [[18, 58]]); wall(235, 10, 680, 10); wall(680, 10, 680, 130, [[22, 75]]); box(675.5, 22, 684.5, 75, 0, 0.9, MAT.wall); box(675.5, 22, 684.5, 75, 2.15, WH, MAT.wall); box(675.5, 22, 684.5, 75, WH, WH + 0.03, MAT.wallTop, false);
     const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0); wallAny(745, 355, 685, 335, 0);
-    wall(685, 335, 685, 370); wall(10, 370, 685, 370); wall(10, 105, 10, 370);
+    wall(685, 335, 685, 370); wall(10, 370, 685, 370, [[50, 150], [245, 300], [470, 640]]); for (const [a0, a1, z0] of [[50, 150, 0.9], [245, 300, 0.9], [470, 640, 0.02]]) { box(a0, 365.5, a1, 374.5, 0, z0, MAT.wall); box(a0, 365.5, a1, 374.5, 2.15, WH, MAT.wall); box(a0, 365.5, a1, 374.5, WH, WH + 0.03, MAT.wallTop, false); } wall(10, 105, 10, 370);
+    { const occ = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false }); const [a, b] = P(10, 10), [c, d] = P(775, 372); const ce = new THREE.Mesh(new THREE.BoxGeometry(c - a, 0.04, d - b), occ); ce.position.set((a + c) / 2, 2.36, (b + d) / 2); ce.castShadow = true; scene.add(ce); this.ceiling = ce; }
     windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 22, 680, 75); windowOn(470, 370, 640, 370, 0.02, 2.15);
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
@@ -238,14 +240,50 @@ class Floorplan3DCard extends HTMLElement {
     box(14, 213, 132, 243, 0, 2.1, MAT.white); box(166, 250, 196, 366, 0, 2.1, MAT.white);
     box(14, 258, 22, 346, 0, 1.0, MAT.oakDark); box(22, 262, 122, 342, 0, 0.42, MAT.fabric); box(48, 260, 124, 344, 0.42, 0.5, MAT.green);
     box(25, 268, 44, 298, 0.42, 0.56, MAT.white); box(25, 306, 44, 336, 0.42, 0.56, MAT.white); box(14, 247, 32, 257, 0, 0.5, MAT.oakDark); box(14, 348, 32, 364, 0, 0.5, MAT.oakDark);
-    /* ---- chambre enfant ---- */
-    box(205, 270, 240, 335, 0.25, 0.38, MAT.white);
-    for (const [a0, b0, a1, b1] of [[205, 270, 240, 272], [205, 333, 240, 335], [205, 272, 207, 333], [238, 272, 240, 333]]) box(a0, b0, a1, b1, 0, 0.9, MAT.white);
-    box(209, 275, 236, 330, 0.38, 0.48, M('#c9d6c4'));
-    for (const [x, y] of [[279, 221], [325, 221], [279, 320], [325, 320]]) box(x - 2, y - 2, x + 2, y + 2, 0, 1.75, MAT.white);
-    box(277, 219, 327, 322, 1.35, 1.45, MAT.white); box(281, 223, 323, 318, 1.45, 1.6, MAT.fabric2); box(277, 219, 327, 222, 1.45, 1.75, MAT.white); box(277, 319, 327, 322, 1.45, 1.75, MAT.white);
-    box(286, 270, 322, 316, 0, 0.75, M('#efe9df')); disc(250, 345, 24, 0.006, MAT.rug);
-    clickable(sphere(255, 300, 5, 2.2, L('light.chambre_matteo', '#fff1d6', [255, 300, 2.1], 2.2, 4)), 'light.chambre_matteo');
+    /* ---- chambre enfant : lit mezzanine blanc + bureau à l'est, lit bébé + mur montagnes + caméra à l'ouest, vitrine + ventilateur colonne au sud-ouest ---- */
+    { const blue = M('#a9cfe8', { roughness: 0.95 }), greyOak = M('#8d877d', { roughness: 0.8 }), mint = M('#bfe0d6'), white = MAT.white;
+      const bw = (x0, y0, x1, y1, z0, z1) => this._wall(box(x0, y0, x1, y1, z0, z1, blue, false));
+      bw(204.5, 214.6, 215, 214.9, 0, WH); bw(260, 214.6, 325.5, 214.9, 0, WH); bw(325.1, 214.5, 325.4, 365.5, 0, WH);
+      bw(204.5, 365.1, 245, 365.4, 0, WH); bw(300, 365.1, 325.5, 365.4, 0, WH); bw(245, 365.1, 300, 365.4, 0, 0.9); bw(245, 365.1, 300, 365.4, 2.15, WH);
+      { const cv = document.createElement('canvas'); cv.width = 1024; cv.height = 320; const g = cv.getContext('2d'); g.fillStyle = '#a9cfe8'; g.fillRect(0, 0, 1024, 320); g.fillStyle = '#5f7486'; g.beginPath(); g.moveTo(0, 0);
+        [[0, 150], [90, 190], [170, 95], [230, 175], [300, 70], [380, 160], [440, 110], [520, 185], [600, 80], [660, 150], [720, 120], [800, 190], [870, 100], [940, 170], [1024, 130]].forEach(([x, y]) => g.lineTo(x, y)); g.lineTo(1024, 0); g.closePath(); g.fill();
+        const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; const mural = new THREE.Mesh(new THREE.PlaneGeometry(151 * S, WH), new THREE.MeshStandardMaterial({ map: t, roughness: 0.95 }));
+        const [a, b] = P(204.6, 290); mural.position.set(a, WH / 2, b); mural.rotation.y = Math.PI / 2; mural.receiveShadow = true; scene.add(mural); this._wall(mural); }
+      // lit mezzanine (est) + échelle + bureau, caisson menthe et étagère dessous
+      const lx0 = 284, lx1 = 328, ly0 = 216, ly1 = 316;
+      for (const [x, y] of [[lx0, ly0], [lx0, ly1 - 3], [lx1 - 3, ly0], [lx1 - 3, ly1 - 3]]) box(x, y, x + 3, y + 3, 0, 1.95, white);
+      box(lx0, ly0, lx1, ly1, 1.3, 1.4, white); box(lx0 + 3, ly0 + 3, lx1 - 3, ly1 - 3, 1.4, 1.56, M('#aab6c2')); box(lx0 + 6, ly0 + 4, lx1 - 6, ly0 + 18, 1.56, 1.64, M('#bfe0cf'));
+      box(lx0 - 0.5, ly0, lx0 + 1.5, ly1 - 22, 1.32, 1.86, white); box(lx0, ly0, lx1, ly0 + 2, 1.3, 1.9, white); box(lx0, ly1 - 2, lx1, ly1, 1.3, 1.9, white);
+      box(lx0 - 1, 258, lx0 - 0.5, 278, 1.45, 1.75, M('#1d2233'), false); box(lx0 - 1.1, 260, lx0 - 1, 276, 1.48, 1.72, M('#e9c86a'), false);
+      box(lx0 - 5, ly1 - 22, lx0 - 1, ly1 - 20, 0, 1.95, white); box(lx0 - 5, ly1 - 2, lx0 - 1, ly1, 0, 1.95, white); for (let z = 0.3; z < 1.5; z += 0.27) box(lx0 - 5, ly1 - 20, lx0 - 1, ly1 - 2, z, z + 0.035, white);
+      box(lx0 + 3, ly0 + 3, lx1 - 1, ly1 - 28, 0.72, 0.75, white);
+      box(lx0 + 2, ly0 + 3, lx0 + 22, ly0 + 26, 0, 0.72, mint); for (const z of [0.24, 0.48]) box(lx0 + 1.6, ly0 + 3, lx0 + 2, ly0 + 26, z, z + 0.01, M('#9fc4b8'), false);
+      for (const z of [0.15, 0.39, 0.62]) box(lx0 + 1.4, ly0 + 10, lx0 + 2, ly0 + 19, z, z + 0.015, M('#222'), false);
+      box(lx0 + 3, ly1 - 27, lx1 - 1, ly1 - 26, 0, 1.28, white); for (const z of [0, 0.42, 0.85, 1.25]) box(lx0 + 3, ly1 - 26, lx1 - 1, ly1 - 4, z, z + 0.03, white);
+      cyl(272, 262, 7, 0, 0.04, white, 5); cyl(272, 262, 1.2, 0.04, 0.45, white, 8); cyl(272, 262, 6, 0.45, 0.5, M('#bcd6cf'), 24); box(266, 267, 278, 268.5, 0.52, 0.85, M('#bcd6cf'));
+      // lit bébé (ouest) + posters + caméra Reolink
+      box(206, 222, 241, 224, 0, 0.92, greyOak); box(206, 290, 241, 292, 0, 0.92, greyOak);
+      for (const x0 of [206, 239]) { box(x0, 224, x0 + 2, 290, 0.84, 0.9, greyOak); box(x0, 224, x0 + 2, 290, 0.22, 0.27, greyOak); for (let y = 226; y < 289; y += 3.2) box(x0 + 0.5, y, x0 + 1.5, y + 1, 0.27, 0.84, greyOak, false); }
+      box(208, 224, 239, 290, 0.27, 0.4, M('#c9ced8'));
+      box(204.8, 236, 205.3, 250, 0.95, 1.5, M('#d9534f'), false); box(204.8, 251, 205.3, 266, 0.92, 1.52, M('#a6cf3a'), false); box(204.8, 270, 205.3, 284, 1.0, 1.45, M('#c3cbdb'), false);
+      box(204.8, 291, 206.6, 297, 1.84, 1.96, white); box(204.8, 293.5, 205.6, 294.5, 1.96, WH, white, false);
+      clickable(sphere(209, 294, 3.6, 1.9, white), 'camera.chambre_enfant'); clickable(sphere(211.8, 294, 1.5, 1.88, M('#111')), 'camera.chambre_enfant');
+      // coin sud-ouest : vitrine blanche (maquettes), tableau, ventilateur colonne ; commode sous la fenêtre
+      for (const [z0, z1] of [[0, 0.78], [0.78, 1.56]]) { box(207, 347, 236, 364.5, z0, z0 + 0.03, white); box(207, 347, 236, 364.5, z1 - 0.03, z1, white); box(207, 347, 208.5, 364.5, z0, z1, white); box(234.5, 347, 236, 364.5, z0, z1, white); box(208.5, 363.5, 234.5, 364.5, z0, z1, white);
+        box(208.5, 347, 234.5, 347.6, z0 + 0.03, z1 - 0.03, M('#e6f2f4', { transparent: true, opacity: 0.25, roughness: 0.05 }), false); box(208.5, 348, 234.5, 363.5, (z0 + z1) / 2, (z0 + z1) / 2 + 0.01, M('#dfeef0', { transparent: true, opacity: 0.5 }), false); }
+      { const cv = document.createElement('canvas'); cv.width = 200; cv.height = 150; const g = cv.getContext('2d'); g.fillStyle = '#1e2240'; g.fillRect(0, 0, 200, 150);
+        [['#3fb6a8', 45, 75, 30], ['#c23b3b', 55, 65, 11], ['#6aa9e0', 145, 80, 34], ['#e8d24a', 100, 35, 10], ['#9fd36a', 20, 125, 14]].forEach(([c, x, y, r]) => { g.fillStyle = c; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); });
+        g.strokeStyle = '#8fd0ff'; g.lineWidth = 4; g.beginPath(); for (let x = 0; x <= 200; x += 12) g.lineTo(x, 12 + ((x / 12) % 2) * 10); g.stroke();
+        const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; box(207, 364, 236, 365, 1.62, 2.22, new THREE.MeshStandardMaterial({ map: t, roughness: 0.8 }), false); }
+      cyl(241, 357, 7, 0, 0.03, M('#2b2d31'), 24); cyl(241, 357, 4.5, 0.03, 1.02, M('#2b2d31', { roughness: 0.5 }), 24);
+      box(246, 341, 296, 365, 0.05, 0.92, greyOak); box(245, 340, 297, 365, 0.92, 0.95, greyOak); box(272, 340.6, 294, 341.2, 0.12, 0.86, M('#5e5a53'), false); box(271, 340.4, 295, 341.3, 0.48, 0.5, greyOak, false); box(258, 340.6, 258.5, 341.1, 0.1, 0.88, M('#6f6a62'), false);
+      // ventilateur de plafond avec anneau lumineux (lumière « chambre matteo »)
+      { const [a, b] = P(262, 292); const g = new THREE.Group(); g.position.set(a, 2.22, b); scene.add(g);
+        const housing = new THREE.Mesh(new THREE.CylinderGeometry(13 * S, 13 * S, 0.07, 48), M('#6b6e74', { roughness: 0.5 })); housing.castShadow = true; g.add(housing); clickable(housing, 'light.chambre_matteo');
+        const ring = new THREE.Mesh(new THREE.RingGeometry(8.5 * S, 12.6 * S, 48), L('light.chambre_matteo', '#f4f8ff', [262, 292, 2.05], 2.2, 4)); ring.rotation.x = Math.PI / 2; ring.position.y = -0.036; g.add(ring); clickable(ring, 'light.chambre_matteo');
+        const grille = new THREE.Mesh(new THREE.CircleGeometry(8.4 * S, 40), M('#4a4d52')); grille.rotation.x = Math.PI / 2; grille.position.y = -0.037; g.add(grille);
+        for (let k = 0; k < 7; k++) { const piv = new THREE.Group(); piv.rotation.y = (k * Math.PI * 2) / 7; piv.position.y = -0.03; const bl = new THREE.Mesh(new THREE.BoxGeometry(7 * S, 0.006, 2 * S), M('#d9dbde')); bl.position.x = 3.6 * S; piv.add(bl); g.add(piv); } }
+    }
     /* ---- cuisine (en U : évier + colonnes à l'ouest, hotte au sud, péninsule à l'est) ---- */
     const greyWall = M('#5c5f64', { roughness: 0.95 }), tiles = M('#e8e0d1', { roughness: 0.5 }), sinkM = M('#232325', { roughness: 0.4 });
     box(335, 214.5, 365, 238, 0, 2.2, MAT.greige); box(335, 238, 365, 262, 0, 2.2, MAT.greige); box(365, 241, 365.8, 260, 0.85, 1.45, MAT.black, false); box(365, 241, 365.6, 260, 1.48, 1.52, MAT.steel, false);
@@ -278,11 +316,11 @@ class Floorplan3DCard extends HTMLElement {
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
     // mur TV : lattes chêne, grand panneau blanc (ruban LED derrière), TV centrée + Ambilight, 2 enceintes colonnes
     box(474, 14.5, 495, 16.0, 0, 2.28, MAT.oakLight, false); for (let x = 475; x < 494; x += 2.3) box(x, 16.0, x + 1.2, 17.2, 0, 2.28, M('#b8955f'), false);
-    clickable(box(511.5, 13.4, 620.5, 14.6, 0.735, 2.055, L('light.salon_panneau_mural', '#ffd27a', [566, 30, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
-    clickable(box(513, 14.6, 619, 17.2, 0.75, 2.04, MAT.white), 'light.salon_panneau_mural');
+    clickable(box(504.5, 13.4, 627.5, 14.6, 0.765, 1.995, L('light.salon_panneau_mural', '#ffd27a', [566, 30, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
+    clickable(box(506, 14.6, 626, 17.2, 0.78, 1.98, MAT.white), 'light.salon_panneau_mural');
     clickable(box(527, 17.2, 605, 18.2, 0.97, 1.79, L('light.salon_ambilight_tv', '#7f6bff', [566, 24, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
     this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(530, 18.2, 602, 19.4, 1.0, 1.76, this.tvMat, false);
-    box(519, 17.2, 525, 19.6, 1.05, 1.72, MAT.white); box(607, 17.2, 613, 19.6, 1.05, 1.72, MAT.white);
+    box(512, 17.2, 518, 19.6, 1.05, 1.72, MAT.white); box(614, 17.2, 620, 19.6, 1.05, 1.72, MAT.white);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.tvCv = cv; this.tvTex = new THREE.CanvasTexture(cv); this.tvTex.colorSpace = THREE.SRGBColorSpace;
       this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(70 * S, 0.74), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(566, 19.5);
       this.tvScr.position.set(a, 1.38, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
@@ -302,7 +340,7 @@ class Floorplan3DCard extends HTMLElement {
     // radiateurs (cliquables → thermostat)
     this.rads = [];
     [[673, 22, 677, 75, 0.15, 0.75, 'climate.living'], [440, 206, 444, 240, 0.15, 0.75, 'climate.living'], [645, 362, 670, 366, 0.15, 0.75, 'climate.living'],
-     [70, 362, 130, 366, 0.15, 0.7, 'climate.chambre_adulte'], [250, 362, 295, 366, 0.15, 0.7, 'climate.chambre_enfants'], [131, 140, 134, 172, 0.4, 1.6, 'climate.salle_de_bain'], [365, 13, 405, 17, 0.15, 0.75, 'climate.couloir']]
+     [70, 362, 130, 366, 0.15, 0.7, 'climate.chambre_adulte'], [263, 214.6, 279, 218.6, 0.12, 0.72, 'climate.chambre_enfants'], [131, 140, 134, 172, 0.4, 1.6, 'climate.salle_de_bain'], [365, 13, 405, 17, 0.15, 0.75, 'climate.couloir']]
       .forEach(([a0, b0, a1, b1, z0, z1, e]) => { const m = M('#f4f3ef', { roughness: 0.5, emissive: '#ff5a1f', emissiveIntensity: 0 }); clickable(box(a0, b0, a1, b1, z0, z1, m), e); this.rads.push({ m, e }); });
     // tablette murale (écran simulé selon son état)
     box(439.5, 215, 441, 233, 1.28, 1.52, MAT.black, false);
@@ -311,25 +349,48 @@ class Floorplan3DCard extends HTMLElement {
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(16 * S, 0.2), this.tabMat); scr.position.set(a, 1.4, b); scr.rotation.y = Math.PI / 2; scene.add(scr); clickable(scr, 'switch.salon_sam_tablette_ecran'); }
     { const [a, b] = P(676.5, 102); const c = new THREE.Mesh(new THREE.CircleGeometry(13 * S, 40), M('#efe9df')); c.position.set(a, 1.75, b); c.rotation.y = -Math.PI / 2; scene.add(c); }
     along(wB1, 0.15, 0.85, 1, 18, 0, 0.95, MAT.white);
-    // coin DJ : buffet patiné le long du mur oblique, plateau blanc, platine – lecteur Denon – table de mixage – lecteur Denon – platine, enceintes Adam
-    { const alongPt = (wl, t, off) => { const ux = (wl.c - wl.a) / wl.len, uz = (wl.d - wl.b) / wl.len; return [wl.a + ux * t * wl.len - uz * off * S, wl.b + uz * t * wl.len + ux * off * S]; };
-      const disc3 = (t, off, r, z0, z1, mat) => { const [x, z] = alongPt(wB2, t, off); const m = new THREE.Mesh(new THREE.CylinderGeometry(r * S, r * S, z1 - z0, 32), mat); m.position.set(x, (z0 + z1) / 2, z); scene.add(m); return m; };
-      const groove = M('#cfc6b6'), silver = M('#c9ccd0', { metalness: 0.7, roughness: 0.3 }), devBlack = M('#151517', { roughness: 0.45 });
+    // coin DJ réaliste : buffet patiné, plateau blanc, platine Pioneer – lecteur Denon – table de mixage – lecteur Denon – platine, enceintes Adam
+    { const groove = M('#cfc6b6');
       along(wB2, 0.04, 0.655, 1, 22, 0, 0.86, MAT.patine); along(wB2, 0.04, 0.655, 1, 22, 0, 0.05, groove);
       for (const t of [0.195, 0.35, 0.505]) along(wB2, t - 0.002, t + 0.002, 22.5, 0.4, 0.08, 0.84, groove, false);
-      along(wB2, 0.04, 0.655, 22.5, 0.4, 0.62, 0.635, groove, false);
-      along(wB2, 0.035, 0.66, 1, 25, 0.86, 0.96, MAT.white);
-      const deck = (t0, t1) => { along(wB2, t0, t1, 4, 19, 0.96, 1.06, devBlack); const tm = (t0 + t1) / 2; disc3(tm, 13, 8.5, 1.06, 1.075, silver); disc3(tm, 13, 2.6, 1.075, 1.08, M('#b3262e')); along(wB2, t1 - 0.012, t1 - 0.006, 6, 12, 1.06, 1.1, silver, false); };
-      const player = (t0, t1, ent, pos) => { along(wB2, t0, t1, 4, 19, 0.96, 1.04, devBlack); const tm = (t0 + t1) / 2;
-        clickable(along(wB2, t0 + 0.01, t1 - 0.01, 4.5, 6, 1.04, 1.13, L('light.coin_dj_sono_lecteurs', '#4aa3ff', null, 1, 1), false), 'light.coin_dj_sono_lecteurs');
-        clickable(disc3(tm, 15.5, 6.5, 1.04, 1.05, devBlack), 'light.coin_dj_sono_lecteurs'); disc3(tm, 15.5, 6.8, 1.035, 1.045, L('light.coin_dj_sono_lecteurs', '#2f7bff', null, 1, 1));
-        clickable(along(wB2, tm - 0.045, tm + 0.045, 1.0, 2, 0.98, 1.24, L(ent, '#ff2a3a', pos, 1.8, 2.4), false), ent); };
-      clickable(along(wB2, 0.048, 0.095, 4, 15, 0.96, 1.26, MAT.white), 'light.coin_dj_sono_adams'); disc3(0.0715, 19.6, 4, 1.03, 1.032, devBlack);
-      deck(0.1, 0.205); player(0.215, 0.3, 'light.coin_dj_sono_gauche', [757, 202, 1.15]);
-      along(wB2, 0.31, 0.42, 4, 19, 0.96, 1.05, devBlack); clickable(along(wB2, 0.335, 0.395, 4.5, 5, 1.05, 1.11, L('light.coin_dj_sono_mixeur', '#4aa3ff', null, 1, 1), false), 'light.coin_dj_sono_mixeur');
-      for (let k = 0; k < 4; k++) along(wB2, 0.322 + k * 0.024, 0.326 + k * 0.024, 12, 8, 1.05, 1.065, silver, false);
-      player(0.43, 0.515, 'light.coin_dj_sono_droite', [751, 246, 1.15]); deck(0.525, 0.63);
-      along(wB2, 0.67, 0.72, 2, 15, 0, 0.6, MAT.white); clickable(along(wB2, 0.672, 0.718, 3, 15, 0.6, 1.0, MAT.white), 'light.coin_dj_sono_adams'); disc3(0.695, 18.3, 4.5, 0.74, 0.742, devBlack); }
+      along(wB2, 0.04, 0.655, 22.5, 0.4, 0.62, 0.635, groove, false); along(wB2, 0.035, 0.66, 1, 25, 0.86, 0.96, MAT.white);
+      const ux = (wB2.c - wB2.a) / wB2.len, uz = (wB2.d - wB2.b) / wB2.len;
+      const at = (t, off, z) => { const g = new THREE.Group(); g.position.set(wB2.a + ux * t * wB2.len - uz * off * S, z, wB2.b + uz * t * wB2.len + ux * off * S); g.rotation.y = wB2.ang; scene.add(g); return g; };
+      const bx = (g, w, h, d, x, y, z, mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; g.add(m); return m; };
+      const cy = (g, r, h, x, y, z, mat, seg = 32) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, seg), mat); m.position.set(x, y, z); m.castShadow = true; g.add(m); return m; };
+      const body = M('#1a1a1c', { roughness: 0.35, metalness: 0.3 }), plate = M('#2a2a2e', { roughness: 0.3, metalness: 0.5 }), silver = M('#c8cbcf', { metalness: 0.8, roughness: 0.25 }), vinyl = M('#0b0b0c', { roughness: 0.2 }), rubber = M('#111111');
+      this.djLit = [];
+      const lit = (color, ent, base = 1) => { const m = new THREE.MeshStandardMaterial({ color: '#111111', emissive: color, emissiveIntensity: 0, roughness: 0.4 }); this.djLit.push({ m, ent, base }); return m; };
+      if (!this.djTex) { const cv = document.createElement('canvas'); cv.width = 256; cv.height = 150; const g2 = cv.getContext('2d'); g2.fillStyle = '#05070c'; g2.fillRect(0, 0, 256, 150);
+        const wave = (y, h, c1, c2, k) => { for (let x = 0; x < 256; x += 2) { const a = Math.abs(Math.sin(x * 0.21 + k) * 0.55 + Math.sin(x * 0.047 + k) * 0.35 + Math.sin(x * 0.9) * 0.15) * h; g2.fillStyle = x % 6 ? c1 : c2; g2.fillRect(x, y - a, 2, a * 2); } };
+        wave(36, 16, '#2f8cff', '#ff9a2f', 0); wave(76, 12, '#4cd4ff', '#ffffff', 2); g2.fillStyle = '#ff3b3b'; g2.fillRect(127, 16, 2, 80);
+        g2.fillStyle = '#d7e3ff'; g2.font = 'bold 15px sans-serif'; g2.fillText('124.00 BPM', 8, 120); g2.font = '11px sans-serif'; g2.fillText('Engine DJ', 8, 140); g2.fillStyle = '#26324a'; g2.fillRect(150, 106, 98, 36);
+        this.djTex = new THREE.CanvasTexture(cv); this.djTex.colorSpace = THREE.SRGBColorSpace; }
+      const deck = (t) => { const g = at(t, 13.5, 0.96);
+        clickable(bx(g, 0.45, 0.11, 0.36, 0, 0.055, 0, body), 'light.coin_dj_sono_lecteurs'); bx(g, 0.448, 0.008, 0.358, 0, 0.114, 0, plate);
+        cy(g, 0.15, 0.022, -0.05, 0.13, 0, silver, 48); cy(g, 0.148, 0.004, -0.05, 0.143, 0, vinyl, 48); cy(g, 0.045, 0.002, -0.05, 0.146, 0, M('#b3262e'), 24); cy(g, 0.004, 0.02, -0.05, 0.15, 0, silver, 8);
+        cy(g, 0.028, 0.03, 0.17, 0.13, -0.12, silver, 20); const arm = bx(g, 0.012, 0.012, 0.25, 0.155, 0.152, -0.01, silver); arm.rotation.y = 0.32; bx(g, 0.03, 0.01, 0.045, 0.115, 0.15, 0.11, body);
+        bx(g, 0.012, 0.004, 0.12, 0.195, 0.118, 0.07, rubber); bx(g, 0.022, 0.012, 0.02, 0.195, 0.124, 0.06, silver); bx(g, 0.03, 0.01, 0.02, -0.19, 0.12, 0.15, lit('#ff3030', 'light.coin_dj_sono_lecteurs', 1.5)); };
+      const player = (t, barEnt, barPos) => { const g = at(t, 13.5, 0.96);
+        clickable(bx(g, 0.35, 0.075, 0.42, 0, 0.0375, 0, body), 'light.coin_dj_sono_lecteurs'); bx(g, 0.348, 0.006, 0.418, 0, 0.078, 0, plate);
+        const sg = new THREE.Group(); sg.position.set(0, 0.19, -0.16); sg.rotation.x = -0.45; g.add(sg);
+        const hs = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.19, 0.025), body); hs.castShadow = true; sg.add(hs); clickable(hs, 'light.coin_dj_sono_lecteurs');
+        const sm = new THREE.MeshBasicMaterial({ map: this.djTex, color: '#000000', toneMapped: false }); this.djLit.push({ m: sm, ent: 'light.coin_dj_sono_lecteurs', screen: true });
+        const sp = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.16), sm); sp.position.z = 0.0131; sg.add(sp); bx(g, 0.05, 0.1, 0.03, 0, 0.11, -0.19, body);
+        cy(g, 0.112, 0.012, 0, 0.084, 0.02, lit('#2f7bff', 'light.coin_dj_sono_lecteurs', 1.6), 48); cy(g, 0.105, 0.03, 0, 0.096, 0.02, plate, 48); cy(g, 0.035, 0.002, 0, 0.112, 0.02, lit('#7fb6ff', 'light.coin_dj_sono_lecteurs', 1.2), 32);
+        ['#ff3b3b', '#ffb02f', '#ffe14a', '#4cd964', '#3bc8ff', '#3b6bff', '#b04bff', '#ff4fb8'].forEach((c, k) => bx(g, 0.042, 0.008, 0.03, -0.075 + (k % 4) * 0.05, 0.082, 0.155 + Math.floor(k / 4) * 0.036, lit(c, 'light.coin_dj_sono_lecteurs', 1.3)));
+        bx(g, 0.012, 0.004, 0.16, 0.152, 0.08, 0.02, rubber); bx(g, 0.03, 0.014, 0.02, 0.152, 0.087, 0.03, silver);
+        cy(g, 0.016, 0.008, -0.15, 0.081, 0.185, lit('#4cd964', 'light.coin_dj_sono_lecteurs', 1.4), 20); cy(g, 0.016, 0.008, -0.15, 0.081, 0.14, lit('#ffb02f', 'light.coin_dj_sono_lecteurs', 1.4), 20);
+        clickable(along(wB2, t - 0.045, t + 0.045, 1.0, 2, 0.98, 1.24, L(barEnt, '#ff2a3a', barPos, 1.8, 2.4), false), barEnt); };
+      const mixer = (t) => { const g = at(t, 13.5, 0.96); clickable(bx(g, 0.4, 0.09, 0.42, 0, 0.045, 0, body), 'light.coin_dj_sono_mixeur'); bx(g, 0.398, 0.006, 0.418, 0, 0.093, 0, plate);
+        for (const x of [-0.13, -0.045, 0.045, 0.13]) { for (const z of [-0.17, -0.13, -0.09, -0.05, -0.01]) cy(g, 0.011, 0.022, x, 0.106, z, silver, 16); bx(g, 0.01, 0.004, 0.11, x, 0.097, 0.1, rubber); bx(g, 0.03, 0.016, 0.02, x, 0.104, 0.11, silver); }
+        for (const x of [-0.0875, 0, 0.0875]) { bx(g, 0.012, 0.004, 0.08, x, 0.0965, 0.02, lit('#3dff6a', 'light.coin_dj_sono_mixeur', 1.4)); bx(g, 0.012, 0.0042, 0.016, x, 0.097, -0.03, lit('#ff3b3b', 'light.coin_dj_sono_mixeur', 1.4)); }
+        bx(g, 0.14, 0.004, 0.012, 0, 0.097, 0.18, rubber); bx(g, 0.02, 0.016, 0.03, 0, 0.104, 0.18, silver); };
+      const adam = (t, off, z) => { const g = at(t, off, z); clickable(bx(g, 0.2, 0.34, 0.28, 0, 0.17, 0, MAT.white), 'light.coin_dj_sono_adams');
+        const w = cy(g, 0.075, 0.01, 0, 0.11, 0.142, M('#1d1d1f'), 32); w.rotation.x = Math.PI / 2; const d2 = cy(g, 0.03, 0.012, 0, 0.11, 0.146, M('#333333'), 24); d2.rotation.x = Math.PI / 2;
+        bx(g, 0.05, 0.05, 0.006, 0, 0.255, 0.142, M('#c9a24a', { metalness: 0.7, roughness: 0.3 })); bx(g, 0.012, 0.012, 0.004, 0.07, 0.04, 0.142, lit('#ffffff', 'light.coin_dj_sono_adams', 1)); };
+      adam(0.0715, 13.5, 0.96); deck(0.1525); player(0.2575, 'light.coin_dj_sono_gauche', [757, 202, 1.15]); mixer(0.365); player(0.4725, 'light.coin_dj_sono_droite', [751, 246, 1.15]); deck(0.5775);
+      along(wB2, 0.67, 0.72, 2, 15, 0, 0.62, MAT.white); adam(0.695, 9.5, 0.62); }
     // vitrine : bas 3 portes, haut 2 vitrines vitrées éclairées + niche centrale ouverte, corniche
     { const glass = M('#eaf3f5', { transparent: true, opacity: 0.22, roughness: 0.05 }), groove = M('#cfc7b8'), shelfG = M('#dfeef0', { transparent: true, opacity: 0.5, roughness: 0.1 });
       box(437, 104, 458, 201, 0, 0.86, MAT.patine); box(436.5, 103, 459, 202, 0.86, 0.9, MAT.patine); box(437, 104, 458.5, 201, 0, 0.06, groove);
@@ -378,6 +439,7 @@ class Floorplan3DCard extends HTMLElement {
     this._renderPanel();
     (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.22 : 0; });
     this._drawTablet(H);
+    (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
     if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
@@ -565,7 +627,7 @@ class Floorplan3DCard extends HTMLElement {
         if (sig !== this._shSig) { this._shSig = sig; this.renderer.shadowMap.needsUpdate = true; } }
       if (this._shadowDirty) { this._shadowDirty = false; this.renderer.shadowMap.needsUpdate = true; }
       // murs bas / hauts
-      const dw = this.wallTarget - this.wallF; if (Math.abs(dw) > 0.002) { this.wallF += dw * 0.1; if (Math.abs(dw) < 0.003) this.wallF = this.wallTarget; const f = this.wallF; this.walls.forEach((m) => { m.scale.y = f; m.position.y = m.userData.y0 * f; }); if (this.frontDoor) this.frontDoor.scale.y = f; anim = true; this.renderer.shadowMap.needsUpdate = true; }
+      const dw = this.wallTarget - this.wallF; if (Math.abs(dw) > 0.002) { this.wallF += dw * 0.1; if (Math.abs(dw) < 0.003) this.wallF = this.wallTarget; const f = this.wallF; this.walls.forEach((m) => { m.scale.y = f; m.position.y = m.userData.y0 * f; }); if (this.frontDoor) this.frontDoor.scale.y = f; if (this.ceiling) this.ceiling.visible = f > 0.95; anim = true; this.renderer.shadowMap.needsUpdate = true; }
       // sélection
       if (this.selRing.visible) { const k = (performance.now() / 900) % 1; this.selRing.scale.setScalar(1 + 0.25 * Math.sin(k * Math.PI * 2)); this.selRing.material.opacity = 0.6 + 0.35 * Math.cos(k * Math.PI * 2); anim = true; }
       // rotation vitrine après 60 s d'inactivité
