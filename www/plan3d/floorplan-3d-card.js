@@ -353,10 +353,15 @@ class Floorplan3DCard extends HTMLElement {
       this.fireMat = M('#f4f4f2', { roughness: 0.4, emissive: '#ff2a1a', emissiveIntensity: 0 }); clickable(box(408, 70, 416, 78, 2.25, 2.3, this.fireMat), 'binary_sensor.hall_dentree_incendie_couloir_fumee');
       // armoire blanche dans la niche + pilier taupe (côté couloir)
       // en face de la porte du WC : pilier taupe puis armoire blanche 2 portes + porte miroir étroite, bandeau foncé ; mur bleu clair jusqu'au fond ; plafonnier 2 spots
-      this._wall(box(297, 106, 320.5, 118, 0, WH, taupe)); box(302, 118, 320.4, 172, 0, 1.97, wh); box(299, 111.5, 320.5, 172.5, 1.97, 2.03, M('#2a2725'));
-      for (const y of [139, 160]) box(301.8, y - 0.15, 302.1, y + 0.15, 0.03, 1.94, M('#bdbdb8'), false); box(301.85, 160.4, 302.05, 171.6, 0.06, 1.92, M('#cfe2ea', { roughness: 0.05, metalness: 0.5 }), false);
-      for (const y of [137.8, 140.2]) cyl(301.6, y, 0.45, 0.98, 1.02, M('#9a9a9a'), 12);
-      this._wall(box(320.2, 172.5, 320.5, 205.5, 0, WH, blue));
+      this._wall(box(297, 106, 320.5, 118, 0, WH, taupe)); box(302, 118, 320.4, 205.4, 0, 1.97, wh); box(299, 111.5, 320.5, 205.5, 1.97, 2.03, M('#2a2725'));
+      for (const y of [150, 182]) box(301.8, y - 0.15, 302.1, y + 0.15, 0.03, 1.94, M('#bdbdb8'), false); box(301.85, 182.4, 302.05, 204.6, 0.06, 1.92, M('#cfe2ea', { roughness: 0.05, metalness: 0.5 }), false);
+      for (const y of [148.8, 151.2, 180.8]) cyl(301.6, y, 0.45, 0.98, 1.02, M('#9a9a9a'), 12);
+      { // couloir vers la salle de bain : mur des chambres bleu clair, mur du WC bleu clair, mur de la salle de bain (fond) taupe
+        const cw = (x0, y0, x1, y1, m, z0 = 0) => this._wall(box(x0, y0, x1, y1, z0, WH, m, false));
+        cw(139.5, 205.2, 154.5, 205.5, blue); cw(190.5, 205.2, 219.5, 205.5, blue); cw(255.5, 205.2, 302, 205.5, blue); cw(154.5, 205.2, 190.5, 205.5, blue, 2.08); cw(219.5, 205.2, 255.5, 205.5, blue, 2.08);
+        cw(139.5, 159.5, 239.5, 159.8, blue); cw(139.5, 159.8, 139.8, 164.5, taupe); cw(139.5, 195.5, 139.8, 205.2, taupe); cw(139.5, 164.5, 139.8, 195.5, taupe, 2.08);
+        for (const [a, b] of [[154.5, 190.5], [219.5, 255.5]]) { box(a - 2, 204.2, a, 205.2, 0, 2.13, wh, false); box(b, 204.2, b + 2, 205.2, 0, 2.13, wh, false); box(a - 2, 204.2, b + 2, 205.2, 2.08, 2.13, wh, false); }
+        box(139.8, 162.5, 140.8, 164.5, 0, 2.13, wh, false); box(139.8, 195.5, 140.8, 197.5, 0, 2.13, wh, false); box(139.8, 162.5, 140.8, 197.5, 2.08, 2.13, wh, false); }
       { const nk = M('#a9adb1', { metalness: 0.7, roughness: 0.3 }); cyl(280, 160, 2.6, 2.27, 2.3, nk); cyl(277.5, 160, 1.3, 2.16, 2.25, nk); cyl(282.5, 160, 1.3, 2.16, 2.25, nk); }
     }
     /* ---- buanderie ---- */
