@@ -270,8 +270,6 @@ class Floorplan3DCard extends HTMLElement {
     box(411, 342, 424, 362, 0.9, 1.22, MAT.black);
     box(425, 292, 447, 366, 0, 0.9, MAT.greige); box(423, 290, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 294, 457, 362, 1.06, 1.09, MAT.worktop); box(447, 296, 452, 360, 0.94, 1.06, M('#d8d5cf'));
     for (const y of [312, 344]) { cyl(468, y, 2, 0, 0.72, MAT.black, 10); cyl(468, y, 8, 0.72, 0.78, M('#2b2b2e'), 20); box(462, y - 7, 464, y + 7, 0.78, 1.15, M('#2b2b2e')); }
-    // barrière enfant à l'entrée de la cuisine (entre le mur et la péninsule)
-    box(455, 256, 457, 290, 0.72, 0.76, MAT.white); box(455, 256, 457, 290, 0.04, 0.08, MAT.white); for (let y = 258; y < 290; y += 3.4) box(455.5, y, 456.5, y + 0.9, 0.08, 0.72, MAT.white, false);
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
     [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
