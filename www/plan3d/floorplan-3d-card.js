@@ -216,6 +216,10 @@ class Floorplan3DCard extends HTMLElement {
     const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0); wallAny(745, 355, 685, 335, 0);
     wall(685, 335, 685, 370); wall(10, 370, 685, 370, [[50, 150], [245, 300], [470, 640]]); for (const [a0, a1, z0] of [[50, 150, 0.9], [245, 300, 0.9], [470, 640, 0.02]]) { box(a0, 365.5, a1, 374.5, 0, z0, MAT.wall); box(a0, 365.5, a1, 374.5, 2.15, WH, MAT.wall); box(a0, 365.5, a1, 374.5, WH, WH + 0.03, MAT.wallTop, false); } wall(10, 105, 10, 370);
     { const occ = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false }); const [a, b] = P(10, 10), [c, d] = P(775, 372); const ce = new THREE.Mesh(new THREE.BoxGeometry(c - a, 0.04, d - b), occ); ce.position.set((a + c) / 2, 2.36, (b + d) / 2); ce.castShadow = true; scene.add(ce); this.ceiling = ce; }
+    // stores à lamelles verticales (chambre enfant : beige, salon côté TV : blanc)
+    { const beige = M('#d9d2c4', { roughness: 0.9 }), whiteB = M('#efeeea', { roughness: 0.9 });
+      for (let x = 245.5; x < 299; x += 3.6) box(x, 363.6, x + 3, 364.1, 0.92, 2.12, beige, false); box(245, 363.3, 300, 364.4, 2.12, 2.16, beige, false);
+      for (let y = 22.5; y < 74; y += 3.6) box(673.6, y, 674.1, y + 3, 0.92, 2.12, whiteB, false); box(673.3, 22, 674.4, 75, 2.12, 2.16, whiteB, false); }
     windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 22, 680, 75); windowOn(470, 370, 640, 370, 0.02, 2.15);
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
