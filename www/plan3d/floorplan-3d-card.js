@@ -538,10 +538,22 @@ class Floorplan3DCard extends HTMLElement {
       box(636, 14.5, 638, 33, 0.56, 2.28, MAT.oakLight); box(674, 14.5, 676, 33, 0.56, 2.28, MAT.oakLight); box(638, 14.5, 674, 15.5, 0.56, 2.28, MAT.oakLight); box(636, 14.5, 676, 33, 2.26, 2.28, MAT.oakLight); box(638, 15.5, 674, 33, 0.56, 0.6, MAT.oakLight);
       for (const z of [0.95, 1.28, 1.6, 1.93]) box(638, 15.5, 674, 32.5, z, z + 0.025, MAT.oakLight, false);
       box(634.4, 15, 636, 17, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
-    box(510, 52, 640, 140, 0, 0.01, MAT.rug2, false); { const gl = M('#fafaf8', { roughness: 0.12, metalness: 0.05 }), oakT = M('#caa372', { roughness: 0.6 }), gr = M('#d6d6d2');
+    box(510, 52, 632, 138, 0, 0.022, M('#c4b4ad', { roughness: 1 }), false); { const gl = M('#fafaf8', { roughness: 0.12, metalness: 0.05 }), oakT = M('#caa372', { roughness: 0.6 }), gr = M('#d6d6d2');
       box(549, 80.5, 609, 105.5, 0, 0.03, M('#bdbdb9')); box(546, 78, 612, 108, 0.03, 0.4, gl); box(546, 108, 612, 108.3, 0.2, 0.21, gr, false); box(578.8, 108, 579.2, 108.3, 0.04, 0.2, gr, false);
       box(580, 77.5, 614, 105, 0.4, 0.46, oakT); box(612, 77.5, 614, 105, 0.27, 0.4, oakT); }
-    box(500, 140, 676, 182, 0, 0.42, MAT.sofa); box(500, 172, 676, 182, 0.42, 0.88, MAT.sofa2); box(634, 55, 676, 140, 0, 0.42, MAT.sofa); box(634, 55, 676, 62, 0.42, 0.62, MAT.sofa2); box(668, 62, 676, 172, 0.42, 0.88, MAT.sofa2);
+    box(500, 140, 676, 182, 0, 0.42, MAT.sofa); box(500, 172, 676, 182, 0.42, 0.88, MAT.sofa2); box(634, 86, 676, 140, 0, 0.42, MAT.sofa); box(634, 86, 668, 92, 0.42, 0.6, MAT.sofa2); box(668, 86, 676, 172, 0.42, 0.88, MAT.sofa2);
+    { // déco du salon d'après photos : pouf gris devant le radiateur, plaid rayé gris/blanc sur la méridienne, plaid côtelé taupe sur l'assise, coussins moelleux blanc-lilas + coussins gris à liseré fleuri
+      const fluffy = M('#e6e1e8', { roughness: 1 }), flor = M('#a69d9b', { roughness: 0.95 }), rib = M('#6f6560', { roughness: 1 }), stW = M('#ebe9e6', { roughness: 1 }), stG = M('#57534f', { roughness: 1 });
+      box(638, 48, 668, 80, 0, 0.42, MAT.sofa); box(639, 49, 667, 79, 0.42, 0.44, MAT.sofa2);
+      for (let y = 92; y < 140; y += 6) { box(636, y, 668, y + 3, 0.42, 0.45, stW, false); box(636, y + 3, 668, Math.min(y + 6, 140), 0.42, 0.45, stG, false); }
+      box(526, 141, 602, 168, 0.42, 0.432, rib, false); for (let x = 527; x < 601; x += 3) box(x, 141, x + 1.6, 168, 0.432, 0.445, rib, false);
+      for (const [x, m] of [[511, fluffy], [528, flor], [546, fluffy], [565, flor], [586, fluffy], [609, flor], [628, fluffy]]) box(x, 154, x + 15, 160, 0.44, 0.78, m);
+      for (const [y, m] of [[98, flor], [116, fluffy]]) box(661, y, 667, y + 15, 0.44, 0.78, m);
+      // horloge murale mappemonde (bois clair, chiffres romains, cerclage noir) sur le mur de la fenêtre, à droite : aiguilles à l'heure réelle
+      const cv = document.createElement('canvas'); cv.width = cv.height = 512; this._clockCv = cv; this._clockTex = new THREE.CanvasTexture(cv);
+      const [ca, cb] = P(674.9, 124), dial = new THREE.Mesh(new THREE.CircleGeometry(0.42, 64), new THREE.MeshStandardMaterial({ map: this._clockTex, roughness: 0.75 })); dial.position.set(ca, 1.78, cb); dial.rotation.y = -Math.PI / 2; scene.add(dial);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.016, 8, 64), M('#1d1d1f', { roughness: 0.4 })); rim.position.set(ca - 0.012, 1.78, cb); rim.rotation.y = -Math.PI / 2; scene.add(rim);
+      this._drawClock(); clearInterval(this._clkT); this._clkT = setInterval(() => { this._drawClock(); this._dirty = true; }, 30000); }
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
     { const [a, b] = P(575, 95); const hat = new THREE.Mesh(new THREE.ConeGeometry(30 * S, 0.1, 48, 1, true), M('#c8a55e', { transparent: true, opacity: 0.3, side: THREE.DoubleSide, roughness: 1 })); hat.position.set(a, 2.05, b); scene.add(hat); clickable(hat, 'light.salon_l_salon'); }
     clickable(sphere(575, 95, 4, 1.98, L('light.salon_l_salon', '#ffcf8a', [575, 95, 1.9], 2.6, 5)), 'light.salon_l_salon');
@@ -617,18 +629,49 @@ class Floorplan3DCard extends HTMLElement {
       hue(0.2446, 'light.coin_dj_sono_gauche', [751.5, 225.7, 1.15]); hue(0.4456, 'light.coin_dj_sono_droite', [746.5, 266.7, 1.15]);
       for (let r = 0; r < 2; r++) for (let k = 0; k < 3; k++) { const t0 = 0.315 + k * 0.022; along(wS, t0, t0 + 0.019, 4.6, 0.8, 1.45 + r * 0.27, 1.69 + r * 0.27, MAT.white, false); along(wS, t0 + 0.003, t0 + 0.016, 5.4, 0.2, 1.48 + r * 0.27, 1.66 + r * 0.27, M(['#dfe6df', '#e9ece6', '#d4ddd6'][k]), false); } }
     // vitrine : bas 3 portes, haut 2 vitrines vitrées éclairées + niche centrale ouverte, corniche
-    { const glass = M('#eaf3f5', { transparent: true, opacity: 0.22, roughness: 0.05 }), groove = M('#cfc7b8'), shelfG = M('#dfeef0', { transparent: true, opacity: 0.5, roughness: 0.1 });
-      box(437, 104, 458, 201, 0, 0.86, MAT.patine); box(436.5, 103, 459, 202, 0.86, 0.9, MAT.patine); box(437, 104, 458.5, 201, 0, 0.06, groove);
+    { const glass = M('#eaf3f5', { transparent: true, opacity: 0.22, roughness: 0.05 }), groove = M('#cfc7b8'), shelfG = M('#dfeef0', { transparent: true, opacity: 0.5, roughness: 0.1 }), dark = M('#2b2927', { roughness: 0.5, metalness: 0.3 }), greyOak = M('#a39a8c', { roughness: 0.8 }), wh = M('#f3f1ec', { roughness: 0.5 });
+      box(437, 104, 458, 201, 0, 0.86, MAT.patine); box(436.5, 103, 459, 202, 0.86, 0.9, greyOak); box(437, 104, 458.5, 201, 0, 0.06, groove);
       for (const y of [136.3, 168.7]) box(458, y - 0.5, 458.5, y + 0.5, 0.1, 0.82, groove, false);
-      for (const [y0, y1] of [[106, 135], [138, 167], [170, 199]]) { box(458, y0, 458.3, y1, 0.14, 0.16, groove, false); box(458, y0, 458.3, y1, 0.76, 0.78, groove, false); }
-      box(437, 105, 440, 200, 0.9, 2.08, MAT.patine); box(436.5, 103.5, 455.5, 201.5, 2.08, 2.16, MAT.patine);
+      for (const [y0, y1, hy] of [[106, 135, 132], [138, 167, 141], [170, 199, 173]]) { box(458, y0, 458.3, y1, 0.14, 0.16, groove, false); box(458, y0, 458.3, y1, 0.76, 0.78, groove, false);
+        for (const k of [1, 2, 3, 4]) { const y = y0 + (y1 - y0) * k / 5; box(458, y - 0.2, 458.35, y + 0.2, 0.18, 0.74, groove, false); }
+        box(458.4, hy - 0.6, 459.1, hy + 0.6, 0.6, 0.67, dark, false); }
+      box(437, 105, 440, 200, 0.9, 2.08, MAT.patine); box(436.5, 103.5, 455.5, 201.5, 2.08, 2.15, MAT.patine); box(436.3, 103.3, 455.8, 201.7, 2.15, 2.175, greyOak);
       for (const [y0, y1] of [[105, 107.5], [139.5, 142], [163, 165.5], [197.5, 200]]) box(440, y0, 453.5, y1, 0.9, 2.08, MAT.patine);
-      for (const z of [1.33, 1.72]) box(440, 142, 452, 163, z, z + 0.025, MAT.patine);
+      for (const z of [1.1, 1.33, 1.72]) box(440, 142, 452, 163, z, z + 0.025, wh);
+      for (let y = 145; y < 162; y += 3.5) box(440, y, 440.25, y + 0.3, 0.9, 2.08, groove, false);
+      { const silver = M('#c9ccd0', { metalness: 0.35, roughness: 0.3 }), books = ['#3f7a5a', '#d9b23a', '#2f6b8f', '#c94b5a', '#5aa36b', '#e8c95b', '#7d4fa0', '#e07a3a'];
+        books.forEach((c, i) => box(441.5, 146 + i * 1.6, 449, 147.4 + i * 1.6, 0.9, 1.0 + (i % 3) * 0.025, M(c, { roughness: 0.8 })));
+        cyl(448, 158, 1.5, 1.125, 1.27, wh, 20); cyl(445.5, 150, 1.3, 1.125, 1.21, M('#1c1c1e', { roughness: 0.4 }), 16); cyl(446, 154, 1.0, 1.125, 1.18, M('#d8e6e2', { transparent: true, opacity: 0.5 }), 14);
+        box(444.5, 150, 449.5, 156, 1.355, 1.375, wh); sphere(446.5, 151.5, 2.0, 1.47, silver); sphere(446.8, 155, 2.0, 1.49, silver); box(445.5, 150.5, 447.5, 152, 1.375, 1.43, silver); box(445.8, 154.4, 447.8, 156, 1.375, 1.44, silver);
+        for (const [y, r, h, m] of [[148.5, 1.3, 0.24, wh], [153, 1.3, 0.22, wh], [157.5, 0.8, 0.18, M('#2a2a2c')]]) { cyl(446, y, r, 1.745, 1.745 + h, m, 16); cyl(446, y, r * 0.4, 1.745 + h, 1.745 + h + 0.07, m, 10); }
+        cyl(443, 160.5, 0.8, 1.745, 1.8, M('#e66aa0'), 10); cyl(443, 145, 0.8, 1.745, 1.8, M('#7bc96f'), 10); }
+      // vitrines (Vit-D à droite = côté nord, Vit-G à gauche = côté sud) : réglette LED en haut à l'intérieur qui éclaire de haut en bas
+      const vtex = (radial) => { const c = document.createElement('canvas'); c.width = 64; c.height = 128; const g = c.getContext('2d');
+        if (radial) { const r = g.createRadialGradient(32, 64, 2, 32, 64, 62); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 64, 128); }
+        else { const l = g.createLinearGradient(0, 0, 0, 128); l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(0.35, 'rgba(255,255,255,.55)'); l.addColorStop(1, 'rgba(255,255,255,.08)'); g.fillStyle = l; g.fillRect(0, 0, 64, 128);
+          g.globalCompositeOperation = 'destination-in'; const h = g.createLinearGradient(0, 0, 64, 0); h.addColorStop(0, 'rgba(255,255,255,.2)'); h.addColorStop(0.2, '#fff'); h.addColorStop(0.8, '#fff'); h.addColorStop(1, 'rgba(255,255,255,.2)'); g.fillStyle = h; g.fillRect(0, 0, 64, 128); }
+        return new THREE.CanvasTexture(c); };
+      const vglow = (e, w, h, pos, rot, k, radial) => { const rec = this.lights[e]; if (!rec) return; const m = new THREE.MeshBasicMaterial({ map: vtex(radial), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
+        const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(...pos); me.rotation.set(...rot); me.visible = false; scene.add(me); (rec.glows = rec.glows || []).push({ m, mesh: me, k }); };
+      const gi = M('#d6e8ee', { transparent: true, opacity: 0.45, roughness: 0.05 });
       [['light.salle_a_manger_vit_d', 107.5, 139.5, 124], ['light.salle_a_manger_vit_g', 165.5, 197.5, 181]].forEach(([e, y0, y1, yc]) => {
-        clickable(box(440, y0, 441, y1, 0.92, 2.06, L(e, '#fff1d6', [456, yc, 1.5], 1.4, 2.2), false), e);
+        box(440, y0, 440.6, y1, 0.92, 2.06, MAT.patine, false); for (let y = y0 + 4; y < y1 - 1; y += 4) box(440.6, y, 440.85, y + 0.3, 0.92, 2.04, groove, false);
+        clickable(box(441, y0 + 1, 452, y1 - 1, 2.02, 2.045, L(e, '#fff1d6', [447, yc, 1.9], 1.1, 1.4), false), e);
         for (const z of [1.33, 1.72]) box(441, y0, 452, y1, z, z + 0.012, shelfG, false);
         clickable(box(452.6, y0, 453.4, y1, 0.92, 2.06, glass, false), e);
-        box(452.5, yc - 0.6, 453.5, yc + 0.6, 0.92, 2.06, MAT.patine, false); for (const z of [1.25, 1.6, 1.9]) box(452.5, y0, 453.5, y1, z, z + 0.015, MAT.patine, false); });
+        const fr = (a, b2, z0, z1) => box(452.4, a, 453.6, b2, z0, z1, MAT.patine, false);
+        fr(y0, y0 + 1.8, 0.9, 2.08); fr(y1 - 1.8, y1, 0.9, 2.08); fr(y0, y1, 0.9, 0.96); fr(y0, y1, 2.02, 2.08); fr(y0, y1, 1.2, 1.245); fr(y0, y1, 1.72, 1.765);
+        for (const k of [1, 2]) { const y = y0 + (y1 - y0) * k / 3; fr(y - 0.5, y + 0.5, 0.96, 1.2); fr(y - 0.5, y + 0.5, 1.765, 2.02); }
+        const hy = e.endsWith('_d') ? y1 - 3.2 : y0 + 2.2; box(453.6, hy, 454.3, hy + 1, 1.42, 1.5, dark, false);
+        // contenu : verres à pied, vase, cadres
+        const cols = e.endsWith('_d') ? ['#cfd8de', '#2b2b30', '#cfd8de', '#3a3a40'] : ['#3d6fa8', '#5c8f5a', '#c9d6dc', '#8a5aa8'];
+        cols.forEach((c, k) => { const y = y0 + 5 + k * 7; cyl(446, y, 0.25, 1.344, 1.43, gi, 8); cyl(446, y, 1.1, 1.43, 1.54, M(c, { transparent: true, opacity: 0.7, roughness: 0.1 }), 14); });
+        sphere(447, yc + 4, 2.2, 1.06, M(e.endsWith('_d') ? '#2e2a30' : '#e9d9e3', { roughness: 0.3 })); cyl(445, yc - 6, 1.2, 0.96, 1.1, gi, 12);
+        box(441.6, yc - 5, 442.4, yc + 3, 1.734, 1.87, M('#e2ddd6')); box(441.6, y0 + 3, 442.4, y0 + 9, 0.96, 1.08, M('#cfc6d8'));
+        // halo de la réglette : fond éclairé du haut vers le bas + flaques de lumière sur les étagères en verre
+        const [ba, bb] = P(440.9, yc), [sa, sb] = P(446.5, yc);
+        vglow(e, (y1 - y0 - 2) * S, 1.1, [ba, 1.48, bb], [0, Math.PI / 2, 0], 1.0, false);
+        for (const [z, k] of [[1.747, 0.55], [1.357, 0.35], [0.965, 0.22]]) vglow(e, 11 * S, (y1 - y0 - 3) * S, [sa, z, sb], [-Math.PI / 2, 0, 0], k, true); });
     }
     /* ---- salle à manger ---- */
     { const top = M('#c9b591', { roughness: 0.6 }); box(546, 250, 650, 290, 0.71, 0.77, top);
@@ -799,6 +842,18 @@ class Floorplan3DCard extends HTMLElement {
       g.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 4; i++) g.fillRect(22 + i * 56, 122, 46, 24);
       if (mode === 'dim') { g.fillStyle = 'rgba(0,0,0,.72)'; g.fillRect(0, 0, W, Hh); } }
     this.tabTex.needsUpdate = true; this._dirty = true;
+  }
+  _drawClock() {
+    const cv = this._clockCv; if (!cv) return; const g = cv.getContext('2d'), c = 256; g.clearRect(0, 0, 512, 512);
+    g.fillStyle = '#d6c3a5'; g.beginPath(); g.arc(c, c, 256, 0, 7); g.fill(); g.strokeStyle = 'rgba(110,82,55,.22)'; g.lineWidth = 2; for (let r = 158; r < 252; r += 13) { g.beginPath(); g.arc(c, c, r, 0, 7); g.stroke(); }
+    g.fillStyle = '#ebe4d8'; g.beginPath(); g.arc(c, c, 150, 0, 7); g.fill();
+    g.fillStyle = '#4a3a2c'; g.font = 'bold 32px Georgia,serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    ['XII', 'I', 'II', 'III', 'IIII', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'].forEach((t, i) => { const an = i * Math.PI / 6; g.save(); g.translate(c + Math.sin(an) * 205, c - Math.cos(an) * 205); g.rotate(an); g.fillText(t, 0, 0); g.restore(); });
+    g.strokeStyle = '#1d1d1f'; g.lineWidth = 6; g.beginPath(); g.arc(c, c, 140, 0, 7); g.stroke(); g.lineWidth = 3; g.beginPath(); g.moveTo(c - 140, c); g.lineTo(c + 140, c); g.moveTo(c, c - 140); g.lineTo(c, c + 140); g.stroke(); g.beginPath(); g.ellipse(c, c, 70, 140, 0, 0, 7); g.stroke();
+    g.fillStyle = '#1d1d1f'; for (const [x, y, rx, ry, r] of [[-72, -42, 36, 24, 0.3], [-56, 42, 16, 38, 0.2], [26, -52, 28, 17, 0], [28, 12, 20, 36, 0.1], [88, -32, 38, 24, -0.2], [98, 62, 20, 13, 0]]) { g.beginPath(); g.ellipse(c + x, c + y, rx, ry, r, 0, 7); g.fill(); }
+    const d = new Date(), h = (d.getHours() % 12 + d.getMinutes() / 60) * Math.PI / 6, mi = d.getMinutes() * Math.PI / 30;
+    g.strokeStyle = '#f5f5f3'; g.lineCap = 'round'; g.lineWidth = 11; g.beginPath(); g.moveTo(c, c); g.lineTo(c + Math.sin(h) * 108, c - Math.cos(h) * 108); g.stroke(); g.lineWidth = 7; g.beginPath(); g.moveTo(c, c); g.lineTo(c + Math.sin(mi) * 172, c - Math.cos(mi) * 172); g.stroke();
+    g.fillStyle = '#f5f5f3'; g.beginPath(); g.arc(c, c, 13, 0, 7); g.fill(); if (this._clockTex) this._clockTex.needsUpdate = true;
   }
   _drawTV(t) {
     const g = this.tvCv.getContext('2d'), W = 320, H = 180;
