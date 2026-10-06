@@ -328,7 +328,10 @@
                   "tap_action": {
                     "action": "call-service",
                     "service": "script.je_pars",
-                    "haptic": "medium"
+                    "haptic": "medium",
+                    "confirmation": {
+                      "text": "🚪 Tu pars vraiment ? L'alarme passera en mode TOTAL dans 60 secondes."
+                    }
                   },
                   "variables": {
                     "c1": "#f3c156",

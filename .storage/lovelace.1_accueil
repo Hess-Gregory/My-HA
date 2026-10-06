@@ -367,7 +367,10 @@
                   "icon_color": "amber",
                   "tap_action": {
                     "action": "call-service",
-                    "service": "script.je_pars"
+                    "service": "script.je_pars",
+                    "confirmation": {
+                      "text": "🚪 Tu pars vraiment ? L'alarme passera en mode TOTAL dans 60 secondes."
+                    }
                   },
                   "grid_options": {
                     "columns": 4,
