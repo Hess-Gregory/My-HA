@@ -514,7 +514,7 @@ class Floorplan3DCard extends HTMLElement {
         const U = () => { g.beginPath(); g.moveTo(80, 176); g.lineTo(80, 42); g.lineTo(328, 42); g.lineTo(328, 176); g.stroke(); };
         const R = () => { g.beginPath(); g.moveTo(74, 178); g.lineTo(74, 37); g.lineTo(334, 37); g.lineTo(334, 178); g.stroke(); }; for (const [bl, lw, al] of [[46, 130, 0.22], [22, 62, 0.5], [9, 26, 1]]) { g.filter = 'blur(' + bl + 'px)'; g.lineWidth = lw; g.globalAlpha = al; R(); } g.globalAlpha = 1;
         g.globalCompositeOperation = 'destination-in'; g.filter = 'none'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.55, '#fff'); fd.addColorStop(0.78, 'rgba(255,255,255,.35)'); fd.addColorStop(0.9, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240);
-        const [pa, pb] = P(551, 20.48); mk(cv, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 0.55, false); mk(cv, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 1.5, true);
+        const [pa, pb] = P(551, 20.48); mk(cv, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 1.1, false); mk(cv, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 2.6, true);
         // tranche intérieure des enceintes KEF éclairée côté TV
         const cv3 = document.createElement('canvas'); cv3.width = 8; cv3.height = 64; const g3 = cv3.getContext('2d'); const lg = g3.createLinearGradient(0, 0, 0, 64); lg.addColorStop(0, 'rgba(255,255,255,1)'); lg.addColorStop(0.7, 'rgba(255,255,255,.8)'); lg.addColorStop(1, 'rgba(255,255,255,.15)'); g3.fillStyle = lg; g3.fillRect(0, 0, 8, 64);
         for (const [x, ry] of [[508.55, Math.PI / 2], [593.45, -Math.PI / 2]]) { const [sa, sb] = P(x, 20.9); mk(cv3, 0.02, 0.47, [sa, 1.385, sb], [0, ry, 0], 1.2, true); }
