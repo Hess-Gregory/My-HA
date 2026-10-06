@@ -504,20 +504,20 @@ class Floorplan3DCard extends HTMLElement {
       box(476, 14.5, 506, 15.5, 0, WH, back, false); for (let x = 476.3; x < 505.6; x += 1.95) box(x, 15.5, x + 1.35, 16.7, 0, WH, slat, false);
       clickable(box(493.5, 16.8, 608.5, 19.2, 0.74, 1.9, L('light.salon_panneau_mural', '#ffd27a', [551, 34, 1.35], 2.4, 3.6), false), 'light.salon_panneau_mural');
       clickable(box(491, 19.2, 611, 20.4, 0.72, 1.92, MAT.white), 'light.salon_panneau_mural');
-      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 34, 1.7], 1.6, 2.0), false), 'light.salon_ambilight_tv');
+      clickable(box(521, 20.4, 581, 21.2, 1.03, 1.72, L('light.salon_ambilight_tv', '#7f6bff', [551, 27, 2.12], 0.7, 1.1), false), 'light.salon_ambilight_tv');
       { // halo Ambilight : ruban en U inversé derrière la TV (côtés + haut, rien dessous) -> lumière concentrée sur le panneau blanc entre les enceintes + léger reflet au bord du plafond
         const rec = this.lights['light.salon_ambilight_tv'], add = (m) => { if (rec) (rec.glows = rec.glows || []).push(m); };
         const mk = (cv, w, h, pos, rot, k, additive) => { const m = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, opacity: 0, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, depthWrite: false, toneMapped: false });
           const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(...pos); me.rotation.set(...rot); me.visible = false; me.renderOrder = 2; scene.add(me); add({ m, mesh: me, k }); };
         // panneau : x 500..602 px, z 0.72..1.92 m (200 px/m) ; TV x 518..584, z 1.0..1.75
         const tx = (layers, edges) => { const cv = document.createElement('canvas'); cv.width = 408; cv.height = 240; const g = cv.getContext('2d'); g.strokeStyle = '#fff'; g.lineJoin = 'round'; g.lineCap = 'butt';
-          const R = () => { g.beginPath(); g.moveTo(74, 186); g.lineTo(74, 36); g.lineTo(334, 36); g.lineTo(334, 186); g.stroke(); };
-          for (const [bl, lw, al] of layers) { g.filter = 'blur(' + bl + 'px)'; g.lineWidth = lw; g.globalAlpha = al; R(); }
-          if (edges) { g.filter = 'blur(2px)'; g.lineWidth = 4; g.globalAlpha = 0.8; for (const x of [35, 373]) { g.beginPath(); g.moveTo(x, 60); g.lineTo(x, 154); g.stroke(); } }
-          g.globalAlpha = 1; g.filter = 'none'; g.globalCompositeOperation = 'destination-in'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.7, '#fff'); fd.addColorStop(0.8, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240); return cv; };
+          const R = () => { g.beginPath(); g.moveTo(46, 186); g.lineTo(46, 36); g.lineTo(362, 36); g.lineTo(362, 186); g.stroke(); };
+          g.fillStyle = '#fff'; for (const [bl, m, rr, al, ell] of layers) { g.filter = 'blur(' + bl + 'px)'; g.globalAlpha = al; g.beginPath(); if (ell) g.ellipse(204, 104 - m * 0.15, 158 + m, 75 + m, 0, 0, Math.PI * 2); else g.roundRect(46 - m, 36 - m, 316 + 2 * m, 150 + 2 * m, rr); g.fill(); }
+          if (edges) { g.filter = 'blur(2px)'; g.lineWidth = 4; g.globalAlpha = 0.8; for (const x of [3, 405]) { g.beginPath(); g.moveTo(x, 60); g.lineTo(x, 154); g.stroke(); } }
+          g.globalAlpha = 1; g.filter = 'none'; g.globalCompositeOperation = 'destination-in'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, 'rgba(255,255,255,0)'); fd.addColorStop(0.11, '#fff'); fd.addColorStop(0.7, '#fff'); fd.addColorStop(0.8, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240); return cv; };
         // photo : liseré rouge saturé très serré contre l'écran (2-4 cm), puis voile rosé qui s'éteint en ~15-20 cm ; haut un peu plus large que les côtés
-        const rim = tx([[5, 14, 1], [11, 34, 0.85]], true), wash = tx([[30, 90, 0.35], [55, 150, 0.18]], false);
-        const [pa, pb] = P(551, 20.48); mk(wash, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 1.0, false); mk(rim, 102 * S, 1.2, [pa, 1.32, pb + 0.001], [0, 0, 0], 1.6, false); mk(rim, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 0.35, true);
+        const rim = tx([[5, 3, 46, 1, false], [16, 22, 0, 0.8, true]], true), wash = tx([[28, 44, 0, 0.42, true], [44, 70, 0, 0.22, true]], false);
+        const [pa, pb] = P(551, 20.48); mk(wash, 85 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 1.0, false); mk(rim, 85 * S, 1.2, [pa, 1.32, pb + 0.001], [0, 0, 0], 1.6, false); mk(rim, 85 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 0.35, true);
         // tranche intérieure des enceintes KEF éclairée côté TV
         const cv3 = document.createElement('canvas'); cv3.width = 8; cv3.height = 64; const g3 = cv3.getContext('2d'); const lg = g3.createLinearGradient(0, 0, 0, 64); lg.addColorStop(0, 'rgba(255,255,255,1)'); lg.addColorStop(0.7, 'rgba(255,255,255,.8)'); lg.addColorStop(1, 'rgba(255,255,255,.15)'); g3.fillStyle = lg; g3.fillRect(0, 0, 8, 64);
         for (const [x, ry] of [[508.55, Math.PI / 2], [593.45, -Math.PI / 2]]) { const [sa, sb] = P(x, 20.9); mk(cv3, 0.02, 0.47, [sa, 1.385, sb], [0, ry, 0], 1.2, true); }
