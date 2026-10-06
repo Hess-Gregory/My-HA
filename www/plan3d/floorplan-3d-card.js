@@ -27,7 +27,8 @@ const RGBM = ['hs', 'rgb', 'rgbw', 'rgbww', 'xy'];
 const SWATCH = [['ct', 2700], ['rgb', [255, 40, 40]], ['rgb', [255, 140, 20]], ['rgb', [255, 0, 150]], ['rgb', [140, 40, 255]], ['rgb', [0, 110, 255]], ['rgb', [0, 220, 130]], ['ct', 6000]];
 const BEAMS = [['light.salon_l_salon', 575, 95, 1.95, 70], ['light.salle_a_manger_lg', 568, 269.5, 1.62, 34], ['light.salle_a_manger_lc', 598, 269.5, 1.62, 34], ['light.salle_a_manger_ld', 628, 269.5, 1.62, 34],
   ['light.salle_de_bain_sdb_evier', 75, 155.8, 2.1, 15], ['light.salle_de_bain_sdb_douche', 71.4, 162.4, 2.1, 15], ['light.salle_de_bain_sdb_langer', 78.6, 162.4, 2.1, 15], ['light.chambre_matteo', 262, 292, 2.15, 60], ['light.cuisine_evier', 344, 300, 1.43, 20],
-  ...[287, 306, 326, 344].map((y, i) => ['light.cuisine_s_cuisine_' + [4, 2, 3, 1][i], 373, y, 2.02, 24])];
+  // spots cuisine orientés (de la hotte vers la buanderie) : S1 plan de travail côté péninsule, S3 sous la hotte, S2 la péninsule, S4 l'ouverture du frigo (colonne à droite du four)
+  ['light.cuisine_s_cuisine_4', 373, 287, 2.03, 22, 366, 226, 1.0], ['light.cuisine_s_cuisine_2', 373, 306, 2.03, 24, 437, 306, 0.93], ['light.cuisine_s_cuisine_3', 373, 326, 2.03, 22, 395, 352, 0.9], ['light.cuisine_s_cuisine_1', 373, 344, 2.03, 24, 430, 348, 0.93]];
 
 class Floorplan3DCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
@@ -146,11 +147,13 @@ class Floorplan3DCard extends HTMLElement {
     this._roomMask();
     this._goTo('Vue générale', 3500); // vol d'introduction
     // faisceaux lumineux (cônes volumétriques)
-    BEAMS.forEach(([e, x, y, z, r]) => { const rec = this.lights[e]; if (!rec) return;
+    BEAMS.forEach(([e, x, y, z, r, tx, ty, tz]) => { const rec = this.lights[e]; if (!rec) return;
       const mat = new THREE.ShaderMaterial({ uniforms: { c: { value: new THREE.Color() }, o: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
         vertexShader: 'varying float vy;void main(){vy=uv.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
         fragmentShader: 'uniform vec3 c;uniform float o;varying float vy;void main(){gl_FragColor=vec4(c*o*pow(vy,1.5),1.);}' });
-      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.04, r / 50, z, 40, 1, true), mat); const [a, b] = this.P(x, y); m.position.set(a, z / 2, b); m.renderOrder = 2; this.scene.add(m); (rec.beams = rec.beams || []).push(mat); });
+      let m; const [a, b] = this.P(x, y);
+      if (tx !== undefined) { const [ta, tb] = this.P(tx, ty), A = new THREE.Vector3(a, z, b), T = new THREE.Vector3(ta, tz, tb), d = A.clone().sub(T), h = d.length(); m = new THREE.Mesh(new THREE.CylinderGeometry(0.04, r / 50, h, 40, 1, true), mat); m.position.copy(A).add(T).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); }
+      else { m = new THREE.Mesh(new THREE.CylinderGeometry(0.04, r / 50, z, 40, 1, true), mat); m.position.set(a, z / 2, b); } m.renderOrder = 2; this.scene.add(m); (rec.beams = rec.beams || []).push(mat); });
     // anneau de sélection
     this.selRing = new THREE.Mesh(new THREE.RingGeometry(0.26, 0.31, 64), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.9, depthTest: false })); this.selRing.rotation.x = -Math.PI / 2; this.selRing.visible = false; this.selRing.renderOrder = 3; scene.add(this.selRing);
     // éclairage d'ambiance (jour / nuit)
@@ -494,7 +497,12 @@ class Floorplan3DCard extends HTMLElement {
     box(425, 292, 447, 366, 0, 0.9, MAT.greige); box(423, 290, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 294, 457, 362, 1.06, 1.09, MAT.worktop); box(447, 296, 452, 360, 0.94, 1.06, M('#d8d5cf'));
     for (const y of [312, 344]) { cyl(468, y, 2, 0, 0.72, MAT.black, 10); cyl(468, y, 8, 0.72, 0.78, M('#2b2b2e'), 20); box(472, y - 7, 474, y + 7, 0.78, 1.15, M('#2b2b2e')); }
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
-    [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + [4, 2, 3, 1][i]; cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
+    [287, 306, 326, 344].forEach((y, i) => { const n = [4, 2, 3, 1][i], e = 'light.cuisine_s_cuisine_' + n; cyl(373, y, 1, 2.16, 2.25, MAT.black, 8);
+      const body = cyl(373, y, 3, 2.05, 2.17, MAT.black), lens = cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)); clickable(body, e); clickable(lens, e);
+      // tête du spot inclinée vers sa cible (la barre du plafond reste fixe)
+      const t = { 4: [366, 226, 1.0], 2: [437, 306, 0.93], 3: [395, 352, 0.9], 1: [430, 348, 0.93] }[n], [pa, pb] = P(373, y), [ta, tb] = P(t[0], t[1]), piv = new THREE.Vector3(pa, 2.16, pb);
+      const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, -1, 0), new THREE.Vector3(ta - pa, t[2] - 2.16, tb - pb).normalize());
+      for (const m of [body, lens]) { m.position.sub(piv).applyQuaternion(q).add(piv); m.quaternion.premultiply(q); } });
     /* ---- salon ---- */
     box(441, 15, 465, 33, 0.56, 0.6, M('#a88b62', { roughness: 0.8 })); for (const [x, y] of [[441.5, 15.5], [463.5, 15.5], [441.5, 31.5], [463.5, 31.5]]) box(x, y, x + 1, y + 1, 0, 0.56, MAT.black); box(444, 17, 462, 31, 0.6, 0.86, MAT.white); box(445, 31, 461, 31.4, 0.66, 0.74, M('#2a2a2c'), false); box(442, 14.6, 462, 24, 1.0, 1.06, MAT.oakLight); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false); box(450.8, 14.6, 455.2, 15.5, 1.64, 1.73, MAT.white, false); box(451.4, 15.5, 454.6, 15.6, 1.665, 1.715, M('#c9d2c8', { roughness: 0.4 }), false);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
