@@ -355,43 +355,43 @@ class Floorplan3DCard extends HTMLElement {
       box(297, 106, 320.5, 112, 0, WH, taupe); box(301, 112, 320.4, 150, 0, 1.95, wh); box(300, 111.5, 320.5, 151, 1.95, 2.0, M('#2a2725')); box(300.9, 130.7, 301, 131.3, 0.95, 1.05, M('#8a8a8a'), false);
     }
     /* ---- buanderie ---- */
-    { // buanderie / local technique d'après photos (entrée par la cuisine, au sud) :
-      // mur ouest = baie réseau Digitus (Hue, switch Omada, NVR Reolink, routeur) + centrale Ajax Hub 2 + tableau électrique (Shelly Pro EM) ;
-      // mur nord = armoire à persiennes + planche, chaudière Junkers dans l'angle ; mur est = colonne lave-linge + sèche-linge AEG ; plafond = borne Omada + détecteur incendie
+    { // buanderie / local technique d'après photos — en entrant (par le sud) : mur de gauche (ouest) = baie réseau + Ajax Hub 2 + tableau électrique,
+      // puis l'armoire à persiennes, puis la chaudière Junkers dans l'angle ; mur d'en face (nord) = colonne lave-linge + sèche-linge AEG ; plafond = borne Omada + détecteur incendie
       const cream = M('#ece7dd', { roughness: 0.95 }), wh = M('#f4f4f1', { roughness: 0.4 }), grey = M('#d9dad6', { roughness: 0.5 }), blk = M('#141416', { roughness: 0.35 }), green = M('#3fae5a', { roughness: 0.5 });
       const pw = (x0, y0, x1, y1) => this._wall(box(x0, y0, x1, y1, 0, WH, cream, false));
       pw(329.5, 111.5, 329.8, 205.5); pw(329.5, 111.5, 430.5, 111.8); pw(430.2, 111.5, 430.5, 205.5); pw(329.5, 205.2, 369.5, 205.5); pw(405.5, 205.2, 430.5, 205.5);
       const LED = (x, y, z, c) => box(x, y, x + 0.3, y + 0.8, z, z + 0.012, M('#111', { emissive: c, emissiveIntensity: 1.2 }), false);
-      // baie réseau murale (porte vitrée à liseré vert)
+      // 1) baie réseau murale (porte vitrée à liseré vert) : Hue, switch Omada, NVR Reolink, routeur
       const NVR = 'switch.enregistreur_nvr_enregistrer';
-      clickable(box(329.8, 112, 351, 140, 1.72, 2.26, grey), NVR); box(350.8, 113, 351.2, 139, 1.75, 2.23, M('#3a444a', { transparent: true, opacity: 0.22, roughness: 0.1, depthWrite: false }), false);
-      for (const y of [113, 138.6]) box(350.8, y, 351.4, y + 0.4, 1.74, 2.24, green, false);
-      for (const [z, c] of [[2.15, '#3cff6a'], [2.06, '#ffb02e'], [1.98, '#3cff6a'], [1.9, '#3cff6a'], [1.82, '#3cff6a']]) { box(332, 115, 350.4, 137, z - 0.035, z + 0.03, M('#1c1c1e', { roughness: 0.5 }), false); for (let k = 0; k < 4; k++) LED(350.45, 117 + k * 4.5, z, c); }
-      box(348, 116, 350.4, 121, 2.17, 2.22, wh, false); box(348, 124, 350.4, 128, 2.17, 2.22, wh, false); LED(350.45, 118, 2.2, '#3a7bff'); LED(350.45, 125.5, 2.2, '#ff3a3a');
-      // centrale Ajax Hub 2 (noire, logo lumineux) sous la baie
+      clickable(box(329.8, 170, 351, 198, 1.72, 2.26, grey), NVR); box(350.8, 171, 351.2, 197, 1.75, 2.23, M('#3a444a', { transparent: true, opacity: 0.22, roughness: 0.1, depthWrite: false }), false);
+      for (const y of [171, 196.6]) box(350.8, y, 351.4, y + 0.4, 1.74, 2.24, green, false);
+      for (const [z, c] of [[2.15, '#3cff6a'], [2.06, '#ffb02e'], [1.98, '#3cff6a'], [1.9, '#3cff6a'], [1.82, '#3cff6a']]) { box(332, 173, 350.4, 195, z - 0.035, z + 0.03, M('#1c1c1e', { roughness: 0.5 }), false); for (let k = 0; k < 4; k++) LED(350.45, 175 + k * 4.5, z, c); }
+      box(348, 174, 350.4, 179, 2.17, 2.22, wh, false); box(348, 182, 350.4, 186, 2.17, 2.22, wh, false); LED(350.45, 176, 2.2, '#3a7bff'); LED(350.45, 183.5, 2.2, '#ff3a3a');
+      // centrale Ajax Hub 2 sous la baie
       const ALARM = 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison';
-      clickable(box(329.8, 116, 331.4, 124, 1.44, 1.64, blk, false), ALARM); box(331.4, 118.5, 331.5, 121.5, 1.535, 1.555, M('#111', { emissive: '#e8f2ff', emissiveIntensity: 1 }), false);
-      // tableau électrique (porte fumée ouverte) avec le Shelly Pro EM (consommation électrique de la maison)
-      box(329.8, 114, 335.5, 137, 0.82, 1.4, wh); box(335.5, 115, 335.7, 136, 0.88, 1.34, M('#cfcfcb'), false);
-      for (const z of [1.18, 0.98]) for (let k = 0; k < 13; k++) box(335.7, 116 + k * 1.4, 336.6, 117.1 + k * 1.4, z, z + 0.09, M(k % 4 === 0 ? '#9aa6c8' : '#f2f2ef'), false);
-      clickable(box(335.7, 133.5, 337, 135.5, 0.97, 1.08, M('#f7f7f7', { emissive: '#3cff6a', emissiveIntensity: 0.15 }), false), 'sensor.buanderie_local_tech_compteur_general_maison_puissance');
-      box(335.5, 137, 347, 137.4, 0.84, 1.38, M('#4a5258', { transparent: true, opacity: 0.35, depthWrite: false }), false);
-      // armoire à persiennes (blanc cassé, montants anthracite) + planche bois au-dessus
-      box(370, 112, 406, 132, 0, 1.72, M('#2e2f31', { roughness: 0.6 })); box(371, 132, 388, 132.6, 0.05, 1.68, wh, false); box(388.4, 132, 405, 132.6, 0.05, 1.68, wh, false);
-      for (let z = 0.15; z < 1.62; z += 0.06) box(372, 132.6, 404, 132.8, z, z + 0.012, M('#e2e2de'), false); box(371, 132.6, 405, 132.9, 1.08, 1.11, M('#2e2f31'), false); box(385, 132.9, 391, 133.6, 1.04, 1.1, blk, false);
-      box(366, 111.8, 408, 134, 1.73, 1.76, M('#c9a57a', { roughness: 0.7 }));
-      // chaudière murale Junkers dans l'angle nord-est (LED bleue, conduits vers le plafond)
+      clickable(box(329.8, 174, 331.4, 182, 1.44, 1.64, blk, false), ALARM); box(331.4, 176.5, 331.5, 179.5, 1.535, 1.555, M('#111', { emissive: '#e8f2ff', emissiveIntensity: 1 }), false);
+      // tableau électrique (porte fumée ouverte vers l'entrée) avec le Shelly Pro EM
+      box(329.8, 172, 335.5, 195, 0.82, 1.4, wh); box(335.5, 173, 335.7, 194, 0.88, 1.34, M('#cfcfcb'), false);
+      for (const z of [1.18, 0.98]) for (let k = 0; k < 13; k++) box(335.7, 174 + k * 1.4, 336.6, 175.1 + k * 1.4, z, z + 0.09, M(k % 4 === 0 ? '#9aa6c8' : '#f2f2ef'), false);
+      clickable(box(335.7, 191.5, 337, 193.5, 0.97, 1.08, M('#f7f7f7', { emissive: '#3cff6a', emissiveIntensity: 0.15 }), false), 'sensor.buanderie_local_tech_compteur_general_maison_puissance');
+      box(335.5, 195, 347, 195.4, 0.84, 1.38, M('#4a5258', { transparent: true, opacity: 0.35, depthWrite: false }), false);
+      // 2) armoire à persiennes (blanc cassé, montants anthracite) contre le mur de gauche + planche bois au-dessus
+      box(329.8, 131, 349.5, 166, 0, 1.72, M('#2e2f31', { roughness: 0.6 })); box(349.5, 132, 350.1, 148.3, 0.05, 1.68, wh, false); box(349.5, 148.7, 350.1, 165, 0.05, 1.68, wh, false);
+      for (let z = 0.15; z < 1.62; z += 0.06) box(350.1, 133, 350.3, 164, z, z + 0.012, M('#e2e2de'), false); box(350.1, 132, 350.4, 165, 1.08, 1.11, M('#2e2f31'), false); box(350.4, 145.5, 351.1, 151.5, 1.04, 1.1, blk, false);
+      box(329.8, 112, 352, 168, 1.73, 1.76, M('#c9a57a', { roughness: 0.7 }));
+      // 3) chaudière murale Junkers dans l'angle nord-ouest (LED bleue, conduits vers le plafond)
       this.boilerLed = M('#111', { emissive: '#2f6bff', emissiveIntensity: 1 });
-      clickable(box(408.5, 111.8, 426.5, 127, 1.18, 1.98, wh), 'sensor.chaudiere_etat'); box(408.5, 126.9, 426.5, 127.2, 1.18, 1.42, M('#e6e6e2'), false); clickable(cyl(417.5, 127.3, 0.8, 1.27, 1.28, this.boilerLed), 'sensor.chaudiere_etat');
-      cyl(414, 117, 2.2, 1.98, 2.06, wh); cyl(420.5, 117, 2.2, 1.98, 2.04, M('#2a2a2c')); cyl(414, 117, 1.6, 2.06, 2.3, M('#b9bcc0', { metalness: 0.6, roughness: 0.3 }));
-      for (const x of [412, 416, 420, 423]) cyl(x, 118, 0.5, 0.9, 1.18, M('#b87333', { metalness: 0.6, roughness: 0.35 }));
-      // colonne lave-linge + sèche-linge AEG contre le mur est (hublots vers l'ouest)
-      clickable(box(399.5, 140, 430.2, 171, 0, 0.85, wh), 'sensor.buanderie_local_tech_compteur_general_maison_puissance'); box(399.5, 140, 430.2, 171, 0.85, 1.72, wh);
-      for (const [z, r] of [[0.42, 10], [1.25, 11]]) { const [a, b] = P(399.4, 155.5); const ring = new THREE.Mesh(new THREE.CircleGeometry(r * S, 32), M('#f0f0ee')); ring.position.set(a, z, b); ring.rotation.y = -Math.PI / 2; scene.add(ring); const d = new THREE.Mesh(new THREE.CircleGeometry((r - 2.5) * S, 32), M('#1d2228', { roughness: 0.1 })); d.position.set(a - 0.002, z, b); d.rotation.y = -Math.PI / 2; scene.add(d); }
-      box(399.3, 158, 399.5, 168, 1.58, 1.66, blk, false); box(399.3, 158, 399.5, 168, 0.74, 0.8, blk, false); cyl(399.4, 151, 1.4, 0.76, 0.78, wh); cyl(399.4, 151, 1.4, 1.6, 1.62, wh);
-      // plafond : borne Wi-Fi Omada + détecteur incendie Ajax + plafonnier 3 spots
-      clickable(cyl(343, 152, 5.6, 2.26, 2.3, wh, 32), 'sensor.ap_buanderie_etat_de_l_appareil'); cyl(343, 157, 0.5, 2.255, 2.26, M('#111', { emissive: '#3a7bff', emissiveIntensity: 1.2 }));
-      this.fireBMat = M('#f4f4f2', { roughness: 0.5, emissive: '#ff2a2a', emissiveIntensity: 0 }); clickable(box(353, 140, 359, 146, 2.25, 2.3, this.fireBMat, false), 'binary_sensor.buanderie_local_tech_detecteur_incendie_fumee');
+      clickable(box(329.8, 113, 345, 130.5, 1.18, 1.98, wh), 'sensor.chaudiere_etat'); box(344.9, 113, 345.2, 130.5, 1.18, 1.42, M('#e6e6e2'), false);
+      { const [a, b] = P(345.3, 121.75); const led = new THREE.Mesh(new THREE.CircleGeometry(0.8 * S, 16), this.boilerLed); led.position.set(a, 1.27, b); led.rotation.y = Math.PI / 2; scene.add(led); clickable(led, 'sensor.chaudiere_etat'); }
+      cyl(336, 118, 2.2, 1.98, 2.06, wh); cyl(336, 125, 2.2, 1.98, 2.04, M('#2a2a2c')); cyl(336, 118, 1.6, 2.06, 2.3, M('#b9bcc0', { metalness: 0.6, roughness: 0.3 }));
+      for (const y of [116, 120, 124, 127]) cyl(338, y, 0.5, 0.9, 1.18, M('#b87333', { metalness: 0.6, roughness: 0.35 }));
+      // mur d'en face (nord) : colonne lave-linge + sèche-linge AEG (hublots vers l'entrée)
+      clickable(box(396, 111.8, 427, 142, 0, 0.85, wh), 'sensor.buanderie_local_tech_compteur_general_maison_puissance'); box(396, 111.8, 427, 142, 0.85, 1.72, wh);
+      for (const [z, r] of [[0.42, 10], [1.25, 11]]) { const [a, b] = P(411.5, 142.1); const ring = new THREE.Mesh(new THREE.CircleGeometry(r * S, 32), M('#f0f0ee')); ring.position.set(a, z, b); scene.add(ring); const d = new THREE.Mesh(new THREE.CircleGeometry((r - 2.5) * S, 32), M('#1d2228', { roughness: 0.1 })); d.position.set(a, z, b + 0.002); scene.add(d); }
+      box(414, 142, 424, 142.2, 1.58, 1.66, blk, false); box(414, 142, 424, 142.2, 0.74, 0.8, blk, false); cyl(407, 142.1, 1.4, 0.76, 0.78, wh); cyl(407, 142.1, 1.4, 1.6, 1.62, wh);
+      // plafond : borne Wi-Fi Omada + détecteur incendie Ajax (près de la baie) + plafonnier 3 spots
+      clickable(cyl(345, 160, 5.6, 2.26, 2.3, wh, 32), 'sensor.ap_buanderie_etat_de_l_appareil'); cyl(345, 165, 0.5, 2.255, 2.26, M('#111', { emissive: '#3a7bff', emissiveIntensity: 1.2 }));
+      this.fireBMat = M('#f4f4f2', { roughness: 0.5, emissive: '#ff2a2a', emissiveIntensity: 0 }); clickable(box(357, 170, 363, 176, 2.25, 2.3, this.fireBMat, false), 'binary_sensor.buanderie_local_tech_detecteur_incendie_fumee');
       const nick = M('#a9adb1', { metalness: 0.7, roughness: 0.3 }); cyl(385, 165, 3.2, 2.27, 2.3, nick); for (const [dx, dy] of [[0, -3.5], [-3, 2], [3, 2]]) cyl(385 + dx, 165 + dy, 1.4, 2.15, 2.24, nick);
     }
     /* ---- chambre adulte ---- */
