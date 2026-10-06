@@ -625,7 +625,7 @@ class Floorplan3DCard extends HTMLElement {
       for (const [y0, y1] of [[105, 107.5], [139.5, 142], [163, 165.5], [197.5, 200]]) box(440, y0, 453.5, y1, 0.9, 2.08, MAT.patine);
       for (const z of [1.33, 1.72]) box(440, 142, 452, 163, z, z + 0.025, MAT.patine);
       [['light.salle_a_manger_vit_d', 107.5, 139.5, 124], ['light.salle_a_manger_vit_g', 165.5, 197.5, 181]].forEach(([e, y0, y1, yc]) => {
-        clickable(box(440, y0, 441, y1, 0.92, 2.06, L(e, '#ff2050', [456, yc, 1.5], 1.4, 2.2), false), e);
+        clickable(box(440, y0, 441, y1, 0.92, 2.06, L(e, '#fff1d6', [456, yc, 1.5], 1.4, 2.2), false), e);
         for (const z of [1.33, 1.72]) box(441, y0, 452, y1, z, z + 0.012, shelfG, false);
         clickable(box(452.6, y0, 453.4, y1, 0.92, 2.06, glass, false), e);
         box(452.5, yc - 0.6, 453.5, yc + 0.6, 0.92, 2.06, MAT.patine, false); for (const z of [1.25, 1.6, 1.9]) box(452.5, y0, 453.5, y1, z, z + 0.015, MAT.patine, false); });
