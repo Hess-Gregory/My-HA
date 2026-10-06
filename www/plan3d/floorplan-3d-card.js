@@ -351,7 +351,7 @@ class Floorplan3DCard extends HTMLElement {
       box(636, 14.5, 638, 33, 0.56, 2.28, MAT.oakLight); box(674, 14.5, 676, 33, 0.56, 2.28, MAT.oakLight); box(638, 14.5, 674, 15.5, 0.56, 2.28, MAT.oakLight); box(636, 14.5, 676, 33, 2.26, 2.28, MAT.oakLight); box(638, 15.5, 674, 33, 0.56, 0.6, MAT.oakLight);
       for (const z of [0.95, 1.28, 1.6, 1.93]) box(638, 15.5, 674, 32.5, z, z + 0.025, MAT.oakLight, false);
       box(634.4, 15, 636, 17, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
-    box(510, 52, 640, 140, 0, 0.01, MAT.rug2, false); box(545, 75, 612, 112, 0, 0.36, MAT.white); box(560, 82, 600, 105, 0.36, 0.4, MAT.oakLight);
+    box(510, 52, 640, 140, 0, 0.01, MAT.rug2, false); box(549, 80, 609, 107, 0, 0.04, M('#3a3a3c')); box(546, 77, 612, 110, 0.04, 0.38, M('#fafaf8', { roughness: 0.12, metalness: 0.05 })); box(588, 73.5, 615, 113.5, 0.22, 0.43, M('#b08a5c', { roughness: 0.6 }));
     box(500, 140, 676, 182, 0, 0.42, MAT.sofa); box(500, 172, 676, 182, 0.42, 0.88, MAT.sofa2); box(634, 55, 676, 140, 0, 0.42, MAT.sofa); box(634, 55, 676, 62, 0.42, 0.62, MAT.sofa2); box(668, 62, 676, 172, 0.42, 0.88, MAT.sofa2);
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
     { const [a, b] = P(575, 95); const hat = new THREE.Mesh(new THREE.ConeGeometry(30 * S, 0.1, 48, 1, true), M('#c8a55e', { transparent: true, opacity: 0.3, side: THREE.DoubleSide, roughness: 1 })); hat.position.set(a, 2.05, b); scene.add(hat); clickable(hat, 'light.salon_l_salon'); }
