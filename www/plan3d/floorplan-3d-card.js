@@ -311,11 +311,25 @@ class Floorplan3DCard extends HTMLElement {
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(16 * S, 0.2), this.tabMat); scr.position.set(a, 1.4, b); scr.rotation.y = Math.PI / 2; scene.add(scr); clickable(scr, 'switch.salon_sam_tablette_ecran'); }
     { const [a, b] = P(676.5, 102); const c = new THREE.Mesh(new THREE.CircleGeometry(13 * S, 40), M('#efe9df')); c.position.set(a, 1.75, b); c.rotation.y = -Math.PI / 2; scene.add(c); }
     along(wB1, 0.15, 0.85, 1, 18, 0, 0.95, MAT.white);
-    along(wB2, 0.12, 0.88, 1, 22, 0, 0.92, MAT.patine); along(wB2, 0.15, 0.85, 3, 17, 0.92, 1.0, MAT.white);
-    for (const t of [0.2, 0.33, 0.5, 0.67, 0.8]) along(wB2, t - 0.055, t + 0.055, 5, 13, 1.0, 1.05, MAT.black, false);
-    along(wB2, 0.02, 0.1, 2, 13, 0, 1.15, MAT.white); along(wB2, 0.9, 0.98, 2, 13, 0, 1.15, MAT.white);
-    clickable(along(wB2, 0.285, 0.375, 1.2, 2.5, 1.0, 1.22, L('light.coin_dj_sono_gauche', '#ff2a3a', [758, 205, 1.15], 1.8, 2.4), false), 'light.coin_dj_sono_gauche');
-    clickable(along(wB2, 0.625, 0.715, 1.2, 2.5, 1.0, 1.22, L('light.coin_dj_sono_droite', '#ff2a3a', [751, 275, 1.15], 1.8, 2.4), false), 'light.coin_dj_sono_droite');
+    // coin DJ : buffet patiné le long du mur oblique, plateau blanc, platine – lecteur Denon – table de mixage – lecteur Denon – platine, enceintes Adam
+    { const alongPt = (wl, t, off) => { const ux = (wl.c - wl.a) / wl.len, uz = (wl.d - wl.b) / wl.len; return [wl.a + ux * t * wl.len - uz * off * S, wl.b + uz * t * wl.len + ux * off * S]; };
+      const disc3 = (t, off, r, z0, z1, mat) => { const [x, z] = alongPt(wB2, t, off); const m = new THREE.Mesh(new THREE.CylinderGeometry(r * S, r * S, z1 - z0, 32), mat); m.position.set(x, (z0 + z1) / 2, z); scene.add(m); return m; };
+      const groove = M('#cfc6b6'), silver = M('#c9ccd0', { metalness: 0.7, roughness: 0.3 }), devBlack = M('#151517', { roughness: 0.45 });
+      along(wB2, 0.04, 0.655, 1, 22, 0, 0.86, MAT.patine); along(wB2, 0.04, 0.655, 1, 22, 0, 0.05, groove);
+      for (const t of [0.195, 0.35, 0.505]) along(wB2, t - 0.002, t + 0.002, 22.5, 0.4, 0.08, 0.84, groove, false);
+      along(wB2, 0.04, 0.655, 22.5, 0.4, 0.62, 0.635, groove, false);
+      along(wB2, 0.035, 0.66, 1, 25, 0.86, 0.96, MAT.white);
+      const deck = (t0, t1) => { along(wB2, t0, t1, 4, 19, 0.96, 1.06, devBlack); const tm = (t0 + t1) / 2; disc3(tm, 13, 8.5, 1.06, 1.075, silver); disc3(tm, 13, 2.6, 1.075, 1.08, M('#b3262e')); along(wB2, t1 - 0.012, t1 - 0.006, 6, 12, 1.06, 1.1, silver, false); };
+      const player = (t0, t1, ent, pos) => { along(wB2, t0, t1, 4, 19, 0.96, 1.04, devBlack); const tm = (t0 + t1) / 2;
+        clickable(along(wB2, t0 + 0.01, t1 - 0.01, 4.5, 6, 1.04, 1.13, L('light.coin_dj_sono_lecteurs', '#4aa3ff', null, 1, 1), false), 'light.coin_dj_sono_lecteurs');
+        clickable(disc3(tm, 15.5, 6.5, 1.04, 1.05, devBlack), 'light.coin_dj_sono_lecteurs'); disc3(tm, 15.5, 6.8, 1.035, 1.045, L('light.coin_dj_sono_lecteurs', '#2f7bff', null, 1, 1));
+        clickable(along(wB2, tm - 0.045, tm + 0.045, 1.0, 2, 0.98, 1.24, L(ent, '#ff2a3a', pos, 1.8, 2.4), false), ent); };
+      clickable(along(wB2, 0.048, 0.095, 4, 15, 0.96, 1.26, MAT.white), 'light.coin_dj_sono_adams'); disc3(0.0715, 19.6, 4, 1.03, 1.032, devBlack);
+      deck(0.1, 0.205); player(0.215, 0.3, 'light.coin_dj_sono_gauche', [757, 202, 1.15]);
+      along(wB2, 0.31, 0.42, 4, 19, 0.96, 1.05, devBlack); clickable(along(wB2, 0.335, 0.395, 4.5, 5, 1.05, 1.11, L('light.coin_dj_sono_mixeur', '#4aa3ff', null, 1, 1), false), 'light.coin_dj_sono_mixeur');
+      for (let k = 0; k < 4; k++) along(wB2, 0.322 + k * 0.024, 0.326 + k * 0.024, 12, 8, 1.05, 1.065, silver, false);
+      player(0.43, 0.515, 'light.coin_dj_sono_droite', [751, 246, 1.15]); deck(0.525, 0.63);
+      along(wB2, 0.67, 0.72, 2, 15, 0, 0.6, MAT.white); clickable(along(wB2, 0.672, 0.718, 3, 15, 0.6, 1.0, MAT.white), 'light.coin_dj_sono_adams'); disc3(0.695, 18.3, 4.5, 0.74, 0.742, devBlack); }
     // vitrine : bas 3 portes, haut 2 vitrines vitrées éclairées + niche centrale ouverte, corniche
     { const glass = M('#eaf3f5', { transparent: true, opacity: 0.22, roughness: 0.05 }), groove = M('#cfc7b8'), shelfG = M('#dfeef0', { transparent: true, opacity: 0.5, roughness: 0.1 });
       box(437, 104, 458, 201, 0, 0.86, MAT.patine); box(436.5, 103, 459, 202, 0.86, 0.9, MAT.patine); box(437, 104, 458.5, 201, 0, 0.06, groove);
