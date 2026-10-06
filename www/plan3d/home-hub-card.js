@@ -54,7 +54,9 @@ class HomeHubCard extends HTMLElement {
       .mid{display:flex;flex-direction:column;gap:10px;min-height:0}.mid .plan{flex:1}
       .sun{width:100%;height:46px;margin-top:8px;overflow:visible}.sun text{font:600 9px system-ui;fill:rgba(243,238,230,.55)}
       .hero{background:linear-gradient(160deg,rgba(255,210,122,.10),rgba(255,255,255,.04) 45%)}
-      @media (max-width:1100px){.hub{grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr}.mid{grid-column:1/3;grid-row:2}.c1{grid-row:1;grid-column:1}.c3{grid-row:1;grid-column:2}.hide-s,.fc,.sun{display:none!important}.dock{grid-template-columns:repeat(4,1fr)}}
+      @media (max-width:1100px){.hub{grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr);gap:8px}.mid{grid-column:1/3;grid-row:2}.c1{grid-row:1;grid-column:1;gap:8px}.c3{grid-row:1;grid-column:2}.hide-s,.fc,.sun,.hello,.wmeta,.rm em,.dock button small{display:none!important}
+        .tile{padding:10px 12px;border-radius:16px}.clock{font-size:44px}.date{font-size:12px;margin-top:2px}.ppl{margin-top:6px;padding-top:6px}.av{width:28px;height:28px}.wico{font-size:30px}.wt{font-size:26px}.wt small{font-size:12px}
+        .rooms{gap:3px}.rm{padding:3px 8px}.rm b{font-size:16px}.rm span{font-size:11px}.h{margin-bottom:4px}.mid .plan{min-height:44vh}.dock{grid-template-columns:repeat(8,1fr);gap:4px;padding:6px}.dock button{padding:6px 2px;font-size:10px;border-radius:12px}.dock button i{font-size:18px}}
     </style>
     <div class="hub">
       <div class="col c1">
@@ -94,7 +96,7 @@ class HomeHubCard extends HTMLElement {
       let rise = new Date(r), set = new Date(st); if (rise > set) rise = new Date(rise - 86400000); const up = sa.state === 'above_horizon', t = up ? Math.min(1, Math.max(0, (d - rise) / (set - rise))) : (d > set ? 1 : 0);
       const pth = this.shadowRoot.querySelector('.arcp'), L = pth.getTotalLength ? pth.getTotalLength() : 0; if (L) { const pt = pth.getPointAtLength(L * t); const dot = this.shadowRoot.querySelector('.sdot'); dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y); dot.style.opacity = up ? 1 : 0.35; pth.style.strokeDasharray = `${L * t} ${L}`; }
       this.shadowRoot.querySelector('.sr').textContent = '☀ ' + f(rise); this.shadowRoot.querySelector('.ss').textContent = f(set) + ' ☾'; }
-    const n = (this._h && this._h.user && this._h.user.name) || ''; this.$('.hello').textContent = `${hh < 6 ? 'Bonne nuit' : hh < 12 ? 'Bonjour' : hh < 18 ? 'Bon après-midi' : 'Bonsoir'}${n ? ', ' + n.split(' ')[0] : ''} 👋`;
+    let n = (this._h && this._h.user && this._h.user.name) || ''; if (/admin|pc /i.test(n)) n = ''; this.$('.hello').textContent = `${hh < 6 ? 'Bonne nuit' : hh < 12 ? 'Bonjour' : hh < 18 ? 'Bon après-midi' : 'Bonsoir'}${n ? ', ' + n.split(' ')[0] : ''} 👋`;
   }
   _forecast() {
     try { this._unsub = this._h.connection.subscribeMessage((m) => { this._fc = (m.forecast || []).slice(0, 5); this._render(); }, { type: 'weather/subscribe_forecast', entity_id: 'weather.maison', forecast_type: 'daily' }); } catch (e) {}
@@ -108,7 +110,7 @@ class HomeHubCard extends HTMLElement {
     const H = this._h && this._h.states; if (!H || !this.$) return; const $ = this.$, num = (e) => { const v = parseFloat(H[e] && H[e].state); return isNaN(v) ? null : v; };
     // météo
     const w = H['weather.maison']; if (w) { const [ic, lb] = WX[w.state] || ['🌡️', w.state]; $('.wico').textContent = ic; $('.wt').innerHTML = `${Math.round(w.attributes.temperature)}°<small>${lb}</small>`;
-      $('.wmeta').innerHTML = `<span>💧 ${w.attributes.humidity ?? '—'} %</span><span>💨 ${Math.round(w.attributes.wind_speed ?? 0)} km/h</span><span>☀️ UV ${w.attributes.uv_index ?? '—'}</span>`; }
+      $('.wmeta').innerHTML = `${w.attributes.humidity != null ? `<span>💧 ${w.attributes.humidity} %</span>` : ''}<span>💨 ${Math.round(w.attributes.wind_speed ?? 0)} km/h</span><span>☀️ UV ${w.attributes.uv_index ?? '—'}</span>`; }
     if (this._fc) $('.fc').innerHTML = this._fc.map((f) => { const d = new Date(f.datetime); return `<div><i>${d.toLocaleDateString('fr-BE', { weekday: 'short' }).replace('.', '')}</i><b>${(WX[f.condition] || ['·'])[0]}</b>${Math.round(f.temperature)}°<i> ${f.templow != null ? Math.round(f.templow) + '°' : ''}</i></div>`; }).join('');
     // présence
     $('.ppl').innerHTML = PEOPLE.filter(([e]) => H[e]).map(([e, n]) => `<div class="p ${H[e].state === 'home' ? 'on' : ''}"><div class="av">${n[0]}</div>${n}<br><small>${H[e].state === 'home' ? 'À la maison' : 'Absent'}</small></div>`).join('');
