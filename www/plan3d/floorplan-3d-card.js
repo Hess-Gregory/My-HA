@@ -84,7 +84,7 @@ class Floorplan3DCard extends HTMLElement {
         .pn{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto;transform-origin:bottom center}}
     </style>
     <div class="wrap"><canvas></canvas><div class="ov"></div>
-      <div class="bar"><div class="t">🏠 Ma maison en 3D<small>Touchez une lampe pour la régler · glissez pour tourner · pincez pour zoomer</small></div>
+      <div class="bar"><div class="t">🏠 Ma maison en 3D<small>Touchez une lampe ou un radiateur · glissez pour tourner · pincez pour zoomer</small></div>
         <button class="walls">🧱 Murs bas</button><button class="mode">🌓 Auto</button><button class="alarm">🛡️ …</button></div>
       <div class="amb"><button data-a="cine">🎬 Cinéma</button><button data-a="diner">🍽️ Dîner</button><button data-a="off">⚫ Tout éteindre</button></div>
       <div class="views"></div><div class="info"></div><div class="toast"></div>
@@ -143,7 +143,7 @@ class Floorplan3DCard extends HTMLElement {
       if (!hit) return this._closePanel();
       const ent = hit.object.userData.entity, st = this._h.states[ent];
       if (!st || st.state === 'unavailable') return this._toast('Lampe indisponible');
-      if (Date.now() - down[2] > 550) return this._more(ent);
+      if (Date.now() - down[2] > 550 || !ent.startsWith('light.')) return this._more(ent);
       this._openPanel(ent, e.clientX - r.left, e.clientY - r.top, hit.object);
     });
     canvas.addEventListener('pointermove', (e) => {
@@ -265,6 +265,9 @@ class Floorplan3DCard extends HTMLElement {
     clickable(box(500, 12.5, 608, 14.6, 0.65, 1.95, MAT.white), 'light.salon_panneau_mural');
     clickable(box(526, 14.6, 582, 15.8, 0.95, 1.55, L('light.salon_ambilight_tv', '#7f6bff', [554, 26, 1.2], 1.6, 2.4), false), 'light.salon_ambilight_tv');
     this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(530, 15.8, 578, 17.2, 1.0, 1.5, this.tvMat, false);
+    { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.tvCv = cv; this.tvTex = new THREE.CanvasTexture(cv); this.tvTex.colorSpace = THREE.SRGBColorSpace;
+      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(46 * S, 0.47), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(554, 17.3);
+      this.tvScr.position.set(a, 1.25, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
     box(470, 13, 640, 33, 0, 0.5, MAT.white); box(585, 13, 630, 31, 0.5, 0.78, MAT.oakLight);
     box(640, 13, 676, 30, 0, 2.2, MAT.oakLight); for (const z of [0.5, 0.95, 1.4, 1.85]) box(641, 14, 675, 29, z, z + 0.03, M('#b8955f'), false);
     box(640, 29.5, 676, 30.2, 0.1, 2.15, decor('#ffcf88', 0.6, { transparent: true, opacity: 0.35 }), false);
@@ -273,7 +276,16 @@ class Floorplan3DCard extends HTMLElement {
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
     { const [a, b] = P(575, 95); const hat = new THREE.Mesh(new THREE.ConeGeometry(30 * S, 0.1, 48, 1, true), M('#c8a55e', { transparent: true, opacity: 0.3, side: THREE.DoubleSide, roughness: 1 })); hat.position.set(a, 2.05, b); scene.add(hat); clickable(hat, 'light.salon_l_salon'); }
     clickable(sphere(575, 95, 4, 1.98, L('light.salon_l_salon', '#ffcf8a', [575, 95, 1.9], 2.6, 5)), 'light.salon_l_salon');
-    box(673, 32, 677, 53, 0.12, 0.62, MAT.white); box(440, 206, 444, 240, 0.15, 0.75, MAT.white); box(439.5, 216, 441, 232, 1.3, 1.5, MAT.black, false); box(645, 362, 670, 366, 0.15, 0.75, MAT.white);
+    // radiateurs (cliquables → thermostat)
+    this.rads = [];
+    [[673, 22, 677, 75, 0.15, 0.75, 'climate.living'], [440, 206, 444, 240, 0.15, 0.75, 'climate.living'], [645, 362, 670, 366, 0.15, 0.75, 'climate.living'],
+     [70, 362, 130, 366, 0.15, 0.7, 'climate.chambre_adulte'], [250, 362, 295, 366, 0.15, 0.7, 'climate.chambre_enfants'], [131, 140, 134, 172, 0.4, 1.6, 'climate.salle_de_bain'], [365, 13, 405, 17, 0.15, 0.75, 'climate.couloir']]
+      .forEach(([a0, b0, a1, b1, z0, z1, e]) => { const m = M('#f4f3ef', { roughness: 0.5, emissive: '#ff5a1f', emissiveIntensity: 0 }); clickable(box(a0, b0, a1, b1, z0, z1, m), e); this.rads.push({ m, e }); });
+    // tablette murale (écran simulé selon son état)
+    box(439.5, 215, 441, 233, 1.28, 1.52, MAT.black, false);
+    { const cv = document.createElement('canvas'); cv.width = 256; cv.height = 160; this.tabCv = cv; this.tabTex = new THREE.CanvasTexture(cv); this.tabTex.colorSpace = THREE.SRGBColorSpace;
+      this.tabMat = new THREE.MeshBasicMaterial({ map: this.tabTex, toneMapped: false }); const [a, b] = P(441.1, 224);
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(16 * S, 0.2), this.tabMat); scr.position.set(a, 1.4, b); scr.rotation.y = Math.PI / 2; scene.add(scr); clickable(scr, 'switch.salon_sam_tablette_ecran'); }
     { const [a, b] = P(676.5, 102); const c = new THREE.Mesh(new THREE.CircleGeometry(13 * S, 40), M('#efe9df')); c.position.set(a, 1.75, b); c.rotation.y = -Math.PI / 2; scene.add(c); }
     along(wB1, 0.15, 0.85, 1, 18, 0, 0.95, MAT.white);
     along(wB2, 0.12, 0.88, 1, 22, 0, 0.92, MAT.patine); along(wB2, 0.15, 0.85, 3, 17, 0.92, 1.0, MAT.white);
@@ -313,10 +325,15 @@ class Floorplan3DCard extends HTMLElement {
       rec.target = { col, bri, on: bri > 0 };
     }
     const sa = H['sun.sun'] && H['sun.sun'].attributes;
-    if (sa && sa.azimuth !== undefined && this.sun) { const az = (sa.azimuth + (this.cfg.north || 0)) * Math.PI / 180, el = Math.max(6, sa.elevation) * Math.PI / 180;
+    if (sa && sa.azimuth !== undefined && this.sun) { const az = (sa.azimuth + (this.cfg.north ?? 180)) * Math.PI / 180, el = Math.max(6, sa.elevation) * Math.PI / 180;
       this.sun.position.set(Math.sin(az) * Math.cos(el) * 20, Math.sin(el) * 20, -Math.cos(az) * Math.cos(el) * 20); this.sun.color.set(sa.elevation < 15 ? '#ffc48a' : '#fff4e6'); this.sunEl = sa.elevation; }
     this._renderPanel();
-    if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvMat.emissiveIntensity = tv && !['off', 'unavailable', 'standby'].includes(tv.state) ? 0.9 : 0; }
+    (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.55 : 0; });
+    this._drawTablet(H);
+    if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
+      if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
+      if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
+      this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
     const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? -1.25 : 0;
     const sunSt = H['sun.sun']; const autoNight = sunSt ? sunSt.state === 'below_horizon' : false;
     this.nightTarget = this.mode === 'nuit' ? 1 : this.mode === 'jour' ? 0 : autoNight ? 1 : 0;
@@ -336,6 +353,31 @@ class Floorplan3DCard extends HTMLElement {
   }
 
   _goTo(name, dur = 1200) { const v = VIEWS[name]; this._lastAct = Date.now(); this.ctl.autoRotate = false; this.anim = { p0: this.cam.position.clone(), t0: this.ctl.target.clone(), p1: new THREE.Vector3(...v.pos), t1: new THREE.Vector3(...v.tgt), k: 0, t: performance.now(), dur }; }
+  _drawTablet(H) {
+    if (!this.tabCv) return; const on = H['switch.salon_sam_tablette_ecran'], ss = H['switch.salon_sam_tablette_economiseur_d_ecran'];
+    const mode = !on || on.state !== 'on' ? 'off' : ss && ss.state === 'on' ? 'dim' : 'on', now = new Date(), key = mode + now.getHours() + ':' + now.getMinutes();
+    if (key === this._tabKey) return; this._tabKey = key; const g = this.tabCv.getContext('2d'), W = 256, Hh = 160;
+    if (mode === 'off') { g.fillStyle = '#050507'; g.fillRect(0, 0, W, Hh); g.fillStyle = 'rgba(255,255,255,.06)'; g.fillRect(0, 0, W, 40); }
+    else { const gr = g.createLinearGradient(0, 0, W, Hh); gr.addColorStop(0, '#2b2250'); gr.addColorStop(1, '#14324a'); g.fillStyle = gr; g.fillRect(0, 0, W, Hh);
+      g.fillStyle = '#fff'; g.font = 'bold 54px system-ui,sans-serif'; g.textAlign = 'center'; g.fillText(now.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' }), W / 2, 78);
+      g.font = '18px system-ui,sans-serif'; g.fillStyle = 'rgba(255,255,255,.75)'; g.fillText(now.toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' }), W / 2, 106);
+      g.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 4; i++) g.fillRect(22 + i * 56, 122, 46, 24);
+      if (mode === 'dim') { g.fillStyle = 'rgba(0,0,0,.72)'; g.fillRect(0, 0, W, Hh); } }
+    this.tabTex.needsUpdate = true; this._dirty = true;
+  }
+  _drawTV(t) {
+    const g = this.tvCv.getContext('2d'), W = 320, H = 180;
+    if (this._tvImg) { const im = this._tvImg, z = 1.08 + 0.05 * Math.sin(t * 0.15), sc = Math.max(W / im.width, H / im.height) * z, w = im.width * sc, h = im.height * sc;
+      g.drawImage(im, (W - w) / 2 + Math.sin(t * 0.11) * 8, (H - h) / 2 + Math.cos(t * 0.13) * 5, w, h); }
+    else { const hue = (t * 12) % 360, gr = g.createLinearGradient(0, 0, W, H); gr.addColorStop(0, `hsl(${hue},70%,22%)`); gr.addColorStop(1, `hsl(${(hue + 80) % 360},70%,14%)`); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+      g.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 4; i++) { const x = W / 2 + Math.sin(t * (0.4 + i * 0.13) + i * 2) * W * 0.38, y = H / 2 + Math.cos(t * (0.33 + i * 0.11) + i) * H * 0.34, r = 50 + 25 * Math.sin(t + i);
+        const rg = g.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, `hsla(${(hue + i * 70) % 360},90%,60%,.55)`); rg.addColorStop(1, 'hsla(0,0%,0%,0)'); g.fillStyle = rg; g.fillRect(0, 0, W, H); }
+      g.globalCompositeOperation = 'source-over'; }
+    if (this._tvTitle) { const gr = g.createLinearGradient(0, H - 46, 0, H); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.75)'); g.fillStyle = gr; g.fillRect(0, H - 46, W, 46);
+      g.fillStyle = '#fff'; g.font = 'bold 15px system-ui,sans-serif'; g.textAlign = 'left'; g.fillText(String(this._tvTitle).slice(0, 34), 12, H - 12); }
+    this.tvTex.needsUpdate = true; this._dirty = true;
+  }
   _rgb(a) { return new THREE.Color(`rgb(${a[0]},${a[1]},${a[2]})`); }
   _wall(m) { m.userData.y0 = m.position.y; this.walls.push(m); }
   _more(ent) { this.dispatchEvent(new CustomEvent('hass-more-info', { bubbles: true, composed: true, detail: { entityId: ent } })); }
@@ -425,6 +467,7 @@ class Floorplan3DCard extends HTMLElement {
         rec.pls.forEach((pl) => { pl.color.copy(c.col); pl.intensity = c.bri * rec.base * n; });
         (rec.beams || []).forEach((m) => { m.uniforms.c.value.copy(c.col); m.uniforms.o.value = c.bri * 0.2 * (0.2 + 0.8 * this.night); });
       }
+      if (this.tvOn && this.tvScr) { const t = performance.now(); if (!this._tvT || t - this._tvT > 80) { this._tvT = t; this._drawTV(t / 1000); } }
       // jour / nuit
       const dn = this.nightTarget - this.night; if (Math.abs(dn) > 0.002) { this.night += dn * 0.06; anim = true; }
       const n = this.night;
