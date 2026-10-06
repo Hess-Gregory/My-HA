@@ -273,7 +273,7 @@ class Floorplan3DCard extends HTMLElement {
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
     { const [a, b] = P(575, 95); const hat = new THREE.Mesh(new THREE.ConeGeometry(30 * S, 0.1, 48, 1, true), M('#c8a55e', { transparent: true, opacity: 0.3, side: THREE.DoubleSide, roughness: 1 })); hat.position.set(a, 2.05, b); scene.add(hat); clickable(hat, 'light.salon_l_salon'); }
     clickable(sphere(575, 95, 4, 1.98, L('light.salon_l_salon', '#ffcf8a', [575, 95, 1.9], 2.6, 5)), 'light.salon_l_salon');
-    box(673, 22, 677, 75, 0.15, 0.75, MAT.white); box(440, 206, 444, 240, 0.15, 0.75, MAT.white); box(439.5, 216, 441, 232, 1.3, 1.5, MAT.black, false); box(645, 362, 670, 366, 0.15, 0.75, MAT.white);
+    box(673, 32, 677, 53, 0.12, 0.62, MAT.white); box(440, 206, 444, 240, 0.15, 0.75, MAT.white); box(439.5, 216, 441, 232, 1.3, 1.5, MAT.black, false); box(645, 362, 670, 366, 0.15, 0.75, MAT.white);
     { const [a, b] = P(676.5, 102); const c = new THREE.Mesh(new THREE.CircleGeometry(13 * S, 40), M('#efe9df')); c.position.set(a, 1.75, b); c.rotation.y = -Math.PI / 2; scene.add(c); }
     along(wB1, 0.15, 0.85, 1, 18, 0, 0.95, MAT.white);
     along(wB2, 0.12, 0.88, 1, 22, 0, 0.92, MAT.patine); along(wB2, 0.15, 0.85, 3, 17, 0.92, 1.0, MAT.white);
