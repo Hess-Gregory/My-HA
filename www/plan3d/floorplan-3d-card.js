@@ -3,14 +3,13 @@ import * as THREE from '/local/plan3d/three.module.min.js';
 import { OrbitControls } from '/local/plan3d/OrbitControls.js';
 
 const ROOM_TEMPS = [
-  ['Salon', 560, 205, 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature'],
-  ['Salle à manger', 598, 330, 'sensor.vanne_living_salle_a_manger_temperature'],
-  ['Cuisine', 395, 250, 'sensor.vanne_living_cuisine_temperature'],
+  ['Pièce de vie', 453, 15, 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature', 1.9],
+  ['Cuisine', 395, 250, null],
   ['Chambre adulte', 90, 357, 'sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature'],
   ['Chambre enfant', 262, 232, 'sensor.temp_chambre_enfants_sonoff_a480146b58_temperature'],
   ['Salle de bain', 75, 175, 'sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature'],
   ['Hall d’entrée', 330, 75, 'sensor.temp_couloir_sonoff_a480146b60_temperature'],
-  ['Buanderie', 380, 180, 'sensor.buanderie_local_tech_detecteur_incendie_temperature'],
+  ['Buanderie', 380, 180, null],
   ['WC', 185, 140, null],
 ];
 const MOTION = [['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 300, 130], ['binary_sensor.piece_de_vie_detecteur_living_mouvement', 665, 340]];
@@ -83,6 +82,27 @@ class Floorplan3DCard extends HTMLElement {
       .wh{display:flex;gap:12px;align-items:center;margin-top:14px}.hw{width:148px;height:148px;border-radius:50%;touch-action:none;cursor:crosshair;flex:none;box-shadow:0 6px 20px rgba(0,0,0,.4)}
       .sws{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;flex:1}.sws i{display:block;height:30px;border-radius:10px;cursor:pointer;border:2px solid rgba(255,255,255,.18);transition:transform .15s}.sws i:active{transform:scale(.9)}
       .more{width:100%;margin-top:14px}
+      .ovp{width:350px;max-height:calc(100% - 70px);overflow:auto;--c:#ff9d2e;scrollbar-width:none}.ovp::-webkit-scrollbar{display:none}
+      .ovp .pdot{background:radial-gradient(circle at 35% 30%,#3a2a1a,#140d05);border:1px solid #ff9d2e55}.ovp.hot .pdot{background:radial-gradient(circle at 40% 35%,#ffb45a,#d2560c);box-shadow:0 0 22px #ff8a2a}
+      .ovs{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.08em;margin:14px 2px 6px}
+      .opg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+      .opg button,.ofv button{border-radius:14px;padding:7px 2px 6px;font:600 10px/1.15 system-ui,Roboto,sans-serif;background:linear-gradient(180deg,#18161e,#0f0e13);border:1px solid #2a2832;color:#c9c9d3;display:flex;flex-direction:column;align-items:center;gap:3px}
+      .opg button i{font-style:normal;font-size:18px;line-height:1}
+      .opg button.on{background:linear-gradient(180deg,#2a1a08,#140d05);border-color:#ff9d2e;box-shadow:0 0 12px rgba(255,157,46,.4);color:#ffd9a8}
+      .oset{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+      .obox{border-radius:16px;padding:10px;background:linear-gradient(180deg,#16141c,#0e0d12);border:1px solid #27252e}
+      .obox .ov2{display:flex;align-items:center;justify-content:space-between;margin:2px 0 8px}
+      .obox .ov2 b{font:800 20px system-ui,Roboto,sans-serif;color:#fff;white-space:nowrap}.obox .ov2 b small{font-size:12px;color:#ffc98a;margin-left:2px}
+      .obox .ov2 button{width:32px;height:32px;padding:0;font-size:18px;line-height:1;background:radial-gradient(circle at 35% 30%,#ffae52,#c25a10);border:none;color:#fff;box-shadow:0 3px 0 #7a3608}
+      .opr{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.opr button{padding:5px 0;font-size:10.5px;border-radius:10px;background:#1d1b24;border-color:#2e2c36}
+      .oact{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-top:12px}
+      .oact button{padding:11px 4px;border-radius:14px;font-size:13px}
+      .oact .ogo{background:linear-gradient(180deg,#ff9d2e,#e0700f);color:#1c1206;border:none;box-shadow:0 0 16px rgba(255,140,40,.45)}
+      .oact .ogo.arm,.ofv button.arm{background:#ffd27a;color:#1c1826;border-color:#ffd27a;animation:pz .6s ease-in-out infinite alternate}
+      @keyframes pz{to{transform:scale(1.04)}}
+      .oprog{height:6px;border-radius:6px;background:#2a2832;margin-top:10px;overflow:hidden}.oprog i{display:block;height:100%;background:linear-gradient(90deg,#ff9d2e,#ffd27a);border-radius:6px;transition:width .6s}
+      .ofv{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.ofv::-webkit-scrollbar{display:none}
+      .ofv button{flex:none;width:88px;padding:8px 4px;font-size:10px;white-space:normal}.ofv button i{font-style:normal;font-size:16px}
       .hide{display:none!important}
       @media (max-width:600px){.t{font-size:15px}.views button{padding:6px 10px;font-size:12px}.info{display:none}.amb{top:auto;bottom:56px}
         .pn{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto;transform-origin:bottom center}}
@@ -96,7 +116,16 @@ class Floorplan3DCard extends HTMLElement {
         <div class="row rb"><span>☀️</span><input type="range" class="sb" min="1" max="100"><b class="bv"></b></div>
         <div class="wh rc"><canvas class="hw" width="296" height="296"></canvas><div class="sws"></div></div>
         <div class="row rt"><span>🔥</span><input type="range" class="sc" step="50"><span>❄️</span></div>
-        <button class="more">⚙️ Plus d’options</button></div></div>`;
+        <button class="more">⚙️ Plus d’options</button></div>
+      <div class="pn ovp"><div class="ph"><div class="pdot">🔥</div><div class="pt"><div>Four Siemens</div><small class="ost"></small></div><button class="pw opw"></button><button class="px oclose">✕</button></div>
+        <div class="oprog hide"><i></i></div>
+        <div class="ovs">Programme</div><div class="opg"></div>
+        <div class="ovs">Réglages</div><div class="oset">
+          <div class="obox"><small>🌡️ Température</small><div class="ov2"><button data-r="temp" data-d="-5">−</button><b class="otv"></b><button data-r="temp" data-d="5">+</button></div><div class="opr"><button data-r="temp" data-v="160">160°</button><button data-r="temp" data-v="180">180°</button><button data-r="temp" data-v="200">200°</button><button data-r="temp" data-v="220">220°</button></div></div>
+          <div class="obox"><small>⏳ Durée</small><div class="ov2"><button data-r="duree" data-d="-300">−</button><b class="odv"></b><button data-r="duree" data-d="300">+</button></div><div class="opr"><button data-r="duree" data-v="900">15m</button><button data-r="duree" data-v="1800">30m</button><button data-r="duree" data-v="2700">45m</button><button data-r="duree" data-v="3600">1h</button></div></div></div>
+        <div class="oact"><button class="ogo">▶ Démarrer</button><button class="opause">⏸ Pause</button><button class="ostop">⏹ Arrêter</button></div>
+        <div class="ovs">Mes favoris</div><div class="ofv"></div>
+        <button class="more omore">⚙️ Toutes les options du four</button></div></div>`;
     this.$ = (s) => root.querySelector(s);
     const canvas = this.$('canvas'), wrap = this.$('.wrap');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); renderer.setClearColor(0x000000, 0);
@@ -139,7 +168,7 @@ class Floorplan3DCard extends HTMLElement {
     root.querySelectorAll('.amb button').forEach((b) => (b.onclick = () => this._ambiance(b.dataset.a)));
     this._setupPanel();
     // labels
-    const ov = this.$('.ov'); this.labels = ROOM_TEMPS.map(([n, x, y, e]) => { const d = document.createElement('div'); d.className = 'lb'; ov.appendChild(d); return { n, x, y, e, d }; });
+    const ov = this.$('.ov'); this.labels = ROOM_TEMPS.map(([n, x, y, e, h]) => { const d = document.createElement('div'); d.className = 'lb'; ov.appendChild(d); return { n, x, y, e, d, h: h || 0.1 }; });
     // interactions (tap = basculer la lumière)
     const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(); let down = null;
     canvas.addEventListener('pointerdown', (e) => { down = [e.clientX, e.clientY, Date.now()]; this._lastAct = Date.now(); ctl.autoRotate = false; this.anim = null; });
@@ -147,8 +176,9 @@ class Floorplan3DCard extends HTMLElement {
       if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 8) return;
       const r = canvas.getBoundingClientRect(); ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ptr, cam); const hit = ray.intersectObjects(this.clickables, false)[0];
-      if (!hit) return this._closePanel();
+      if (!hit) { this._closeOven(); return this._closePanel(); }
       const ent = hit.object.userData.entity, st = this._h.states[ent];
+      if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
       if (!st || st.state === 'unavailable') return this._toast('Lampe indisponible');
       if (Date.now() - down[2] > 550 || !ent.startsWith('light.')) return this._more(ent);
       this._openPanel(ent, e.clientX - r.left, e.clientY - r.top, hit.object);
@@ -188,10 +218,10 @@ class Floorplan3DCard extends HTMLElement {
       segs.forEach(([s0, s1]) => { if (hor) { box(s0 - WT / 2, y0 - WT / 2, s1 + WT / 2, y0 + WT / 2, 0, WH, MAT.wall); box(s0 - WT / 2, y0 - WT / 2, s1 + WT / 2, y0 + WT / 2, WH, WH + 0.03, MAT.wallTop, false); }
         else { box(x0 - WT / 2, s0 - WT / 2, x0 + WT / 2, s1 + WT / 2, 0, WH, MAT.wall); box(x0 - WT / 2, s0 - WT / 2, x0 + WT / 2, s1 + WT / 2, WH, WH + 0.03, MAT.wallTop, false); } });
     };
-    const wallAny = (x0, y0, x1, y1, win) => {
+    const wallAny = (x0, y0, x1, y1, win, op) => {
       const [a, b] = P(x0, y0), [c, d] = P(x1, y1); const len = Math.hypot(c - a, d - b), ang = -Math.atan2(d - b, c - a);
       const L0 = len + WT * S, ux = (c - a) / len, uz = (d - b) / len; const piece = (f0, f1, z0, z1) => { const cx = ((f0 + f1) / 2 - 0.5) * L0; const m = new THREE.Mesh(new THREE.BoxGeometry((f1 - f0) * L0, z1 - z0, WT * S), MAT.wall); m.position.set((a + c) / 2 + ux * cx, (z0 + z1) / 2, (b + d) / 2 + uz * cx); m.rotation.y = ang; add(m); this._wall(m); };
-      if (win) { const f = (1 - win) / 2; piece(0, f, 0, WH); piece(1 - f, 1, 0, WH); piece(f, 1 - f, 0, 0.9); piece(f, 1 - f, 2.15, WH); } else piece(0, 1, 0, WH);
+      if (win) { const f = (1 - win) / 2; piece(0, f, 0, WH); piece(1 - f, 1, 0, WH); piece(f, 1 - f, 0, 0.9); piece(f, 1 - f, 2.15, WH); } else if (op) { const g = (t) => (t * len + WT * S / 2) / L0, f0 = g(op[0]), f1 = g(op[1]); piece(0, f0, 0, WH); piece(f1, 1, 0, WH); if (op[2] > 0.001) piece(f0, f1, 0, op[2]); piece(f0, f1, op[3], WH); } else piece(0, 1, 0, WH);
       const t = new THREE.Mesh(new THREE.BoxGeometry(len + WT * S, 0.03, WT * S), MAT.wallTop); t.position.set((a + c) / 2, WH + 0.015, (b + d) / 2); t.rotation.y = ang; scene.add(t); this._wall(t);
       if (win) { const w = new THREE.Mesh(new THREE.BoxGeometry(len * win, 1.25, WT * S + 0.03), MAT.window); w.position.set((a + c) / 2, 1.5, (b + d) / 2); w.rotation.y = ang; scene.add(w); this._wall(w); }
       return { a, b, c, d, ang, len };
@@ -219,7 +249,9 @@ class Floorplan3DCard extends HTMLElement {
     floor([[435,10],[680,10],[680,130],[772,150],[745,355],[685,335],[685,370],[455,370],[455,255],[435,255]], MAT.tileGrey);
     /* ---- murs ---- */
     wall(10, 105, 235, 105); wall(235, 10, 235, 105, [[18, 58]]); wall(235, 10, 680, 10); wall(680, 10, 680, 130, [[34, 80]]); box(675.5, 34, 684.5, 80, 0, 0.9, MAT.wall); box(675.5, 34, 684.5, 80, 2.15, WH, MAT.wall); box(675.5, 34, 684.5, 80, WH, WH + 0.03, MAT.wallTop, false);
-    const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0); wallAny(745, 355, 685, 335, 0);
+    const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0, [0.84, 0.965, 0, 2.15]);
+    { this._wall(along(wB2, 0.84, 0.965, -WT / 2 - 0.6, WT + 1.2, 0, 2.15, MAT.window, false)); const fw = M('#f4f4f2', { roughness: 0.5 });
+      for (const t of [0.84, 0.959]) this._wall(along(wB2, t, t + 0.006, -WT / 2, WT, 0, 2.15, fw, false)); this._wall(along(wB2, 0.84, 0.965, -WT / 2, WT, 2.11, 2.15, fw, false)); this._wall(along(wB2, 0.84, 0.965, -WT / 2, WT, 0, 0.04, fw, false)); this._wall(along(wB2, 0.846, 0.959, 4.5, 2, 0, 0.02, M('#d8d6d0'), false)); } wallAny(745, 355, 685, 335, 0);
     wall(685, 335, 685, 370); wall(10, 370, 685, 370, [[50, 150], [245, 300], [470, 640]]); for (const [a0, a1, z0] of [[50, 150, 0.9], [245, 300, 0.9], [470, 640, 0.02]]) { box(a0, 365.5, a1, 374.5, 0, z0, MAT.wall); box(a0, 365.5, a1, 374.5, 2.15, WH, MAT.wall); box(a0, 365.5, a1, 374.5, WH, WH + 0.03, MAT.wallTop, false); } wall(10, 105, 10, 370);
     { const occ = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false }); const [a, b] = P(10, 10), [c, d] = P(775, 372); const ce = new THREE.Mesh(new THREE.BoxGeometry(c - a, 0.04, d - b), occ); ce.position.set((a + c) / 2, 2.36, (b + d) / 2); ce.castShadow = true; scene.add(ce); this.ceiling = ce; }
     // stores à lamelles verticales (chambre enfant : beige, salon côté TV : blanc)
@@ -238,7 +270,7 @@ class Floorplan3DCard extends HTMLElement {
       pw(439.6, 14.5, 439.9, 40, 0, WH); pw(439.6, 90, 439.9, 255, 0, WH);
       pw(455, 365.1, 470, 365.4, 0, WH); pw(640, 365.1, 680.5, 365.4, 0, WH); pw(470, 365.1, 640, 365.4, 2.15, WH);
       const pa = (wl, t0, t1, z0, z1) => this._wall(along(wl, t0, t1, 4.6, 0.3, z0, z1, liv, false));
-      pa(wB1, 0, 0.15, 0, WH); pa(wB1, 0.85, 1, 0, WH); pa(wB1, 0.15, 0.85, 0, 0.9); pa(wB1, 0.15, 0.85, 2.15, WH); pa(wB2, 0, 1, 0, WH); }
+      pa(wB1, 0, 0.15, 0, WH); pa(wB1, 0.85, 1, 0, WH); pa(wB1, 0.15, 0.85, 0, 0.9); pa(wB1, 0.15, 0.85, 2.15, WH); pa(wB2, 0, 0.84, 0, WH); pa(wB2, 0.965, 1, 0, WH); pa(wB2, 0.84, 0.965, 2.15, WH); }
     windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 34, 680, 80); windowOn(470, 370, 640, 370, 0.02, 2.15);
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
@@ -309,7 +341,11 @@ class Floorplan3DCard extends HTMLElement {
     }
     /* ---- cuisine (en U : évier + colonnes à l'ouest, hotte au sud, péninsule à l'est) ---- */
     const greyWall = M('#5c5f64', { roughness: 0.95 }), tiles = M('#e8e0d1', { roughness: 0.5 }), sinkM = M('#232325', { roughness: 0.4 });
-    box(335, 214.5, 365, 238, 0, 2.2, MAT.greige); box(335, 238, 365, 262, 0, 2.2, MAT.greige); box(365, 241, 365.8, 260, 0.85, 1.45, MAT.black, false); box(365, 241, 365.6, 260, 1.48, 1.52, MAT.steel, false);
+    box(335, 214.5, 365, 238, 0, 2.2, MAT.greige); box(335, 238, 365, 262, 0, 2.2, MAT.greige); clickable(box(365, 241, 365.8, 260, 0.85, 1.45, M('#0e0e10', { roughness: 0.18, metalness: 0.35 }), false), 'sensor.four_etat'); clickable(box(365, 241, 365.6, 260, 1.45, 1.53, MAT.steel, false), 'sensor.four_etat');
+    box(365.8, 241.4, 366.3, 259.6, 1.395, 1.415, MAT.steel, false);
+    this.ovenWin = M('#050506', { roughness: 0.1, metalness: 0.3, emissive: '#ff6a10', emissiveIntensity: 0 }); clickable(box(365.8, 243.5, 365.9, 257.5, 0.93, 1.33, this.ovenWin, false), 'sensor.four_etat');
+    { const cv = document.createElement('canvas'); cv.width = 160; cv.height = 32; this.ovenCv = cv; this.ovenTex = new THREE.CanvasTexture(cv); this.ovenTex.colorSpace = THREE.SRGBColorSpace;
+      const d = new THREE.Mesh(new THREE.PlaneGeometry(9 * S, 0.036), new THREE.MeshBasicMaterial({ map: this.ovenTex, toneMapped: false })); const [a, b] = P(365.63, 250.5); d.position.set(a, 1.49, b); d.rotation.y = Math.PI / 2; scene.add(d); clickable(d, 'sensor.four_etat'); }
     box(335, 262, 365, 366, 0, 0.86, MAT.greige); box(334.5, 262, 366, 366, 0.86, 0.9, MAT.worktop); box(340, 290, 360, 322, 0.86, 0.905, sinkM, false);
     box(335, 314, 337, 318, 0.9, 1.25, MAT.steel, false);
     box(334.6, 262, 335.4, 336, 0.9, 1.43, tiles, false); box(334.6, 336, 335.4, 366, 0.9, 1.45, tiles, false);
@@ -334,7 +370,7 @@ class Floorplan3DCard extends HTMLElement {
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
     [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
-    box(441, 15, 465, 33, 0.56, 0.6, M('#a88b62', { roughness: 0.8 })); for (const [x, y] of [[441.5, 15.5], [463.5, 15.5], [441.5, 31.5], [463.5, 31.5]]) box(x, y, x + 1, y + 1, 0, 0.56, MAT.black); box(444, 17, 462, 31, 0.6, 0.86, MAT.white); box(445, 31, 461, 31.4, 0.66, 0.74, M('#2a2a2c'), false); box(442, 14.6, 462, 24, 1.0, 1.06, MAT.oakLight); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false);
+    box(441, 15, 465, 33, 0.56, 0.6, M('#a88b62', { roughness: 0.8 })); for (const [x, y] of [[441.5, 15.5], [463.5, 15.5], [441.5, 31.5], [463.5, 31.5]]) box(x, y, x + 1, y + 1, 0, 0.56, MAT.black); box(444, 17, 462, 31, 0.6, 0.86, MAT.white); box(445, 31, 461, 31.4, 0.66, 0.74, M('#2a2a2c'), false); box(442, 14.6, 462, 24, 1.0, 1.06, MAT.oakLight); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false); box(450.8, 14.6, 455.2, 15.5, 1.64, 1.73, MAT.white, false); box(451.4, 15.5, 454.6, 15.6, 1.665, 1.715, M('#c9d2c8', { roughness: 0.4 }), false);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
     // mur TV (d'après photos) : lattes chêne sol-plafond, panneau blanc 2,4 x 1,2 m posé devant la moitié droite des lattes (LED derrière), TV + Ambilight, KEF colonnes + centrale
@@ -491,6 +527,7 @@ class Floorplan3DCard extends HTMLElement {
     (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.22 : 0; });
     this._drawTablet(H);
     this._sky(H);
+    this._ovenSync(H);
     (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
     if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
@@ -548,6 +585,60 @@ class Floorplan3DCard extends HTMLElement {
     else if (el <= 20) { g = ['#6c9fd8', '#b9d4ee', '#f6ead8']; st = 0; }
     else { g = ['#6fa8e0', '#a9cdef', '#eef5fb']; st = 0; }
     const k = g.join(); if (k !== this._skyKey) { this._skyKey = k; this.$('.wrap').style.background = `linear-gradient(180deg,${g[0]} 0%,${g[1]} 55%,${g[2]} 100%)`; this.$('.stars').style.opacity = st; }
+  }
+  /* ---------------- four Siemens (Home Connect) ---------------- */
+  _openOven(x, y) {
+    const pn = this.$('.ovp'), wrap = this.$('.wrap'); this._ovOpen = true; this._ovenSync(this._h.states, true);
+    const w = wrap.clientWidth, h = wrap.clientHeight; pn.style.left = Math.max(8, Math.min(w - 358, x + 18)) + 'px'; pn.style.top = Math.max(60, Math.min(h - pn.offsetHeight - 8, y - 120)) + 'px';
+    pn.classList.remove('show'); void pn.offsetWidth; pn.classList.add('show');
+  }
+  _closeOven() { this._ovOpen = false; const pn = this.$ && this.$('.ovp'); if (pn) pn.classList.remove('show'); }
+  _ovenSetup() {
+    if (this._ovReady) return; this._ovReady = true; const $ = this.$, H = () => this._h.states, call = (d, sv, data) => this._h.callService(d, sv, data);
+    const PR = [['steam_modes_steam', '♨️', 'Vapeur'], ['heating_mode_hot_air', '🌀', 'Chaleur tournante'], ['heating_mode_top_bottom_heating', '☰', 'Voûte / sole'], ['heating_mode_top_bottom_heating_eco', '🍃', 'Voûte/sole éco'],
+      ['heating_mode_hot_air_grilling', '🔥', 'Gril air pulsé'], ['heating_mode_pizza_setting', '🍕', 'Pizza'], ['heating_mode_frozen_heatup_special', '❄️', 'Surgelés'], ['heating_mode_slow_cook', '🍲', 'Cuisson lente'],
+      ['heating_mode_bottom_heating', '▁', 'Sole'], ['heating_mode_keep_warm', '🌡️', 'Maintien au chaud'], ['heating_mode_preheat_ovenware', '🥣', 'Chauffe-plats'], ['heating_mode_pre_heating', '⏫', 'Préchauffage']];
+    this._ovPR = PR; const g = $('.opg');
+    PR.forEach(([k, ic, n]) => { const b = document.createElement('button'); b.dataset.k = 'cooking_oven_program_' + k; b.innerHTML = `<i>${ic}</i>${n}`; b.onclick = () => call('select', 'select_option', { entity_id: 'select.four_programme_selectionne', option: b.dataset.k }); g.appendChild(b); });
+    $('.ovp').querySelectorAll('[data-r]').forEach((b) => (b.onclick = () => call('script', 'four_regler', b.dataset.v ? { cible: b.dataset.r, valeur: +b.dataset.v } : { cible: b.dataset.r, delta: +b.dataset.d })));
+    $('.oclose').onclick = () => this._closeOven();
+    $('.opw').onclick = () => call('switch', 'toggle', { entity_id: 'switch.four_alimentation' });
+    const arm = (el, fn) => { if (el.classList.contains('arm')) { el.classList.remove('arm'); clearTimeout(el._t); fn(); return; } this.$('.ovp').querySelectorAll('.arm').forEach((x) => x.classList.remove('arm')); el.classList.add('arm'); el._t = setTimeout(() => el.classList.remove('arm'), 3500); };
+    this._ovArm = arm;
+    $('.ogo').onclick = (e) => { const pg = H()['select.four_programme_selectionne']; const opt = pg && pg.state; if (!opt || !opt.startsWith('cooking_')) return this._toast('Choisissez d’abord un programme');
+      arm(e.currentTarget, () => { call('select', 'select_option', { entity_id: 'select.four_programme_actif', option: opt }); this._toast('🔥 Four démarré'); }); };
+    $('.opause').onclick = () => call('button', 'press', { entity_id: 'button.four_mettre_en_pause_le_programme' });
+    $('.ostop').onclick = (e) => arm(e.currentTarget, () => { call('button', 'press', { entity_id: 'button.four_arreter_le_programme' }); this._toast('⏹ Programme arrêté'); });
+    $('.omore').onclick = () => { history.pushState(null, '', '/ma-maison/piece-de-vie'); window.dispatchEvent(new CustomEvent('location-changed')); };
+  }
+  _ovenSync(H, force) {
+    const st = H['sensor.four_etat'], es = st ? st.state : 'unavailable', num = (e) => { const v = parseFloat(H[e] && H[e].state); return isNaN(v) ? null : v; };
+    const cav = num('sensor.four_temperature_actuelle_de_la_cavite_du_four'), pw = H['switch.four_alimentation'], on = pw && pw.state === 'on';
+    const hot = ['run', 'delayedstart', 'pause', 'actionrequired'].includes(es), light = H['binary_sensor.four_eclairage_interieur_actif'] && H['binary_sensor.four_eclairage_interieur_actif'].state === 'on';
+    if (this.ovenWin) { this.ovenWin.emissive.set(hot ? '#ff6a10' : '#ffd9a0'); this.ovenWin.emissiveIntensity = es === 'run' ? 0.55 : hot ? 0.3 : light ? 0.3 : 0; }
+    const pick = (n, k) => { const a = H[n], b = H[k]; const ok = a && !isNaN(parseFloat(a.state)); return (!ok || (b && new Date(b.last_changed) > new Date(a.last_changed))) ? (b ? +b.state : null) : +a.state; };
+    const tset = pick('number.cuisine_four_temperature_de_consigne', 'input_number.four_temp_voulue'), dur = pick('number.cuisine_four_duree', 'input_number.four_duree_voulue');
+    const prog = num('sensor.four_progression_du_programme'), fin = H['sensor.four_heure_de_fin_de_programme'], finD = fin && !['unknown', 'unavailable'].includes(fin.state) ? new Date(fin.state) : null;
+    const fmtD = (v) => { if (v == null) return '—'; const m = Math.round(v / 60), hh = Math.floor(m / 60), mm = m % 60; return hh ? `${hh} h ${String(mm).padStart(2, '0')}` : `${mm} min`; };
+    // afficheur du four
+    if (this.ovenCv) { const rem = finD ? Math.max(0, Math.round((finD - Date.now()) / 60000)) : null;
+      const txt = hot ? `${cav != null ? Math.round(cav) + '°' : ''}${rem != null ? '  ' + (rem >= 60 ? Math.floor(rem / 60) + 'h' + String(rem % 60).padStart(2, '0') : rem + '′') : ''}` : on ? `${cav != null ? Math.round(cav) + '°' : 'ON'}` : '';
+      if (txt !== this._ovTxt) { this._ovTxt = txt; const c = this.ovenCv.getContext('2d'); c.fillStyle = '#050506'; c.fillRect(0, 0, 160, 32); if (txt) { c.fillStyle = hot ? '#ff9d2e' : '#f3eee6'; c.font = 'bold 24px system-ui,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(txt, 80, 17); } this.ovenTex.needsUpdate = true; this._dirty = true; } }
+    if (!this.$ || !this._ovOpen && !force) return; this._ovenSetup(); const $ = this.$, pn = $('.ovp');
+    const ET = { inactive: 'En veille', ready: 'Prêt', delayedstart: 'Départ différé', run: 'En cuisson', pause: 'En pause', actionrequired: 'Action requise', finished: 'Terminé', error: 'Erreur', aborting: 'Arrêt…', unavailable: 'Hors ligne' };
+    const door = H['sensor.four_porte'] && H['sensor.four_porte'].state;
+    const pa = H['select.four_programme_actif'], act = pa && pa.state && pa.state.startsWith('cooking_') ? (this._ovPR.find((p) => 'cooking_oven_program_' + p[0] === pa.state) || [])[2] : null;
+    $('.ost').textContent = [(ET[es] || es) + (hot && act ? ' · ' + act : ''), cav != null ? Math.round(cav) + ' °C dans le four' : null, door === 'open' ? '🚪 porte ouverte' : null, hot && finD ? 'fin ' + finD.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' }) : null].filter(Boolean).join(' · ');
+    pn.classList.toggle('hot', hot); $('.opw').classList.toggle('on', !!on);
+    const pb = $('.oprog'); pb.classList.toggle('hide', !(hot && prog != null)); pb.firstElementChild.style.width = (prog || 0) + '%';
+    const sel = H['select.four_programme_selectionne'] && H['select.four_programme_selectionne'].state; pn.querySelectorAll('.opg button').forEach((b) => b.classList.toggle('on', b.dataset.k === sel));
+    $('.otv').innerHTML = tset != null ? `${Math.round(tset)}<small>°C</small>` : '—'; $('.odv').textContent = fmtD(dur);
+    const favs = []; for (let i = 1; i <= 16; i++) { const f = H['input_text.four_favori_' + i]; if (f && f.state && !['unknown', 'unavailable', ''].includes(f.state)) favs.push(f.state); }
+    const key = favs.join('#'); if (key !== this._ovFavKey) { this._ovFavKey = key; const fv = $('.ofv'); fv.innerHTML = '';
+      const EM = { 'mdi:pizza': '🍕', 'mdi:fish': '🐟', 'mdi:baguette': '🥖', 'mdi:pasta': '🍝', 'mdi:sausage': '🌭', 'mdi:bread-slice': '🥪', 'mdi:food-croissant': '🥐', 'mdi:food-takeout-box': '🥡', 'mdi:food-variant': '🥔' };
+      favs.forEach((s) => { const v = s.split('|'), b = document.createElement('button'); b.innerHTML = `<i>${EM[v[9]] || '🍽️'}</i>${v[0]}<small style="opacity:.6">${v[2]}° · ${v[3]} min</small>`; b.title = (v[8] || '').replace('~', '\n');
+        b.onclick = (e) => this._ovArm(e.currentTarget, () => { this._h.callService('script', 'four_favori', { nom: v[0], program: v[1], temperature: Number(v[2]), duree: Number(v[3]), prechauffage: v[4] === '1', program2: v[5] || '', temperature2: Number(v[6] || 0), duree2: Number(v[7] || 0), retourner: /retourn/i.test(v[8] || '') }); this._toast('🍳 ' + v[0] + ' : four en préparation'); });
+        fv.appendChild(b); }); }
   }
   _drawTablet(H) {
     if (!this.tabCv) return; const on = H['switch.salon_sam_tablette_ecran'], ss = H['switch.salon_sam_tablette_economiseur_d_ecran'];
@@ -631,7 +722,7 @@ class Floorplan3DCard extends HTMLElement {
     const p = new THREE.Vector3(); obj.getWorldPosition(p); this.selRing.position.set(p.x, 0.03, p.z); this.selRing.visible = true;
     this._renderPanel(true); const pn = this.$('.pn'), wrap = this.$('.wrap');
     const w = wrap.clientWidth, h = wrap.clientHeight; pn.style.left = Math.max(8, Math.min(w - 308, x + 18)) + 'px'; pn.style.top = Math.max(60, Math.min(h - pn.offsetHeight - 8, y - 80)) + 'px';
-    pn.classList.remove('show'); void pn.offsetWidth; pn.classList.add('show'); this._dirty = true;
+    pn.classList.remove('show'); void pn.offsetWidth; pn.classList.add('show'); this._closeOven(); this._dirty = true;
   }
   _closePanel() { this.sel = null; this.$('.pn').classList.remove('show'); this.selRing.visible = false; this._dirty = true; }
   _renderPanel(force) {
@@ -708,7 +799,7 @@ class Floorplan3DCard extends HTMLElement {
       this._dirty = false; this.renderer.render(this.scene, this.cam);
       // étiquettes
       const w = this.renderer.domElement.clientWidth, h = this.renderer.domElement.clientHeight, v = new THREE.Vector3();
-      this.labels.forEach((l) => { const [a, b] = this.P(l.x, l.y); v.set(a, 0.1, b).project(this.cam); const vis = v.z < 1 && Math.abs(v.x) < 1.1 && Math.abs(v.y) < 1.1; l.d.style.opacity = vis ? 1 : 0; l.d.style.left = ((v.x + 1) / 2) * w + 'px'; l.d.style.top = ((1 - v.y) / 2) * h + 'px'; });
+      this.labels.forEach((l) => { const [a, b] = this.P(l.x, l.y); v.set(a, l.h, b).project(this.cam); const vis = v.z < 1 && Math.abs(v.x) < 1.1 && Math.abs(v.y) < 1.1; l.d.style.opacity = vis ? 1 : 0; l.d.style.left = ((v.x + 1) / 2) * w + 'px'; l.d.style.top = ((1 - v.y) / 2) * h + 'px'; });
     };
     tick();
   }
