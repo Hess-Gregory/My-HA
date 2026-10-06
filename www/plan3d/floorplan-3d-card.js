@@ -26,8 +26,8 @@ const hsv2rgb = (h, s) => { const f = (n) => { const k = (n + h / 60) % 6; retur
 const RGBM = ['hs', 'rgb', 'rgbw', 'rgbww', 'xy'];
 const SWATCH = [['ct', 2700], ['rgb', [255, 40, 40]], ['rgb', [255, 140, 20]], ['rgb', [255, 0, 150]], ['rgb', [140, 40, 255]], ['rgb', [0, 110, 255]], ['rgb', [0, 220, 130]], ['ct', 6000]];
 const BEAMS = [['light.salon_l_salon', 575, 95, 1.95, 70], ['light.salle_a_manger_lg', 568, 269.5, 1.62, 34], ['light.salle_a_manger_lc', 598, 269.5, 1.62, 34], ['light.salle_a_manger_ld', 628, 269.5, 1.62, 34],
-  ['light.salle_de_bain_salle_de_bain', 75, 160, 2.15, 50], ['light.chambre_matteo', 262, 292, 2.15, 60], ['light.cuisine_evier', 344, 300, 1.43, 20],
-  ...[287, 306, 326, 344].map((y, i) => ['light.cuisine_s_cuisine_' + (i + 1), 373, y, 2.02, 24])];
+  ['light.salle_de_bain_sdb_evier', 75, 155.8, 2.1, 15], ['light.salle_de_bain_sdb_douche', 71.4, 162.4, 2.1, 15], ['light.salle_de_bain_sdb_langer', 78.6, 162.4, 2.1, 15], ['light.chambre_matteo', 262, 292, 2.15, 60], ['light.cuisine_evier', 344, 300, 1.43, 20],
+  ...[287, 306, 326, 344].map((y, i) => ['light.cuisine_s_cuisine_' + [4, 2, 3, 1][i], 373, y, 2.02, 24])];
 
 class Floorplan3DCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
@@ -82,6 +82,7 @@ class Floorplan3DCard extends HTMLElement {
       .wh{display:flex;gap:12px;align-items:center;margin-top:14px}.hw{width:148px;height:148px;border-radius:50%;touch-action:none;cursor:crosshair;flex:none;box-shadow:0 6px 20px rgba(0,0,0,.4)}
       .sws{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;flex:1}.sws i{display:block;height:30px;border-radius:10px;cursor:pointer;border:2px solid rgba(255,255,255,.18);transition:transform .15s}.sws i:active{transform:scale(.9)}
       .more{width:100%;margin-top:14px}
+      .pseg{display:grid;grid-template-columns:1fr 1.3fr;gap:6px;margin-top:12px}.pseg button{padding:8px 6px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pseg button.on{background:var(--c,#ffd27a);color:#1c1826;border-color:transparent}
       .ovp{width:350px;max-height:calc(100% - 70px);overflow:auto;--c:#ff9d2e;scrollbar-width:none}.ovp::-webkit-scrollbar{display:none}
       .ovp .pdot{background:radial-gradient(circle at 35% 30%,#3a2a1a,#140d05);border:1px solid #ff9d2e55}.ovp.hot .pdot{background:radial-gradient(circle at 40% 35%,#ffb45a,#d2560c);box-shadow:0 0 22px #ff8a2a}
       .ovs{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.08em;margin:14px 2px 6px}
@@ -113,6 +114,7 @@ class Floorplan3DCard extends HTMLElement {
       <div class="amb"><button data-a="cine">🎬 Cinéma</button><button data-a="diner">🍽️ Dîner</button><button data-a="off">⚫ Tout éteindre</button></div>
       <div class="views"></div><div class="info"></div><div class="toast"></div>
       <div class="pn"><div class="ph"><div class="pdot">💡</div><div class="pt"><div class="pname"></div><small class="pst"></small></div><button class="pw"></button><button class="px">✕</button></div>
+        <div class="pseg hide"><button data-m="one">💡 Ce spot</button><button data-m="grp">✨ <span class="pgn"></span></button></div>
         <div class="row rb"><span>☀️</span><input type="range" class="sb" min="1" max="100"><b class="bv"></b></div>
         <div class="wh rc"><canvas class="hw" width="296" height="296"></canvas><div class="sws"></div></div>
         <div class="row rt"><span>🔥</span><input type="range" class="sc" step="50"><span>❄️</span></div>
@@ -179,7 +181,7 @@ class Floorplan3DCard extends HTMLElement {
       if (!hit) { this._closeOven(); return this._closePanel(); }
       const ent = hit.object.userData.entity, st = this._h.states[ent];
       if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
-      if (!st || st.state === 'unavailable') return this._toast('Lampe indisponible');
+      if ((!st || st.state === 'unavailable') && !(ent.startsWith('light.') && this._grpOf(ent))) return this._toast('Lampe indisponible');
       if (Date.now() - down[2] > 550 || !ent.startsWith('light.')) return this._more(ent);
       this._openPanel(ent, e.clientX - r.left, e.clientY - r.top, hit.object);
     });
@@ -249,9 +251,10 @@ class Floorplan3DCard extends HTMLElement {
     floor([[435,10],[680,10],[680,130],[772,150],[745,355],[685,335],[685,370],[455,370],[455,255],[435,255]], MAT.tileGrey);
     /* ---- murs ---- */
     wall(10, 105, 235, 105); wall(235, 10, 235, 105, [[18, 58]]); wall(235, 10, 680, 10); wall(680, 10, 680, 130, [[34, 80]]); box(675.5, 34, 684.5, 80, 0, 0.9, MAT.wall); box(675.5, 34, 684.5, 80, 2.15, WH, MAT.wall); box(675.5, 34, 684.5, 80, WH, WH + 0.03, MAT.wallTop, false);
-    const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0, [0.84, 0.965, 0, 2.15]);
-    { this._wall(along(wB2, 0.84, 0.965, -WT / 2 - 0.6, WT + 1.2, 0, 2.15, MAT.window, false)); const fw = M('#f4f4f2', { roughness: 0.5 });
-      for (const t of [0.84, 0.959]) this._wall(along(wB2, t, t + 0.006, -WT / 2, WT, 0, 2.15, fw, false)); this._wall(along(wB2, 0.84, 0.965, -WT / 2, WT, 2.11, 2.15, fw, false)); this._wall(along(wB2, 0.84, 0.965, -WT / 2, WT, 0, 0.04, fw, false)); this._wall(along(wB2, 0.846, 0.959, 4.5, 2, 0, 0.02, M('#d8d6d0'), false)); } wallAny(745, 355, 685, 335, 0);
+    const wB1 = wallAny(680, 130, 772, 150, 0.7), wB2 = wallAny(772, 150, 745, 355, 0);
+    { const wSm = wallAny(745, 355, 685, 335, 0, [0.12, 0.6, 0, 2.15]); const [t0, t1] = [0.12, 0.6], fw = M('#f4f4f2', { roughness: 0.5 });
+      this._wall(along(wSm, t0, t1, -WT / 2 - 0.6, WT + 1.2, 0, 2.15, MAT.window, false)); for (const t of [t0, t1 - 0.022]) this._wall(along(wSm, t, t + 0.022, -WT / 2, WT, 0, 2.15, fw, false));
+      this._wall(along(wSm, t0, t1, -WT / 2, WT, 2.11, 2.15, fw, false)); this._wall(along(wSm, t0, t1, -WT / 2, WT, 0, 0.04, fw, false)); }
     wall(685, 335, 685, 370); wall(10, 370, 685, 370, [[50, 150], [245, 300], [470, 640]]); for (const [a0, a1, z0] of [[50, 150, 0.9], [245, 300, 0.9], [470, 640, 0.02]]) { box(a0, 365.5, a1, 374.5, 0, z0, MAT.wall); box(a0, 365.5, a1, 374.5, 2.15, WH, MAT.wall); box(a0, 365.5, a1, 374.5, WH, WH + 0.03, MAT.wallTop, false); } wall(10, 105, 10, 370);
     { const occ = new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false }); const [a, b] = P(10, 10), [c, d] = P(775, 372); const ce = new THREE.Mesh(new THREE.BoxGeometry(c - a, 0.04, d - b), occ); ce.position.set((a + c) / 2, 2.36, (b + d) / 2); ce.castShadow = true; scene.add(ce); this.ceiling = ce; }
     // stores à lamelles verticales (chambre enfant : beige, salon côté TV : blanc)
@@ -270,20 +273,59 @@ class Floorplan3DCard extends HTMLElement {
       pw(439.6, 14.5, 439.9, 40, 0, WH); pw(439.6, 90, 439.9, 255, 0, WH);
       pw(455, 365.1, 470, 365.4, 0, WH); pw(640, 365.1, 680.5, 365.4, 0, WH); pw(470, 365.1, 640, 365.4, 2.15, WH);
       const pa = (wl, t0, t1, z0, z1) => this._wall(along(wl, t0, t1, 4.6, 0.3, z0, z1, liv, false));
-      pa(wB1, 0, 0.15, 0, WH); pa(wB1, 0.85, 1, 0, WH); pa(wB1, 0.15, 0.85, 0, 0.9); pa(wB1, 0.15, 0.85, 2.15, WH); pa(wB2, 0, 0.84, 0, WH); pa(wB2, 0.965, 1, 0, WH); pa(wB2, 0.84, 0.965, 2.15, WH); }
+      pa(wB1, 0, 0.15, 0, WH); pa(wB1, 0.85, 1, 0, WH); pa(wB1, 0.15, 0.85, 0, 0.9); pa(wB1, 0.15, 0.85, 2.15, WH); pa(wB2, 0, 1, 0, WH); }
     windowOn(50, 370, 150, 370); windowOn(245, 370, 300, 370); windowOn(680, 34, 680, 80); windowOn(470, 370, 640, 370, 0.02, 2.15);
     wall(135, 105, 135, 210, [[160, 200]]); wall(135, 155, 235, 155); wall(235, 105, 235, 155, [[116, 152]]);
     wall(325, 107, 435, 107); wall(325, 107, 325, 210); wall(10, 210, 330, 210, [[150, 195], [215, 260]]);
     wall(330, 210, 435, 210, [[365, 410]]); wall(435, 10, 435, 255, [[40, 90]]); wall(200, 210, 200, 370); wall(330, 210, 330, 370);
-    box(140, 112, 160, 152, 0, WH, M('#cfd3c9')); box(298, 112, 322, 132, 0, WH, M('#cfd3c9'));
+    box(298, 112, 322, 132, 0, WH, M('#cfd3c9'));
     // porte d'entrée (animée selon le capteur)
-    { const [a, b] = P(235, 18); const piv = new THREE.Group(); piv.position.set(a + 2 * S, 0, b); scene.add(piv);
-      const leaf = new THREE.Mesh(new THREE.BoxGeometry(5 * S, 2.05, 40 * S), M('#6b5a48')); leaf.position.set(0, 1.025, 20 * S); leaf.castShadow = true; piv.add(leaf); this.frontDoor = piv; }
+    { const [a, b] = P(235, 22.6); const piv = new THREE.Group(); piv.position.set(a, 0, b); scene.add(piv);
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(4.4 * S, 2.06, 30.8 * S), M('#f3f2ee', { roughness: 0.45 })); leaf.position.set(0, 1.03, 15.4 * S); leaf.castShadow = true; piv.add(leaf);
+      const hdl = new THREE.Mesh(new THREE.BoxGeometry(1.6 * S, 0.025, 5 * S), M('#a9adb1', { metalness: 0.7, roughness: 0.3 })); hdl.position.set(2.9 * S, 1.02, 26.5 * S); piv.add(hdl); this.frontDoor = piv;
+      box(230.5, 22.5, 239.5, 53.5, 2.08, WH, MAT.wall); box(230.5, 22.5, 239.5, 53.5, WH, WH + 0.03, MAT.wallTop, false); }
     /* ---- salle de bain / WC ---- */
-    box(14, 111, 52, 200, 0, 0.58, MAT.white); box(19, 116, 47, 195, 0.58, 0.6, M('#dfeaf0', { roughness: 0.1 }), false);
-    box(68, 109, 112, 131, 0, 0.82, MAT.oakDark); box(67, 109, 113, 132, 0.82, 0.86, MAT.white); cyl(90, 120, 8, 0.86, 0.9, M('#eef2f4', { roughness: 0.15 }));
-    box(72, 108, 108, 110.5, 1.1, 1.75, MAT.mirror, false); box(195, 109, 215, 117, 0.35, 0.85, MAT.white); cyl(205, 129, 9, 0, 0.42, MAT.white);
-    clickable(sphere(75, 160, 5, 2.2, L('light.salle_de_bain_salle_de_bain', '#fff1d6', [75, 160, 2.1], 2.2, 3.5)), 'light.salle_de_bain_salle_de_bain');
+    { // salle de bain : faïence blanche toute hauteur, baignoire contre le mur du fond (ouest), pare-bain givré côté sud + douche noire, bande de mosaïque,
+      // colonne + meuble vasque blanc laqué + miroir LED au nord, table à langer au sud, panier noir ; plafonnier 3 spots Hue (langer / douche / évier)
+      const tileW = M('#f3f4f3', { roughness: 0.22 }), gloss = M('#f7f7f5', { roughness: 0.18 }), blk = M('#1b1b1d', { roughness: 0.35 }), ceram = M('#fbfbfb', { roughness: 0.12 });
+      const pw = (x0, y0, x1, y1, m = tileW) => this._wall(box(x0, y0, x1, y1, 0, WH, m, false));
+      pw(14.5, 109.5, 14.8, 205.5); pw(14.5, 109.5, 130.5, 109.8); pw(14.5, 205.2, 130.5, 205.5); pw(130.2, 109.5, 130.5, 160); pw(130.2, 200, 130.5, 205.5);
+      const tex = (w, h, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
+      const mos = tex(32, 256, (g, w, h) => { const C = ['#ffffff', '#d9d9d9', '#9a9a9a', '#5c5c5e', '#2b2b2d', '#bdbdbd']; for (let y = 0; y < h; y += 8) for (let x = 0; x < w; x += 8) { const r = Math.random(), k = y < 40 ? (r < 0.45 ? 0 : Math.floor(r * 6)) : Math.floor(r * 6); g.fillStyle = C[k]; g.fillRect(x, y, 7, 7); } });
+      { const [a, b] = P(14.95, 160); const m = new THREE.Mesh(new THREE.PlaneGeometry(8 * S, 1.72), new THREE.MeshStandardMaterial({ map: mos, roughness: 0.3 })); m.position.set(a, 0.58 + 0.86, b); m.rotation.y = Math.PI / 2; scene.add(m); }
+      box(14.8, 109.8, 51, 201, 0, 0.55, tileW); box(14.8, 109.8, 51, 201, 0.55, 0.58, ceram); box(18, 113, 47.5, 197.5, 0.3, 0.581, M('#eef1f2', { roughness: 0.1 }), false);
+      { const fr = tex(64, 256, (g, w, h) => { g.fillStyle = 'rgba(235,240,240,0.92)'; g.fillRect(0, 0, w, h); for (let y = 14; y < h; y += 17) g.clearRect(0, y, w, 6); });
+        const gl = new THREE.MeshStandardMaterial({ map: fr, transparent: true, opacity: 0.85, roughness: 0.15, side: THREE.DoubleSide, depthWrite: false }); const [a, b] = P(50.6, 186.5);
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(37 * S, 1.42), gl); m.position.set(a, 0.6 + 0.71, b); m.rotation.y = Math.PI / 2; scene.add(m); box(50.2, 168, 51, 168.6, 0.6, 2.02, M('#c9cdd0', { metalness: 0.5, roughness: 0.3 }), false); box(50.4, 170, 50.9, 202, 1.05, 1.08, M('#c9cdd0', { metalness: 0.5, roughness: 0.3 }), false); }
+      box(14.8, 189, 16.2, 190.4, 0.9, 2.08, blk, false); box(14.8, 189, 30, 190.4, 2.06, 2.09, blk, false); cyl(30, 189.7, 6, 2.0, 2.03, blk); box(14.8, 186, 17, 193, 0.95, 1.02, blk, false);
+      box(14.8, 152, 18.5, 166, 0.68, 0.73, blk, false); box(18.5, 158, 22, 160, 0.66, 0.7, blk, false);
+      box(52, 109.8, 69, 127, 0.1, 1.86, gloss); box(69, 112, 69.3, 126, 0.3, 1.7, M('#c9cdd0', { metalness: 0.5, roughness: 0.3 }), false);
+      box(70, 109.8, 110, 132, 0.38, 0.78, gloss); box(70.5, 131.9, 109.5, 132.2, 0.4, 0.74, M('#e9e9e6', { roughness: 0.3 }), false); box(70, 109.8, 110, 132.5, 0.78, 0.86, ceram); box(76, 113, 104, 129, 0.8, 0.861, M('#edf0f1', { roughness: 0.1 }), false);
+      cyl(90, 112, 1, 0.86, 1.02, blk); box(89, 111.5, 91, 116, 0.99, 1.02, blk, false); cyl(97, 122, 3.6, 0, 0.32, ceram);
+      box(71, 109.8, 110, 110.5, 1.08, 1.86, MAT.mirror, false); box(80, 109.8, 102, 113.5, 1.88, 1.94, gloss, false); box(81, 113.4, 101, 113.6, 1.885, 1.935, L('light.salle_de_bain_salle_de_bain', '#fff1d6', null, 0.6), false);
+      box(112, 111, 129, 128, 0, 0.62, M('#232325', { roughness: 0.8 }));
+      box(54, 184, 92, 205, 0.86, 0.9, ceram); box(55, 185, 91, 204, 0.9, 0.98, M('#e7e5e0', { roughness: 0.6 })); for (const z of [0.12, 0.45]) box(54, 184, 92, 205, z, z + 0.025, ceram);
+      for (const [x, y] of [[54.5, 184.5], [90.5, 184.5], [54.5, 203.5], [90.5, 203.5]]) box(x, y, x + 1.5, y + 1.5, 0.05, 0.86, ceram); for (const [x, y] of [[55.2, 185.2], [91.2, 185.2], [55.2, 204.2], [91.2, 204.2]]) cyl(x, y, 1, 0, 0.05, M('#9a9a9a'));
+      // plafonnier 3 spots Hue : chaque spot est une lampe à part (cliquable seul ou en groupe)
+      const nick = M('#a9adb1', { metalness: 0.7, roughness: 0.3 }); cyl(75, 160, 3.6, 2.27, 2.3, nick); clickable(cyl(75, 160, 3.2, 2.265, 2.27, L('light.salle_de_bain_salle_de_bain', '#fff1d6', [75, 160, 2.1], 0.4, 3.5)), 'light.salle_de_bain_salle_de_bain');
+      for (const [e, dx, dy] of [['light.salle_de_bain_sdb_evier', 0, -4.2], ['light.salle_de_bain_sdb_douche', -3.6, 2.4], ['light.salle_de_bain_sdb_langer', 3.6, 2.4]]) {
+        box(75 + dx * 0.45 - 0.5, 160 + dy * 0.45 - 0.5, 75 + dx * 0.45 + 0.5, 160 + dy * 0.45 + 0.5, 2.2, 2.27, nick, false); clickable(cyl(75 + dx, 160 + dy, 1.9, 2.13, 2.22, nick), e);
+        clickable(cyl(75 + dx, 160 + dy, 1.6, 2.115, 2.13, L(e, '#fff1d6', null, 1.0)), e); this.lights[e].grp = 'light.salle_de_bain_salle_de_bain'; }
+    }
+    { // WC : mur du fond taupe (ouest) avec WC + 2 étagères + VMC, murs latéraux bleu clair, lave-mains blanc + robinetterie noire au nord, poubelle noire au sud
+      const blue = M('#d4e3ea', { roughness: 0.95 }), taupe = M('#a99d90', { roughness: 0.95 }), ceram = M('#fbfbfb', { roughness: 0.12 }), blk = M('#1b1b1d', { roughness: 0.35 }), wood = M('#a8865f', { roughness: 0.6 }), shelf = M('#b9b3aa', { roughness: 0.7 });
+      const pw = (x0, y0, x1, y1, m) => this._wall(box(x0, y0, x1, y1, 0, WH, m, false));
+      pw(139.5, 109.5, 139.8, 150.5, taupe); pw(139.5, 109.5, 230.5, 109.8, blue); pw(139.5, 150.2, 230.5, 150.5, blue);
+      box(139.8, 121, 148, 139, 0.36, 0.8, ceram); box(146.5, 127, 147.5, 133, 0.8, 0.82, M('#c9cdd0', { metalness: 0.6, roughness: 0.3 }), false);
+      cyl(152, 130, 4, 0, 0.14, ceram); cyl(155, 130, 7, 0.14, 0.4, ceram); cyl(155.5, 130, 7.4, 0.4, 0.43, wood); cyl(155.5, 130, 4.4, 0.4, 0.432, M('#e8eef0'), 20); box(148.2, 123.5, 149.4, 136.5, 0.45, 0.86, wood, false);
+      for (const z of [1.5, 1.82]) { box(139.8, 110, 152, 150, z, z + 0.03, shelf); box(139.8, 113, 141.5, 115, z - 0.06, z, blk, false); box(139.8, 145, 141.5, 147, z - 0.06, z, blk, false); }
+      { const pap = M('#eef3f6', { roughness: 0.9 }); for (let i = 0; i < 6; i++) { cyl(146, 121 + i * 5, 2.3, 1.53, 1.645, pap, 16); cyl(146, 121 + i * 5, 2.3, 1.645, 1.76, pap, 16); } }
+      box(139.8, 128, 140.6, 136, 1.98, 2.14, ceram, false); cyl(140.7, 132, 2.6, 2.04, 2.08, M('#d6d6d4'));
+      box(160, 109.8, 183, 117.5, 0.78, 0.86, ceram); box(163, 110.5, 181, 116.5, 0.8, 0.861, M('#edf0f1', { roughness: 0.1 }), false); cyl(178, 112, 0.7, 0.86, 1.0, blk); box(177.5, 112, 178.5, 115, 0.97, 1.0, blk, false);
+      cyl(171, 112.5, 1, 0.4, 0.78, blk); cyl(164, 112.5, 1.4, 0.86, 0.99, blk); box(151, 109.8, 154, 111.6, 0.72, 0.76, blk, false); cyl(152.5, 112, 1.6, 0.66, 0.72, M('#f2f2f2'), 14);
+      cyl(147, 145, 3.6, 0, 0.36, blk); cyl(158, 115, 1.8, 0, 0.42, blk); cyl(158, 115, 0.4, 0.42, 0.62, M('#c9a57a'));
+      const nick = M('#a9adb1', { metalness: 0.7, roughness: 0.3 }); box(183, 128.5, 197, 131.5, 2.27, 2.3, nick, false); cyl(186, 130, 1.5, 2.15, 2.25, nick); cyl(194, 130, 1.5, 2.15, 2.25, nick);
+    }
     /* ---- hall ---- */
     box(300, 14, 350, 26, 0, 0.5, MAT.oakDark);
     /* ---- buanderie ---- */
@@ -368,7 +410,7 @@ class Floorplan3DCard extends HTMLElement {
     box(425, 292, 447, 366, 0, 0.9, MAT.greige); box(423, 290, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 294, 457, 362, 1.06, 1.09, MAT.worktop); box(447, 296, 452, 360, 0.94, 1.06, M('#d8d5cf'));
     for (const y of [312, 344]) { cyl(468, y, 2, 0, 0.72, MAT.black, 10); cyl(468, y, 8, 0.72, 0.78, M('#2b2b2e'), 20); box(472, y - 7, 474, y + 7, 0.78, 1.15, M('#2b2b2e')); }
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
-    [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
+    [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + [4, 2, 3, 1][i]; cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
     box(441, 15, 465, 33, 0.56, 0.6, M('#a88b62', { roughness: 0.8 })); for (const [x, y] of [[441.5, 15.5], [463.5, 15.5], [441.5, 31.5], [463.5, 31.5]]) box(x, y, x + 1, y + 1, 0, 0.56, MAT.black); box(444, 17, 462, 31, 0.6, 0.86, MAT.white); box(445, 31, 461, 31.4, 0.66, 0.74, M('#2a2a2c'), false); box(442, 14.6, 462, 24, 1.0, 1.06, MAT.oakLight); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false); box(450.8, 14.6, 455.2, 15.5, 1.64, 1.73, MAT.white, false); box(451.4, 15.5, 454.6, 15.6, 1.665, 1.715, M('#c9d2c8', { roughness: 0.4 }), false);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
@@ -511,7 +553,7 @@ class Floorplan3DCard extends HTMLElement {
     if (!this._ready || !this._h) return;
     const H = this._h.states;
     for (const [ent, rec] of Object.entries(this.lights)) {
-      const st = H[ent], on = st && st.state === 'on';
+      let st = H[ent]; if ((!st || st.state === 'unavailable') && rec.grp) st = H[rec.grp] || st; const on = st && st.state === 'on';
       let col = rec.color.clone(); const A = on ? st.attributes : {};
       if (A.color_mode === 'color_temp' && A.color_temp_kelvin) col = this._rgb(k2rgb(A.color_temp_kelvin));
       else if (A.rgb_color) col = this._rgb(A.rgb_color);
@@ -689,6 +731,8 @@ class Floorplan3DCard extends HTMLElement {
     const $ = this.$, pn = $('.pn');
     $('.px').onclick = () => this._closePanel();
     $('.more').onclick = () => this.sel && this._more(this.sel);
+    pn.querySelectorAll('.pseg button').forEach((b) => (b.onclick = () => { const m = b.dataset.m; if (!this.selGrp) return; if (m === 'one') { const s = this._h.states[this.selSpot]; if (!s || s.state === 'unavailable') return this._toast('Ce spot est indisponible pour le moment'); }
+      this._gMode = m; this.sel = m === 'one' ? this.selSpot : this.selGrp; this._wheelHS = null; this._busy = false; this._renderPanel(true); }));
     $('.pw').onclick = () => { const st = this._h.states[this.sel]; if (!st) return; const on = st.state === 'on';
       this._preview(on ? { bri: 0 } : { bri: (st.attributes.brightness ?? 255) / 255 }); this._h.callService('light', on ? 'turn_off' : 'turn_on', { entity_id: this.sel }); };
     const busy = (el) => { el.addEventListener('pointerdown', () => (this._busy = true)); const end = () => { clearTimeout(this._bt); this._bt = setTimeout(() => (this._busy = false), 1500); }; el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end); el.addEventListener('change', end); };
@@ -714,10 +758,17 @@ class Floorplan3DCard extends HTMLElement {
   }
   _drawWheel() { const c = this._wheelCtx, R = c.canvas.width / 2; c.putImageData(this._wheelImg, 0, 0); if (!this._wheelHS) return; const [h, s] = this._wheelHS, a = h * Math.PI / 180;
     const x = R + Math.cos(a) * s * R * 0.97, y = R + Math.sin(a) * s * R * 0.97; c.beginPath(); c.arc(x, y, 15, 0, 7); c.lineWidth = 5; c.strokeStyle = '#fff'; c.stroke(); c.beginPath(); c.arc(x, y, 18, 0, 7); c.lineWidth = 2; c.strokeStyle = 'rgba(0,0,0,.35)'; c.stroke(); }
-  _preview(o) { const rec = this.lights[this.sel]; if (!rec) return; rec.ov = Object.assign(rec.ov && Date.now() < rec.ov.until ? rec.ov : {}, o, { until: Date.now() + 3000 }); if (o.col && (!rec.target || !rec.target.on) && o.bri === undefined) rec.ov.bri = 0.8; this._sync(); }
+  _preview(o) { const s = this._h.states[this.sel], ids = [this.sel, ...((s && s.attributes.entity_id) || [])]; let any = false;
+    ids.forEach((e) => { const rec = this.lights[e]; if (!rec) return; any = true; rec.ov = Object.assign(rec.ov && Date.now() < rec.ov.until ? rec.ov : {}, o, { until: Date.now() + 3000 }); if (o.col && (!rec.target || !rec.target.on) && o.bri === undefined) rec.ov.bri = 0.8; });
+    if (any) this._sync(); }
+  /* plus petit groupe de lampes HA contenant ce spot (ex. Spot Cuisine, Lustre salle à manger, Salle de bain) */
+  _grpOf(ent) { const H = this._h.states; let best = null, n = 99;
+    for (const [k, st] of Object.entries(H)) { const m = st.attributes.entity_id; if (!k.startsWith('light.') || !Array.isArray(m) || m.length < 2 || !m.includes(ent) || !m.every((e) => this.lights[e])) continue;
+      if (m.length < n || (m.length === n && this.lights[k] && !this.lights[best])) { best = k; n = m.length; } } return best; }
   _send(data, now) { const ent = this.sel; this._pend = { entity_id: ent, ...data }; const go = () => { this._h.callService('light', 'turn_on', this._pend); this._lastSend = Date.now(); this._pend = null; };
     clearTimeout(this._st); const wait = 280 - (Date.now() - (this._lastSend || 0)); if (now || wait <= 0) go(); else this._st = setTimeout(go, wait); }
   _openPanel(ent, x, y, obj) {
+    this.selSpot = ent; this.selGrp = this._grpOf(ent); { const s = this._h.states[ent]; if (this.selGrp && (this._gMode !== 'one' || !s || s.state === 'unavailable')) ent = this.selGrp; }
     const changed = this.sel !== ent; this.sel = ent; this._busy = false; if (changed) this._wheelHS = null;
     const p = new THREE.Vector3(); obj.getWorldPosition(p); this.selRing.position.set(p.x, 0.03, p.z); this.selRing.visible = true;
     this._renderPanel(true); const pn = this.$('.pn'), wrap = this.$('.wrap');
@@ -728,9 +779,12 @@ class Floorplan3DCard extends HTMLElement {
   _renderPanel(force) {
     if (!this.sel || !this.$) return; const st = this._h.states[this.sel]; if (!st) return; const A = st.attributes, on = st.state === 'on', $ = this.$;
     const modes = A.supported_color_modes || [], dim = modes.some((m) => m !== 'onoff'), rgbOk = modes.some((m) => RGBM.includes(m)), ctOk = modes.includes('color_temp');
-    const rec = this.lights[this.sel], col = rec && rec.target ? rec.target.col : new THREE.Color('#ffd27a'), lit = rec && rec.target && rec.target.on, css = '#' + col.getHexString();
+    const rec = this.lights[this.sel] || (A.entity_id || []).map((e) => this.lights[e]).find((r) => r && r.target && r.target.on) || (A.entity_id || []).map((e) => this.lights[e]).find(Boolean), col = rec && rec.target ? rec.target.col : new THREE.Color('#ffd27a'), lit = rec && rec.target && rec.target.on, css = '#' + col.getHexString();
     const pn = $('.pn'); pn.style.setProperty('--c', lit ? css : '#3b3846');
-    $('.pname').textContent = A.friendly_name || this.sel; $('.pdot').textContent = lit ? '💡' : '⚫';
+    $('.pname').textContent = A.friendly_name || this.sel;
+    { const sg = $('.pseg'); sg.classList.toggle('hide', !this.selGrp); if (this.selGrp && this._h.states[this.selGrp]) { const G = this._h.states[this.selGrp], sp = this._h.states[this.selSpot];
+      sg.querySelector('.pgn').textContent = `${G.attributes.friendly_name} (${(G.attributes.entity_id || []).length})`; sg.children[0].textContent = '💡 ' + ((sp && sp.attributes.friendly_name) || 'Ce spot');
+      sg.children[0].classList.toggle('on', this.sel !== this.selGrp); sg.children[1].classList.toggle('on', this.sel === this.selGrp); } } $('.pdot').textContent = lit ? '💡' : '⚫';
     const pct = on ? Math.round((A.brightness ?? 255) / 2.55) : 0;
     $('.pst').textContent = on ? `Allumée · ${pct}%${A.color_mode === 'color_temp' && A.color_temp_kelvin ? ` · ${A.color_temp_kelvin} K` : ''}` : 'Éteinte';
     $('.pw').classList.toggle('on', on);
