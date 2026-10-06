@@ -512,9 +512,12 @@ class Floorplan3DCard extends HTMLElement {
         // panneau : x 500..602 px, z 0.72..1.92 m (200 px/m) ; TV x 518..584, z 1.0..1.75
         const cv = document.createElement('canvas'); cv.width = 408; cv.height = 240; const g = cv.getContext('2d'); g.strokeStyle = '#fff'; g.lineJoin = 'round'; g.lineCap = 'round';
         const U = () => { g.beginPath(); g.moveTo(80, 176); g.lineTo(80, 42); g.lineTo(328, 42); g.lineTo(328, 176); g.stroke(); };
-        g.fillStyle = '#fff'; for (const [bl, al, gr] of [[70, 0.55, 40], [44, 0.6, 18], [24, 0.7, 4]]) { g.filter = 'blur(' + bl + 'px)'; g.globalAlpha = al; g.beginPath(); g.ellipse(204, 100, 168 + gr, 78 + gr, 0, 0, Math.PI * 2); g.fill(); } g.globalAlpha = 1;
-        g.globalCompositeOperation = 'destination-in'; g.filter = 'none'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.5, '#fff'); fd.addColorStop(0.72, 'rgba(255,255,255,.45)'); fd.addColorStop(0.95, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240);
-        const [pa, pb] = P(551, 20.48); mk(cv, 85 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 0.7, false); mk(cv, 85 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 1.6, true);
+        const R = () => { g.beginPath(); g.moveTo(74, 178); g.lineTo(74, 37); g.lineTo(334, 37); g.lineTo(334, 178); g.stroke(); }; for (const [bl, lw, al] of [[46, 130, 0.22], [22, 62, 0.5], [9, 26, 1]]) { g.filter = 'blur(' + bl + 'px)'; g.lineWidth = lw; g.globalAlpha = al; R(); } g.globalAlpha = 1;
+        g.globalCompositeOperation = 'destination-in'; g.filter = 'none'; const fd = g.createLinearGradient(0, 0, 0, 240); fd.addColorStop(0, '#fff'); fd.addColorStop(0.55, '#fff'); fd.addColorStop(0.78, 'rgba(255,255,255,.35)'); fd.addColorStop(0.9, 'rgba(255,255,255,0)'); g.fillStyle = fd; g.fillRect(0, 0, 408, 240);
+        const [pa, pb] = P(551, 20.48); mk(cv, 102 * S, 1.2, [pa, 1.32, pb], [0, 0, 0], 0.55, false); mk(cv, 102 * S, 1.2, [pa, 1.32, pb + 0.002], [0, 0, 0], 1.5, true);
+        // tranche intérieure des enceintes KEF éclairée côté TV
+        const cv3 = document.createElement('canvas'); cv3.width = 8; cv3.height = 64; const g3 = cv3.getContext('2d'); const lg = g3.createLinearGradient(0, 0, 0, 64); lg.addColorStop(0, 'rgba(255,255,255,1)'); lg.addColorStop(0.7, 'rgba(255,255,255,.8)'); lg.addColorStop(1, 'rgba(255,255,255,.15)'); g3.fillStyle = lg; g3.fillRect(0, 0, 8, 64);
+        for (const [x, ry] of [[508.55, Math.PI / 2], [593.45, -Math.PI / 2]]) { const [sa, sb] = P(x, 20.9); mk(cv3, 0.02, 0.47, [sa, 1.385, sb], [0, ry, 0], 1.2, true); }
         // bord du plafond : léger reflet au-dessus du panneau (mur + plafond)
         const cv2 = document.createElement('canvas'); cv2.width = 256; cv2.height = 128; const g2 = cv2.getContext('2d'); const rg = g2.createRadialGradient(128, 0, 6, 128, 0, 128); rg.addColorStop(0, 'rgba(255,255,255,.9)'); rg.addColorStop(1, 'rgba(255,255,255,0)'); g2.fillStyle = rg; g2.fillRect(0, 0, 256, 128);
         const [ca, cb] = P(551, 30); mk(cv2, 1.9, 0.6, [ca, WH - 0.012, cb], [Math.PI / 2, 0, 0], 0.5, true); }
