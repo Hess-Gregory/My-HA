@@ -27,8 +27,8 @@ const hsv2rgb = (h, s) => { const f = (n) => { const k = (n + h / 60) % 6; retur
 const RGBM = ['hs', 'rgb', 'rgbw', 'rgbww', 'xy'];
 const SWATCH = [['ct', 2700], ['rgb', [255, 40, 40]], ['rgb', [255, 140, 20]], ['rgb', [255, 0, 150]], ['rgb', [140, 40, 255]], ['rgb', [0, 110, 255]], ['rgb', [0, 220, 130]], ['ct', 6000]];
 const BEAMS = [['light.salon_l_salon', 575, 95, 1.95, 70], ['light.salle_a_manger_lg', 568, 269.5, 1.62, 34], ['light.salle_a_manger_lc', 598, 269.5, 1.62, 34], ['light.salle_a_manger_ld', 628, 269.5, 1.62, 34],
-  ['light.salle_de_bain_salle_de_bain', 75, 160, 2.15, 50], ['light.chambre_matteo', 255, 300, 2.15, 60], ['light.cuisine_evier', 341, 298, 1.43, 20],
-  ...[356, 376, 396, 414].map((x, i) => ['light.cuisine_s_cuisine_' + (i + 1), x, 301, 2.1, 24])];
+  ['light.salle_de_bain_salle_de_bain', 75, 160, 2.15, 50], ['light.chambre_matteo', 255, 300, 2.15, 60], ['light.cuisine_evier', 344, 300, 1.43, 20],
+  ...[287, 306, 326, 344].map((y, i) => ['light.cuisine_s_cuisine_' + (i + 1), 373, y, 2.02, 24])];
 
 class Floorplan3DCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
@@ -246,19 +246,32 @@ class Floorplan3DCard extends HTMLElement {
     box(277, 219, 327, 322, 1.35, 1.45, MAT.white); box(281, 223, 323, 318, 1.45, 1.6, MAT.fabric2); box(277, 219, 327, 222, 1.45, 1.75, MAT.white); box(277, 319, 327, 322, 1.45, 1.75, MAT.white);
     box(286, 270, 322, 316, 0, 0.75, M('#efe9df')); disc(250, 345, 24, 0.006, MAT.rug);
     clickable(sphere(255, 300, 5, 2.2, L('light.chambre_matteo', '#fff1d6', [255, 300, 2.1], 2.2, 4)), 'light.chambre_matteo');
-    /* ---- cuisine ---- */
-    box(333, 213, 363, 245, 0, 2.2, MAT.greige); box(333, 245, 363, 277, 0, 2.2, MAT.greige); box(363, 248, 363.8, 274, 0.85, 1.45, MAT.black, false);
-    box(333, 277, 363, 366, 0, 0.86, MAT.greige); box(332, 277, 365, 366, 0.86, 0.9, MAT.worktop); box(337, 286, 359, 310, 0.86, 0.905, M('#232325', { roughness: 0.4 }), false);
-    box(333, 279, 349, 318, 1.45, 2.1, MAT.greige);
-    clickable(box(333, 279, 349, 318, 1.43, 1.45, L('light.cuisine_evier', '#ffd9a0', [345, 298, 1.35], 1.8, 2.4), false), 'light.cuisine_evier');
-    box(333, 320, 349, 334, 1.45, 2.1, MAT.white);
-    clickable(box(347.5, 320, 349, 334, 1.45, 2.1, L('light.cuisine_etagere_cafe', '#ffd9a0', [352, 327, 1.8], 1.0, 1.8), false), 'light.cuisine_etagere_cafe');
-    box(337, 337, 359, 362, 0.9, 0.905, MAT.black, false); box(333, 339, 353, 360, 1.65, 1.76, MAT.white); box(333, 344, 343, 355, 1.76, 2.25, MAT.white);
-    box(363, 336, 425, 366, 0, 0.86, MAT.greige); box(363, 334, 425, 366, 0.86, 0.9, MAT.worktop); box(390, 343, 416, 361, 0.9, 1.22, MAT.black);
+    /* ---- cuisine (en U : évier + colonnes à l'ouest, hotte au sud, péninsule à l'est) ---- */
+    const greyWall = M('#5c5f64', { roughness: 0.95 }), tiles = M('#e8e0d1', { roughness: 0.5 }), sinkM = M('#232325', { roughness: 0.4 });
+    box(335, 214.5, 365, 238, 0, 2.2, MAT.greige); box(335, 238, 365, 262, 0, 2.2, MAT.greige); box(365, 241, 365.8, 260, 0.85, 1.45, MAT.black, false); box(365, 241, 365.6, 260, 1.48, 1.52, MAT.steel, false);
+    box(335, 262, 365, 366, 0, 0.86, MAT.greige); box(334.5, 262, 366, 366, 0.86, 0.9, MAT.worktop); box(340, 290, 360, 322, 0.86, 0.905, sinkM, false);
+    box(335, 314, 337, 318, 0.9, 1.25, MAT.steel, false);
+    box(334.6, 262, 335.4, 336, 0.9, 1.43, tiles, false); box(334.6, 336, 335.4, 366, 0.9, 1.45, tiles, false);
+    box(335, 266, 352, 334, 1.45, 2.2, MAT.greige);
+    clickable(box(335, 266, 352, 334, 1.43, 1.45, L('light.cuisine_evier', '#ffd9a0', [348, 300, 1.35], 1.8, 2.4), false), 'light.cuisine_evier');
+    box(339, 340, 356, 358, 0.9, 1.3, MAT.black); box(341, 341, 354, 352, 1.3, 1.42, M('#d9dee0', { transparent: true, opacity: 0.6 }), false);
+    box(365, 336, 425, 366, 0, 0.86, MAT.greige); box(365, 334, 425, 366, 0.86, 0.9, MAT.worktop);
+    box(335, 365.2, 425, 365.8, 0.9, 1.5, tiles, false); box(335, 365.2, 425, 365.8, 1.5, 2.3, greyWall, false);
+    // étagères ouvertes éclairées (coin sud-ouest, au-dessus de la machine à café)
+    for (const [x0, x1] of [[336, 353], [354, 371]]) { box(x0, 349, x1, 366, 1.45, 1.47, MAT.white); box(x0, 349, x1, 366, 2.18, 2.2, MAT.white); box(x0, 349, x0 + 1, 366, 1.45, 2.2, MAT.white); box(x1 - 1, 349, x1, 366, 1.45, 2.2, MAT.white);
+      box(x0 + 1, 350, x1 - 1, 366, 1.82, 1.83, M('#cfe6ea', { transparent: true, opacity: 0.45 }), false);
+      clickable(box(x0 + 1, 364.5, x1 - 1, 365.6, 1.47, 2.18, L('light.cuisine_etagere_cafe', '#ffd9a0', x0 === 336 ? [355, 360, 1.95] : null, 1.0, 1.8), false), 'light.cuisine_etagere_cafe');
+      cyl((x0 + x1) / 2, 358, 3, 2.16, 2.18, L('light.cuisine_etagere_cafe', '#fff1d6', null, 1, 1)); }
+    // taque + hotte cheminée (mur sud)
+    box(381, 342, 409, 362, 0.9, 0.905, MAT.black, false);
+    { const [a, b] = P(395, 354); const hood = new THREE.Mesh(new THREE.CylinderGeometry(7 * S, 23 * S, 0.3, 4, 1), MAT.white); hood.rotation.y = Math.PI / 4; hood.scale.set(1, 1, 0.62); hood.position.set(a, 1.72, b); hood.castShadow = true; scene.add(hood);
+      const rim = new THREE.Mesh(new THREE.BoxGeometry(32 * S, 0.03, 20 * S), MAT.steel); rim.position.set(a, 1.57, b); scene.add(rim); }
+    box(389, 358, 401, 366, 1.86, 2.3, MAT.white);
+    box(411, 342, 424, 362, 0.9, 1.22, MAT.black);
     box(425, 248, 447, 366, 0, 0.9, MAT.greige); box(423, 246, 452, 366, 0.9, 0.94, MAT.worktop); box(440, 250, 456, 362, 1.06, 1.09, MAT.worktop); box(447, 252, 452, 360, 0.94, 1.06, M('#d8d5cf'));
     for (const y of [280, 312]) { cyl(466, y, 2, 0, 0.72, MAT.black, 10); cyl(466, y, 8, 0.72, 0.78, M('#55565a'), 20); }
-    box(435, 212, 437, 246, 0, 0.75, MAT.white); box(350, 300, 420, 302, 2.26, 2.28, MAT.black, false);
-    [356, 376, 396, 414].forEach((x, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); clickable(cyl(x, 301, 3, 2.1, 2.26, L(e, '#fff4e0', [x, 301, 2.0], 1.1, 3)), e); });
+    box(435, 212, 437, 246, 0, 0.75, MAT.white); box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
+    [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3.2, 2.02, 2.16, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
     box(440, 14, 466, 32, 0, 0.75, MAT.oakDark); box(442, 16, 464, 30, 0.75, 1.0, MAT.white); box(444, 12, 462, 13.5, 1.25, 1.55, MAT.black, false);
     box(474, 11, 490, 13.5, 0.4, 2.25, MAT.oakLight, false); for (let x = 475; x < 490; x += 2.2) box(x, 13.5, x + 1, 14.2, 0.4, 2.25, M('#b8955f'), false);
