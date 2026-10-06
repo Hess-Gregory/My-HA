@@ -462,7 +462,16 @@ class Floorplan3DCard extends HTMLElement {
     box(335, 314, 337, 318, 0.9, 1.25, MAT.steel, false);
     box(334.6, 262, 335.4, 336, 0.9, 1.43, tiles, false); box(334.6, 336, 335.4, 366, 0.9, 1.45, tiles, false);
     box(335, 266, 352, 330, 1.45, 2.2, MAT.greige);
-    clickable(box(335, 266, 352, 330, 1.43, 1.45, L('light.cuisine_evier', '#ffd9a0', [348, 298, 1.35], 1.8, 2.4), false), 'light.cuisine_evier');
+    clickable(box(335, 266, 352, 330, 1.43, 1.45, L('light.cuisine_evier', '#ffd9a0', [347, 298, 1.25], 2.4, 2.6), false), 'light.cuisine_evier');
+    // halos lumineux (éclairage sous meuble de l'évier + étagères café) : dégradés additifs pilotés par l'état réel des lampes
+    const gtex = (radial) => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const gr = radial ? g.createRadialGradient(64, 64, 4, 64, 64, 64) : g.createLinearGradient(0, 0, 0, 128);
+      gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(radial ? 0.45 : 0.35, 'rgba(255,255,255,0.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); };
+    const glow = (ent, w, h, pos, rot, radial, k) => { const m = new THREE.MeshBasicMaterial({ map: gtex(radial), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
+      const me = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); me.position.set(...pos); me.rotation.set(...rot); me.visible = false; scene.add(me); const rec = this.lights[ent]; (rec.glows = rec.glows || []).push({ m, mesh: me, k }); };
+    { const [a, b] = P(335.5, 298), [c2, d2] = P(343.5, 298);
+      glow('light.cuisine_evier', 62 * S, 0.53, [a, 1.165, b], [0, Math.PI / 2, 0], false, 0.85);
+      glow('light.cuisine_evier', 64 * S, 17 * S, [c2, 0.905, d2], [-Math.PI / 2, 0, Math.PI / 2], true, 0.55);
+      const [e2, f2] = P(350, 298); glow('light.cuisine_evier', 62 * S, 0.25, [e2, 1.3, f2], [0, Math.PI / 2, 0], false, 0.25); }
     box(339, 340, 356, 358, 0.9, 1.3, MAT.black); box(341, 341, 354, 352, 1.3, 1.42, M('#d9dee0', { transparent: true, opacity: 0.6 }), false);
     box(365, 336, 425, 366, 0, 0.86, MAT.greige); box(365, 334, 425, 366, 0.86, 0.9, MAT.worktop);
     box(335, 365.2, 425, 365.8, 0.9, 1.5, tiles, false); box(335, 365.2, 425, 365.8, 1.5, 2.3, greyWall, false);
@@ -470,7 +479,12 @@ class Floorplan3DCard extends HTMLElement {
     for (const [y0, y1] of [[331, 348], [349, 366]]) { box(335, y0, 352, y1, 1.45, 1.47, MAT.white); box(335, y0, 352, y1, 2.18, 2.2, MAT.white); box(335, y0, 352, y0 + 1, 1.45, 2.2, MAT.white); box(335, y1 - 1, 352, y1, 1.45, 2.2, MAT.white);
       box(336, y0 + 1, 351, y1 - 1, 1.82, 1.83, M('#cfe6ea', { transparent: true, opacity: 0.45 }), false);
       clickable(box(335.2, y0 + 1, 336.4, y1 - 1, 1.47, 2.18, L('light.cuisine_etagere_cafe', '#ffd9a0', y0 === 331 ? [345, 348, 1.95] : null, 1.0, 1.8), false), 'light.cuisine_etagere_cafe');
-      cyl(343, (y0 + y1) / 2, 3, 2.16, 2.18, L('light.cuisine_etagere_cafe', '#fff1d6', null, 1, 1)); }
+      cyl(343, (y0 + y1) / 2, 3, 2.16, 2.18, L('light.cuisine_etagere_cafe', '#fff1d6', null, 1, 1));
+      { const [a, b] = P(336.5, (y0 + y1) / 2), [c2, d2] = P(343.5, (y0 + y1) / 2);
+        glow('light.cuisine_etagere_cafe', (y1 - y0 - 2) * S, 0.68, [a, 1.81, b], [0, Math.PI / 2, 0], false, 0.4);
+        glow('light.cuisine_etagere_cafe', 15 * S, (y1 - y0 - 2) * S, [c2, 1.836, d2], [-Math.PI / 2, 0, 0], true, 0.35);
+        glow('light.cuisine_etagere_cafe', 15 * S, (y1 - y0 - 2) * S, [c2, 1.476, d2], [-Math.PI / 2, 0, 0], true, 0.35);
+        glow('light.cuisine_etagere_cafe', (y1 - y0 - 2) * S, 0.5, [P(351.8, 0)[0], 1.2, b], [0, Math.PI / 2, 0], false, 0.2); } }
     // taque + hotte cheminée (mur sud)
     box(381, 342, 409, 362, 0.9, 0.905, MAT.black, false);
     { const [a, b] = P(395, 354); const g = new THREE.BoxGeometry(34 * S, 0.3, 24 * S); { const pa = g.attributes.position; for (let k = 0; k < pa.count; k++) if (pa.getY(k) > 0) { pa.setX(k, pa.getX(k) * 12 / 34); pa.setZ(k, pa.getZ(k) > 0 ? 12 * S : 4 * S); } g.computeVertexNormals(); } const hood = new THREE.Mesh(g, MAT.white); hood.position.set(a, 1.72, b); hood.castShadow = true; scene.add(hood);
@@ -893,7 +907,7 @@ class Floorplan3DCard extends HTMLElement {
         const c = rec.cur; const db = tg.bri - c.bri; if (Math.abs(db) > 0.004 || !c.col.equals(tg.col)) { c.bri += db * 0.15; c.col.lerp(tg.col, 0.15); if (Math.abs(db) < 0.004) c.bri = tg.bri; anim = true; }
         const n = 0.35 + 0.65 * this.night;
         rec.mats.forEach((m) => { m.emissive.copy(c.col); m.color.copy(c.col).multiplyScalar(c.bri > 0.01 ? 1 : 0.35); m.emissiveIntensity = c.bri * 2.6; });
-        rec.pls.forEach((pl) => { pl.color.copy(c.col); pl.intensity = c.bri * rec.base * n; });
+        rec.pls.forEach((pl) => { pl.color.copy(c.col); pl.intensity = c.bri * rec.base * n; }); (rec.glows || []).forEach((g) => { g.m.color.copy(c.col); g.m.opacity = Math.min(1, c.bri * g.k * (0.55 + 0.45 * n)); g.mesh.visible = c.bri > 0.01; });
         (rec.beams || []).forEach((m) => { m.uniforms.c.value.copy(c.col); m.uniforms.o.value = c.bri * 0.2 * (0.2 + 0.8 * this.night); });
       }
       if (this.tvOn && this.tvScr) { const t = performance.now(); if (!this._tvT || t - this._tvT > 80) { this._tvT = t; this._drawTV(t / 1000); } }
