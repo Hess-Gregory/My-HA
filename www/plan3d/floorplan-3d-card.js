@@ -204,7 +204,7 @@ class Floorplan3DCard extends HTMLElement {
       wallTop: M('#3d3d42'), wall: M('#f3f1ed', { roughness: 0.9 }), oak: M('#c9a57a'), oakDark: M('#9c7752'), oakLight: M('#d8c09a'),
       tile: M('#d9d7d2', { roughness: 0.6 }), tileGrey: M('#c6c7c6', { roughness: 0.55 }), white: M('#fbfbfa', { roughness: 0.4 }),
       greige: M('#cfcbc3', { roughness: 0.6 }), worktop: M('#e8e6e1', { roughness: 0.35 }), black: M('#18181a', { roughness: 0.3 }), steel: M('#b9bcc0', { metalness: 0.6, roughness: 0.3 }),
-      fabric: M('#d8d4cc', { roughness: 1 }), fabric2: M('#cfc9be', { roughness: 1 }), green: M('#7d8f74', { roughness: 1 }), sofa: M('#45464b', { roughness: 0.95 }), sofa2: M('#3a3b40', { roughness: 0.95 }),
+      fabric: M('#d8d4cc', { roughness: 1 }), fabric2: M('#cfc9be', { roughness: 1 }), green: M('#7d8f74', { roughness: 1 }), sofa: M('#5c5753', { roughness: 0.97 }), sofa2: M('#4e4946', { roughness: 0.97 }),
       velvet: M('#d9cfc0', { roughness: 1 }), walnut: M('#6b4a32'), mirror: M('#cfe2ea', { roughness: 0.05, metalness: 0.4 }), rug: M('#b9b39f', { roughness: 1 }), rug2: M('#e6dccb', { roughness: 1 }), patine: M('#e9e3d8', { roughness: 0.7 }),
       window: M('#a9cfe3', { transparent: true, opacity: 0.55, roughness: 0.1 }),
     };
