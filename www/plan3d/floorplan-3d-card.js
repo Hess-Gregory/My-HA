@@ -273,18 +273,27 @@ class Floorplan3DCard extends HTMLElement {
     box(371, 280, 375, 350, 2.25, 2.29, MAT.black, false);
     [287, 306, 326, 344].forEach((y, i) => { const e = 'light.cuisine_s_cuisine_' + (i + 1); cyl(373, y, 1, 2.16, 2.25, MAT.black, 8); clickable(cyl(373, y, 3, 2.05, 2.17, MAT.black), e); clickable(cyl(373, y, 2.4, 2.035, 2.05, L(e, '#fff4e0', [373, y, 1.95], 1.1, 3)), e); });
     /* ---- salon ---- */
-    box(440, 14, 466, 32, 0, 0.75, MAT.oakDark); box(442, 16, 464, 30, 0.75, 1.0, MAT.white); box(444, 12, 462, 13.5, 1.25, 1.55, MAT.black, false);
-    box(474, 11, 490, 13.5, 0.4, 2.25, MAT.oakLight, false); for (let x = 475; x < 490; x += 2.2) box(x, 13.5, x + 1, 14.2, 0.4, 2.25, M('#b8955f'), false);
-    clickable(box(496, 9.2, 612, 12.4, 0.55, 2.05, L('light.salon_panneau_mural', '#ffd27a', [554, 30, 1.3], 2.4, 3.4), false), 'light.salon_panneau_mural');
-    clickable(box(500, 12.5, 608, 14.6, 0.65, 1.95, MAT.white), 'light.salon_panneau_mural');
-    clickable(box(526, 14.6, 582, 15.8, 0.95, 1.55, L('light.salon_ambilight_tv', '#7f6bff', [554, 26, 1.2], 1.6, 2.4), false), 'light.salon_ambilight_tv');
-    this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(530, 15.8, 578, 17.2, 1.0, 1.5, this.tvMat, false);
+    box(440, 14, 466, 32, 0, 0.75, MAT.oakDark); box(442, 16, 464, 30, 0.75, 1.0, MAT.white); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false);
+    { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
+    // mur TV : lattes chêne, grand panneau blanc (ruban LED derrière), TV centrée + Ambilight, 2 enceintes colonnes
+    box(474, 14.5, 495, 16.0, 0, 2.28, MAT.oakLight, false); for (let x = 475; x < 494; x += 2.3) box(x, 16.0, x + 1.2, 17.2, 0, 2.28, M('#b8955f'), false);
+    clickable(box(497, 13.4, 635, 14.6, 0.6, 2.24, L('light.salon_panneau_mural', '#ffd27a', [566, 30, 1.4], 2.4, 3.6), false), 'light.salon_panneau_mural');
+    clickable(box(500, 14.6, 632, 17.2, 0.66, 2.18, MAT.white), 'light.salon_panneau_mural');
+    clickable(box(527, 17.2, 605, 18.2, 0.97, 1.79, L('light.salon_ambilight_tv', '#7f6bff', [566, 24, 1.38], 1.6, 2.6), false), 'light.salon_ambilight_tv');
+    this.tvMat = M('#101012', { roughness: 0.25, emissive: '#2a3b6a', emissiveIntensity: 0 }); box(530, 18.2, 602, 19.4, 1.0, 1.76, this.tvMat, false);
+    box(512, 17.2, 519, 19.6, 1.05, 1.75, MAT.white); box(613, 17.2, 620, 19.6, 1.05, 1.75, MAT.white);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.tvCv = cv; this.tvTex = new THREE.CanvasTexture(cv); this.tvTex.colorSpace = THREE.SRGBColorSpace;
-      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(46 * S, 0.47), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(554, 17.3);
-      this.tvScr.position.set(a, 1.25, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
-    box(470, 13, 640, 33, 0, 0.5, MAT.white); box(585, 13, 630, 31, 0.5, 0.78, MAT.oakLight);
-    box(640, 13, 676, 30, 0, 2.2, MAT.oakLight); for (const z of [0.5, 0.95, 1.4, 1.85]) box(641, 14, 675, 29, z, z + 0.03, M('#b8955f'), false);
-    box(640, 29.5, 676, 30.2, 0.1, 2.15, decor('#ffcf88', 0.6, { transparent: true, opacity: 0.35 }), false);
+      this.tvScr = new THREE.Mesh(new THREE.PlaneGeometry(70 * S, 0.74), new THREE.MeshBasicMaterial({ map: this.tvTex, toneMapped: false })); const [a, b] = P(566, 19.5);
+      this.tvScr.position.set(a, 1.38, b); this.tvScr.visible = false; scene.add(this.tvScr); clickable(this.tvScr, 'media_player.televiseur_du_salon'); }
+    // meuble TV suspendu blanc (LED dessous) + caisson chêne ouvert pour l'ampli, colonne chêne à droite
+    { const groove = M('#dcdcd8'); box(472, 14.5, 640, 34.0, 0.16, 0.56, MAT.white); box(474, 16.0, 638, 32.0, 0.145, 0.16, decor('#ffcf88', 0.9), false);
+      for (const x of [514, 556, 598]) box(x - 0.3, 34.0, x + 0.3, 34.3, 0.18, 0.54, groove, false);
+      box(586, 15.0, 588, 33.0, 0.56, 0.86, MAT.oakLight); box(634, 15.0, 636, 33.0, 0.56, 0.86, MAT.oakLight); box(586, 15.0, 636, 33.0, 0.84, 0.86, MAT.oakLight); box(588, 15.0, 634, 33.0, 0.7, 0.715, MAT.oakLight);
+      box(594, 17.0, 628, 30.0, 0.56, 0.645, MAT.black); box(596, 17.0, 626, 30.0, 0.715, 0.8, MAT.black);
+      box(640, 15.0, 676, 34.0, 0, 0.56, MAT.white); box(640, 15.0, 642, 34.0, 0.56, 2.22, MAT.oakLight); box(674, 15.0, 676, 34.0, 0.56, 2.22, MAT.oakLight); box(642, 14.5, 674, 16.0, 0.56, 2.22, MAT.oakLight); box(640, 15.0, 676, 34.0, 2.2, 2.22, MAT.oakLight);
+      for (const z of [0.98, 1.4, 1.8]) box(642, 16.0, 674, 33.0, z, z + 0.03, M('#b8955f'), false);
+      box(636.5, 15.0, 638.5, 17.0, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
     box(510, 52, 640, 140, 0, 0.01, MAT.rug2, false); box(545, 75, 612, 112, 0, 0.36, MAT.white); box(560, 82, 600, 105, 0.36, 0.4, MAT.oakLight);
     box(500, 140, 676, 182, 0, 0.42, MAT.sofa); box(500, 172, 676, 182, 0.42, 0.88, MAT.sofa2); box(634, 55, 676, 140, 0, 0.42, MAT.sofa); box(634, 55, 676, 62, 0.42, 0.62, MAT.sofa2); box(668, 62, 676, 172, 0.42, 0.88, MAT.sofa2);
     box(500, 140, 507, 182, 0.42, 0.6, MAT.sofa2); for (const x of [515, 555, 595]) box(x, 160, x + 26, 172, 0.42, 0.75, MAT.sofa2);
@@ -355,6 +364,7 @@ class Floorplan3DCard extends HTMLElement {
     this._renderPanel();
     (this.rads || []).forEach((r) => { const c = H[r.e]; r.m.emissiveIntensity = c && c.attributes.hvac_action === 'heating' ? 0.22 : 0; });
     this._drawTablet(H);
+    this._nvr(H);
     if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
@@ -378,6 +388,27 @@ class Floorplan3DCard extends HTMLElement {
   }
 
   _goTo(name, dur = 1200) { const v = VIEWS[name]; this._lastAct = Date.now(); this.ctl.autoRotate = false; this.anim = { p0: this.cam.position.clone(), t0: this.ctl.target.clone(), p1: new THREE.Vector3(...v.pos), t1: new THREE.Vector3(...v.tgt), k: 0, t: performance.now(), dur }; }
+  /* moniteur du NVR Reolink : mosaïque des vraies caméras, rafraîchie toutes les 15 s */
+  _nvr(H) {
+    if (!this.nvrCv) return; const now = Date.now(); if (this._nvrT && now - this._nvrT < 15000) return; this._nvrT = now;
+    const cams = ['camera.rue_fluide', 'camera.rlc_843a_fluide', 'camera.couloir', 'camera.salon_fluide', 'camera.chambre_enfant', 'camera.papillon_fluide'];
+    this._nvrImgs = this._nvrImgs || {}; let pending = 0;
+    cams.forEach((e) => { const st = H[e]; if (!st || st.state === 'unavailable' || !st.attributes.entity_picture) { this._nvrImgs[e] = null; return; } pending++;
+      const im = new Image(); im.onload = () => { this._nvrImgs[e] = im; if (--pending === 0) this._drawNvr(cams, H); }; im.onerror = () => { if (--pending === 0) this._drawNvr(cams, H); };
+      const u = st.attributes.entity_picture; im.src = (this._h.hassUrl ? this._h.hassUrl(u) : u) + (u.includes('?') ? '&' : '?') + '_t=' + now; });
+    if (!pending) this._drawNvr(cams, H);
+  }
+  _drawNvr(cams, H) {
+    const g = this.nvrCv.getContext('2d'), W = 320, Hh = 180, tw = W / 3, th = Hh / 2; g.fillStyle = '#000'; g.fillRect(0, 0, W, Hh);
+    cams.forEach((e, i) => { const x = (i % 3) * tw, y = Math.floor(i / 3) * th, im = this._nvrImgs[e];
+      if (im) { const sc = Math.max(tw / im.width, th / im.height), w = im.width * sc, h = im.height * sc; g.save(); g.beginPath(); g.rect(x, y, tw, th); g.clip(); g.drawImage(im, x + (tw - w) / 2, y + (th - h) / 2, w, h); g.restore(); }
+      else { g.fillStyle = '#16181c'; g.fillRect(x, y, tw, th); g.fillStyle = '#6b7280'; g.font = '11px system-ui,sans-serif'; g.textAlign = 'center'; g.fillText('Pas de signal', x + tw / 2, y + th / 2 + 4); }
+      g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(x, y + th - 15, tw, 15); g.fillStyle = '#fff'; g.font = '10px system-ui,sans-serif'; g.textAlign = 'left';
+      g.fillText(((H[e] && H[e].attributes.friendly_name) || e).replace(' Fluide', '').replace('Rlc 843a', 'Balcon').slice(0, 18), x + 4, y + th - 4);
+      g.strokeStyle = '#000'; g.lineWidth = 2; g.strokeRect(x, y, tw, th); });
+    g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(W - 92, 0, 92, 14); g.fillStyle = '#fff'; g.font = '10px system-ui,sans-serif'; g.textAlign = 'right';
+    g.fillText(new Date().toLocaleTimeString('fr-BE'), W - 4, 10); this.nvrTex.needsUpdate = true; this._dirty = true;
+  }
   _drawTablet(H) {
     if (!this.tabCv) return; const on = H['switch.salon_sam_tablette_ecran'], ss = H['switch.salon_sam_tablette_economiseur_d_ecran'];
     const mode = !on || on.state !== 'on' ? 'off' : ss && ss.state === 'on' ? 'dim' : 'on', now = new Date(), key = mode + now.getHours() + ':' + now.getMinutes();
