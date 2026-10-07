@@ -8,7 +8,7 @@ const ACTIONS = [['bonne_nuit', '🌙', 'Bonne nuit', 'Éteint tout', null], ['j
   ['sieste_calme', '🤫', 'Sieste / Calme', 'Coupe le coin DJ', null], ['tout_eteindre', '⚫', 'Tout éteindre', 'Toutes les lumières', 'Éteindre toutes les lumières ?']];
 const PEOPLE = [['person.greg', 'Greg'], ['person.sandrine', 'Sandrine'], ['person.matteo', 'Matteo']];
 const ALARM = 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison';
-const MP_CAL = 'calendar.matteo', MP_PATH = '/matteo-planning/planning';
+const MP_CAL = 'calendar.matteo', MP_PATH = '/dashboard-calendrier/matteo-trajets';
 const SAS = 'lock.hall_dentree_bticino_intercom_greg_et_sandrine_serrure';
 const POWER = 'sensor.buanderie_local_tech_compteur_general_maison_puissance', TODAY = 'sensor.buanderie_local_tech_compteur_general_maison_aujourd_hui';
 
