@@ -99,7 +99,7 @@ class HomeHubCard extends HTMLElement {
       (window.loadCardHelpers ? window.loadCardHelpers() : Promise.reject()).then((hp) => { const el = hp.createCardElement(this.cfg.footer); el.hass = this._h; this._foot = el; fd.appendChild(el); }).catch(() => {});
       new ResizeObserver(() => this.style.setProperty('--fh', fd.offsetHeight + 'px')).observe(fd); }
     // plan 3D embarqué (même carte que la vue « Plan 3D »)
-    const p = document.createElement('floorplan-3d-card'); p.setConfig({ height: '100%', compact: true }); p.style.height = '100%'; this.$('.plan').appendChild(p); this.plan = p;
+    customElements.whenDefined('floorplan-3d-card').then(() => { const p = document.createElement('floorplan-3d-card'); p.setConfig({ height: '100%', compact: true }); p.style.height = '100%'; this.$('.plan').appendChild(p); this.plan = p; if (this._h) p.hass = this._h; });
     // actions rapides (mêmes scripts que le dashboard Accueil) ; celles qui ont une confirmation demandent un 2e tap
     const amb = this.$('.dock'); ACTIONS.forEach(([sc, ic, n, sub, conf]) => { const b = document.createElement('button'); b.innerHTML = `<i>${ic}</i>${n}<small>${sub}</small>`;
       b.onclick = () => { if (conf && !b.classList.contains('arm')) { amb.querySelectorAll('.arm').forEach((x) => { x.classList.remove('arm'); x.querySelector('small').textContent = x._sub; }); b.classList.add('arm'); b.querySelector('small').textContent = 'Retouchez pour confirmer'; b.title = conf; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('arm'); b.querySelector('small').textContent = sub; }, 4000); return; }
