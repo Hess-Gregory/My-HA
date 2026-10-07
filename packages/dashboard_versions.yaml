@@ -42,6 +42,8 @@ command_line:
       json_attributes_path: "$"
       json_attributes:
         - ".storage/lovelace.1_accueil"
+        - ".storage/lovelace.maison_accueil"
+        - ".storage/lovelace.ma_maison"
         - ".storage/lovelace.1_courses"
         - ".storage/lovelace.1_eclairage"
         - ".storage/lovelace.1_energie"
