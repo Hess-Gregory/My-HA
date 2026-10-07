@@ -23,7 +23,7 @@ class HomeHubCard extends HTMLElement {
     this._built = true; const r = this.attachShadow({ mode: 'open' });
     r.innerHTML = `<style>
       :host{display:block;--g:rgba(255,255,255,.06);--b:rgba(255,255,255,.09);--t:#f3eee6;--m:rgba(243,238,230,.6);--a:#ffd27a}
-      .hub{height:calc(100vh - var(--top,56px) - var(--fh,0px));min-height:560px;display:grid;grid-template-columns:minmax(250px,22%) 1fr minmax(260px,23%);gap:12px;padding:10px;box-sizing:border-box;isolation:isolate;
+      .hub{height:calc(100vh - var(--top,56px) - var(--fh,0px) - 1px);min-height:560px;display:grid;grid-template-columns:minmax(250px,22%) 1fr minmax(260px,23%);gap:12px;padding:10px;box-sizing:border-box;isolation:isolate;
         --o1:#ff9a5a;--o2:#7b5cff;--o3:#1fb6c9;--bg0:#121426;--bg1:#07080f;
         background:radial-gradient(140% 90% at 50% 0%,var(--bg0) 0%,var(--bg1) 70%);transition:background 2s;color:var(--t);font:500 14px system-ui,Roboto,sans-serif;border-radius:22px;overflow:hidden}
       .col{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden}
