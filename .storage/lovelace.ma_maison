@@ -15,10 +15,12 @@
           "title": "Plan 3D",
           "path": "plan-3d",
           "icon": "mdi:floor-plan",
-          "type": "panel",
+          "panel": true,
+          "background": "#0d0e15",
           "cards": [
             {
-              "type": "custom:floorplan-3d-card"
+              "type": "custom:floorplan-3d-card",
+              "height": "calc(100vh - var(--header-height, 56px))"
             }
           ]
         },
