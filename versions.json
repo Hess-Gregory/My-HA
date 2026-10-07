@@ -80,9 +80,9 @@
     "version": "0.5.2"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "horloge numerique avec date",
-    "last_update": "2026-10-05T23:51:11.802572+02:00",
-    "version": "1.6.0"
+    "last_change": "nouvel accueil 3D plein ecran (plan 3D, planning Matteo, porte SAS, meteo, climat)",
+    "last_update": "2026-10-07T08:53:23.193900+02:00",
+    "version": "2.0.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
