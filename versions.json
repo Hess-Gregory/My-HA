@@ -75,9 +75,9 @@
     "version": "0.8.0"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "vue Plan 3D en vue principale",
-    "last_update": "2026-10-07T08:53:26.175659+02:00",
-    "version": "0.6.0"
+    "last_change": "vue Plan 3D sans image de fond, plan + barre = 100vh",
+    "last_update": "2026-10-07T09:11:13.630599+02:00",
+    "version": "0.6.1"
   },
   ".storage/lovelace.maison_accueil": {
     "last_change": "plein ecran 100vh sans en-tete, fond jpeg retire, pied de page centre",
