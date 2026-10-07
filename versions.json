@@ -75,9 +75,9 @@
     "version": "0.8.0"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "0.5.2"
+    "last_change": "vue Plan 3D en vue principale",
+    "last_update": "2026-10-07T08:53:26.175659+02:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.maison_accueil": {
     "last_change": "nouvel accueil 3D plein ecran (plan 3D, planning Matteo, porte SAS, meteo, climat)",
