@@ -5,17 +5,11 @@
   "data": {
     "config": {
       "title": "Accueil",
-      "background": {
-        "image": "/local/images/wallpaper/accueil.jpg",
-        "size": "cover",
-        "attachment": "fixed"
-      },
       "views": [
         {
           "title": "Accueil",
           "path": "accueil",
           "icon": "mdi:home-modern",
-          "type": "panel",
           "cards": [
             {
               "type": "custom:home-hub-card",
@@ -25,7 +19,9 @@
                 "content": "<!-- versioning-footer -->\n<div style=\"text-align:center;font-size:0.72em;opacity:0.55;line-height:1.6;\">\n🔧 <b>maison_accueil</b> &middot; v{{ state_attr('sensor.versions_config_ha', '.storage/lovelace.maison_accueil').version if state_attr('sensor.versions_config_ha', '.storage/lovelace.maison_accueil') else '0.0.0' }} &middot; {{ as_timestamp(state_attr('sensor.versions_config_ha', '.storage/lovelace.maison_accueil').last_update) | timestamp_custom('%d/%m/%Y a %H:%M') if state_attr('sensor.versions_config_ha', '.storage/lovelace.maison_accueil') else 'non versionne' }} &middot; Conçu et maintenu par <b>Gregory</b> via Claude AI\n</div>"
               }
             }
-          ]
+          ],
+          "show_icon_and_title": true,
+          "panel": true
         },
         {
           "title": "Planning",
@@ -621,6 +617,9 @@
             ]
           }
         }
+      },
+      "kiosk_mode": {
+        "hide_header": true
       }
     }
   }

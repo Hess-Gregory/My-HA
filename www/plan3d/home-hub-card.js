@@ -16,14 +16,14 @@ class HomeHubCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
   getCardSize() { return 20; }
   set hass(h) { this._h = h; if (!this._built) this._build(); if (this.plan) this.plan.hass = h; if (this._foot) this._foot.hass = h; this._render(); }
-  connectedCallback() { this._tick = setInterval(() => this._clock(), 1000); }
-  disconnectedCallback() { clearInterval(this._tick); clearInterval(this._calT); if (this._unsub) { this._unsub.then((u) => u()).catch(() => {}); this._unsub = null; } }
+  connectedCallback() { this._tick = setInterval(() => this._clock(), 1000); const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); }; this._fit = fit; window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000); }
+  disconnectedCallback() { if (this._fit) window.removeEventListener('resize', this._fit); clearInterval(this._tick); clearInterval(this._calT); if (this._unsub) { this._unsub.then((u) => u()).catch(() => {}); this._unsub = null; } }
 
   _build() {
     this._built = true; const r = this.attachShadow({ mode: 'open' });
     r.innerHTML = `<style>
       :host{display:block;--g:rgba(255,255,255,.06);--b:rgba(255,255,255,.09);--t:#f3eee6;--m:rgba(243,238,230,.6);--a:#ffd27a}
-      .hub{height:calc(100vh - var(--header-height,56px) - 16px - var(--fh,0px));min-height:560px;display:grid;grid-template-columns:minmax(250px,22%) 1fr minmax(260px,23%);gap:12px;padding:10px;box-sizing:border-box;isolation:isolate;
+      .hub{height:calc(100vh - var(--top,56px) - var(--fh,0px));min-height:560px;display:grid;grid-template-columns:minmax(250px,22%) 1fr minmax(260px,23%);gap:12px;padding:10px;box-sizing:border-box;isolation:isolate;
         --o1:#ff9a5a;--o2:#7b5cff;--o3:#1fb6c9;--bg0:#121426;--bg1:#07080f;
         background:radial-gradient(140% 90% at 50% 0%,var(--bg0) 0%,var(--bg1) 70%);transition:background 2s;color:var(--t);font:500 14px system-ui,Roboto,sans-serif;border-radius:22px;overflow:hidden}
       .col{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden}
@@ -73,7 +73,7 @@ class HomeHubCard extends HTMLElement {
       .sasb.arm{background:#ffd27a;color:#1c1826;border-color:#ffd27a}.sasb.arm small{color:#1c1826}.sasb.ok{background:linear-gradient(135deg,#8be3a5,#3fbf7f);color:#10261a}
       @media (max-height:820px){.media .ms{display:none}.hello{margin-top:4px;font-size:15px}.ppl{margin-top:6px;padding-top:6px}.sasb small{display:none}.clock{font-size:clamp(48px,5.2vw,76px)}.date{margin-top:2px}.fc{margin-top:6px}.fc div{padding:3px 0}.fc b{font-size:15px;margin:0}.sun{max-height:50px;margin-top:4px}}
       @media (max-width:1400px){.wmeta .uv{display:none}}
-.foot{padding:0 8px 2px}.foot ha-card{background:none!important;box-shadow:none!important;border:none!important}
+.foot{padding:0 8px 4px;text-align:center}.foot ha-markdown{text-align:center}.foot ha-card{background:none!important;box-shadow:none!important;border:none!important}
       .hero{display:flex;flex-direction:column;}.hero .ppl{margin-top:auto}.hero .sun{margin:10px auto 8px}.hero{background:linear-gradient(160deg,rgba(255,210,122,.10),rgba(255,255,255,.04) 45%)}
       @media (max-width:1100px){.hub{grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr);gap:8px}.mid{grid-column:1/3;grid-row:2}.c1{grid-row:1;grid-column:1;gap:8px}.c3{grid-row:1;grid-column:2}.hide-s,.fc,.sun,.hello,.wmeta,.rm em,.dock button small{display:none!important}
         .tile{padding:10px 12px;border-radius:16px}.clock{font-size:44px}.date{font-size:12px;margin-top:2px}.ppl{margin-top:6px;padding-top:6px}.av{width:28px;height:28px}.wico{font-size:30px}.wt{font-size:26px}.wt small{font-size:12px}
