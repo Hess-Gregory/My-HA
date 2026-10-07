@@ -259,6 +259,11 @@
     "last_update": "2026-10-01T18:41:24.194696+02:00",
     "version": "0.1.0"
   },
+  "packages/tablette_sam.yaml": {
+    "last_change": "relance auto de l app HA apres Fotoo",
+    "last_update": "2026-10-07T11:16:47.098872+02:00",
+    "version": "0.1.0"
+  },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
     "last_update": "2026-09-17T14:01:47.050330+02:00",

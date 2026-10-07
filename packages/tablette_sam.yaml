@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 07/10/2026 11:16 | relance auto de l app HA apres Fotoo
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
