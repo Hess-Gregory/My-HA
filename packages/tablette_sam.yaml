@@ -1,0 +1,16 @@
+# Tablette Sam (Fully Kiosk + Fotoo)
+automation:
+  - id: tablette_sam_relance_ha_apres_fotoo
+    alias: "📱 Tablette Sam : relancer Home Assistant après Fotoo"
+    description: "Quand on quitte le diaporama Fotoo et que la tablette retombe sur le lanceur Fully, rouvre automatiquement l'app Home Assistant."
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: sensor.salon_sam_tablette_application_au_premier_plan
+        from: com.bo.fotoo
+        to: de.ozerov.fully
+    actions:
+      - action: fully_kiosk.start_application
+        data:
+          application: io.homeassistant.companion.android
+          device_id: f1aa9e7a06615d6cd968ef13a161d75c
