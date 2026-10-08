@@ -37,3 +37,7 @@ automation:
         data:
           media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
           media_content_type: music
+      - action: fully_kiosk.start_application
+        data:
+          application: io.homeassistant.companion.android
+          device_id: f1aa9e7a06615d6cd968ef13a161d75c
