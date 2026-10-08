@@ -59,6 +59,7 @@
             "invalid_auth": "Invalid email or password.",
             "invalid_totp": "Invalid TOTP code. Please try again.",
             "cannot_connect": "Cannot connect to Ajax servers.",
+            "client_rejected": "Ajax is rejecting this version of Aegis for Ajax. Update the integration in HACS, restart Home Assistant and try again.",
             "unknown": "An unexpected error occurred."
         },
         "abort": {
@@ -78,6 +79,7 @@
                     "force_arm": "Force arm (ignore open sensors and malfunctions)",
                     "expose_arm_home": "Show \"Arm Home\" button",
                     "delay_panel_states": "Show exit / entry delays as panel states",
+                    "cloud_video": "Cloud live view for video cameras (experimental)",
                     "use_pin_code": "Require PIN code for arm/disarm",
                     "pin_code": "PIN code",
                     "fcm_project_id": "FCM Project ID (for push notifications)",
@@ -97,6 +99,7 @@
                     "bypass_switches": "Bypass switches let you deactivate a device before arming. 'Auto' creates them only if your Ajax account has permission to deactivate devices.",
                     "expose_arm_home": "Adds an Arm Home option to the alarm panel. It mirrors Night mode and is mainly needed for Amazon Alexa or Nabu Casa Cloud. Turn it off to hide the duplicate button if you don't use them.",
                     "delay_panel_states": "When on, the alarm panel shows \"arming\" while the hub runs a detector's \"Delay when leaving\" and \"pending\" while a \"Delay when entering\" runs — both driven by the hub's own signals, not a timer of ours. Detectors without a delay (Instant Alarm) are already live during \"arming\". Automations waiting for \"armed_away\" will fire once the exit delay completes. The hub's raw state stays in the \"hub_state\" attribute.",
+                    "cloud_video": "Adds a live-view camera for each Ajax video camera, streamed through the Ajax cloud the way the app does away from home, so it also works when Home Assistant is not on the camera's network. Experimental: it may not work on every camera yet. Each view opens one video session; nothing runs while nobody is watching.",
                     "disable_push_warning": "Enable this if you intentionally run without push. It hides the recurring \"FCM not configured\" reminder and Repair card. Real-time events (doorbell, arm/disarm, alarm, motion) still won't reach Home Assistant until you configure FCM.",
                     "persistent_notifications": "When on, the selected events appear as Home Assistant persistent notifications that stay visible until dismissed or Home Assistant restarts. These events are delivered over push (FCM), so push must be configured for them to arrive.",
                     "persistent_notification_events": "Which events raise a persistent notification. Defaults to real incidents (alarm, panic, tamper, fire, CO, flood, glass break). Add arm/disarm, motion or doorbell if you want those too."
@@ -317,6 +320,10 @@
             "title": "Aegis needs grpcio {required} or newer (found {current})",
             "description": "Aegis depends on `grpcio` for the gRPC channel that talks to the Ajax cloud, and your Home Assistant install ships `grpcio` {current}. Login can fail with cryptic HTTP/2 errors below {required}. On Home Assistant Core or Container the integration manifest pins the version on install, but on Home Assistant OS the runtime ships system-wide grpcio that this manifest cannot influence — you'll typically need to upgrade Home Assistant OS to a build that includes a newer grpcio. The Repair clears automatically on the next reload once the version crosses {required}."
         },
+        "client_rejected": {
+            "title": "Ajax is rejecting this version of Aegis for Ajax",
+            "description": "The Ajax servers stopped accepting requests from this version of the integration, so it can't log in, update states or send commands. Your account and credentials are fine. Update Aegis for Ajax in HACS to the latest release and restart Home Assistant. This Repair clears itself once Ajax accepts the integration again."
+        },
         "fcm_never_delivered": {
             "title": "Push notifications are not arriving",
             "description": "Aegis has seen {events} events from your hub while the push client was running, and not one of them arrived over push. Your alarm state is not affected — it comes from the hub connection and from polling, never from push — but real-time events such as doorbell rings and intrusion alarms reach Home Assistant only over push, so those are being lost.\n\nThree things produce this and they look identical from here: the four FCM values may belong to a Firebase project your co-branded app's push provider does not send through, another registration may be holding your Ajax account's push destination, or the push connection may never have completed.\n\nWhat helps: re-enter the four values for your co-branded app, under Settings > Repairs or in the integration options. If the same Ajax account is used by another Home Assistant instance, try a separate account for this integration. This notice clears by itself as soon as one push arrives."
@@ -329,6 +336,9 @@
             },
             "refresh_hub": {
                 "name": "Refresh hub"
+            },
+            "siren_sound_test": {
+                "name": "Test sound"
             }
         },
         "event": {
@@ -560,6 +570,11 @@
             },
             "device_firmware": {
                 "name": "Firmware"
+            }
+        },
+        "camera": {
+            "cloud_video": {
+                "name": "Live view"
             }
         }
     },

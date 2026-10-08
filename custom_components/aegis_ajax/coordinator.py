@@ -9,7 +9,6 @@ import time
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
-import aiohttp
 from homeassistant.core import CALLBACK_TYPE, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers import device_registry as dr
@@ -21,6 +20,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.util import dt as dt_util
 
 from custom_components.aegis_ajax.api import devices_parser
+from custom_components.aegis_ajax.api.client import is_client_rejected
 from custom_components.aegis_ajax.api.devices import DevicesApi
 from custom_components.aegis_ajax.api.hts.client import (
     HtsClient,
@@ -38,7 +38,7 @@ from custom_components.aegis_ajax.api.hub_object import (
     HubObjectApi,
     SimCardInfo,
 )
-from custom_components.aegis_ajax.api.media import AlarmMedia, MediaApi, is_valid_photo_url
+from custom_components.aegis_ajax.api.media import AlarmMedia, MediaApi
 from custom_components.aegis_ajax.api.models import (
     BatteryInfo,
     device_deactivation_kinds,
@@ -82,6 +82,7 @@ from custom_components.aegis_ajax.delay_states import (
 from custom_components.aegis_ajax.device_cache import BatteryDeltaShapes, DevicesCache
 from custom_components.aegis_ajax.device_handlers import capabilities_for
 from custom_components.aegis_ajax.entity import async_get_registered_device
+from custom_components.aegis_ajax.monitoring_companies import MonitoringCompaniesStore
 from custom_components.aegis_ajax.photo_storage import (
     alarm_album_exists,
     alarm_album_name,
@@ -89,8 +90,10 @@ from custom_components.aegis_ajax.photo_storage import (
     save_photo,
 )
 from custom_components.aegis_ajax.repairs import (
+    async_clear_client_rejected,
     async_clear_hts_chronic_failure,
     async_clear_hub_offline,
+    async_register_client_rejected,
     async_register_hts_chronic_failure,
     async_register_hub_offline,
 )
@@ -477,6 +480,9 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._spaces_api = SpacesApi(client)
         self._security_api = SecurityApi(client)
         self._devices_api = DevicesApi(client)
+        # Last cloud-video session outcome per device (#322), PII-free, for
+        # diagnostics: the experimental path's only feedback channel.
+        self.cloud_video_outcomes: dict[str, Any] = {}
         self._hub_object_api = HubObjectApi(client)
         self._media_api = MediaApi(client)
         self.spaces: dict[str, Space] = {}
@@ -703,6 +709,9 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._battery_shapes: BatteryDeltaShapes | None = (
             BatteryDeltaShapes(hass, entry_id) if entry_id else None
         )
+        self._monitoring_companies_store: MonitoringCompaniesStore | None = (
+            MonitoringCompaniesStore(hass, entry_id) if entry_id else None
+        )
 
     @property
     def battery_delta_shapes(self) -> dict[str, int]:
@@ -729,6 +738,10 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     @property
     def devices_api(self) -> DevicesApi:
         return self._devices_api
+
+    @property
+    def grpc_client(self) -> AjaxGrpcClient:
+        return self._client
 
     @property
     def hub_object_api(self) -> HubObjectApi:
@@ -865,22 +878,12 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         filename: str | None = None,
     ) -> Path | None:
         """Download one trusted historical image and save it for its camera."""
-        if not is_valid_photo_url(url):
-            _LOGGER.warning("Rejected alarm image URL with unexpected domain")
-            return None
+        from custom_components.aegis_ajax.photo_download import (
+            async_download_photo,  # noqa: PLC0415
+        )
 
-        try:
-            session = async_get_clientsession(self.hass)
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as response:
-                if response.status != 200:
-                    _LOGGER.debug("Ajax alarm image download returned HTTP %s", response.status)
-                    return None
-                image = await response.read()
-        except Exception:
-            _LOGGER.debug("Could not download Ajax alarm image", exc_info=True)
-            return None
-
-        if not image:
+        image = await async_download_photo(async_get_clientsession(self.hass), url)
+        if image is None:
             return None
         saved_path = await save_photo(
             self.hass,
@@ -1178,9 +1181,14 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return False
 
     async def _async_update_data(self) -> dict[str, Any]:
+        # UNIMPLEMENTED means "API retired" only on the core calls; later
+        # feature calls may lack one method without the API being gone.
+        core_done = False
         try:
             await self._ensure_authenticated()
             self.spaces = await self._refresh_spaces()
+            core_done = True
+            async_clear_client_rejected(self.hass)
             self._drop_cleared_alarms()
             self.sync_delay_overlays()
             self._prune_manual_refresh()
@@ -1220,6 +1228,11 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 raise
             raise UpdateFailed("Ajax gRPC call was cancelled mid-flight") from None
         except Exception as err:
+            if is_client_rejected(err, api_retired=not core_done):
+                async_register_client_rejected(self.hass)
+                raise UpdateFailed(
+                    "Ajax rejected this version of the integration; update it and restart"
+                ) from err
             raise UpdateFailed("Error fetching Ajax data") from err
 
     # ------------------------------------------------------------------
@@ -1423,10 +1436,10 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         _LOGGER.debug("Hub %s reported no SIM section; no IMEI sensor will be created", hub_id)
 
     async def _maybe_refresh_rooms(self, now: float) -> None:
-        """Cached once-per-hour room + monitoring_companies + groups refresh
-        via the heavier `get_space_snapshot`. Drives `suggested_area` on
-        device entries (HA auto-area assignment) and refreshes the group
-        + CRA-company snapshot that `list_spaces` doesn't return.
+        """Cached once-per-hour room + groups refresh via the heavier
+        `get_space_snapshot`. Drives `suggested_area` on device entries (HA
+        auto-area assignment) and refreshes the group snapshot that
+        `list_spaces` doesn't return.
         """
         from dataclasses import replace as dc_replace  # noqa: PLC0415
 
@@ -1456,8 +1469,6 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if current_space is not None:
                 self.spaces[space_id] = dc_replace(
                     current_space,
-                    monitoring_companies=snapshot.monitoring_companies,
-                    monitoring_companies_loaded=snapshot.monitoring_companies_loaded,
                     groups=snapshot.groups,
                     group_mode_enabled=snapshot.group_mode_enabled,
                     night_mode_enabled=snapshot.night_mode_enabled,
@@ -1788,6 +1799,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     await self._devices_cache.async_save(self.devices)
                 except Exception:  # noqa: BLE001
                     _LOGGER.debug("Failed to persist devices cache", exc_info=True)
+        await self._load_monitoring_companies()
         await self._probe_smart_locks_once()
         await self._start_device_streams()
         await self._start_hts()
@@ -1805,6 +1817,45 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             len(self.spaces),
             "scheduled" if self._hts_task is not None else "skipped",
         )
+
+    async def _load_monitoring_companies(self) -> None:
+        """Attach each space's CRA companies, from disk or fetched once (#561).
+
+        Only a space with nothing stored is fetched: a new entry, an install
+        upgraded from a version that read them off the snapshot, or one whose
+        store the reconfigure flow dropped. A failed fetch leaves the space
+        without companies until the next setup; `_refresh_spaces` carries
+        whatever is attached here across polls.
+        """
+        from dataclasses import replace as dc_replace  # noqa: PLC0415
+
+        if self._monitoring_companies_store is None:
+            return
+        stored = await self._monitoring_companies_store.async_load()
+        missing = [space_id for space_id in self.spaces if space_id not in stored]
+        if missing:
+            country = self.hass.config.country or "AQ"
+            for space_id in missing:
+                try:
+                    fetched = await self._spaces_api.find_space_monitoring_companies(
+                        space_id, country
+                    )
+                except Exception:  # noqa: BLE001
+                    _LOGGER.debug(
+                        "Could not fetch CRA companies for space %s", space_id, exc_info=True
+                    )
+                    continue
+                stored[space_id] = tuple(fetched)
+            try:
+                await self._monitoring_companies_store.async_save(stored)
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Failed to persist CRA companies", exc_info=True)
+        for space_id, companies in stored.items():
+            space = self.spaces.get(space_id)
+            if space is not None:
+                self.spaces[space_id] = dc_replace(
+                    space, monitoring_companies=companies, monitoring_companies_loaded=True
+                )
 
     async def _probe_smart_locks_once(self) -> None:
         """#206 Bug B: one-shot read-only probe of `SmartLockService` to

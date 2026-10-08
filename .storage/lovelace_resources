@@ -46,7 +46,7 @@
       },
       {
         "id": "16fe92453c404a298ae7547a1ef58ade",
-        "url": "/hacsfiles/card-mod-studio/card-mod-studio.js?hacstag=1230813119091",
+        "url": "/hacsfiles/card-mod-studio/card-mod-studio.js?hacstag=12308131190100",
         "type": "module"
       },
       {
@@ -71,7 +71,7 @@
       },
       {
         "id": "4d9f995d2e3146b684e38c1e4805414e",
-        "url": "/hacsfiles/lovelace-blitzortung-lightning-card/blitzortung-lightning-card.js?hacstag=10163382001183",
+        "url": "/hacsfiles/lovelace-blitzortung-lightning-card/blitzortung-lightning-card.js?hacstag=10163382001184",
         "type": "module"
       },
       {
@@ -81,7 +81,7 @@
       },
       {
         "id": "daa7d8fc1052411887c0b5a2b6317581",
-        "url": "/hacsfiles/yet-another-media-player/yet-another-media-player.js?hacstag=999177298202690",
+        "url": "/hacsfiles/yet-another-media-player/yet-another-media-player.js?hacstag=9991772982026101",
         "type": "module"
       },
       {
@@ -96,7 +96,7 @@
       },
       {
         "id": "4b2f9ed9480a42658173b44862f5c372",
-        "url": "/hacsfiles/flex-table-card/flex-table-card.js?hacstag=15629205814",
+        "url": "/hacsfiles/flex-table-card/flex-table-card.js?hacstag=15629205815",
         "type": "module"
       },
       {
@@ -141,7 +141,7 @@
       },
       {
         "id": "8830b2824b494854b9674aeea8d8b85e",
-        "url": "/hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js?hacstag=142051833112",
+        "url": "/hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js?hacstag=142051833114",
         "type": "module"
       },
       {
@@ -151,7 +151,7 @@
       },
       {
         "id": "323be5f0629e43839d1f5a8aa10c6cab",
-        "url": "/hacsfiles/custom-brand-icons/custom-brand-icons.js?hacstag=3668620312026091",
+        "url": "/hacsfiles/custom-brand-icons/custom-brand-icons.js?hacstag=3668620312026100",
         "type": "module"
       },
       {
@@ -201,7 +201,12 @@
       },
       {
         "id": "08acb56b62a74ea88bbc7f63e1f234ed",
-        "url": "/local/plan3d/floorplan-3d-card.js?v=1",
+        "url": "/local/plan3d/floorplan-3d-card.js?v=68",
+        "type": "module"
+      },
+      {
+        "id": "d0f09a1642dd483d905fb918b6026903",
+        "url": "/local/plan3d/home-hub-card.js?v=44",
         "type": "module"
       }
     ]

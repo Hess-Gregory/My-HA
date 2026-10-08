@@ -59,6 +59,7 @@
             "invalid_auth": "Correo o contrasena incorrectos.",
             "invalid_totp": "Codigo TOTP incorrecto. Intentalo de nuevo.",
             "cannot_connect": "No se puede conectar a los servidores de Ajax.",
+            "client_rejected": "Ajax está rechazando esta versión de Aegis for Ajax. Actualiza la integración en HACS, reinicia Home Assistant y vuelve a intentarlo.",
             "unknown": "Ha ocurrido un error inesperado."
         },
         "abort": {
@@ -78,6 +79,7 @@
                     "force_arm": "Armar forzado (ignorar sensores abiertos y averías)",
                     "expose_arm_home": "Mostrar el botón \"Armar en casa\"",
                     "delay_panel_states": "Mostrar los retardos de salida / entrada como estados del panel",
+                    "cloud_video": "Vista en directo por la nube para cámaras de vídeo (experimental)",
                     "use_pin_code": "Requerir codigo PIN para armar/desarmar",
                     "pin_code": "Codigo PIN",
                     "fcm_project_id": "ID de proyecto FCM (para notificaciones push)",
@@ -97,6 +99,7 @@
                     "bypass_switches": "Los switches de bypass permiten desactivar un dispositivo antes de armar. 'Auto' solo los crea si tu cuenta de Ajax tiene permiso para desactivar dispositivos.",
                     "expose_arm_home": "Añade un modo Armar en casa al panel de alarma. Duplica el modo Noche y solo hace falta para Amazon Alexa o Nabu Casa Cloud. Desactívalo para ocultar el botón duplicado si no los usas.",
                     "delay_panel_states": "Al activarlo, el panel de alarma muestra \"arming\" mientras el hub ejecuta el \"Retardo al salir\" de un detector y \"pending\" mientras corre un \"Retardo al entrar\", ambos a partir de las señales del propio hub, no de un temporizador nuestro. Los detectores sin retardo (alarma instantánea) ya están activos durante \"arming\". Las automatizaciones que esperan \"armed_away\" se dispararán cuando termine el retardo de salida. El estado bruto del hub queda en el atributo \"hub_state\".",
+                    "cloud_video": "Añade una cámara de vista en directo por cada cámara de vídeo Ajax, transmitida a través de la nube de Ajax como hace la app fuera de casa, así que también funciona cuando Home Assistant no está en la red de la cámara. Experimental: puede que aún no funcione con todas las cámaras. Cada visualización abre una sesión de vídeo; no se ejecuta nada mientras nadie mira.",
                     "disable_push_warning": "Actívalo si funcionas a propósito sin push. Oculta el recordatorio recurrente \"FCM no configurado\" y su tarjeta de reparación. Los eventos en tiempo real (timbre, armar/desarmar, alarma, movimiento) seguirán sin llegar a Home Assistant hasta que configures FCM.",
                     "persistent_notifications": "Al activarlo, los eventos seleccionados aparecen como notificaciones persistentes de Home Assistant que permanecen visibles hasta que se descartan o Home Assistant se reinicia. Estos eventos llegan por push (FCM), así que push debe estar configurado para que lleguen.",
                     "persistent_notification_events": "Qué eventos generan una notificación persistente. Por defecto, incidentes reales (alarma, pánico, sabotaje, fuego, CO, inundación, rotura de cristal). Añade armado/desarmado, movimiento o timbre si también los quieres."
@@ -317,6 +320,10 @@
             "title": "Aegis necesita grpcio {required} o superior (encontrado {current})",
             "description": "Aegis depende de `grpcio` para el canal gRPC que habla con la nube de Ajax, y tu instalacion de Home Assistant trae `grpcio` {current}. Por debajo de {required} el login puede fallar con errores HTTP/2 poco descriptivos. En Home Assistant Core o Container el manifest de la integracion fija la version al instalar, pero en Home Assistant OS el runtime trae un grpcio del sistema que este manifest no puede tocar — normalmente toca actualizar Home Assistant OS a una build que incluya un grpcio mas reciente. La incidencia se cierra automaticamente en la siguiente recarga cuando la version cruce {required}."
         },
+        "client_rejected": {
+            "title": "Ajax está rechazando esta versión de Aegis for Ajax",
+            "description": "Los servidores de Ajax han dejado de aceptar peticiones de esta versión de la integración, así que no puede iniciar sesión, actualizar estados ni enviar comandos. Tu cuenta y tus credenciales están bien. Actualiza Aegis for Ajax en HACS a la última versión y reinicia Home Assistant. Este aviso desaparece solo cuando Ajax vuelva a aceptar la integración."
+        },
         "fcm_never_delivered": {
             "title": "Las notificaciones push no llegan",
             "description": "Aegis ha visto {events} eventos de tu hub mientras el cliente push estaba en marcha, y ninguno de ellos ha llegado por push. El estado de la alarma no está afectado: viene de la conexión con el hub y del sondeo, nunca del push. Pero los eventos en tiempo real, como el timbre o una alarma de intrusión, solo llegan a Home Assistant por push, así que se están perdiendo.\n\nHay tres causas que producen esto y desde aquí son indistinguibles: los cuatro valores FCM pueden pertenecer a un proyecto de Firebase por el que el proveedor de push de tu app no envía, otro registro puede estar ocupando el destino de push de tu cuenta Ajax, o la conexión de push puede no haberse completado nunca.\n\nQué ayuda: vuelve a introducir los cuatro valores de tu app, en Ajustes > Reparaciones o en las opciones de la integración. Si la misma cuenta de Ajax la usa otra instancia de Home Assistant, prueba con una cuenta separada para esta integración. Este aviso desaparece por sí solo en cuanto llegue un push."
@@ -329,6 +336,9 @@
             },
             "refresh_hub": {
                 "name": "Actualizar hub"
+            },
+            "siren_sound_test": {
+                "name": "Probar sonido"
             }
         },
         "event": {
@@ -560,6 +570,11 @@
             },
             "device_firmware": {
                 "name": "Firmware"
+            }
+        },
+        "camera": {
+            "cloud_video": {
+                "name": "Vista en directo"
             }
         }
     },

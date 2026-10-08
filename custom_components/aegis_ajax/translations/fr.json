@@ -59,6 +59,7 @@
             "invalid_auth": "Adresse e-mail ou mot de passe incorrect.",
             "invalid_totp": "Code TOTP invalide. Veuillez réessayer.",
             "cannot_connect": "Impossible de se connecter aux serveurs Ajax.",
+            "client_rejected": "Ajax rejette cette version d'Aegis for Ajax. Mettez à jour l'intégration dans HACS, redémarrez Home Assistant et réessayez.",
             "unknown": "Une erreur inattendue s'est produite."
         },
         "abort": {
@@ -78,6 +79,7 @@
                     "force_arm": "Armement forcé (ignorer capteurs ouverts et dysfonctionnements)",
                     "expose_arm_home": "Afficher le bouton « Armer à la maison »",
                     "delay_panel_states": "Afficher les délais de sortie / d'entrée comme états du panneau",
+                    "cloud_video": "Vue en direct via le cloud pour les caméras vidéo (expérimental)",
                     "use_pin_code": "Exiger un code PIN pour armer/désarmer",
                     "pin_code": "Code PIN",
                     "fcm_project_id": "ID de projet FCM (pour les notifications push)",
@@ -97,6 +99,7 @@
                     "bypass_switches": "Les interrupteurs de contournement permettent de désactiver un appareil avant l'armement. « Auto » ne les crée que si votre compte Ajax a l'autorisation de désactiver des appareils.",
                     "expose_arm_home": "Ajoute un mode Armer à la maison au panneau d'alarme. Il reproduit le mode Nuit et n'est nécessaire que pour Amazon Alexa ou Nabu Casa Cloud. Désactivez-le pour masquer le bouton en double si vous ne les utilisez pas.",
                     "delay_panel_states": "Lorsque cette option est active, le panneau d'alarme affiche \"arming\" pendant que la centrale exécute le \"Délai de sortie\" d'un détecteur et \"pending\" pendant un \"Délai d'entrée\", tous deux pilotés par les signaux de la centrale elle-même, pas par une minuterie de notre part. Les détecteurs sans délai (alarme instantanée) sont déjà actifs pendant \"arming\". Les automatisations qui attendent \"armed_away\" se déclencheront à la fin du délai de sortie. L'état brut de la centrale reste dans l'attribut \"hub_state\".",
+                    "cloud_video": "Ajoute une caméra de vue en direct pour chaque caméra vidéo Ajax, diffusée via le cloud Ajax comme le fait l'application hors du domicile, ce qui fonctionne aussi lorsque Home Assistant n'est pas sur le réseau de la caméra. Expérimental : peut ne pas encore fonctionner avec toutes les caméras. Chaque visionnage ouvre une session vidéo ; rien ne tourne tant que personne ne regarde.",
                     "disable_push_warning": "Activez si vous fonctionnez volontairement sans push. Masque le rappel récurrent « FCM non configuré » et la carte de réparation. Les événements en temps réel (sonnette, armement/désarmement, alarme, mouvement) n'atteindront Home Assistant qu'une fois FCM configuré.",
                     "persistent_notifications": "Lorsque activé, les événements sélectionnés apparaissent comme des notifications persistantes de Home Assistant qui restent visibles jusqu'à leur fermeture ou au redémarrage de Home Assistant. Ces événements sont livrés via push (FCM), le push doit donc être configuré pour qu'ils arrivent.",
                     "persistent_notification_events": "Quels événements déclenchent une notification persistante. Par défaut, les incidents réels (alarme, panique, sabotage, incendie, CO, inondation, bris de verre). Ajoutez armement/désarmement, mouvement ou sonnette si vous les voulez aussi."
@@ -257,6 +260,10 @@
             "title": "Aegis a besoin de grpcio {required} ou plus recent (trouve {current})",
             "description": "Aegis depend de `grpcio` pour le canal gRPC qui parle au cloud Ajax, et votre installation Home Assistant fournit `grpcio` {current}. En dessous de {required} la connexion peut echouer avec des erreurs HTTP/2 cryptiques. Sur Home Assistant Core ou Container le manifest de l'integration epingle la version a l'installation, mais sur Home Assistant OS le runtime fournit un grpcio system-wide que ce manifest ne peut pas influencer — il faut generalement mettre a jour Home Assistant OS vers une build qui inclut un grpcio plus recent. L'incident se resout automatiquement au prochain rechargement une fois la version superieure a {required}."
         },
+        "client_rejected": {
+            "title": "Ajax rejette cette version d'Aegis for Ajax",
+            "description": "Les serveurs Ajax n'acceptent plus les requêtes de cette version de l'intégration, elle ne peut donc ni se connecter, ni mettre à jour les états, ni envoyer de commandes. Votre compte et vos identifiants ne sont pas en cause. Mettez à jour Aegis for Ajax dans HACS vers la dernière version et redémarrez Home Assistant. Cette réparation disparaît d'elle-même dès qu'Ajax accepte à nouveau l'intégration."
+        },
         "fcm_credentials_invalid": {
             "title": "Notifications push desactivees - identifiants FCM rejetes",
             "fix_flow": {
@@ -329,6 +336,9 @@
             },
             "refresh_hub": {
                 "name": "Actualiser le hub"
+            },
+            "siren_sound_test": {
+                "name": "Tester le son"
             }
         },
         "event": {
@@ -560,6 +570,11 @@
             },
             "device_firmware": {
                 "name": "Micrologiciel"
+            }
+        },
+        "camera": {
+            "cloud_video": {
+                "name": "Vue en direct"
             }
         }
     },

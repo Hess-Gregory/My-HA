@@ -26,7 +26,7 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 
-from custom_components.aegis_ajax.api.client import AjaxGrpcClient
+from custom_components.aegis_ajax.api.client import AjaxGrpcClient, is_client_rejected
 from custom_components.aegis_ajax.api.session import (
     AjaxSession,
     AuthenticationError,
@@ -42,6 +42,7 @@ from custom_components.aegis_ajax.const import (
     BYPASS_SWITCHES_NEVER,
     CONF_AUTO_CREATE_LABELS,
     CONF_BYPASS_SWITCHES,
+    CONF_CLOUD_VIDEO,
     CONF_DELAY_PANEL_STATES,
     CONF_DISABLE_PUSH_WARNING,
     CONF_EXPOSE_ARM_HOME,
@@ -52,6 +53,7 @@ from custom_components.aegis_ajax.const import (
     CONF_PHOTO_RETENTION_DAYS,
     DEFAULT_AUTO_CREATE_LABELS,
     DEFAULT_BYPASS_SWITCHES,
+    DEFAULT_CLOUD_VIDEO,
     DEFAULT_DELAY_PANEL_STATES,
     DEFAULT_DISABLE_PUSH_WARNING,
     DEFAULT_EXPOSE_ARM_HOME,
@@ -83,6 +85,15 @@ TOTP_SCHEMA = vol.Schema(
         vol.Required("totp_code"): TextSelector(TextSelectorConfig(type=TextSelectorType.TEXT)),
     }
 )
+
+
+def _unexpected_error_key(err: Exception) -> str:
+    """Form error for an exception no other branch handled.
+
+    The flows only make core calls (login, space list), so UNIMPLEMENTED
+    counts as Ajax retiring the API here.
+    """
+    return "client_rejected" if is_client_rejected(err, api_retired=True) else "unknown"
 
 
 class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -210,7 +221,7 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                     e,
                     exc_info=True,
                 )
-                errors["base"] = "unknown"
+                errors["base"] = _unexpected_error_key(e)
                 await self._async_close_client()
         return self.async_show_form(step_id="user", data_schema=USER_SCHEMA, errors=errors)
 
@@ -233,9 +244,9 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_totp"
             except TimeoutError:
                 errors["base"] = "cannot_connect"
-            except Exception:
+            except Exception as err:
                 _LOGGER.exception("Unexpected error during 2FA")
-                errors["base"] = "unknown"
+                errors["base"] = _unexpected_error_key(err)
         return self.async_show_form(step_id="2fa", data_schema=TOTP_SCHEMA, errors=errors)
 
     async def async_step_select_spaces(
@@ -331,9 +342,9 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_auth"
             except (ConnectionError, OSError, TimeoutError):
                 errors["base"] = "cannot_connect"
-            except Exception:
+            except Exception as err:
                 _LOGGER.exception("Unexpected error during reconfigure")
-                errors["base"] = "unknown"
+                errors["base"] = _unexpected_error_key(err)
 
         return self.async_show_form(
             step_id="reconfigure",
@@ -380,9 +391,9 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_totp"
             except TimeoutError:
                 errors["base"] = "cannot_connect"
-            except Exception:
+            except Exception as err:
                 _LOGGER.exception("Unexpected error during reconfigure 2FA")
-                errors["base"] = "unknown"
+                errors["base"] = _unexpected_error_key(err)
         return self.async_show_form(
             step_id="reconfigure_2fa", data_schema=TOTP_SCHEMA, errors=errors
         )
@@ -429,9 +440,9 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_auth"
             except (ConnectionError, OSError, TimeoutError):
                 errors["base"] = "cannot_connect"
-            except Exception:
+            except Exception as err:
                 _LOGGER.exception("Unexpected error during reauth")
-                errors["base"] = "unknown"
+                errors["base"] = _unexpected_error_key(err)
 
         return self.async_show_form(
             step_id="reauth_confirm",
@@ -470,9 +481,9 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_totp"
             except TimeoutError:
                 errors["base"] = "cannot_connect"
-            except Exception:
+            except Exception as err:
                 _LOGGER.exception("Unexpected error during reauth 2FA")
-                errors["base"] = "unknown"
+                errors["base"] = _unexpected_error_key(err)
         return self.async_show_form(step_id="reauth_2fa", data_schema=TOTP_SCHEMA, errors=errors)
 
     async def _async_finish_reauth(self) -> ConfigFlowResult:
@@ -531,6 +542,13 @@ class AjaxCobrandedConfigFlow(ConfigFlow, domain=DOMAIN):
                 "the entry keeps its previous (rejected) token",
                 entry.entry_id,
             )
+        # The reload fetches the CRA companies again (#561): reconfiguring is
+        # how a user picks up a change of CRA.
+        from custom_components.aegis_ajax.monitoring_companies import (  # noqa: PLC0415
+            async_remove_monitoring_companies,
+        )
+
+        await async_remove_monitoring_companies(self.hass, entry.entry_id)
         # Refresh the visible title and unique_id too, not just the data —
         # otherwise switching accounts leaves the old email on the entry's
         # front page until a second reconfigure (#241).
@@ -643,6 +661,10 @@ class AjaxCobrandedOptionsFlow(OptionsFlow):
                         default=self._entry.options.get(
                             CONF_DELAY_PANEL_STATES, DEFAULT_DELAY_PANEL_STATES
                         ),
+                    ): bool,
+                    vol.Optional(
+                        CONF_CLOUD_VIDEO,
+                        default=self._entry.options.get(CONF_CLOUD_VIDEO, DEFAULT_CLOUD_VIDEO),
                     ): bool,
                     vol.Optional(
                         "use_pin_code",

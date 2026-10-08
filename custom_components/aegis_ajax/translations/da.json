@@ -59,6 +59,7 @@
             "invalid_auth": "Forkert e-mail eller adgangskode.",
             "invalid_totp": "Forkert TOTP-kode. Prøv igen.",
             "cannot_connect": "Kan ikke oprette forbindelse til Ajax-serverne.",
+            "client_rejected": "Ajax afviser denne version af Aegis for Ajax. Opdater integrationen i HACS, genstart Home Assistant og prøv igen.",
             "unknown": "Der opstod en uventet fejl."
         },
         "abort": {
@@ -78,6 +79,7 @@
                     "force_arm": "Tving aktivering (ignorer åbne sensorer og fejl)",
                     "expose_arm_home": "Vis knappen \"Aktiver hjemme\"",
                     "delay_panel_states": "Vis ud-/indgangsforsinkelser som panelstatusser",
+                    "cloud_video": "Livevisning via skyen for videokameraer (eksperimentel)",
                     "use_pin_code": "Kræv PIN-kode ved aktivering/deaktivering",
                     "pin_code": "PIN-kode",
                     "fcm_project_id": "FCM-projekt-ID (til pushnotifikationer)",
@@ -97,6 +99,7 @@
                     "bypass_switches": "Bypass-kontakter gør det muligt at deaktivere en enhed, før systemet aktiveres. \"Auto\" opretter dem kun, hvis din Ajax-konto har tilladelse til at deaktivere enheder.",
                     "expose_arm_home": "Tilføjer en \"Aktiver hjemme\"-mulighed til alarmpanelet. Den spejler natfunktionen og er primært nødvendig til Amazon Alexa eller Nabu Casa Cloud. Slå den fra for at skjule den ekstra knap, hvis du ikke bruger disse.",
                     "delay_panel_states": "Når denne er slået til, viser alarmpanelet \"aktiverer\", mens hub'en kører en detektors \"Forsinkelse ved udgang\", og \"afventer\", mens en \"Forsinkelse ved indgang\" kører — begge dele styres af hub'ens egne signaler, ikke af en timer fra vores side. Detektorer uden forsinkelse (Instant Alarm) er allerede aktive under \"aktiverer\". Automatiseringer, der venter på \"armed_away\", udløses, når udgangsforsinkelsen er afsluttet. Hub'ens rå status ligger fortsat i attributten \"hub_state\".",
+                    "cloud_video": "Tilføjer et kamera med livevisning for hvert Ajax-videokamera, streamet via Ajax-skyen, som appen gør hjemmefra, så det også virker, når Home Assistant ikke er på kameraets netværk. Eksperimentel: virker måske ikke med alle kameraer endnu. Hver visning åbner én videosession; intet kører, mens ingen ser med.",
                     "disable_push_warning": "Slå denne til, hvis du bevidst kører uden push. Den skjuler den gentagne \"FCM ikke konfigureret\"-påmindelse og reparationskortet. Hændelser i realtid (dørklokke, aktiver/deaktiver, alarm, bevægelse) når stadig ikke Home Assistant, før du konfigurerer FCM.",
                     "persistent_notifications": "Når denne er slået til, vises de valgte hændelser som vedvarende notifikationer i Home Assistant, der forbliver synlige, indtil de afvises, eller Home Assistant genstartes. Disse hændelser leveres via push (FCM), så push skal være konfigureret, for at de kan modtages.",
                     "persistent_notification_events": "Hvilke hændelser der udløser en vedvarende notifikation. Som standard reelle hændelser (alarm, panik, sabotage, brand, CO, oversvømmelse, glasbrud). Tilføj aktiver/deaktiver, bevægelse eller dørklokke, hvis du også ønsker disse."
@@ -317,6 +320,10 @@
             "title": "Aegis kræver grpcio {required} eller nyere (fandt {current})",
             "description": "Aegis er afhængig af `grpcio` til gRPC-kanalen, der kommunikerer med Ajax-skyen, og din Home Assistant-installation medbringer `grpcio` {current}. Login kan mislykkes med kryptiske HTTP/2-fejl under {required}. På Home Assistant Core eller Container fastlåser integrationens manifest versionen ved installation, men på Home Assistant OS medbringer runtime'en en systemdækkende grpcio, som dette manifest ikke kan påvirke — du skal typisk opgradere Home Assistant OS til en build, der indeholder en nyere grpcio. Reparationen fjernes automatisk ved næste genindlæsning, når versionen overstiger {required}."
         },
+        "client_rejected": {
+            "title": "Ajax afviser denne version af Aegis for Ajax",
+            "description": "Ajax-serverne er holdt op med at acceptere forespørgsler fra denne version af integrationen, så den kan ikke logge ind, opdatere tilstande eller sende kommandoer. Din konto og dine loginoplysninger er i orden. Opdater Aegis for Ajax i HACS til den nyeste version, og genstart Home Assistant. Denne reparation forsvinder af sig selv, når Ajax accepterer integrationen igen."
+        },
         "fcm_never_delivered": {
             "title": "Push notifications are not arriving",
             "description": "Aegis has seen {events} events from your hub while the push client was running, and not one of them arrived over push. Your alarm state is not affected — it comes from the hub connection and from polling, never from push — but real-time events such as doorbell rings and intrusion alarms reach Home Assistant only over push, so those are being lost.\n\nThree things produce this and they look identical from here: the four FCM values may belong to a Firebase project your co-branded app's push provider does not send through, another registration may be holding your Ajax account's push destination, or the push connection may never have completed.\n\nWhat helps: re-enter the four values for your co-branded app, under Settings > Repairs or in the integration options. If the same Ajax account is used by another Home Assistant instance, try a separate account for this integration. This notice clears by itself as soon as one push arrives."
@@ -329,6 +336,9 @@
             },
             "refresh_hub": {
                 "name": "Opdater hub"
+            },
+            "siren_sound_test": {
+                "name": "Test lyd"
             }
         },
         "event": {
@@ -560,6 +570,11 @@
             },
             "device_firmware": {
                 "name": "Firmware"
+            }
+        },
+        "camera": {
+            "cloud_video": {
+                "name": "Livevisning"
             }
         }
     },

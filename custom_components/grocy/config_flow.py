@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import logging
+import re
+from http import HTTPStatus
 from typing import Any
 
+import requests
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlowResult
@@ -12,6 +15,7 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
 from grocy import Grocy
+from grocy.errors import GrocyError
 
 from .const import (
     CONF_API_KEY,
@@ -25,9 +29,91 @@ from .const import (
     DOMAIN,
     NAME,
 )
-from .helpers import extract_base_url_and_path
+from .helpers import extract_base_url_and_path, split_url_and_port
 
 _LOGGER = logging.getLogger(__name__)
+
+# "a0d7b954_grocy" (add-on slug) or "api/hassio_ingress/<token>"
+_INGRESS_PATH = re.compile(r"^(?:api/hassio_ingress/|[0-9a-f]{8}_[a-z0-9_]+(?:/|$))")
+
+# Config entry schema version. Bump MINOR for additive, downgrade-safe changes.
+CONFIG_ENTRY_VERSION = 2
+CONFIG_ENTRY_MINOR_VERSION = 2
+
+
+def _is_ingress_url(url: str) -> bool:
+    """
+    Return True for a Home Assistant add-on ingress URL.
+
+    Ingress needs a logged-in Home Assistant session, so a Grocy API key
+    can never authenticate through it (#57).
+    """
+    path = extract_base_url_and_path(url)[1]
+    return bool(_INGRESS_PATH.match(path))
+
+
+# First match wins: requests' SSLError and Timeout subclass its ConnectionError,
+# and none of them subclass the builtin ConnectionError.
+_ERROR_KEYS: tuple[
+    tuple[type[BaseException] | tuple[type[BaseException], ...], str], ...
+] = (
+    (requests.exceptions.SSLError, "ssl_error"),
+    ((requests.exceptions.Timeout, TimeoutError), "timeout"),
+    # ValueError: the server answered, but not with Grocy's JSON API.
+    (
+        (requests.exceptions.RequestException, ConnectionError, ValueError),
+        "cannot_connect",
+    ),
+)
+
+
+def _error_key(error: Exception) -> str:
+    """Map an exception from the Grocy client to a translation error key."""
+    if isinstance(error, GrocyError):
+        rejected = error.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN)
+        return "invalid_auth" if rejected else "cannot_connect"
+    for types, key in _ERROR_KEYS:
+        if isinstance(error, types):
+            return key
+    return "unknown"
+
+
+async def _async_test_credentials(
+    hass: HomeAssistant, url: str, api_key: str, port: int, verify_ssl: bool
+) -> str | None:
+    """Call Grocy once. Return None if it answers, else a translation error key."""
+    if _is_ingress_url(url):
+        return "ingress_url"
+
+    (base_url, path) = extract_base_url_and_path(url)
+    client = Grocy(base_url, api_key, port=port, path=path, verify_ssl=verify_ssl)
+
+    _LOGGER.debug("Testing credentials")
+    try:
+        await hass.async_add_executor_job(client.system.info)
+    except Exception as error:  # pylint: disable=broad-except
+        key = _error_key(error)
+        if key == "unknown":
+            _LOGGER.exception("Unexpected error while testing the Grocy connection")
+        else:
+            _LOGGER.error("Grocy connection test failed (%s): %s", key, error)
+        return key
+    return None
+
+
+def _normalize_url_and_port(user_input: dict[str, Any]) -> dict[str, Any]:
+    """Move an explicit port from the URL field into the port field."""
+    url, port = split_url_and_port(
+        user_input[CONF_URL], user_input.get(CONF_PORT, DEFAULT_PORT)
+    )
+    if url != user_input[CONF_URL]:
+        _LOGGER.info(
+            "URL %s carries an explicit port; using port %s and URL %s",
+            user_input[CONF_URL],
+            port,
+            url,
+        )
+    return {**user_input, CONF_URL: url, CONF_PORT: port}
 
 
 async def async_migrate_entry(
@@ -47,6 +133,18 @@ async def async_migrate_entry(
             version,
             2,
         )
+
+    if (
+        config_entry.version == CONFIG_ENTRY_VERSION
+        and config_entry.minor_version < CONFIG_ENTRY_MINOR_VERSION
+    ):
+        # Migrate from 2.1 to 2.2: a port written into the URL wins over the
+        # port field. Entries saved as ``http://host:9283`` + 9192 never worked.
+        new_data = _normalize_url_and_port(dict(config_entry.data))
+        hass.config_entries.async_update_entry(
+            config_entry, data=new_data, minor_version=CONFIG_ENTRY_MINOR_VERSION
+        )
+        _LOGGER.info("Migrated config entry to version 2.2")
     return True
 
 
@@ -80,7 +178,8 @@ def _get_user_data_schema(
 class GrocyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Grocy."""
 
-    VERSION = 2
+    VERSION = CONFIG_ENTRY_VERSION
+    MINOR_VERSION = CONFIG_ENTRY_MINOR_VERSION
 
     @staticmethod
     def async_get_options_flow(
@@ -104,6 +203,7 @@ class GrocyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="single_instance_allowed")
 
         if user_input is not None:
+            user_input = _normalize_url_and_port(user_input)
             error = await self._test_credentials(
                 user_input[CONF_URL],
                 user_input[CONF_API_KEY],
@@ -136,6 +236,7 @@ class GrocyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.debug("Step reconfigure")
 
         if user_input is not None:
+            user_input = _normalize_url_and_port(user_input)
             error = await self._test_credentials(
                 user_input[CONF_URL],
                 user_input[CONF_API_KEY],
@@ -205,34 +306,8 @@ class GrocyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def _test_credentials(
         self, url: str, api_key: str, port: int, verify_ssl: bool
     ) -> str | None:
-        """
-        Test if credentials are valid.
-
-        Returns None if valid, or an error key if invalid.
-        """
-        try:
-            (base_url, path) = extract_base_url_and_path(url)
-            client = Grocy(
-                base_url, api_key, port=port, path=path, verify_ssl=verify_ssl
-            )
-
-            _LOGGER.debug("Testing credentials")
-
-            def system_info():
-                """Get system information from Grocy."""
-                return client.system.info()
-
-            await self.hass.async_add_executor_job(system_info)
-            return None
-        except ConnectionError as error:
-            _LOGGER.error("Connection error: %s", error)
-            return "cannot_connect"
-        except TimeoutError as error:
-            _LOGGER.error("Timeout error: %s", error)
-            return "timeout"
-        except Exception as error:  # pylint: disable=broad-except
-            _LOGGER.error("Authentication error: %s", error)
-            return "invalid_auth"
+        """Test the credentials. Return None if valid, else an error key."""
+        return await _async_test_credentials(self.hass, url, api_key, port, verify_ssl)
 
 
 class GrocyOptionsFlowHandler(config_entries.OptionsFlow):
@@ -248,6 +323,7 @@ class GrocyOptionsFlowHandler(config_entries.OptionsFlow):
     ) -> ConfigFlowResult:
         """Manage the options."""
         if user_input is not None:
+            user_input = _normalize_url_and_port(user_input)
             # Validate credentials if URL or API key changed
             url_changed = user_input[CONF_URL] != self.config_entry.data.get(CONF_URL)
             api_key_changed = user_input[CONF_API_KEY] != self.config_entry.data.get(
@@ -308,31 +384,5 @@ class GrocyOptionsFlowHandler(config_entries.OptionsFlow):
     async def _test_credentials(
         self, url: str, api_key: str, port: int, verify_ssl: bool
     ) -> str | None:
-        """
-        Test if credentials are valid.
-
-        Returns None if valid, or an error key if invalid.
-        """
-        try:
-            (base_url, path) = extract_base_url_and_path(url)
-            client = Grocy(
-                base_url, api_key, port=port, path=path, verify_ssl=verify_ssl
-            )
-
-            _LOGGER.debug("Testing credentials")
-
-            def system_info():
-                """Get system information from Grocy."""
-                return client.system.info()
-
-            await self.hass.async_add_executor_job(system_info)
-            return None
-        except ConnectionError as error:
-            _LOGGER.error("Connection error: %s", error)
-            return "cannot_connect"
-        except TimeoutError as error:
-            _LOGGER.error("Timeout error: %s", error)
-            return "timeout"
-        except Exception as error:  # pylint: disable=broad-except
-            _LOGGER.error("Authentication error: %s", error)
-            return "invalid_auth"
+        """Test the credentials. Return None if valid, else an error key."""
+        return await _async_test_credentials(self.hass, url, api_key, port, verify_ssl)

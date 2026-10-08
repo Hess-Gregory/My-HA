@@ -68,13 +68,12 @@ GRPC_HOST = "mobile-gw.prod.ajax.systems"
 GRPC_PORT = 443
 
 CLIENT_OS = "Android"
-# Pin to "3.30" — the Ajax server gates parts of the snapshot response on
-# `client-version-major`. Reporting a newer version (e.g. "3.46") causes the
-# server to omit `monitoring_companies` from `SpaceService.stream`, leaving
-# the CRA-company diagnostic sensor empty. Pinning to "3.30" restores the
-# legacy response shape. Bump only after verifying the modern endpoint that
-# replaces this data path.
-CLIENT_VERSION = "3.30"
+# The Ajax server gates parts of the snapshot response on
+# `client-version-major` (newer values dropped `monitoring_companies` from
+# `SpaceService.stream`, so we stayed on "3.30"), but on 2026-10-07 Ajax
+# started rejecting "3.30" with PERMISSION_DENIED "Request is blacklisted"
+# (#559). "3.57" is a real Android app version confirmed to log in.
+CLIENT_VERSION = "3.57"
 APPLICATION_LABEL = "Ajax"  # default (main Ajax app labelName)
 KNOWN_APP_LABELS = [
     "Ajax",
@@ -131,7 +130,7 @@ APP_LABEL_TO_ANDROID_PACKAGE: dict[str, str] = {
     "Protegim_alarma": "com.ajaxsystems.protegim",
 }
 
-CLIENT_DEVICE_MODEL = "SM-A536B"  # Galaxy A53 — paired with CLIENT_VERSION="3.30"
+CLIENT_DEVICE_MODEL = "SM-A536B"  # Galaxy A53
 CLIENT_DEVICE_TYPE = "MOBILE"
 CLIENT_APP_TYPE = "USER"
 
@@ -379,6 +378,12 @@ DEFAULT_EXPOSE_ARM_HOME = True
 # should get by upgrading.
 CONF_DELAY_PANEL_STATES = "delay_panel_states"
 DEFAULT_DELAY_PANEL_STATES = False
+# Experimental cloud live view for Ajax video devices (#322): a camera entity
+# per video channel whose WebRTC session is negotiated through the Ajax cloud,
+# as the app does off-LAN. Off by default until a real camera confirms it; each
+# view opens one signalling stream, nothing runs while nobody watches.
+CONF_CLOUD_VIDEO = "cloud_video"
+DEFAULT_CLOUD_VIDEO = False
 CONF_PHOTO_RETENTION_DAYS = "photo_retention_days"
 CONF_PHOTO_MAX_PER_DEVICE = "photo_max_per_device"
 CONF_AUTO_CREATE_LABELS = "auto_create_labels"

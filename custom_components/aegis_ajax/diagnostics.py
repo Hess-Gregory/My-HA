@@ -13,6 +13,7 @@ from custom_components.aegis_ajax.api.models import (
     device_deactivation_kinds,
     is_device_deactivated,
 )
+from custom_components.aegis_ajax.const import CONF_BYPASS_SWITCHES, DEFAULT_BYPASS_SWITCHES
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -195,6 +196,14 @@ async def async_get_config_entry_diagnostics(
         # healthy install and on one that never had a keyfob.
         "keyfob_unrecognised_rows": coordinator.keyfob_unrecognised_rows,
         "video_edge_onvif_rtsp": video_edge_probe,
+        # Experimental cloud live view (#322): how far the latest session per
+        # camera got (stage, codecs, candidate counts). No SDP or credentials.
+        # The live view needs Home Assistant's go2rtc to answer the camera.
+        "cloud_video_go2rtc": "go2rtc" in hass.config.components,
+        "cloud_video": {
+            device_id: outcome.as_dict()
+            for device_id, outcome in coordinator.cloud_video_outcomes.items()
+        },
         # What decides whether a hub gets an IMEI sensor at all (#379). A
         # `null` here is the answer to "why is my IMEI sensor unavailable":
         # the read never succeeded, so the entity was never offered this
@@ -304,6 +313,19 @@ async def async_get_config_entry_diagnostics(
         # percentage, which leaves the level as stale as it was before the fix
         # and is invisible anywhere else. Counts only — no device, no value.
         "battery_delta_shapes": coordinator.battery_delta_shapes,
+        # This account's own push preferences per space (#519). Ajax filters
+        # pushes per member, so a dedicated Home Assistant account can have
+        # video detections off while the owner's phone gets them, and nothing
+        # else shows it. Kept from the bypass permission lookup, so it is empty
+        # unless bypass switches are on `auto`, and the lookup entry says how it
+        # ended when it is, or `not_run` for a space it never ran for.
+        # Booleans and enum names only.
+        "member_push_preferences": coordinator.spaces_api.member_push_preferences,
+        "member_push_preferences_lookup": {
+            **dict.fromkeys(coordinator.spaces, "not_run"),
+            **coordinator.spaces_api.member_push_preferences_lookup,
+        },
+        "bypass_switches": entry.options.get(CONF_BYPASS_SWITCHES, DEFAULT_BYPASS_SWITCHES),
     }
 
 

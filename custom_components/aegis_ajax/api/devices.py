@@ -32,7 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 # #206: client-version reported on the bumped findAllBySpace retry. The Ajax
 # server silently drops feature fields keyed on the reported version (see the
 # monitoring_companies incident in const.CLIENT_VERSION's history); the Yale /
-# Assa Abloy SmartLock service postdates our default 3.30, so the locks may
+# Assa Abloy SmartLock service postdates the old default 3.30, so the locks may
 # only enumerate when we claim a newer client.
 _PROBE_CLIENT_VERSION = "3.60"
 
@@ -1453,6 +1453,30 @@ class DevicesApi:
                 hub_id,
                 label,
             )
+
+    async def start_sound_test(self, hub_id: str, device_id: str, device_type: str) -> None:
+        """Play a siren's test sound (#549), the app's *Test* button in siren settings.
+
+        The siren picks the sound and how long it lasts; the request carries no
+        duration. Raises `DeviceCommandError` with the server's failure case
+        (`permission_denied`, `hub_offline`, `hub_busy`, …).
+        """
+        from v3.mobilegwsvc.service.device_command_stest_start import (  # noqa: PLC0415
+            endpoint_pb2_grpc,
+            request_pb2,
+        )
+
+        channel = self._client._get_channel()
+        metadata = self._client._session.get_call_metadata()
+        stub = endpoint_pb2_grpc.DeviceCommandSoundTestStartServiceStub(channel)
+        request = request_pb2.DeviceCommandSoundTestStartRequest(
+            hub_id=hub_id, device_id=device_id, object_type=_build_object_type(device_type)
+        )
+        response = await stub.execute(request, metadata=metadata, timeout=15)
+        if response.HasField("failure"):
+            error = response.failure.WhichOneof("error") or "unknown"
+            raise DeviceCommandError(f"sound_test: {error}", reason=error)
+        _LOGGER.debug("Device %s sound test started", device_id)
 
     async def set_chimes_mode(self, hub_id: str, *, enable: bool) -> None:
         """Enable/disable the hub-wide Chime (#239).

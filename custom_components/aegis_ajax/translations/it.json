@@ -59,6 +59,7 @@
             "invalid_auth": "E-mail o password non validi.",
             "invalid_totp": "Codice TOTP non valido. Riprova.",
             "cannot_connect": "Impossibile connettersi ai server Ajax.",
+            "client_rejected": "Ajax sta rifiutando questa versione di Aegis for Ajax. Aggiorna l'integrazione in HACS, riavvia Home Assistant e riprova.",
             "unknown": "Si è verificato un errore imprevisto."
         },
         "abort": {
@@ -78,6 +79,7 @@
                     "force_arm": "Inserimento forzato (ignora sensori aperti e malfunzionamenti)",
                     "expose_arm_home": "Mostra il pulsante \"Attiva in casa\"",
                     "delay_panel_states": "Mostra i ritardi di uscita / ingresso come stati del pannello",
+                    "cloud_video": "Visione dal vivo tramite cloud per le videocamere (sperimentale)",
                     "use_pin_code": "Richiedi codice PIN per inserire/disinserire",
                     "pin_code": "Codice PIN",
                     "fcm_project_id": "ID progetto FCM (per notifiche push)",
@@ -97,6 +99,7 @@
                     "bypass_switches": "Gli interruttori di esclusione permettono di disattivare un dispositivo prima di inserire l'allarme. 'Auto' li crea solo se il tuo account Ajax ha il permesso di disattivare i dispositivi.",
                     "expose_arm_home": "Aggiunge una modalità Attiva in casa al pannello dell'allarme. Replica la modalità Notte ed è necessaria principalmente per Amazon Alexa o Nabu Casa Cloud. Disattivala per nascondere il pulsante duplicato se non li usi.",
                     "delay_panel_states": "Se attivo, il pannello di allarme mostra \"arming\" mentre l'hub esegue il \"Ritardo all'uscita\" di un rilevatore e \"pending\" mentre è in corso un \"Ritardo all'ingresso\", entrambi guidati dai segnali dell'hub stesso, non da un nostro timer. I rilevatori senza ritardo (allarme istantaneo) sono già attivi durante \"arming\". Le automazioni che attendono \"armed_away\" si attiveranno al termine del ritardo di uscita. Lo stato grezzo dell'hub resta nell'attributo \"hub_state\".",
+                    "cloud_video": "Aggiunge una telecamera di visione dal vivo per ogni videocamera Ajax, trasmessa tramite il cloud Ajax come fa l'app fuori casa, quindi funziona anche quando Home Assistant non è sulla rete della telecamera. Sperimentale: potrebbe non funzionare ancora con tutte le telecamere. Ogni visualizzazione apre una sessione video; non gira nulla finché nessuno guarda.",
                     "disable_push_warning": "Attiva se usi l'integrazione di proposito senza push. Nasconde il promemoria ricorrente \"FCM non configurato\" e la scheda di riparazione. Gli eventi in tempo reale (campanello, attivazione/disattivazione, allarme, movimento) non raggiungeranno Home Assistant finché non configuri FCM.",
                     "persistent_notifications": "Quando attivo, gli eventi selezionati appaiono come notifiche persistenti di Home Assistant che restano visibili finché non vengono chiuse o Home Assistant si riavvia. Questi eventi arrivano via push (FCM), quindi il push deve essere configurato perché arrivino.",
                     "persistent_notification_events": "Quali eventi generano una notifica persistente. Predefiniti: incidenti reali (allarme, panico, manomissione, incendio, CO, allagamento, rottura vetri). Aggiungi inserimento/disinserimento, movimento o campanello se li vuoi anche."
@@ -257,6 +260,10 @@
             "title": "Aegis richiede grpcio {required} o successivo (trovato {current})",
             "description": "Aegis dipende da `grpcio` per il canale gRPC che parla con il cloud Ajax, e la tua installazione di Home Assistant include `grpcio` {current}. Sotto {required} il login puo fallire con errori HTTP/2 poco chiari. Su Home Assistant Core o Container il manifest dell'integrazione fissa la versione all'installazione, ma su Home Assistant OS il runtime usa un grpcio di sistema che il manifest non puo influenzare — di solito occorre aggiornare Home Assistant OS a una build che includa un grpcio piu recente. La segnalazione si risolve automaticamente al prossimo ricaricamento quando la versione supera {required}."
         },
+        "client_rejected": {
+            "title": "Ajax sta rifiutando questa versione di Aegis for Ajax",
+            "description": "I server Ajax hanno smesso di accettare richieste da questa versione dell'integrazione, quindi non può accedere, aggiornare gli stati né inviare comandi. Il tuo account e le tue credenziali sono a posto. Aggiorna Aegis for Ajax in HACS all'ultima versione e riavvia Home Assistant. Questa riparazione scompare da sola quando Ajax accetta di nuovo l'integrazione."
+        },
         "fcm_credentials_invalid": {
             "title": "Notifiche push disabilitate - credenziali FCM rifiutate",
             "fix_flow": {
@@ -329,6 +336,9 @@
             },
             "refresh_hub": {
                 "name": "Aggiorna hub"
+            },
+            "siren_sound_test": {
+                "name": "Prova suono"
             }
         },
         "event": {
@@ -560,6 +570,11 @@
             },
             "device_firmware": {
                 "name": "Firmware"
+            }
+        },
+        "camera": {
+            "cloud_video": {
+                "name": "Visione dal vivo"
             }
         }
     },

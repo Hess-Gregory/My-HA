@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import TYPE_CHECKING
 
 from homeassistant.components.button import ButtonEntity
@@ -13,7 +14,10 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from custom_components.aegis_ajax.const import DOMAIN
 from custom_components.aegis_ajax.coordinator import AjaxCobrandedCoordinator
 from custom_components.aegis_ajax.device_handlers import capabilities_for
-from custom_components.aegis_ajax.entity import build_device_info
+from custom_components.aegis_ajax.entity import (
+    async_start_sound_test,
+    build_device_info,
+)
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -37,6 +41,12 @@ async def async_setup_entry(
         for device_id, device in coordinator.devices.items()
         if capabilities_for(device).is_phod
     ]
+    # Sirens whose type the command can address (#549).
+    entities.extend(
+        AjaxSirenSoundTestButton(coordinator=coordinator, device_id=device_id)
+        for device_id, device in coordinator.devices.items()
+        if capabilities_for(device).has_siren_settings
+    )
     # One refresh button per hub — bridges the gap between the 60s
     # periodic STATUS_BODY refresh and the user wanting a fresh reading
     # immediately after toggling an appliance (#179).
@@ -166,35 +176,66 @@ class AjaxCapturePhotoButton(CoordinatorEntity[AjaxCobrandedCoordinator], Button
             )
 
         _LOGGER.debug("Photo URL retrieved for %s: %s", self._device_id, url[:80])
-        import aiohttp  # noqa: PLC0415
         from homeassistant.helpers.aiohttp_client import (  # noqa: PLC0415
             async_get_clientsession,
         )
 
+        from custom_components.aegis_ajax.photo_download import (  # noqa: PLC0415
+            async_download_photo,
+        )
         from custom_components.aegis_ajax.photo_storage import (  # noqa: PLC0415
             save_photo,
         )
 
-        session = async_get_clientsession(self.hass)
-        try:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
-                if resp.status != 200:
-                    _LOGGER.warning(
-                        "Photo download for %s returned HTTP %s", self._device_id, resp.status
-                    )
-                    raise HomeAssistantError(
-                        translation_domain=DOMAIN, translation_key="photo_capture_failed"
-                    )
-                image_bytes = await resp.read()
-        except HomeAssistantError:
-            raise
-        except Exception as err:
-            _LOGGER.exception("Failed to download photo for %s", self._device_id)
+        image_bytes = await async_download_photo(async_get_clientsession(self.hass), url)
+        if image_bytes is None:
+            _LOGGER.warning("Photo download for %s failed", self._device_id)
             raise HomeAssistantError(
                 translation_domain=DOMAIN, translation_key="photo_capture_failed"
-            ) from err
+            )
 
         device = self.coordinator.devices.get(self._device_id)
         device_name = device.name if device else self._device_id
         await save_photo(self.hass, image_bytes, self._device_id, device_name)
         self.coordinator.last_photo_urls[self._device_id] = url
+
+
+class AjaxSirenSoundTestButton(CoordinatorEntity[AjaxCobrandedCoordinator], ButtonEntity):
+    """Play a siren's test sound, as the app's *Test* button does (#549).
+
+    One request per press. Presses closer together than `MIN_PRESS_INTERVAL`
+    are dropped, so an automation on every camera detection can't send Ajax
+    a stream of commands.
+    """
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "siren_sound_test"
+
+    MIN_PRESS_INTERVAL = 10.0
+
+    def __init__(self, coordinator: AjaxCobrandedCoordinator, device_id: str) -> None:
+        super().__init__(coordinator)
+        self._device_id = device_id
+        self._attr_unique_id = f"aegis_ajax_{device_id}_siren_sound_test"
+        self._last_press_at = -self.MIN_PRESS_INTERVAL
+        device = coordinator.devices.get(device_id)
+        if device:
+            self._attr_device_info = build_device_info(
+                device, coordinator.rooms, via_device_id=coordinator.hub_registry_id(device.hub_id)
+            )
+
+    @property
+    def available(self) -> bool:
+        device = self.coordinator.devices.get(self._device_id)
+        return super().available and device is not None and device.is_online
+
+    async def async_press(self) -> None:
+        device = self.coordinator.devices.get(self._device_id)
+        if device is None:
+            return
+        now = time.monotonic()
+        if now - self._last_press_at < self.MIN_PRESS_INTERVAL:
+            _LOGGER.debug("Sound test for %s dropped, pressed too soon", self._device_id)
+            return
+        self._last_press_at = now
+        await async_start_sound_test(self.coordinator, device)

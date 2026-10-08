@@ -49,6 +49,14 @@ class SpacesApi:
 
     def __init__(self, client: AjaxGrpcClient) -> None:
         self._client = client
+        # The logged-in member's push preferences per space, kept from the
+        # permission lookup (#519). Ajax filters pushes per member, so a
+        # dedicated Home Assistant account can have video pushes off while the
+        # owner's phone gets them. Only filled when that lookup runs
+        # (bypass switches on `auto`); no call is made for it.
+        self.member_push_preferences: dict[str, dict[str, Any]] = {}
+        # How that lookup ended per space, so an empty section says why.
+        self.member_push_preferences_lookup: dict[str, str] = {}
 
     @staticmethod
     def parse_space(proto_space: Any) -> Space:  # noqa: ANN401
@@ -156,52 +164,35 @@ class SpacesApi:
             status = MonitoringCompanyStatus.UNSPECIFIED
         return MonitoringCompany(name=name, status=status, hex_id=hex_id)
 
-    async def get_monitoring_company(
-        self, space_id: str, company_hex_id: str
-    ) -> MonitoringCompany | None:
-        """Resolve a CRA company's full record by `(space_id, company_hex_id)`.
+    async def find_space_monitoring_companies(
+        self, space_id: str, country_code: str
+    ) -> list[MonitoringCompany]:
+        """Return the CRA companies attached to a space (#561).
 
-        Wraps `SpaceMonitoringCompanyService.getMonitoringCompany`. Returns
-        a `MonitoringCompany` on success, `None` on a `failure` response or
-        any RPC error — callers should be ready to treat the lookup as
-        best-effort. Used as a fallback by `get_space_snapshot` when the
-        stream-level snapshot only carries `hex_id` without a populated
-        `name` (the modern client-version response shape).
+        `SpaceMonitoringCompanyService.findMonitoringCompanies` answers with
+        two blocks: the space's own companies, and every company available in
+        `country_code` (the app's sign-up list). Only the first is used; the
+        country just sizes the second (about 0.5 KB with "AQ", 30 KB with
+        "ES", 750 KB with no country). Errors propagate to the caller.
         """
         from systems.ajax.api.mobile.v2.space.company.monitoring import (  # noqa: PLC0415
-            get_monitoring_company_request_pb2,
+            find_monitoring_companies_request_pb2,
             space_monitoring_company_endpoints_pb2_grpc,
         )
 
-        channel = self._client._get_channel()
-        metadata = self._client._session.get_call_metadata()
         stub = space_monitoring_company_endpoints_pb2_grpc.SpaceMonitoringCompanyServiceStub(
-            channel
+            self._client._get_channel()
         )
-        request = get_monitoring_company_request_pb2.GetMonitoringCompanyRequest(
-            company_hex_id=company_hex_id,
-            space_id=space_id,
+        request = find_monitoring_companies_request_pb2.FindMonitoringCompaniesRequest(
+            space_id=space_id, company_country_code=country_code
         )
-        try:
-            response = await stub.getMonitoringCompany(request, metadata=metadata, timeout=15)
-        except Exception:  # noqa: BLE001
-            _LOGGER.debug(
-                "getMonitoringCompany RPC failed for space %s hex_id %s",
-                space_id,
-                company_hex_id,
-                exc_info=True,
-            )
-            return None
-        which = response.WhichOneof("response") if hasattr(response, "WhichOneof") else None
-        if which != "success":
-            _LOGGER.debug(
-                "getMonitoringCompany returned non-success (%s) for space %s hex_id %s",
-                which,
-                space_id,
-                company_hex_id,
-            )
-            return None
-        return self.parse_monitoring_company(response.success.company)
+        response = await stub.findMonitoringCompanies(
+            request, metadata=self._client._session.get_call_metadata(), timeout=15
+        )
+        if response.WhichOneof("response") != "success":
+            raise ValueError(f"findMonitoringCompanies failed for space {space_id}")
+        block = response.success.space_monitoring_companies_block
+        return [self.parse_monitoring_company(company) for company in block.companies]
 
     async def list_spaces(self) -> list[Space]:
         from v3.mobilegwsvc.service.find_user_spaces_with_pagination import (  # noqa: PLC0415
@@ -226,8 +217,10 @@ class SpacesApi:
         """Return a subset of the full space snapshot.
 
         Reads the snapshot message from `SpaceService/stream` and closes
-        the stream — rooms and monitoring-company metadata rarely change so
-        we don't keep it open.
+        the stream — rooms and groups rarely change so we don't keep it
+        open. CRA companies no longer ride here: from client version 3.57
+        Ajax leaves `monitoring_companies` empty (#561), see
+        `find_space_monitoring_companies`.
         """
         from systems.ajax.api.mobile.v2.common.space import (  # noqa: PLC0415
             space_locator_pb2,
@@ -247,7 +240,6 @@ class SpacesApi:
         stream = stub.stream(request, metadata=metadata, timeout=15)
 
         rooms: list[Room] = []
-        monitoring_companies: list[MonitoringCompany] = []
         groups: tuple[Group, ...] = ()
         group_mode_enabled: bool = False
         night_mode_enabled: bool = False
@@ -264,8 +256,6 @@ class SpacesApi:
                 snapshot = msg.success.snapshot
                 for proto_room in snapshot.rooms:
                     rooms.append(Room(id=proto_room.id, name=proto_room.name, space_id=space_id))
-                for proto_company in snapshot.monitoring_companies:
-                    monitoring_companies.append(self.parse_monitoring_company(proto_company))
                 if hasattr(snapshot, "security"):
                     groups, group_mode_enabled, night_mode_enabled = self.parse_groups(
                         snapshot.security, space_id
@@ -277,47 +267,13 @@ class SpacesApi:
             if callable(cancel):
                 cancel()
 
-        # Best-effort name resolution for companies that arrived with an
-        # empty name field but a usable hex_id — happens on modern client
-        # versions where the legacy `monitoring_companies` slot ships the
-        # tuple `(hex_id, status)` without an attached name. Falls back to
-        # the original record on any RPC failure so the snapshot still
-        # surfaces the company by its known status.
-        monitoring_companies = [
-            await self._resolve_company_name(space_id, company) for company in monitoring_companies
-        ]
-
         return SpaceSnapshot(
             rooms=tuple(rooms),
-            monitoring_companies=tuple(monitoring_companies),
-            monitoring_companies_loaded=True,
             groups=groups,
             group_mode_enabled=group_mode_enabled,
             night_mode_enabled=night_mode_enabled,
             chime_status=chime_status,
         )
-
-    async def _resolve_company_name(
-        self, space_id: str, company: MonitoringCompany
-    ) -> MonitoringCompany:
-        """Fill in `company.name` via `getMonitoringCompany` when missing.
-
-        No-op when `name` is already populated or `hex_id` is empty. Returns
-        the original `company` if the resolver returns `None` (RPC failure
-        or backend `failure` response) so callers always have a usable
-        record.
-        """
-        if company.name or not company.hex_id:
-            return company
-        resolved = await self.get_monitoring_company(space_id, company.hex_id)
-        if resolved is None or not resolved.name:
-            return company
-        # Trust the resolver's name; keep the snapshot's status (the stream
-        # is the authoritative state source, the lookup may return cached
-        # data on the company-tenancy side).
-        from dataclasses import replace as dc_replace  # noqa: PLC0415
-
-        return dc_replace(company, name=resolved.name)
 
     async def list_rooms(self, space_id: str) -> list[Room]:
         """Return the rooms defined in the given space."""
@@ -432,8 +388,11 @@ class SpacesApi:
                             break
                     break
                 if msg.HasField("failure"):
+                    reason = msg.failure.WhichOneof("error") or "failure"
+                    self.member_push_preferences_lookup[space_id] = f"members_failure:{reason}"
                     return None
             if not member_id:
+                self.member_push_preferences_lookup[space_id] = "not_a_member"
                 return None
 
             perm_names = {
@@ -447,12 +406,62 @@ class SpacesApi:
             ):
                 if msg.HasField("success") and msg.success.HasField("snapshot"):
                     member = msg.success.snapshot.space_member
+                    # Diagnostics only: a failure here must never cost the
+                    # permissions, since the bypass lookup fails open on None.
+                    try:
+                        self.member_push_preferences[space_id] = _push_preferences_summary(
+                            member.display_member_notification_preferences
+                        )
+                        self.member_push_preferences_lookup[space_id] = "ok"
+                    except Exception as exc:  # noqa: BLE001
+                        self.member_push_preferences_lookup[space_id] = (
+                            f"summary_error:{type(exc).__name__}"
+                        )
+                        _LOGGER.debug("Could not read push preferences", exc_info=True)
                     return {perm_names.get(p, str(p)) for p in member.space_permissions.permissions}
                 if msg.HasField("failure"):
+                    reason = msg.failure.WhichOneof("error") or "failure"
+                    self.member_push_preferences_lookup[space_id] = f"member_failure:{reason}"
                     return None
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            self.member_push_preferences_lookup[space_id] = f"error:{type(exc).__name__}"
             _LOGGER.debug(
                 "Could not fetch member permissions for space %s", space_id, exc_info=True
             )
             return None
+        self.member_push_preferences_lookup[space_id] = "no_snapshot"
         return None
+
+
+def _push_preferences_summary(prefs: Any) -> dict[str, Any]:  # noqa: ANN401
+    """Reduce a member's notification preferences to what gates video pushes.
+
+    `None` means Ajax did not send that part, which is not the same as off.
+    """
+    from systems.ajax.api.mobile.v2.common.space.member import (  # noqa: PLC0415
+        display_member_notification_preferences_pb2 as prefs_pb2,
+    )
+
+    def name(enum: Any, value: int, prefix: str) -> str:  # noqa: ANN401
+        # Ajax adds values our proto doesn't have yet (14 = line crossing).
+        known = enum.DESCRIPTOR.values_by_number.get(value)
+        return known.name.removeprefix(prefix) if known else str(value)
+
+    legacy = sorted(
+        name(prefs_pb2.DisplayMemberPushPreference, p, "DISPLAY_SPACE_MEMBER_PUSH_PREFERENCE_")
+        for p in prefs.member_push_preferences.push_preferences
+    )
+    v2 = prefs.member_push_preferences_v2
+    alarm_video = None
+    if v2.HasField("alarm") and v2.alarm.HasField("video"):
+        alarm_video = name(
+            prefs_pb2.DisplayMemberPushPreferencesV2.PushPreferenceState,
+            v2.alarm.video.state,
+            "PUSH_PREFERENCE_STATE_",
+        )
+    video = None
+    if v2.HasField("video"):
+        video = {
+            kind: getattr(v2.video, kind).enabled for kind in ("motion", "human", "pet", "vehicle")
+        }
+    return {"legacy": legacy, "alarm_video": alarm_video, "video": video}

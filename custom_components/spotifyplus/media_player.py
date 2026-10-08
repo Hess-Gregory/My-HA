@@ -1245,7 +1245,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                             dtUtc:datetime = utcnow().replace(microsecond=0)
                             timeDifference:timedelta = (dtUtc - self._attr_media_position_updated_at)
                             self._playTimeRemainingEst = int(self._attr_media_duration - self._attr_media_position - int(timeDifference.total_seconds()))
-                            #_logsi.LogVerbose("'%s': Estimated time remaining (timeDifference) - media Duration=%d, Position=%s, Remaining=%d, TimeDiffSecs=%d, state=%s" % (self.name, int(self._attr_media_duration), int(self._attr_media_position), self._playTimeRemainingEst, timeDifference.total_seconds(), str(self._attr_state)))
+                            #_logsi.LogWarning("TODO COMMENTME - Estimated time remaining (timeDifference) - media Duration=%d, Position=%s, Remaining=%d, TimeDiffSecs=%d, state=%s" % (int(self._attr_media_duration), int(self._attr_media_position), self._playTimeRemainingEst, timeDifference.total_seconds(), str(self._attr_state)))
 
                     # bypass HA state update.
                     return
@@ -1284,7 +1284,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
             
             # # TEST TODO - simulate Spotify Web API rate limit error.
             # if self.media_content_id == "spotify:track:6zd8T1PBe9JFHmuVnurdRp": # Seventh Day Slumber, I Need You
-            #     raise Exception("TEST TODO REMOVEME - simulate Spotify Web API rate limit error (for GetDevicePlaybackState method) in update method")
+            #     ex = SpotifyWebApiError(429, "TODO COMMENTME - simulate Spotify Web API rate limit error in update method; API rate limit exceeded", "media_player.update", "Too Many Requests (TEST)", None)
+            #     ex.RetryAfter = 21
+            #     raise ex
 
             # did the now playing context change?
             context:Context = self._playerState.Context
@@ -1326,7 +1328,19 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
                 self._playlist = None
                   
         except SpotifyWebApiError as ex:
-            
+
+            # is this a Spotify web api rate-limit error?
+            if ex.Status == 429:
+
+                # trace.
+                _logsi.LogVerbose("'%s': Spotify rate-limit error detected; resetting scan interval variables so we don't call Spotify Web API every second" % (self.name))
+
+                # reset various scan interval variables so we don't call Spotify Web API every second!
+                self._currentScanInterval = self._spotifyScanInterval
+                self._lastKnownTimeRemainingSeconds = self._currentScanInterval
+                self._commandScanInterval = 0
+
+            # trace.
             _logsi.LogException(None, ex)
             raise ServiceValidationError(ex.Message) from ex
         
