@@ -23,7 +23,7 @@ script:
             continue_on_error: true
             data: { message: request_location_update }
 
-# Mémorise le dernier lieu quitté par chaque personne (pour « en déplacement entre X et Y »)
+# Suivi des déplacements : dernier lieu quitté, heure de départ, position précédente (direction)
 template:
   - trigger:
       - trigger: state
@@ -35,9 +35,6 @@ template:
         icon: mdi:map-marker-path
         state: "{{ now().isoformat() }}"
         attributes:
-          greg: >-
-            {% if trigger.entity_id == 'person.greg' and trigger.to_state.state == 'not_home' and trigger.from_state.state not in ['not_home','unknown','unavailable'] %}{{ trigger.from_state.state }}{% else %}{{ this.attributes.get('greg', '') }}{% endif %}
-          sandrine: >-
-            {% if trigger.entity_id == 'person.sandrine' and trigger.to_state.state == 'not_home' and trigger.from_state.state not in ['not_home','unknown','unavailable'] %}{{ trigger.from_state.state }}{% else %}{{ this.attributes.get('sandrine', '') }}{% endif %}
-          matteo: >-
-            {% if trigger.entity_id == 'person.matteo' and trigger.to_state.state == 'not_home' and trigger.from_state.state not in ['not_home','unknown','unavailable'] %}{{ trigger.from_state.state }}{% else %}{{ this.attributes.get('matteo', '') }}{% endif %}
+          greg: "{%- set o = this.attributes.get('greg') if this.attributes.get('greg') is mapping else {} -%}{%- if trigger.entity_id == 'person.greg' -%}{%- set f = trigger.from_state -%}{%- set t = trigger.to_state -%}{%- set part = t.state == 'not_home' and f.state not in ['not_home', 'unknown', 'unavailable'] -%}{%- set bouge = f.attributes.latitude is defined and t.attributes.latitude is defined and (f.attributes.latitude != t.attributes.latitude or f.attributes.longitude != t.attributes.longitude) -%}{{ {'lieu': f.state if part else o.get('lieu', ''), 'depart': now().isoformat() if part else o.get('depart', ''), 'plat': f.attributes.latitude if bouge else o.get('plat'), 'plon': f.attributes.longitude if bouge else o.get('plon')} }}{%- else -%}{{ o }}{%- endif -%}"
+          sandrine: "{%- set o = this.attributes.get('sandrine') if this.attributes.get('sandrine') is mapping else {} -%}{%- if trigger.entity_id == 'person.sandrine' -%}{%- set f = trigger.from_state -%}{%- set t = trigger.to_state -%}{%- set part = t.state == 'not_home' and f.state not in ['not_home', 'unknown', 'unavailable'] -%}{%- set bouge = f.attributes.latitude is defined and t.attributes.latitude is defined and (f.attributes.latitude != t.attributes.latitude or f.attributes.longitude != t.attributes.longitude) -%}{{ {'lieu': f.state if part else o.get('lieu', ''), 'depart': now().isoformat() if part else o.get('depart', ''), 'plat': f.attributes.latitude if bouge else o.get('plat'), 'plon': f.attributes.longitude if bouge else o.get('plon')} }}{%- else -%}{{ o }}{%- endif -%}"
+          matteo: "{%- set o = this.attributes.get('matteo') if this.attributes.get('matteo') is mapping else {} -%}{%- if trigger.entity_id == 'person.matteo' -%}{%- set f = trigger.from_state -%}{%- set t = trigger.to_state -%}{%- set part = t.state == 'not_home' and f.state not in ['not_home', 'unknown', 'unavailable'] -%}{%- set bouge = f.attributes.latitude is defined and t.attributes.latitude is defined and (f.attributes.latitude != t.attributes.latitude or f.attributes.longitude != t.attributes.longitude) -%}{{ {'lieu': f.state if part else o.get('lieu', ''), 'depart': now().isoformat() if part else o.get('depart', ''), 'plat': f.attributes.latitude if bouge else o.get('plat'), 'plon': f.attributes.longitude if bouge else o.get('plon')} }}{%- else -%}{{ o }}{%- endif -%}"
