@@ -49,7 +49,7 @@ class Floorplan3DCard extends HTMLElement {
   _setup() {
     const root = this.attachShadow({ mode: 'open' });
     root.innerHTML = `<style>
-      :host{display:block}${this.cfg.compact ? ' .t,.amb,.alarm,.info{display:none!important} .wrap{border-radius:22px;box-shadow:none}' : ''}
+      :host{display:block}${this.cfg.compact ? ' .t,.amb,.info{display:none!important} .wrap{border-radius:22px;box-shadow:none}' : ''}
       .wrap{position:relative;width:100%;height:${this.cfg.height || 'calc(100vh - 112px)'};min-height:420px;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#6fa8e0 0%,#a9cdef 55%,#eef5fb 100%);transition:background 1.5s;box-shadow:0 10px 30px rgba(0,0,0,.35)}
       canvas{display:block;width:100%;height:100%;touch-action:none}
       .ov{position:absolute;inset:0;pointer-events:none}
@@ -173,6 +173,7 @@ class Floorplan3DCard extends HTMLElement {
     const views = this.$('.views');
     Object.keys(VIEWS).forEach((k) => { const b = document.createElement('button'); b.textContent = k; b.onclick = () => this._goTo(k); views.appendChild(b); });
     this.$('.mode').onclick = () => { this.mode = { auto: 'jour', jour: 'nuit', nuit: 'auto' }[this.mode]; this._sync(); };
+    this.$('.alarm').onclick = () => { const al = Object.keys(this._h.states).find((k) => k.startsWith('alarm_control_panel.')); if (al) this._more(al); };
     this.$('.walls').onclick = () => { this.wallTarget = this.wallTarget === 1 ? 0.28 : 1; this.$('.walls').textContent = this.wallTarget === 1 ? '🧱 Murs bas' : '🧱 Murs hauts'; this.$('.walls').classList.toggle('on', this.wallTarget !== 1); };
     root.querySelectorAll('.amb button').forEach((b) => (b.onclick = () => this._ambiance(b.dataset.a)));
     this._setupPanel();
