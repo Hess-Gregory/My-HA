@@ -295,9 +295,9 @@
     "version": "0.1.0"
   },
   "packages/sono_lumieres.yaml": {
-    "last_change": "sono envoyee sans attendre (tempo tenu) + 8 modes universels par palette",
-    "last_update": "2026-10-08T23:04:23.196177+02:00",
-    "version": "0.3.0"
+    "last_change": "11 modes sono universels facon light jockey (strobe, bicolores, chase) au tempo",
+    "last_update": "2026-10-08T23:05:33.936113+02:00",
+    "version": "0.4.0"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
