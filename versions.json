@@ -220,9 +220,9 @@
     "version": "0.3.1"
   },
   "packages/localisation_suivi.yaml": {
-    "last_change": "restauration du package localisation ecrase, ajouts dans localisation_suivi",
-    "last_update": "2026-10-08T18:04:46.238190+02:00",
-    "version": "0.0.1"
+    "last_change": "memorisation du dernier lieu quitte",
+    "last_update": "2026-10-08T18:11:34.261985+02:00",
+    "version": "0.1.0"
   },
   "packages/matteo/matteo_calendar.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",

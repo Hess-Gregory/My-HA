@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.0.1 | 08/10/2026 18:04 | restauration du package localisation ecrase, ajouts dans localisation_suivi
+# [AUTO-VERSION] v0.1.0 | 08/10/2026 18:11 | memorisation du dernier lieu quitte
 # Localisation : période d'historique + actualisation des positions
 input_select:
   localisation_periode:
