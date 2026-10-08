@@ -1,6 +1,6 @@
-# [AUTO-VERSION] v0.3.0 | 08/10/2026 23:34 | console DMX lampe par lampe, melange rouge/jaune/bleu, flash 0-100, allume/blackout
 # 🎚️ Console DMX : sélection lampe par lampe, couleur (palette + mélange rouge / jaune / bleu),
-# intensité, flash de 0 (fixe) à 100 (très rapide), effets spéciaux, et Allumé / Blackout / Libérer.
+# intensité, flash de 0 (fixe) à 100 (très rapide), effets spéciaux.
+# Les réglages ne partent vers les lampes qu'au clic sur ALLUMÉ ou BLACKOUT (comme un GO de console).
 input_boolean:
   strobe_actif: {name: Console DMX active, icon: 'mdi:play-circle'}
   dmx_blackout: {name: Console DMX · blackout, icon: 'mdi:checkbox-blank'}
@@ -214,16 +214,3 @@ automation:
     then:
     - action: script.turn_on
       target: {entity_id: script.sono_lumieres}
-- id: strobe_reglage_instantane
-  alias: '🎚️ Console DMX : appliquer un réglage tout de suite'
-  mode: restart
-  triggers:
-  - trigger: state
-    entity_id: [input_select.strobe_mode, input_number.strobe_intensite, input_number.dmx_flash, input_number.dmx_rouge, input_number.dmx_jaune, input_number.dmx_bleu, input_boolean.dmx_lc, input_boolean.dmx_ld, input_boolean.dmx_lg, input_boolean.dmx_vit_g, input_boolean.dmx_vit_d, input_boolean.dmx_panneau,
-      input_boolean.dmx_ambilight, input_boolean.dmx_dj_g, input_boolean.dmx_dj_d]
-  conditions:
-  - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
-  actions:
-  - delay: {milliseconds: 150}
-  - action: script.turn_on
-    target: {entity_id: script.strobe_lumieres}
