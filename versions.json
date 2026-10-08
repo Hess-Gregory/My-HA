@@ -269,6 +269,11 @@
     "last_update": "2026-10-01T18:41:24.194696+02:00",
     "version": "0.1.0"
   },
+  "packages/scenarios_annulation.yaml": {
+    "last_change": "bouton Annuler (Je pars / Bonne nuit) qui remet l etat precedent",
+    "last_update": "2026-10-08T19:32:19.407986+02:00",
+    "version": "0.1.0"
+  },
   "packages/securite_matteo.yaml": {
     "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
     "last_update": "2026-10-08T17:47:55.468915+02:00",
@@ -295,9 +300,9 @@
     "version": "0.0.1"
   },
   "scripts.yaml": {
-    "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
-    "last_update": "2026-10-01T18:41:24.194696+02:00",
-    "version": "0.3.0"
+    "last_change": "bouton Annuler (Je pars / Bonne nuit) qui remet l etat precedent",
+    "last_update": "2026-10-08T19:32:19.407986+02:00",
+    "version": "0.4.0"
   },
   "themes/Alpine-night.yaml": {
     "last_change": "initialisation du versionning par fichier",

@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.3.0 | 01/10/2026 18:41 | four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes
+# [AUTO-VERSION] v0.4.0 | 08/10/2026 19:32 | bouton Annuler (Je pars / Bonne nuit) qui remet l etat precedent
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
