@@ -1,8 +1,11 @@
-# [AUTO-VERSION] v0.6.0 | 08/10/2026 23:11 | intensite reglable des lumieres sono (50 % par defaut)
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
 input_select:
+  sono_effet:
+    name: Effet sono
+    icon: mdi:flash
+    options: [Aucun, ⚡ Strobe blanc, 🟣 Black light (UV), 💥 Blinder (flash chaud toutes les 4), ⬛ Blackout (coupures sur le temps)]
   sono_lumieres:
     name: Lumières sono musicale
     icon: mdi:music-circle
@@ -329,7 +332,10 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[0] }}', bri: '{{ [ (c.bri[0] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{% set e = states(''input_select.sono_effet'') %}{% if ''Black light'' in e %}{{ [70,0,255] }}{% elif ''Strobe'' in e and step % 2 == 0 %}{{ [255,255,255] }}{% elif ''Blinder'' in e and step % 4 == 0 %}{{ [255,180,90]
+                    }}{% else %}{{ c.pal[0] }}{% endif %}', bri: '{% set e = states(''input_select.sono_effet'') %}{% set i = states(''input_number.sono_intensite'') | float(50) / 100 %}{% if ''Blackout'' in e and step % 2 == 0 %}1{% elif (''Strobe'' in e and step
+                    % 2 == 0) or (''Blinder'' in e and step % 4 == 0) %}{{ [ (255 * i) | int, 1 ] | max }}{% else %}{{ [ (c.bri[0] * i) | round(0) | int, 1 ] | max }}{% endif %}', tr: '{% set e = states(''input_select.sono_effet'') %}{% if ''Strobe'' in e or ''Blackout''
+                    in e %}0{% else %}{{ (beat * c.t) | round(2) }}{% endif %}'}
           - sequence:
             - {condition: template, value_template: '{{ 1 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 1 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -338,7 +344,10 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[1] }}', bri: '{{ [ (c.bri[1] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{% set e = states(''input_select.sono_effet'') %}{% if ''Black light'' in e %}{{ [70,0,255] }}{% elif ''Strobe'' in e and step % 2 == 0 %}{{ [255,255,255] }}{% elif ''Blinder'' in e and step % 4 == 0 %}{{ [255,180,90]
+                    }}{% else %}{{ c.pal[1] }}{% endif %}', bri: '{% set e = states(''input_select.sono_effet'') %}{% set i = states(''input_number.sono_intensite'') | float(50) / 100 %}{% if ''Blackout'' in e and step % 2 == 0 %}1{% elif (''Strobe'' in e and step
+                    % 2 == 0) or (''Blinder'' in e and step % 4 == 0) %}{{ [ (255 * i) | int, 1 ] | max }}{% else %}{{ [ (c.bri[1] * i) | round(0) | int, 1 ] | max }}{% endif %}', tr: '{% set e = states(''input_select.sono_effet'') %}{% if ''Strobe'' in e or ''Blackout''
+                    in e %}0{% else %}{{ (beat * c.t) | round(2) }}{% endif %}'}
           - sequence:
             - {condition: template, value_template: '{{ 2 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 2 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -347,7 +356,10 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[2] }}', bri: '{{ [ (c.bri[2] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{% set e = states(''input_select.sono_effet'') %}{% if ''Black light'' in e %}{{ [70,0,255] }}{% elif ''Strobe'' in e and step % 2 == 0 %}{{ [255,255,255] }}{% elif ''Blinder'' in e and step % 4 == 0 %}{{ [255,180,90]
+                    }}{% else %}{{ c.pal[2] }}{% endif %}', bri: '{% set e = states(''input_select.sono_effet'') %}{% set i = states(''input_number.sono_intensite'') | float(50) / 100 %}{% if ''Blackout'' in e and step % 2 == 0 %}1{% elif (''Strobe'' in e and step
+                    % 2 == 0) or (''Blinder'' in e and step % 4 == 0) %}{{ [ (255 * i) | int, 1 ] | max }}{% else %}{{ [ (c.bri[2] * i) | round(0) | int, 1 ] | max }}{% endif %}', tr: '{% set e = states(''input_select.sono_effet'') %}{% if ''Strobe'' in e or ''Blackout''
+                    in e %}0{% else %}{{ (beat * c.t) | round(2) }}{% endif %}'}
           - sequence:
             - {condition: template, value_template: '{{ 3 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 3 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -356,7 +368,10 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[3] }}', bri: '{{ [ (c.bri[3] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{% set e = states(''input_select.sono_effet'') %}{% if ''Black light'' in e %}{{ [70,0,255] }}{% elif ''Strobe'' in e and step % 2 == 0 %}{{ [255,255,255] }}{% elif ''Blinder'' in e and step % 4 == 0 %}{{ [255,180,90]
+                    }}{% else %}{{ c.pal[3] }}{% endif %}', bri: '{% set e = states(''input_select.sono_effet'') %}{% set i = states(''input_number.sono_intensite'') | float(50) / 100 %}{% if ''Blackout'' in e and step % 2 == 0 %}1{% elif (''Strobe'' in e and step
+                    % 2 == 0) or (''Blinder'' in e and step % 4 == 0) %}{{ [ (255 * i) | int, 1 ] | max }}{% else %}{{ [ (c.bri[3] * i) | round(0) | int, 1 ] | max }}{% endif %}', tr: '{% set e = states(''input_select.sono_effet'') %}{% if ''Strobe'' in e or ''Blackout''
+                    in e %}0{% else %}{{ (beat * c.t) | round(2) }}{% endif %}'}
           - sequence:
             - {condition: template, value_template: '{{ 4 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 4 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -365,7 +380,10 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[4] }}', bri: '{{ [ (c.bri[4] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{% set e = states(''input_select.sono_effet'') %}{% if ''Black light'' in e %}{{ [70,0,255] }}{% elif ''Strobe'' in e and step % 2 == 0 %}{{ [255,255,255] }}{% elif ''Blinder'' in e and step % 4 == 0 %}{{ [255,180,90]
+                    }}{% else %}{{ c.pal[4] }}{% endif %}', bri: '{% set e = states(''input_select.sono_effet'') %}{% set i = states(''input_number.sono_intensite'') | float(50) / 100 %}{% if ''Blackout'' in e and step % 2 == 0 %}1{% elif (''Strobe'' in e and step
+                    % 2 == 0) or (''Blinder'' in e and step % 4 == 0) %}{{ [ (255 * i) | int, 1 ] | max }}{% else %}{{ [ (c.bri[4] * i) | round(0) | int, 1 ] | max }}{% endif %}', tr: '{% set e = states(''input_select.sono_effet'') %}{% if ''Strobe'' in e or ''Blackout''
+                    in e %}0{% else %}{{ (beat * c.t) | round(2) }}{% endif %}'}
           - sequence:
             - {condition: template, value_template: '{{ 5 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 5 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -374,7 +392,10 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[5] }}', bri: '{{ [ (c.bri[5] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{% set e = states(''input_select.sono_effet'') %}{% if ''Black light'' in e %}{{ [70,0,255] }}{% elif ''Strobe'' in e and step % 2 == 0 %}{{ [255,255,255] }}{% elif ''Blinder'' in e and step % 4 == 0 %}{{ [255,180,90]
+                    }}{% else %}{{ c.pal[5] }}{% endif %}', bri: '{% set e = states(''input_select.sono_effet'') %}{% set i = states(''input_number.sono_intensite'') | float(50) / 100 %}{% if ''Blackout'' in e and step % 2 == 0 %}1{% elif (''Strobe'' in e and step
+                    % 2 == 0) or (''Blinder'' in e and step % 4 == 0) %}{{ [ (255 * i) | int, 1 ] | max }}{% else %}{{ [ (c.bri[5] * i) | round(0) | int, 1 ] | max }}{% endif %}', tr: '{% set e = states(''input_select.sono_effet'') %}{% if ''Strobe'' in e or ''Blackout''
+                    in e %}0{% else %}{{ (beat * c.t) | round(2) }}{% endif %}'}
         - delay: {seconds: '{{ [ (t0 + step * c.beats * beat) - as_timestamp(now()), 0.05 ] | max | round(2) }}'}
 automation:
 - id: sono_lumieres_selection
