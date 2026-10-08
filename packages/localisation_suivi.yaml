@@ -4,7 +4,7 @@ input_select:
   localisation_auto:
     name: "Localisation – actualisation automatique"
     icon: mdi:timer-sync-outline
-    options: ["Désactivée", "5 min", "10 min", "15 min", "30 min"]
+    options: ["Désactivée", "1 min", "5 min", "10 min", "15 min", "30 min"]
     initial: "10 min"
   localisation_periode:
     name: "Localisation – période"
@@ -50,7 +50,7 @@ automation:
     mode: single
     triggers:
       - trigger: time_pattern
-        minutes: "/5"
+        minutes: "/1"
     conditions:
       - condition: template
         value_template: >-
