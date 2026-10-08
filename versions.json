@@ -260,9 +260,9 @@
     "version": "0.1.0"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "carillon et ouverture accueil en parallele, camera fermee 10 s apres porte fermee et couloir calme",
-    "last_update": "2026-10-08T11:42:41.112820+02:00",
-    "version": "0.5.1"
+    "last_change": "plus de rechargement de HA a l ouverture de porte, camera affichee meme si HA arrive en retard",
+    "last_update": "2026-10-08T12:00:50.423299+02:00",
+    "version": "0.5.2"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
