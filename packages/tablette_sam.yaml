@@ -53,3 +53,46 @@ automation:
                 data:
                   application: io.homeassistant.companion.android
                   device_id: f1aa9e7a06615d6cd968ef13a161d75c
+
+  - id: tablette_sam_interphone
+    alias: "🔔 Tablette Sam : sonnerie interphone BTicino"
+    description: "On sonne à la platine de rue : carillon fort sur la tablette + HA au premier plan (caméra rue + bouton SAS sur le plan)."
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: event.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
+        not_to: [unavailable, unknown]
+      - trigger: state
+        entity_id: binary_sensor.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
+        from: "off"
+        to: "on"
+    actions:
+      - parallel:
+          - sequence:
+              - action: media_player.volume_set
+                continue_on_error: true
+                target:
+                  entity_id: media_player.salon_sam_tablette
+                data:
+                  volume_level: 1
+              - action: media_player.play_media
+                continue_on_error: true
+                target:
+                  entity_id: media_player.salon_sam_tablette
+                data:
+                  media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/interphone.wav"
+                  media_content_type: music
+          - if:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.salon_sam_tablette_application_au_premier_plan
+                    state: io.homeassistant.companion.android
+            then:
+              - action: fully_kiosk.start_application
+                continue_on_error: true
+                data:
+                  application: io.homeassistant.companion.android
+                  device_id: f1aa9e7a06615d6cd968ef13a161d75c
+      - delay: "00:00:30"

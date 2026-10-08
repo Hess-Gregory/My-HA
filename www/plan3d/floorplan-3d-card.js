@@ -740,7 +740,7 @@ class Floorplan3DCard extends HTMLElement {
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
-    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0; const dOn = !!door && door.state === 'on'; if (dOn && this._doorWas === false) this._doorAlert(); else if (this._doorWas === undefined && door && (dOn || Date.now() - new Date(door.last_changed).getTime() < 30000)) setTimeout(() => this._doorAlert(), 1500); const mvOn = ['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 'binary_sensor.e1_outdoor_se_poe_mouvement', 'binary_sensor.e1_outdoor_se_poe_personne'].some((k) => H[k] && H[k].state === 'on'); const quiet = !dOn && !mvOn; if (quiet && !this._dcT && this.$('.camov')) { this._dcT = setTimeout(() => { this._dcT = null; this._doorClear(); }, 10000); } else if (!quiet && this._dcT) { clearTimeout(this._dcT); this._dcT = null; } this._doorWas = dOn;
+    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0; const dOn = !!door && door.state === 'on'; if (dOn && this._doorWas === false) this._doorAlert(); else if (this._doorWas === undefined && door && (dOn || Date.now() - new Date(door.last_changed).getTime() < 30000)) setTimeout(() => this._doorAlert(), 1500); const mvOn = ['binary_sensor.hall_dentree_mouvement_couloir_mouvement', 'binary_sensor.e1_outdoor_se_poe_mouvement', 'binary_sensor.e1_outdoor_se_poe_personne'].some((k) => H[k] && H[k].state === 'on'); const quiet = !dOn && !mvOn; if (quiet && !this._dcT && this.$('.camov')) { this._dcT = setTimeout(() => { this._dcT = null; this._doorClear(); }, 10000); } else if (!quiet && this._dcT) { clearTimeout(this._dcT); this._dcT = null; } this._doorWas = dOn; const rg = H['event.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue'], rb = H['binary_sensor.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue']; const rTs = rg && !isNaN(Date.parse(rg.state)) ? Date.parse(rg.state) : 0, rOn = !!rb && rb.state === 'on'; if ((this._rTs !== undefined && rTs > this._rTs) || (rOn && this._rOn === false) || (this._rTs === undefined && rTs && Date.now() - rTs < 30000)) setTimeout(() => this._ringAlert(), this._rTs === undefined ? 1500 : 0); this._rTs = rTs; this._rOn = rOn;
     const sunSt = H['sun.sun']; const autoNight = sunSt ? sunSt.state === 'below_horizon' : false;
     this.nightTarget = this.mode === 'nuit' ? 1 : this.mode === 'jour' ? 0 : autoNight ? 1 : 0;
     this.$('.mode').textContent = { auto: '🌓 Auto', jour: '☀️ Jour', nuit: '🌙 Nuit' }[this.mode];
@@ -756,6 +756,31 @@ class Floorplan3DCard extends HTMLElement {
       l.d.innerHTML = l.n + (isNaN(t) ? '' : `<b>${t.toFixed(1).replace('.', ',')}°</b>`) + extra; l.d.classList.toggle('alert', alert);
     });
     this._dirty = true;
+  }
+
+  _ringAlert() {
+    if (!/^sam/i.test((this._h.user && this._h.user.name) || '')) return; // uniquement sur la tablette (compte Sam)
+    try {
+      const camId = 'camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue', cam = this._h.states[camId];
+      let o = this.$('.ringov');
+      if (!o) {
+        o = document.createElement('div'); o.className = 'ringov';
+        o.style.cssText = 'position:absolute;top:10px;right:10px;width:min(62%,600px);border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.6);border:2px solid #ff5a5a;z-index:31;background:#000';
+        o.innerHTML = '<div style="position:relative;aspect-ratio:16/9"><img style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;top:6px;left:8px;font:600 13px sans-serif;color:#fff;text-shadow:0 1px 3px #000">🔔 On sonne à l’interphone · Rue</div><div class="x" style="position:absolute;top:2px;right:6px;padding:4px 8px;color:#fff;font:700 18px sans-serif;cursor:pointer;text-shadow:0 1px 3px #000">✕</div></div><button class="sas" style="width:100%;padding:14px;border:none;background:#2e7d32;color:#fff;font:700 16px sans-serif;cursor:pointer">🔓 Ouvrir le SAS</button>';
+        o.querySelector('.x').onclick = () => { clearTimeout(this._ringT); o.remove(); };
+        const b = o.querySelector('.sas');
+        b.onclick = () => {
+          if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = '⚠️ Toucher encore pour ouvrir'; b.style.background = '#f9a825'; clearTimeout(this._sasT); this._sasT = setTimeout(() => { delete b.dataset.arm; b.textContent = '🔓 Ouvrir le SAS'; b.style.background = '#2e7d32'; }, 4000); return; }
+          clearTimeout(this._sasT); delete b.dataset.arm;
+          this._h.callService('lock', 'unlock', { entity_id: 'lock.hall_dentree_bticino_intercom_greg_et_sandrine_serrure' });
+          b.textContent = '✅ SAS ouvert'; b.style.background = '#1565c0';
+          clearTimeout(this._ringT); this._ringT = setTimeout(() => o.remove(), 8000);
+        };
+        this.$('.wrap').appendChild(o);
+      }
+      if (cam) o.querySelector('img').src = '/api/camera_proxy_stream/' + camId + '?token=' + cam.attributes.access_token;
+      clearTimeout(this._ringT); this._ringT = setTimeout(() => o.remove(), 90000);
+    } catch (e) { console.warn('ringAlert', e); }
   }
 
   _doorClear() { const o = this.$('.camov'); if (o) { clearTimeout(this._camT); o.remove(); this._goTo('Vue générale'); } }
