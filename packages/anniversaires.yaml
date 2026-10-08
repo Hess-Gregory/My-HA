@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.0 | 01/10/2026 18:41 | four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes
+# [AUTO-VERSION] v0.2.1 | 08/10/2026 17:58 | annee saisie au clavier bien prise en compte
 # =====================================================================
 # Anniversaires & dates récurrentes (dashboard Calendrier › Vue d'ensemble)
 # Liste stockée dans l'attribut « liste » de sensor.anniversaires (capteur déclenché,

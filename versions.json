@@ -155,9 +155,9 @@
     "version": "0.3.0"
   },
   "packages/anniversaires.yaml": {
-    "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
-    "last_update": "2026-10-01T18:41:24.194696+02:00",
-    "version": "0.2.0"
+    "last_change": "annee saisie au clavier bien prise en compte",
+    "last_update": "2026-10-08T17:58:30.691402+02:00",
+    "version": "0.2.1"
   },
   "packages/calendriers.yaml": {
     "last_change": "grilles mensuelles famille et horaires pro, lumieres unifiees",
