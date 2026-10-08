@@ -1,6 +1,11 @@
 # [AUTO-VERSION] v0.2.0 | 08/10/2026 18:13 | heure de depart et direction
 # Localisation : période d'historique + actualisation des positions
 input_select:
+  localisation_auto:
+    name: "Localisation – actualisation automatique"
+    icon: mdi:timer-sync-outline
+    options: ["Désactivée", "5 min", "10 min", "15 min", "30 min"]
+    initial: "10 min"
   localisation_periode:
     name: "Localisation – période"
     icon: mdi:history
@@ -38,3 +43,18 @@ template:
           greg: "{%- set o = this.attributes.get('greg') if this.attributes.get('greg') is mapping else {} -%}{%- if trigger.entity_id == 'person.greg' -%}{%- set f = trigger.from_state -%}{%- set t = trigger.to_state -%}{%- set part = t.state == 'not_home' and f.state not in ['not_home', 'unknown', 'unavailable'] -%}{%- set bouge = f.attributes.latitude is defined and t.attributes.latitude is defined and (f.attributes.latitude != t.attributes.latitude or f.attributes.longitude != t.attributes.longitude) -%}{{ {'lieu': f.state if part else o.get('lieu', ''), 'depart': now().isoformat() if part else o.get('depart', ''), 'plat': f.attributes.latitude if bouge else o.get('plat'), 'plon': f.attributes.longitude if bouge else o.get('plon')} }}{%- else -%}{{ o }}{%- endif -%}"
           sandrine: "{%- set o = this.attributes.get('sandrine') if this.attributes.get('sandrine') is mapping else {} -%}{%- if trigger.entity_id == 'person.sandrine' -%}{%- set f = trigger.from_state -%}{%- set t = trigger.to_state -%}{%- set part = t.state == 'not_home' and f.state not in ['not_home', 'unknown', 'unavailable'] -%}{%- set bouge = f.attributes.latitude is defined and t.attributes.latitude is defined and (f.attributes.latitude != t.attributes.latitude or f.attributes.longitude != t.attributes.longitude) -%}{{ {'lieu': f.state if part else o.get('lieu', ''), 'depart': now().isoformat() if part else o.get('depart', ''), 'plat': f.attributes.latitude if bouge else o.get('plat'), 'plon': f.attributes.longitude if bouge else o.get('plon')} }}{%- else -%}{{ o }}{%- endif -%}"
           matteo: "{%- set o = this.attributes.get('matteo') if this.attributes.get('matteo') is mapping else {} -%}{%- if trigger.entity_id == 'person.matteo' -%}{%- set f = trigger.from_state -%}{%- set t = trigger.to_state -%}{%- set part = t.state == 'not_home' and f.state not in ['not_home', 'unknown', 'unavailable'] -%}{%- set bouge = f.attributes.latitude is defined and t.attributes.latitude is defined and (f.attributes.latitude != t.attributes.latitude or f.attributes.longitude != t.attributes.longitude) -%}{{ {'lieu': f.state if part else o.get('lieu', ''), 'depart': now().isoformat() if part else o.get('depart', ''), 'plat': f.attributes.latitude if bouge else o.get('plat'), 'plon': f.attributes.longitude if bouge else o.get('plon')} }}{%- else -%}{{ o }}{%- endif -%}"
+
+automation:
+  - id: localisation_actualisation_auto
+    alias: "📍 Localisation : actualisation automatique des positions"
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: "/5"
+    conditions:
+      - condition: template
+        value_template: >-
+          {% set i = states('input_select.localisation_auto') | replace(' min', '') %}
+          {{ i | is_number and now().minute % (i | int) == 0 }}
+    actions:
+      - action: script.localisation_actualiser
