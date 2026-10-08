@@ -214,6 +214,11 @@
     "last_update": "2026-09-19T22:17:32.080787+02:00",
     "version": "0.1.0"
   },
+  "packages/je_pars_code.yaml": {
+    "last_change": "Je pars protege par code",
+    "last_update": "2026-10-08T21:17:20.090318+02:00",
+    "version": "0.1.0"
+  },
   "packages/localisation.yaml": {
     "last_change": "restauration du package localisation ecrase, ajouts dans localisation_suivi",
     "last_update": "2026-10-08T18:04:46.238190+02:00",
