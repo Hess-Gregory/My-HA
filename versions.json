@@ -80,9 +80,9 @@
     "version": "0.7.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "popup telecommande TV/Ampli au clic sur le programme TV",
-    "last_update": "2026-10-08T21:32:09.439807+02:00",
-    "version": "2.5.0"
+    "last_change": "detection du tempo par le micro de la tablette pour les lumieres sono",
+    "last_update": "2026-10-08T23:04:24.412906+02:00",
+    "version": "2.6.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -345,8 +345,8 @@
     "version": "0.0.1"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "popup telecommande TV/Ampli au clic sur le programme TV",
-    "last_update": "2026-10-08T21:32:09.439807+02:00",
-    "version": "2.5.0"
+    "last_change": "detection du tempo par le micro de la tablette pour les lumieres sono",
+    "last_update": "2026-10-08T23:04:24.412906+02:00",
+    "version": "2.6.0"
   }
 }
