@@ -1,6 +1,5 @@
-# [AUTO-VERSION] v0.2.0 | 08/10/2026 22:55 | lumieres sono calees sur le tempo BPM de chaque style + curseur tempo
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
-# Tempos : Hard techno 150, Rétro techno 135, Tech house 125, Afro house 120, Années 80 120, RnB 90, Chill 90 (changement toutes les 4 mesures de temps, 8 pour le chill)
+# Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
 input_select:
   sono_lumieres:
@@ -21,7 +20,7 @@ script:
         cfg:
           🔊 Hard techno:
             bpm: 150
-            beats: 4
+            beats: 2
             t: 0.15
             pal:
             - [255, 0, 0]
@@ -62,7 +61,7 @@ script:
             bri: [120, 95, 110, 85]
           📼 Rétro techno:
             bpm: 135
-            beats: 4
+            beats: 2
             t: 0.2
             pal:
             - [120, 255, 0]
@@ -82,7 +81,7 @@ script:
             bri: [150, 125, 140, 105]
           🕹️ Années 80:
             bpm: 120
-            beats: 4
+            beats: 2
             t: 0.4
             pal:
             - [255, 20, 150]
@@ -107,15 +106,47 @@ script:
         - {condition: template, value_template: '{{ is_state(''input_select.sono_lumieres'', style) and repeat.index < 50000 }}'}
         sequence:
         - variables: {step: '{{ repeat.index }}', n: '{{ c.pal | length }}', beat: '{{ 60 / ([states(''input_number.sono_tempo'') | float(c.bpm), 40] | max) }}'}
-        - repeat:
-            for_each: '{{ range(n) | list }}'
-            sequence:
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == repeat.item %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+        - parallel:
+          - sequence:
+            - {condition: template, value_template: '{{ 0 < n }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 0 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: light.turn_on
               continue_on_error: true
               target: {entity_id: '{{ grp }}'}
-              data: {rgb_color: '{{ c.pal[repeat.item] }}', brightness: '{{ c.bri[repeat.item] }}', transition: '{{ (beat * c.t) | round(2) }}'}
+              data: {rgb_color: '{{ c.pal[0] }}', brightness: '{{ c.bri[0] }}', transition: '{{ (beat * c.t) | round(2) }}'}
+          - sequence:
+            - {condition: template, value_template: '{{ 1 < n }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 1 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - {condition: template, value_template: '{{ grp | length > 0 }}'}
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ grp }}'}
+              data: {rgb_color: '{{ c.pal[1] }}', brightness: '{{ c.bri[1] }}', transition: '{{ (beat * c.t) | round(2) }}'}
+          - sequence:
+            - {condition: template, value_template: '{{ 2 < n }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 2 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - {condition: template, value_template: '{{ grp | length > 0 }}'}
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ grp }}'}
+              data: {rgb_color: '{{ c.pal[2] }}', brightness: '{{ c.bri[2] }}', transition: '{{ (beat * c.t) | round(2) }}'}
+          - sequence:
+            - {condition: template, value_template: '{{ 3 < n }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 3 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - {condition: template, value_template: '{{ grp | length > 0 }}'}
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ grp }}'}
+              data: {rgb_color: '{{ c.pal[3] }}', brightness: '{{ c.bri[3] }}', transition: '{{ (beat * c.t) | round(2) }}'}
+          - sequence:
+            - {condition: template, value_template: '{{ 4 < n }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 4 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - {condition: template, value_template: '{{ grp | length > 0 }}'}
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ grp }}'}
+              data: {rgb_color: '{{ c.pal[4] }}', brightness: '{{ c.bri[4] }}', transition: '{{ (beat * c.t) | round(2) }}'}
         - delay: {seconds: '{{ [ (t0 + step * c.beats * beat) - as_timestamp(now()), 0.05 ] | max | round(2) }}'}
 automation:
 - id: sono_lumieres_selection
