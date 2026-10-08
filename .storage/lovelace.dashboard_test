@@ -7,6 +7,34 @@
       "title": "Dashboard Test - Popup Universel",
       "views": [
         {
+          "title": "Accueil 3D",
+          "path": "accueil-3d",
+          "icon": "mdi:home-modern",
+          "panel": true,
+          "cards": [
+            {
+              "type": "custom:home-hub-card"
+            }
+          ],
+          "visible": [
+            {
+              "user": "a8d03195e7eb4b36a625eb3c0fb3468d"
+            },
+            {
+              "user": "e825e82f685f4d829d1b4f7e66c022db"
+            },
+            {
+              "user": "3d6a26b6b25045a99cf89cd56c8c8cc3"
+            },
+            {
+              "user": "3c63ae801ed34154aa67f44ef472a03c"
+            },
+            {
+              "user": "72011b7b659b4d9497908e4fbb4539ce"
+            }
+          ]
+        },
+        {
           "title": "Test Popups",
           "path": "test-popups",
           "icon": "mdi:test-tube",
@@ -32781,6 +32809,23 @@
           "cards": [
             {
               "type": "custom:floorplan-3d-card"
+            }
+          ],
+          "visible": [
+            {
+              "user": "a8d03195e7eb4b36a625eb3c0fb3468d"
+            },
+            {
+              "user": "e825e82f685f4d829d1b4f7e66c022db"
+            },
+            {
+              "user": "3d6a26b6b25045a99cf89cd56c8c8cc3"
+            },
+            {
+              "user": "3c63ae801ed34154aa67f44ef472a03c"
+            },
+            {
+              "user": "72011b7b659b4d9497908e4fbb4539ce"
             }
           ]
         }

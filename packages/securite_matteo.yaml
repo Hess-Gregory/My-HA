@@ -1,0 +1,95 @@
+# Sécurité compte Matteo : seul son dashboard (note + missions) est autorisé
+automation:
+  - id: securite_matteo_blocage
+    alias: "🛡️ Matteo : blocage des commandes (sécurité)"
+    description: "Le compte Matteo n'a droit qu'à son dashboard (note + missions). Toute autre commande est annulée/inversée et Greg est prévenu."
+    mode: queued
+    max: 30
+    triggers:
+      - trigger: event
+        event_type: call_service
+        context:
+          user_id: 27b37491ab9d46e0983dda25b47cb355
+    conditions:
+      - condition: template
+        value_template: >
+          {% set d = trigger.event.data.domain %}{% set s = trigger.event.data.service %}
+          {% set e = ((trigger.event.data.service_data | default({})).get('entity_id', '')) | string %}
+          {{ not (d == 'input_text' and 'note_matteo' in e)
+             and not (d == 'script' and ('kanban_todoist_move_task' in s or 'kanban_todoist_move_task' in e)) }}
+    actions:
+      - variables:
+          d: "{{ trigger.event.data.domain }}"
+          s: "{{ trigger.event.data.service }}"
+          ents: "{{ (trigger.event.data.service_data | default({})).get('entity_id', []) }}"
+      - choose:
+          - conditions: "{{ d == 'script' }}"
+            sequence:
+              - action: script.turn_off
+                continue_on_error: true
+                target:
+                  entity_id:
+                    - script.je_pars
+                    - script.tout_eteindre
+                    - script.retour
+                    - script.bonne_nuit
+                    - script.sieste_calme
+                    - script.simulation_presence_rotation
+                    - script.1786831774432
+              - action: timer.cancel
+                continue_on_error: true
+                target:
+                  entity_id: timer.compte_a_rebours_depart
+          - conditions: "{{ d in ['light', 'switch', 'input_boolean'] and s in ['turn_on', 'turn_off', 'toggle'] and ents | length > 0 }}"
+            sequence:
+              - action: "{{ d }}.{{ {'turn_on': 'turn_off', 'turn_off': 'turn_on', 'toggle': 'toggle'}[s] }}"
+                continue_on_error: true
+                target:
+                  entity_id: "{{ ents }}"
+      - action: notify.mobile_app_samsung_greg
+        continue_on_error: true
+        data:
+          title: "🛡️ Matteo bloqué"
+          message: "Commande de Matteo annulée : {{ d }}.{{ s }} {{ ents }}"
+
+  - id: securite_matteo_restauration
+    alias: "🛡️ Matteo : restauration chauffage / alarme (sécurité)"
+    description: "Si le compte Matteo change un mode de chauffage ou l'alarme, l'état précédent est remis aussitôt."
+    mode: queued
+    max: 30
+    triggers:
+      - trigger: state
+        entity_id:
+          - input_select.mode_chambre_adulte
+          - input_select.mode_chambre_enfants
+          - input_select.mode_piece_de_vie
+          - input_select.mode_salle_de_bain
+          - alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+          - alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison
+          - alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_cave
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.context.user_id == '27b37491ab9d46e0983dda25b47cb355' and trigger.from_state is not none }}"
+    actions:
+      - variables:
+          e: "{{ trigger.entity_id }}"
+          prev: "{{ trigger.from_state.state }}"
+      - choose:
+          - conditions: "{{ e.startswith('input_select.') }}"
+            sequence:
+              - action: input_select.select_option
+                target:
+                  entity_id: "{{ e }}"
+                data:
+                  option: "{{ prev }}"
+          - conditions: "{{ e.startswith('alarm_control_panel.') and prev in ['armed_away', 'armed_home', 'armed_night', 'disarmed'] }}"
+            sequence:
+              - action: "alarm_control_panel.{{ {'armed_away': 'alarm_arm_away', 'armed_home': 'alarm_arm_home', 'armed_night': 'alarm_arm_night', 'disarmed': 'alarm_disarm'}[prev] }}"
+                continue_on_error: true
+                target:
+                  entity_id: "{{ e }}"
+      - action: notify.mobile_app_samsung_greg
+        continue_on_error: true
+        data:
+          title: "🛡️ Matteo bloqué"
+          message: "Matteo a modifié {{ e }} ({{ prev }} → {{ trigger.to_state.state }}) : état précédent remis."
