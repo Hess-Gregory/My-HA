@@ -1814,7 +1814,15 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_title",
-                  "name": "⚡ Strobe",
+                  "name": "🎚️ Console DMX · programmeur",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "**1.** Sélectionnez les projecteurs · **2.** Choisissez la couleur · **3.** L’effet · **4.** Intensité et vitesse · **5.** GO",
                   "grid_options": {
                     "columns": "full",
                     "rows": "auto"
@@ -1822,10 +1830,8 @@
                 },
                 {
                   "type": "custom:button-card",
-                  "template": "cc_switch",
-                  "entity": "input_boolean.strobe_actif",
-                  "name": "STROBE",
-                  "icon": "mdi:flash",
+                  "template": "cc_title",
+                  "name": "1 · Projecteurs",
                   "grid_options": {
                     "columns": "full",
                     "rows": "auto"
@@ -1918,10 +1924,325 @@
                 },
                 {
                   "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "2 · Couleur",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
                   "template": "cc_push",
-                  "name": "🐢 Lent",
-                  "label": "1 flash / s",
-                  "icon": "mdi:speedometer-slow",
+                  "name": "Blanc",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Blanc"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffffff",
+                    "c2": "#c9ced8",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Blanc chaud",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Blanc chaud"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffbe6e",
+                    "c2": "#c9853a",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Rouge",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Rouge"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff2a2a",
+                    "c2": "#a80000",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Orange",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Orange"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff6a1a",
+                    "c2": "#b03c00",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Jaune",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Jaune"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffd21a",
+                    "c2": "#b08e00",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Vert",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Vert"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#3cff1a",
+                    "c2": "#1f9e00",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Cyan",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Cyan"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#1ae6ff",
+                    "c2": "#008ea0",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Bleu",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Bleu"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#2a50ff",
+                    "c2": "#0019a8",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "UV",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "UV"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#6a2aff",
+                    "c2": "#30008e",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Magenta",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Magenta"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff1ab0",
+                    "c2": "#a8006e",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Rose",
+                  "label": "",
+                  "icon": "mdi:circle",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_couleur"
+                    },
+                    "data": {
+                      "option": "Rose"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff6aa0",
+                    "c2": "#b0305e",
+                    "c3": "#14161c"
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "3 · Effet",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎯 Fixe",
+                  "label": "Couleur posée",
+                  "icon": "mdi:target",
                   "tap_action": {
                     "haptic": "medium",
                     "action": "call-service",
@@ -1930,7 +2251,7 @@
                       "entity_id": "input_select.strobe_mode"
                     },
                     "data": {
-                      "option": "🐢 Lent"
+                      "option": "🎯 Fixe"
                     }
                   },
                   "variables": {
@@ -1939,16 +2260,16 @@
                     "c3": "#2a2f3a"
                   },
                   "grid_options": {
-                    "columns": 4,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
                 {
                   "type": "custom:button-card",
                   "template": "cc_push",
-                  "name": "⚡ Rapide",
-                  "label": "4 flashs / s",
-                  "icon": "mdi:speedometer",
+                  "name": "⚡ Strobe",
+                  "label": "Flashs à la vitesse choisie",
+                  "icon": "mdi:flash",
                   "tap_action": {
                     "haptic": "medium",
                     "action": "call-service",
@@ -1957,25 +2278,25 @@
                       "entity_id": "input_select.strobe_mode"
                     },
                     "data": {
-                      "option": "⚡ Rapide"
+                      "option": "⚡ Strobe"
                     }
                   },
                   "variables": {
-                    "c1": "#ffffff",
-                    "c2": "#bfc6d6",
-                    "c3": "#3a3f4d"
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
                   },
                   "grid_options": {
-                    "columns": 4,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
                 {
                   "type": "custom:button-card",
                   "template": "cc_push",
-                  "name": "🥁 Sync tempo",
-                  "label": "1 flash par temps",
-                  "icon": "mdi:metronome",
+                  "name": "🫁 Pulse",
+                  "label": "Monte et descend",
+                  "icon": "mdi:sine-wave",
                   "tap_action": {
                     "haptic": "medium",
                     "action": "call-service",
@@ -1984,16 +2305,70 @@
                       "entity_id": "input_select.strobe_mode"
                     },
                     "data": {
-                      "option": "🥁 Sync tempo (1 flash par temps)"
+                      "option": "🫁 Pulse (respiration)"
                     }
                   },
                   "variables": {
-                    "c1": "#ffd27a",
-                    "c2": "#c99431",
-                    "c3": "#5e4510"
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
                   },
                   "grid_options": {
-                    "columns": 4,
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🏃 Chase",
+                  "label": "Un projecteur après l’autre",
+                  "icon": "mdi:run-fast",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "🏃 Chase (de projecteur en projecteur)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🌈 Arc-en-ciel",
+                  "label": "Couleurs qui tournent",
+                  "icon": "mdi:looks",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "🌈 Arc-en-ciel"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
+                  },
+                  "grid_options": {
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -2015,12 +2390,12 @@
                     }
                   },
                   "variables": {
-                    "c1": "#ff9d6b",
-                    "c2": "#d4552a",
-                    "c3": "#5e1f0a"
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
                   },
                   "grid_options": {
-                    "columns": 4,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
@@ -2038,25 +2413,25 @@
                       "entity_id": "input_select.strobe_mode"
                     },
                     "data": {
-                      "option": "🌩️ Éclairs (aléatoire)"
+                      "option": "🌩️ Éclairs"
                     }
                   },
                   "variables": {
-                    "c1": "#b8c8ff",
-                    "c2": "#5a6fd4",
-                    "c3": "#1a2559"
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
                   },
                   "grid_options": {
-                    "columns": 4,
+                    "columns": 6,
                     "rows": "auto"
                   }
                 },
                 {
                   "type": "custom:button-card",
                   "template": "cc_push",
-                  "name": "🎚️ Manuel",
-                  "label": "Vitesse au curseur",
-                  "icon": "mdi:tune-vertical",
+                  "name": "🥁 Strobe sync tempo",
+                  "label": "1 flash par temps",
+                  "icon": "mdi:metronome",
                   "tap_action": {
                     "haptic": "medium",
                     "action": "call-service",
@@ -2065,55 +2440,32 @@
                       "entity_id": "input_select.strobe_mode"
                     },
                     "data": {
-                      "option": "🎚️ Manuel (curseur vitesse)"
+                      "option": "🥁 Strobe sync tempo"
                     }
                   },
                   "variables": {
-                    "c1": "#9aa3b5",
-                    "c2": "#5a6377",
-                    "c3": "#262b38"
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
                   },
                   "grid_options": {
-                    "columns": 4,
-                    "rows": "auto"
-                  }
-                },
-                {
-                  "type": "tile",
-                  "entity": "input_select.strobe_mode",
-                  "name": "Mode strobe",
-                  "icon": "mdi:flash-auto",
-                  "features": [
-                    {
-                      "type": "select-options"
-                    }
-                  ],
-                  "features_position": "bottom",
-                  "grid_options": {
                     "columns": 6,
                     "rows": "auto"
                   }
                 },
                 {
-                  "type": "tile",
-                  "entity": "input_select.strobe_couleur",
-                  "name": "Couleur",
-                  "icon": "mdi:palette",
-                  "features": [
-                    {
-                      "type": "select-options"
-                    }
-                  ],
-                  "features_position": "bottom",
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "4 · Intensité & vitesse",
                   "grid_options": {
-                    "columns": 6,
+                    "columns": "full",
                     "rows": "auto"
                   }
                 },
                 {
                   "type": "tile",
                   "entity": "input_number.strobe_intensite",
-                  "name": "Intensité strobe",
+                  "name": "Intensité",
                   "icon": "mdi:brightness-7",
                   "features": [
                     {
@@ -2130,7 +2482,7 @@
                 {
                   "type": "tile",
                   "entity": "input_number.strobe_vitesse",
-                  "name": "Vitesse (mode manuel)",
+                  "name": "Vitesse (Hz)",
                   "icon": "mdi:speedometer",
                   "features": [
                     {
@@ -2139,6 +2491,95 @@
                     }
                   ],
                   "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_select.strobe_couleur",
+                  "name": "Couleur choisie",
+                  "icon": "mdi:palette",
+                  "features": [
+                    {
+                      "type": "select-options"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_select.strobe_mode",
+                  "name": "Effet choisi",
+                  "icon": "mdi:auto-fix",
+                  "features": [
+                    {
+                      "type": "select-options"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "5 · GO",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "▶ GO",
+                  "label": "Lancer le programme",
+                  "icon": "mdi:play",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_boolean.turn_on",
+                    "target": {
+                      "entity_id": "input_boolean.strobe_actif"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#5dff8a",
+                    "c2": "#1fae4a",
+                    "c3": "#0b3a18"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "■ STOP",
+                  "label": "Rendre les projecteurs au set",
+                  "icon": "mdi:stop",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_boolean.turn_off",
+                    "target": {
+                      "entity_id": "input_boolean.strobe_actif"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff6b6b",
+                    "c2": "#c02a2a",
+                    "c3": "#4a0c0c"
+                  },
                   "grid_options": {
                     "columns": 6,
                     "rows": "auto"
