@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.5.0 | 08/10/2026 23:08 | 9 modes sono inspires des grands shows + demarrage immediat
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
@@ -11,6 +10,7 @@ input_select:
         glacial & rouge), 🧊 Show · Anyma cyber néon, 🔺 Show · Daft Punk pyramide, 💙 Show · Swedish House Mafia, 🦇 Show · Berghain (rouge sombre), 🟥 Show · Hardstyle Defqon (rouge & blanc), 🎆 Show · Coldplay bracelets, 🌅 Show · Ibiza sunset]
     initial: — Arrêt —
 input_number:
+  sono_intensite: {name: Intensité sono, icon: 'mdi:brightness-6', min: 10, max: 100, step: 5, initial: 50, mode: slider, unit_of_measurement: '%'}
   sono_tempo: {name: Tempo sono (BPM), icon: 'mdi:metronome', min: 60, max: 180, step: 1, mode: slider, unit_of_measurement: BPM}
 script:
   sono_preparer:
@@ -328,7 +328,7 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[0] }}', bri: '{{ c.bri[0] }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[0] }}', bri: '{{ [ (c.bri[0] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 1 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 1 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -337,7 +337,7 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[1] }}', bri: '{{ c.bri[1] }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[1] }}', bri: '{{ [ (c.bri[1] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 2 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 2 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -346,7 +346,7 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[2] }}', bri: '{{ c.bri[2] }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[2] }}', bri: '{{ [ (c.bri[2] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 3 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 3 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -355,7 +355,7 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[3] }}', bri: '{{ c.bri[3] }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[3] }}', bri: '{{ [ (c.bri[3] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 4 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 4 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -364,7 +364,7 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[4] }}', bri: '{{ c.bri[4] }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[4] }}', bri: '{{ [ (c.bri[4] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 5 < n }}'}
             - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 5 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
@@ -373,7 +373,7 @@ script:
               continue_on_error: true
               target: {entity_id: script.sono_appliquer}
               data:
-                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[5] }}', bri: '{{ c.bri[5] }}', tr: '{{ (beat * c.t) | round(2) }}'}
+                variables: {ents: '{{ grp }}', rgb: '{{ c.pal[5] }}', bri: '{{ [ (c.bri[5] * (states("input_number.sono_intensite") | float(50)) / 100) | round(0) | int, 1 ] | max }}', tr: '{{ (beat * c.t) | round(2) }}'}
         - delay: {seconds: '{{ [ (t0 + step * c.beats * beat) - as_timestamp(now()), 0.05 ] | max | round(2) }}'}
 automation:
 - id: sono_lumieres_selection
