@@ -80,9 +80,9 @@
     "version": "0.7.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "popup decompte Je pars avec bouton Annuler (rattrapage : Annuler, code Je pars, heure/date)",
-    "last_update": "2026-10-08T21:28:11.906378+02:00",
-    "version": "2.4.1"
+    "last_change": "popup telecommande TV/Ampli au clic sur le programme TV",
+    "last_update": "2026-10-08T21:32:09.439807+02:00",
+    "version": "2.5.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -330,8 +330,8 @@
     "version": "0.0.1"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "popup decompte Je pars avec bouton Annuler",
-    "last_update": "2026-10-08T21:28:11.906378+02:00",
-    "version": "2.4.1"
+    "last_change": "popup telecommande TV/Ampli au clic sur le programme TV",
+    "last_update": "2026-10-08T21:32:09.439807+02:00",
+    "version": "2.5.0"
   }
 }
