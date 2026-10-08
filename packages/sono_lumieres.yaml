@@ -1,0 +1,121 @@
+# Lumières dynamiques pour la sono, selon le style musical (boucle tant que le style est choisi)
+input_select:
+  sono_lumieres:
+    name: Lumières sono musicale
+    icon: mdi:music-circle
+    options: [— Arrêt —, 🔊 Hard techno, 🎛️ Tech house, 🥁 Afro house, 🌙 Ambiance chill, 📼 Rétro techno, 💜 RnB, 🕹️ Années 80]
+    initial: — Arrêt —
+script:
+  sono_lumieres:
+    alias: 🎵 Lumières sono musicale (boucle)
+    icon: mdi:music-circle
+    mode: restart
+    sequence:
+    - variables:
+        style: '{{ states(''input_select.sono_lumieres'') }}'
+        cfg:
+          🔊 Hard techno:
+            pal:
+            - [255, 0, 0]
+            - [255, 255, 255]
+            - [180, 0, 0]
+            - [255, 40, 0]
+            bri: [255, 35, 255, 80]
+            d: 1.0
+            t: 0.1
+          🎛️ Tech house:
+            pal:
+            - [0, 60, 255]
+            - [0, 220, 200]
+            - [150, 0, 255]
+            - [255, 160, 80]
+            bri: [220, 140, 200, 120]
+            d: 2.0
+            t: 0.8
+          🥁 Afro house:
+            pal:
+            - [255, 140, 0]
+            - [255, 70, 0]
+            - [255, 200, 40]
+            - [0, 170, 70]
+            - [200, 0, 120]
+            bri: [200, 170, 230, 150, 180]
+            d: 2.5
+            t: 1.5
+          🌙 Ambiance chill:
+            pal:
+            - [0, 180, 200]
+            - [100, 60, 255]
+            - [0, 90, 255]
+            - [255, 120, 180]
+            bri: [120, 95, 110, 85]
+            d: 6
+            t: 5
+          📼 Rétro techno:
+            pal:
+            - [120, 255, 0]
+            - [255, 240, 0]
+            - [0, 255, 255]
+            - [255, 0, 200]
+            bri: [255, 170, 255, 170]
+            d: 1.2
+            t: 0.2
+          💜 RnB:
+            pal:
+            - [140, 0, 255]
+            - [255, 0, 140]
+            - [220, 0, 40]
+            - [255, 150, 40]
+            bri: [150, 125, 140, 105]
+            d: 4
+            t: 3
+          🕹️ Années 80:
+            pal:
+            - [255, 20, 150]
+            - [0, 120, 255]
+            - [160, 0, 255]
+            - [255, 220, 0]
+            - [0, 255, 200]
+            bri: [230, 190, 230, 200, 210]
+            d: 1.8
+            t: 0.5
+        lights: [light.salle_a_manger_lc, light.coin_dj_sono_gauche, light.salle_a_manger_ld, light.salon_panneau_mural, light.salle_a_manger_lg, light.coin_dj_sono_droite, light.salle_a_manger_vit_g, light.salon_ambilight_tv,
+          light.salle_a_manger_vit_d]
+    - {condition: template, value_template: '{{ style in cfg }}'}
+    - action: light.turn_off
+      continue_on_error: true
+      target:
+        entity_id: [light.salon_l_salon, light.cuisine_s_cuisine_1, light.cuisine_s_cuisine_2, light.cuisine_s_cuisine_3, light.cuisine_s_cuisine_4, light.cuisine_evier]
+    - action: light.turn_on
+      continue_on_error: true
+      target: {entity_id: light.cuisine_etagere_cafe}
+      data: {brightness: 20}
+    - repeat:
+        while:
+        - {condition: template, value_template: '{{ is_state(''input_select.sono_lumieres'', style) and repeat.index < 20000 }}'}
+        sequence:
+        - variables: {step: '{{ repeat.index }}', c: '{{ cfg[style] }}'}
+        - repeat:
+            for_each: '{{ range(lights | length) | list }}'
+            sequence:
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ lights[repeat.item] }}'}
+              data: {rgb_color: '{{ c.pal[(step + repeat.item) % (c.pal | length)] }}', brightness: '{{ c.bri[(step + repeat.item) % (c.bri | length)] }}', transition: '{{ c.t }}'}
+        - delay: {seconds: '{{ c.d }}'}
+automation:
+- id: sono_lumieres_selection
+  alias: '🎵 Lumières sono : lancer/arrêter selon le style choisi'
+  mode: restart
+  triggers:
+  - {trigger: state, entity_id: input_select.sono_lumieres}
+  actions:
+  - choose:
+    - conditions:
+      - {condition: state, entity_id: input_select.sono_lumieres, state: — Arrêt —}
+      sequence:
+      - action: script.turn_off
+        target: {entity_id: script.sono_lumieres}
+    default:
+    - action: script.turn_on
+      target: {entity_id: script.sono_lumieres}
