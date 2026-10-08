@@ -42,7 +42,7 @@ script:
               entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
       - if:
           - condition: template
-            value_template: "{{ states('scene.avant_scenario') not in ['unknown', 'unavailable'] }}"
+            value_template: "{{ states.scene.avant_scenario is not none }}"
         then:
           - action: scene.turn_on
             continue_on_error: true
