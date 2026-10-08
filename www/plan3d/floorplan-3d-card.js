@@ -18,11 +18,11 @@ const VIEWS = {
   'Salon': { pos: [6.0, 9.5, 6.5], tgt: [3.3, 0.6, -2.4] },
   'Salle à manger': { pos: [1.6, 9, 7.5], tgt: [4.2, 0.6, 1.4] },
   'Cuisine': { pos: [4.6, 6.5, 3.6], tgt: [0.4, 0.7, 1.9] },
-  'Chambre enfants': { pos: [-2.55, 7.6, 3.3], tgt: [-2.7, 0, 1.6] },
-  'Chambre adulte': { pos: [-6.05, 7.6, 3.4], tgt: [-6.2, 0, 1.7] },
-  'Salle de bain': { pos: [-6.7, 6.2, 0.3], tgt: [-6.8, 0, -1.1] },
-  'Buanderie': { pos: [-0.1, 6.2, 0.5], tgt: [-0.2, 0, -0.9] },
-  'Hall d’entrée': { pos: [-1.35, 7.6, -0.9], tgt: [-1.5, 0, -2.6] },
+  'Chambre enfants': { pos: [-2.43, 13.7, 4.66], tgt: [-2.7, 0, 1.6] },
+  'Chambre adulte': { pos: [-5.93, 13.7, 4.76], tgt: [-6.2, 0, 1.7] },
+  'Salle de bain': { pos: [-6.62, 11.2, 1.42], tgt: [-6.8, 0, -1.1] },
+  'Buanderie': { pos: [-0.02, 11.2, 1.62], tgt: [-0.2, 0, -0.9] },
+  'Hall d’entrée': { pos: [-1.23, 13.7, 0.46], tgt: [-1.5, 0, -2.6] },
 };
 
 const k2rgb = (k) => { const t = k / 100; let r, g, b; if (t <= 66) { r = 255; g = 99.47 * Math.log(t) - 161.12; b = t <= 19 ? 0 : 138.52 * Math.log(t - 10) - 305.04; } else { r = 329.7 * Math.pow(t - 60, -0.1332); g = 288.12 * Math.pow(t - 60, -0.0755); b = 255; } const c = (v) => Math.max(0, Math.min(255, Math.round(v))); return [c(r), c(g), c(b)]; };
