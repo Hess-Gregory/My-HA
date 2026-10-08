@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.5.1 | 08/10/2026 11:42 | carillon et ouverture accueil en parallele, camera fermee 10 s apres porte fermee et couloir calme
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
