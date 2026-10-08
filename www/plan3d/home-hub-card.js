@@ -143,11 +143,24 @@ class HomeHubCard extends HTMLElement {
     this.shadowRoot.appendChild(o);
   }
 
+  _cdTick() {
+    const t = this._h && this._h.states['timer.compte_a_rebours_depart']; let o = this.shadowRoot.querySelector('.cdov');
+    if (!t || t.state !== 'active' || !t.attributes.finishes_at) { if (o) o.remove(); return; }
+    const left = Math.max(0, Math.round((new Date(t.attributes.finishes_at) - Date.now()) / 1000));
+    if (!o) {
+      o = document.createElement('div'); o.className = 'cdov';
+      o.style.cssText = 'position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
+      o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:22px 26px;width:300px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="font:700 18px sans-serif">⏳ Armement de l’alarme</div><div class="n" style="font:200 76px/1.1 sans-serif;margin:10px 0;color:#ffd27a"></div><div style="font-size:13px;opacity:.75">L’alarme passe en TOTAL à la fin du décompte</div><button style="margin-top:16px;width:100%;padding:13px;border:none;border-radius:12px;background:#e05555;color:#fff;font:700 15px sans-serif">↩️ Annuler le départ</button></div>';
+      o.querySelector('button').onclick = () => { this._h.callService('script', 'turn_on', { entity_id: 'script.annuler_scenario' }); o.remove(); };
+      this.shadowRoot.appendChild(o);
+    }
+    o.querySelector('.n').textContent = left + ' s';
+  }
   _toast(t) { let el = this.$('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; this.$('.hub').appendChild(el); } el.textContent = t; el.classList.add('show'); clearTimeout(this._tt); this._tt = setTimeout(() => el.classList.remove('show'), 2500); }
   _go(path) { history.pushState(null, '', path); window.dispatchEvent(new CustomEvent('location-changed')); }
   _more(e) { this.dispatchEvent(new CustomEvent('hass-more-info', { bubbles: true, composed: true, detail: { entityId: e } })); }
   _clock() {
-    if (!this.$) return; const d = new Date(), hh = d.getHours();
+    if (!this.$) return; this._cdTick(); const d = new Date(), hh = d.getHours();
     this.$('.clock').innerHTML = `${String(hh).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     this.$('.date').textContent = d.toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' });
     const sa = this._h && this._h.states['sun.sun']; if (sa && sa.attributes.next_rising) { const r = new Date(sa.attributes.next_rising), st = new Date(sa.attributes.next_setting), f = (x) => x.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' });
