@@ -1,0 +1,1529 @@
+# Ambiances « light jockey » pour la pièce de vie + menu déroulant
+# Zones : lustre SAM (3), vitrines (2), panneau mural, Ambilight, lustre salon, spots cuisine, évier, étagère café, spots coin DJ (scènes fête seulement)
+input_select:
+  ambiance_piece_de_vie:
+    name: Ambiance pièce de vie
+    icon: mdi:palette
+    options: [— Choisir une ambiance —, 📺 Ambiance TV, 🍽️ Ambiance Souper, 🕯️ Ambiance Cocooning, 🎉 Ambiance Fête, 🎄 Ambiance Noël, 🎃 Ambiance Halloween, 💕 Ambiance Saint-Valentin, 🥂 Ambiance Nouvel An,
+      🌅 Lever de soleil, ☀️ Brunch lumineux, 📖 Lecture au salon, 💻 Concentration, 🧹 Plein feu ménage, 🥂 Apéro, 🕯️ Dîner aux chandelles, 🔥 Feu de cheminée, 🎲 Soirée jeux, 🍿 Cinéma noir, 🧘 Zen spa, 🌙 Veilleuse
+        nuit, 🌇 Coucher de soleil, ✨ Golden hour, 🌌 Aurore boréale, 🌊 Lagon tropical, 🌲 Forêt enchantée, 🏜️ Désert Sahara, 🌸 Printemps, 🍂 Automne cuivré, 🧊 Bleu polaire, 💜 Champ de lavande, 🌠 Nuit étoilée,
+      🍹 Cocktail tropical, 🪩 Club boîte de nuit, 🕺 Disco 70s, 🌴 Synthwave Miami, 🎷 Lounge jazz, 🎤 Karaoké, 🟣 Rave UV, 🎰 Casino Las Vegas, ⚽ Diables Rouges, 🇧🇪 Fête nationale, 🎂 Anniversaire, 🎭 Carnaval,
+      🐣 Pâques, ☘️ Saint-Patrick, 👻 Halloween fantôme, ❄️ Noël blanc, 💍 Romantique blanc & or]
+    initial: — Choisir une ambiance —
+script:
+  ambiance_appliquer:
+    alias: 🎨 Appliquer l'ambiance choisie
+    icon: mdi:play
+    mode: restart
+    sequence:
+    - variables: {sc: '{{ states.scene | selectattr(''attributes.friendly_name'',''eq'', states(''input_select.ambiance_piece_de_vie'')) | map(attribute=''entity_id'') | first | default('''') }}'}
+    - {condition: template, value_template: '{{ sc != '''' }}'}
+    - action: scene.turn_on
+      target: {entity_id: '{{ sc }}'}
+      data: {transition: 2}
+  ambiance_eteindre:
+    alias: ⏹ Éteindre la pièce de vie
+    icon: mdi:lightbulb-off
+    sequence:
+    - action: light.turn_off
+      target:
+        entity_id: [light.coin_dj_sono_droite, light.coin_dj_sono_gauche, light.cuisine_etagere_cafe, light.cuisine_evier, light.cuisine_s_cuisine_1, light.cuisine_s_cuisine_2, light.cuisine_s_cuisine_3,
+          light.cuisine_s_cuisine_4, light.salle_a_manger_lc, light.salle_a_manger_ld, light.salle_a_manger_lg, light.salle_a_manger_vit_d, light.salle_a_manger_vit_g, light.salon_ambilight_tv, light.salon_l_salon,
+          light.salon_panneau_mural]
+      data: {transition: 2}
+    - action: input_select.select_option
+      target: {entity_id: input_select.ambiance_piece_de_vie}
+      data: {option: — Choisir une ambiance —}
+automation:
+- id: ambiance_piece_de_vie_selection
+  alias: '🎨 Ambiance pièce de vie : appliquer au choix du menu'
+  mode: restart
+  triggers:
+  - {trigger: state, entity_id: input_select.ambiance_piece_de_vie}
+  conditions:
+  - {condition: template, value_template: '{{ trigger.to_state.state != ''— Choisir une ambiance —'' }}'}
+  actions:
+  - {action: script.ambiance_appliquer}
+scene:
+- id: lj_lever_de_soleil
+  name: 🌅 Lever de soleil
+  icon: mdi:weather-sunset-up
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 150, 90]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 190, 120]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 150, 90]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 120, 100]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 120, 100]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 110, 80]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 89
+      rgb_color: [255, 170, 110]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 102, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 102, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 102, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 102, color_temp_kelvin: 3000}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 102}
+- id: lj_brunch_lumineux
+  name: ☀️ Brunch lumineux
+  icon: mdi:coffee
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 229, color_temp_kelvin: 4000}
+    light.salle_a_manger_ld: {state: 'on', brightness: 229, color_temp_kelvin: 4000}
+    light.salle_a_manger_lg: {state: 'on', brightness: 229, color_temp_kelvin: 4000}
+    light.salle_a_manger_vit_g: {state: 'on', brightness: 153, color_temp_kelvin: 3500}
+    light.salle_a_manger_vit_d: {state: 'on', brightness: 153, color_temp_kelvin: 3500}
+    light.salon_panneau_mural: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.salon_ambilight_tv: {state: 'off'}
+    light.salon_l_salon: {state: 'on', brightness: 204, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 255, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 255, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 255, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 255, color_temp_kelvin: 4000}
+    light.cuisine_evier: {state: 'on', brightness: 204}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 204}
+- id: lj_lecture_au_salon
+  name: 📖 Lecture au salon
+  icon: mdi:book-open-variant
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 64, color_temp_kelvin: 2700}
+    light.salle_a_manger_ld: {state: 'on', brightness: 64, color_temp_kelvin: 2700}
+    light.salle_a_manger_lg: {state: 'on', brightness: 64, color_temp_kelvin: 2700}
+    light.salle_a_manger_vit_g: {state: 'on', brightness: 64, color_temp_kelvin: 2400}
+    light.salle_a_manger_vit_d: {state: 'on', brightness: 64, color_temp_kelvin: 2400}
+    light.salon_panneau_mural: {state: 'on', brightness: 89, color_temp_kelvin: 3000}
+    light.salon_ambilight_tv: {state: 'off'}
+    light.salon_l_salon: {state: 'on', brightness: 217, color_temp_kelvin: 3200}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 64}
+- id: lj_concentration
+  name: 💻 Concentration
+  icon: mdi:laptop
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 255, color_temp_kelvin: 4500}
+    light.salle_a_manger_ld: {state: 'on', brightness: 255, color_temp_kelvin: 4500}
+    light.salle_a_manger_lg: {state: 'on', brightness: 255, color_temp_kelvin: 4500}
+    light.salle_a_manger_vit_g: {state: 'on', brightness: 102, color_temp_kelvin: 4000}
+    light.salle_a_manger_vit_d: {state: 'on', brightness: 102, color_temp_kelvin: 4000}
+    light.salon_panneau_mural: {state: 'on', brightness: 140, color_temp_kelvin: 4500}
+    light.salon_ambilight_tv: {state: 'off'}
+    light.salon_l_salon: {state: 'on', brightness: 229, color_temp_kelvin: 4500}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 204, color_temp_kelvin: 4500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 204, color_temp_kelvin: 4500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 204, color_temp_kelvin: 4500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 204, color_temp_kelvin: 4500}
+    light.cuisine_evier: {state: 'on', brightness: 127}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_plein_feu_menage
+  name: 🧹 Plein feu ménage
+  icon: mdi:broom
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salle_a_manger_ld: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salle_a_manger_lg: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salle_a_manger_vit_g: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salle_a_manger_vit_d: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salon_panneau_mural: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salon_ambilight_tv: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.salon_l_salon: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 255, color_temp_kelvin: 5000}
+    light.cuisine_evier: {state: 'on', brightness: 255}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 255}
+- id: lj_apero
+  name: 🥂 Apéro
+  icon: mdi:glass-cocktail
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 153, color_temp_kelvin: 2400}
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 140, 60]
+    light.salle_a_manger_lg: {state: 'on', brightness: 153, color_temp_kelvin: 2400}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 100, 40]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 100, 40]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 130, 50]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 76
+      rgb_color: [200, 80, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_evier: {state: 'on', brightness: 89}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 153}
+- id: lj_diner_aux_chandelles
+  name: 🕯️ Dîner aux chandelles
+  icon: mdi:candle
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 89, color_temp_kelvin: 2000}
+    light.salle_a_manger_ld: {state: 'on', brightness: 89, color_temp_kelvin: 2000}
+    light.salle_a_manger_lg: {state: 'on', brightness: 89, color_temp_kelvin: 2000}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 64
+      rgb_color: [255, 90, 20]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 64
+      rgb_color: [255, 90, 20]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 38
+      rgb_color: [255, 90, 20]
+    light.salon_ambilight_tv: {state: 'off'}
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'on', brightness: 26}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 51}
+- id: lj_feu_de_cheminee
+  name: 🔥 Feu de cheminée
+  icon: mdi:fireplace
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 89
+      rgb_color: [255, 60, 0]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 110, 10]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 89
+      rgb_color: [255, 60, 0]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 89
+      rgb_color: [255, 40, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 100, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 80, 0]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 30, 0]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 64}
+- id: lj_soiree_jeux
+  name: 🎲 Soirée jeux
+  icon: mdi:dice-multiple
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 242, color_temp_kelvin: 3000}
+    light.salle_a_manger_ld: {state: 'on', brightness: 242, color_temp_kelvin: 3000}
+    light.salle_a_manger_lg: {state: 'on', brightness: 242, color_temp_kelvin: 3000}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 170, 80]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 170, 80]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 150, 70]
+    light.salon_ambilight_tv: {state: 'off'}
+    light.salon_l_salon: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 127, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 127, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 127, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 127, color_temp_kelvin: 3000}
+    light.cuisine_evier: {state: 'on', brightness: 102}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_cinema_noir
+  name: 🍿 Cinéma noir
+  icon: mdi:filmstrip
+  entities:
+    light.salle_a_manger_lc: {state: 'off'}
+    light.salle_a_manger_ld: {state: 'off'}
+    light.salle_a_manger_lg: {state: 'off'}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 20
+      rgb_color: [40, 60, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 20
+      rgb_color: [40, 60, 255]
+    light.salon_panneau_mural: {state: 'off'}
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 64
+      rgb_color: [30, 50, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 20}
+- id: lj_zen_spa
+  name: 🧘 Zen spa
+  icon: mdi:spa
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 64
+      rgb_color: [120, 220, 200]
+    light.salle_a_manger_ld: {state: 'on', brightness: 64, color_temp_kelvin: 2700}
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 64
+      rgb_color: [120, 220, 200]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 76
+      rgb_color: [90, 200, 180]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 76
+      rgb_color: [90, 200, 180]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 76
+      rgb_color: [140, 230, 210]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 51
+      rgb_color: [255, 170, 110]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 51}
+- id: lj_veilleuse_nuit
+  name: 🌙 Veilleuse nuit
+  icon: mdi:weather-night
+  entities:
+    light.salle_a_manger_lc: {state: 'off'}
+    light.salle_a_manger_ld: {state: 'off'}
+    light.salle_a_manger_lg: {state: 'off'}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 10
+      rgb_color: [255, 60, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 10
+      rgb_color: [255, 60, 0]
+    light.salon_panneau_mural: {state: 'off'}
+    light.salon_ambilight_tv: {state: 'off'}
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 13}
+- id: lj_coucher_de_soleil
+  name: 🌇 Coucher de soleil
+  icon: mdi:weather-sunset
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 90, 0]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 30, 90]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 115
+      rgb_color: [150, 0, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 60, 40]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 115
+      rgb_color: [200, 0, 180]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 70, 20]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 115
+      rgb_color: [170, 0, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 89, color_temp_kelvin: 2400}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 89, color_temp_kelvin: 2400}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 89, color_temp_kelvin: 2400}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 89, color_temp_kelvin: 2400}
+    light.cuisine_evier: {state: 'on', brightness: 64}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 102}
+- id: lj_golden_hour
+  name: ✨ Golden hour
+  icon: mdi:white-balance-sunny
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 170, 50]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 170, 50]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 170, 50]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 140, 30]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 140, 30]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 160, 40]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 120, 20]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 127, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 127, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 127, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 127, color_temp_kelvin: 2700}
+    light.cuisine_evier: {state: 'on', brightness: 102}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 140}
+- id: lj_aurore_boreale
+  name: 🌌 Aurore boréale
+  icon: mdi:aurora
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 140
+      rgb_color: [0, 255, 120]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 127
+      rgb_color: [0, 200, 255]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 127
+      rgb_color: [140, 0, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 115
+      rgb_color: [0, 255, 160]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 115
+      rgb_color: [120, 0, 255]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 255, 140]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 153
+      rgb_color: [130, 0, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 127
+      rgb_color: [0, 255, 140]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 115
+      rgb_color: [90, 0, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 51}
+- id: lj_lagon_tropical
+  name: 🌊 Lagon tropical
+  icon: mdi:waves
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 200, 255]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 255, 210]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 140
+      rgb_color: [0, 140, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [0, 255, 200]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 127
+      rgb_color: [0, 255, 200]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [0, 170, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 115
+      rgb_color: [0, 255, 220]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 89, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 89, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 89, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 89, color_temp_kelvin: 4000}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 102}
+- id: lj_foret_enchantee
+  name: 🌲 Forêt enchantée
+  icon: mdi:pine-tree-variant
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 115
+      rgb_color: [60, 255, 40]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 170, 60]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 115
+      rgb_color: [60, 255, 40]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 102
+      rgb_color: [30, 200, 30]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 102
+      rgb_color: [120, 255, 60]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 102
+      rgb_color: [80, 255, 50]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 76
+      rgb_color: [255, 150, 40]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 76}
+- id: lj_desert_sahara
+  name: 🏜️ Désert Sahara
+  icon: mdi:weather-sunny-alert
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 140, 60]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 180, 100]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 140, 60]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [220, 80, 30]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 127
+      rgb_color: [220, 80, 30]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 120, 50]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 102
+      rgb_color: [200, 60, 20]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 102}
+- id: lj_printemps
+  name: 🌸 Printemps
+  icon: mdi:flower
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 140, 190]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 127
+      rgb_color: [200, 255, 120]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 140, 190]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 170, 210]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 115
+      rgb_color: [180, 255, 140]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 150, 200]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 89
+      rgb_color: [170, 255, 170]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'on', brightness: 102}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 115}
+- id: lj_automne_cuivre
+  name: 🍂 Automne cuivré
+  icon: mdi:leaf-maple
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 100, 20]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 127
+      rgb_color: [200, 60, 0]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 140, 40]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 115
+      rgb_color: [180, 50, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 115
+      rgb_color: [180, 50, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 110, 30]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 89
+      rgb_color: [140, 40, 0]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 102, color_temp_kelvin: 2400}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 102, color_temp_kelvin: 2400}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 102, color_temp_kelvin: 2400}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 102, color_temp_kelvin: 2400}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 102}
+- id: lj_bleu_polaire
+  name: 🧊 Bleu polaire
+  icon: mdi:snowflake
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 153
+      rgb_color: [160, 210, 255]
+    light.salle_a_manger_ld: {state: 'on', brightness: 140, color_temp_kelvin: 6500}
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 153
+      rgb_color: [160, 210, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [120, 190, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 127
+      rgb_color: [120, 190, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [170, 220, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 102
+      rgb_color: [80, 150, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 102, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 102, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 102, color_temp_kelvin: 5000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 102, color_temp_kelvin: 5000}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 76}
+- id: lj_champ_de_lavande
+  name: 💜 Champ de lavande
+  icon: mdi:flower-tulip
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 140
+      rgb_color: [170, 120, 255]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 127
+      rgb_color: [220, 170, 255]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 140
+      rgb_color: [170, 120, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 115
+      rgb_color: [150, 90, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 115
+      rgb_color: [150, 90, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 127
+      rgb_color: [190, 140, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 89
+      rgb_color: [120, 60, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 76, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 76, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 76, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 76, color_temp_kelvin: 3000}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 76}
+- id: lj_nuit_etoilee
+  name: 🌠 Nuit étoilée
+  icon: mdi:star-shooting
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 51
+      rgb_color: [20, 30, 200]
+    light.salle_a_manger_ld: {state: 'off'}
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 51
+      rgb_color: [20, 30, 200]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 38
+      rgb_color: [255, 200, 120]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 38
+      rgb_color: [255, 200, 120]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 64
+      rgb_color: [10, 20, 160]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 51
+      rgb_color: [40, 0, 180]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 26}
+- id: lj_cocktail_tropical
+  name: 🍹 Cocktail tropical
+  icon: mdi:palm-tree
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 60, 140]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 140, 0]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 220, 200]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [0, 230, 200]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 60, 140]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 100, 40]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 115
+      rgb_color: [0, 200, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 102, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 102, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 102, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 102, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 115}
+- id: lj_club_boite_de_nuit
+  name: 🪩 Club boîte de nuit
+  icon: mdi:speaker-wireless
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 178
+      rgb_color: [0, 40, 255]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 140]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 30]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 0, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 0, 120]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 0, 140]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [0, 40, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 178
+      rgb_color: [120, 0, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 0, 60]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 38}
+- id: lj_disco_70s
+  name: 🕺 Disco 70s
+  icon: mdi:music
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 170, 0]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 60, 0]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 0, 170]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 140, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 140]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 140, 0]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 0, 170]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 191
+      rgb_color: [255, 90, 0]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 0, 200]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 102, color_temp_kelvin: 2700}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 102}
+- id: lj_synthwave_miami
+  name: 🌴 Synthwave Miami
+  icon: mdi:sunglasses
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 180]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 178
+      rgb_color: [0, 230, 255]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 180]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 230, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 0, 180]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 0, 180]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [0, 230, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 0, 150]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 220, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 51}
+- id: lj_lounge_jazz
+  name: 🎷 Lounge jazz
+  icon: mdi:saxophone
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 102, color_temp_kelvin: 2200}
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 120, 30]
+    light.salle_a_manger_lg: {state: 'on', brightness: 102, color_temp_kelvin: 2200}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 89
+      rgb_color: [110, 0, 200]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 89
+      rgb_color: [110, 0, 200]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 102
+      rgb_color: [90, 0, 180]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 76
+      rgb_color: [255, 100, 20]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'on', brightness: 38}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 76}
+- id: lj_karaoke
+  name: 🎤 Karaoké
+  icon: mdi:microphone-variant
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 220, 0]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 204
+      rgb_color: [0, 180, 255]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 0, 120]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 178
+      rgb_color: [0, 255, 100]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 120, 0]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 0, 120]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 220, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 178
+      rgb_color: [170, 0, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 178
+      rgb_color: [0, 255, 220]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_rave_uv
+  name: 🟣 Rave UV
+  icon: mdi:lightning-bolt
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 204
+      rgb_color: [90, 0, 255]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 204
+      rgb_color: [40, 0, 255]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 204
+      rgb_color: [90, 0, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 178
+      rgb_color: [70, 0, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 178
+      rgb_color: [70, 0, 255]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [90, 0, 255]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [40, 0, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 204
+      rgb_color: [120, 0, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 178
+      rgb_color: [30, 0, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'off'}
+- id: lj_casino_las_vegas
+  name: 🎰 Casino Las Vegas
+  icon: mdi:cards-playing
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 0]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 191
+      rgb_color: [255, 180, 0]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 0]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 170, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 20, 20]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 0, 0]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 180, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 150, 0]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 0, 0]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_evier: {state: 'on', brightness: 76}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_diables_rouges
+  name: ⚽ Diables Rouges
+  icon: mdi:soccer
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 217
+      rgb_color: [255, 0, 0]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 217
+      rgb_color: [255, 200, 0]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 217
+      rgb_color: [255, 0, 0]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 0, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 200, 0]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 0, 0]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 200, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 0, 0]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 200, 0]
+    light.salon_l_salon: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.cuisine_evier: {state: 'on', brightness: 102}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_fete_nationale
+  name: 🇧🇪 Fête nationale
+  icon: mdi:flag
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 200, 0]
+    light.salle_a_manger_ld: {state: 'on', brightness: 153, color_temp_kelvin: 4000}
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 0, 0]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 200, 0]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 0, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 200, 0]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 153
+      rgb_color: [255, 0, 0]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'on', brightness: 102}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_anniversaire
+  name: 🎂 Anniversaire
+  icon: mdi:cake-variant
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 217
+      rgb_color: [255, 150, 40]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 80, 160]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 204
+      rgb_color: [80, 200, 255]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 200, 60]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 90, 170]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 229
+      rgb_color: [255, 80, 160]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 229
+      rgb_color: [80, 200, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 170, 60]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 153
+      rgb_color: [140, 100, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 153, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 153, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 153, color_temp_kelvin: 3000}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 153, color_temp_kelvin: 3000}
+    light.cuisine_evier: {state: 'on', brightness: 127}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 153}
+- id: lj_carnaval
+  name: 🎭 Carnaval
+  icon: mdi:drama-masks
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 0, 120]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 204
+      rgb_color: [0, 255, 80]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 204
+      rgb_color: [255, 200, 0]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 178
+      rgb_color: [120, 0, 255]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 178
+      rgb_color: [255, 90, 0]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 200, 0]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [120, 0, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 191
+      rgb_color: [0, 170, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 0, 200]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 127, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_paques
+  name: 🐣 Pâques
+  icon: mdi:egg-easter
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 166
+      rgb_color: [255, 230, 120]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 153
+      rgb_color: [200, 170, 255]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 153
+      rgb_color: [150, 255, 190]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 200, 230]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 127
+      rgb_color: [170, 240, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 235, 150]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 102
+      rgb_color: [200, 170, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 140, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 140, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 140, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 140, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'on', brightness: 102}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 127}
+- id: lj_saint_patrick
+  name: ☘️ Saint-Patrick
+  icon: mdi:clover
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 191
+      rgb_color: [0, 255, 60]
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 178
+      rgb_color: [120, 255, 0]
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 191
+      rgb_color: [0, 255, 60]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 153
+      rgb_color: [0, 200, 40]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 153
+      rgb_color: [200, 255, 0]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 255
+      rgb_color: [0, 255, 60]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 255
+      rgb_color: [255, 170, 0]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 178
+      rgb_color: [0, 255, 90]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 127
+      rgb_color: [255, 170, 0]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 115, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 115, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 115, color_temp_kelvin: 3500}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 115, color_temp_kelvin: 3500}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 115}
+- id: lj_halloween_fantome
+  name: 👻 Halloween fantôme
+  icon: mdi:ghost
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 102
+      rgb_color: [150, 255, 170]
+    light.salle_a_manger_ld: {state: 'off'}
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 102
+      rgb_color: [150, 255, 170]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 89
+      rgb_color: [60, 255, 120]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 89
+      rgb_color: [200, 220, 255]
+    light.coin_dj_sono_gauche:
+      state: 'on'
+      brightness: 178
+      rgb_color: [40, 255, 90]
+    light.coin_dj_sono_droite:
+      state: 'on'
+      brightness: 178
+      rgb_color: [150, 0, 255]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 76
+      rgb_color: [180, 230, 255]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 76
+      rgb_color: [40, 255, 90]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'off'}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 20}
+- id: lj_noel_blanc
+  name: ❄️ Noël blanc
+  icon: mdi:snowflake-variant
+  entities:
+    light.salle_a_manger_lc: {state: 'on', brightness: 178, color_temp_kelvin: 2700}
+    light.salle_a_manger_ld:
+      state: 'on'
+      brightness: 140
+      rgb_color: [160, 200, 255]
+    light.salle_a_manger_lg: {state: 'on', brightness: 178, color_temp_kelvin: 2700}
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 127
+      rgb_color: [170, 210, 255]
+    light.salle_a_manger_vit_d: {state: 'on', brightness: 127, color_temp_kelvin: 2700}
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 190, 90]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 102
+      rgb_color: [120, 170, 255]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_2: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_3: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_s_cuisine_4: {state: 'on', brightness: 115, color_temp_kelvin: 2700}
+    light.cuisine_evier: {state: 'on', brightness: 89}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 140}
+- id: lj_romantique_blanc_or
+  name: 💍 Romantique blanc & or
+  icon: mdi:ring
+  entities:
+    light.salle_a_manger_lc:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 200, 120]
+    light.salle_a_manger_ld: {state: 'on', brightness: 127, color_temp_kelvin: 2700}
+    light.salle_a_manger_lg:
+      state: 'on'
+      brightness: 140
+      rgb_color: [255, 200, 120]
+    light.salle_a_manger_vit_g:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 170, 90]
+    light.salle_a_manger_vit_d:
+      state: 'on'
+      brightness: 102
+      rgb_color: [255, 170, 90]
+    light.salon_panneau_mural:
+      state: 'on'
+      brightness: 115
+      rgb_color: [255, 180, 100]
+    light.salon_ambilight_tv:
+      state: 'on'
+      brightness: 76
+      rgb_color: [255, 150, 170]
+    light.salon_l_salon: {state: 'off'}
+    light.cuisine_s_cuisine_1: {state: 'off'}
+    light.cuisine_s_cuisine_2: {state: 'off'}
+    light.cuisine_s_cuisine_3: {state: 'off'}
+    light.cuisine_s_cuisine_4: {state: 'off'}
+    light.cuisine_evier: {state: 'on', brightness: 38}
+    light.cuisine_etagere_cafe: {state: 'on', brightness: 76}
