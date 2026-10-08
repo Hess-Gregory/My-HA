@@ -1010,7 +1010,7 @@ class Floorplan3DCard extends HTMLElement {
       // sélection
       if (this.selRing.visible) { const k = (performance.now() / 900) % 1; this.selRing.scale.setScalar(1 + 0.25 * Math.sin(k * Math.PI * 2)); this.selRing.material.opacity = 0.6 + 0.35 * Math.cos(k * Math.PI * 2); anim = true; }
       // rotation vitrine après 60 s d'inactivité
-      if (!this.sel && !this.anim && this.cfg.idle_rotate !== false && Date.now() - this._lastAct > 60000) this.ctl.autoRotate = true;
+      if (!this.sel && !this.anim && this.cfg.idle_rotate === true && Date.now() - this._lastAct > 60000) this.ctl.autoRotate = true;
       // porte d'entrée
       if (this.frontDoor && this.doorTarget !== undefined) { const d = this.doorTarget - this.frontDoor.rotation.y; if (Math.abs(d) > 0.002) { this.frontDoor.rotation.y += d * 0.12; anim = true; this.renderer.shadowMap.needsUpdate = true; } }
       // mouvements détectés
