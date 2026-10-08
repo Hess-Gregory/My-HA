@@ -1,0 +1,29 @@
+# « Je pars » protégé par le code de sécurité (même code que le four)
+script:
+  je_pars_code:
+    alias: "🚪 Je pars (avec code)"
+    icon: mdi:lock-check
+    mode: single
+    fields:
+      code:
+        name: Code
+        selector:
+          text:
+            type: password
+    sequence:
+      - variables:
+          ok: "{{ states('input_text.four_code_reference') | length >= 4 and (code | string) == states('input_text.four_code_reference') }}"
+          r: "{{ {'ok': ok} }}"
+      - if: "{{ ok }}"
+        then:
+          - action: script.turn_on
+            target:
+              entity_id: script.je_pars
+        else:
+          - action: notify.mobile_app_samsung_greg
+            continue_on_error: true
+            data:
+              title: "⚠️ Je pars : code erroné"
+              message: "Un code incorrect a été saisi pour « Je pars »."
+      - stop: "fin"
+        response_variable: r

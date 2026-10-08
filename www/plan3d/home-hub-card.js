@@ -4,7 +4,7 @@ const WX = { 'clear-night': ['🌙', 'Nuit claire'], cloudy: ['☁️', 'Nuageux
 const ROOMS = [['Pièce de vie', 'piece_de_vie_sonoff_a480146b56', 'climate.living', 'piece_de_vie', 'piece-de-vie'], ['Couloir & entrée', 'couloir_sonoff_a480146b60', 'climate.couloir', 'couloir', 'couloir-entree'],
   ['Chambre enfants', 'chambre_enfants_sonoff_a480146b58', 'climate.chambre_enfants', 'chambre_enfants', 'chambre-enfants'], ['Chambre parents', 'chambre_adulte_sonoff_a480146b5b', 'climate.chambre_adulte', 'chambre_adulte', 'chambre-parents'],
   ['Salle de bain', 'salle_de_bain_sonoff_a480146b5d', 'climate.salle_de_bain', 'salle_de_bain', 'salle-de-bain']];
-const ACTIONS = [['bonne_nuit', '🌙', 'Bonne nuit', 'Éteint tout', null], ['je_pars', '🚪', 'Je pars', 'Alarme + éco', 'L’alarme passera en TOTAL dans 60 s'], ['annuler_scenario', '↩️', 'Annuler', 'Je pars / Bonne nuit', null],
+const ACTIONS = [['bonne_nuit', '🌙', 'Bonne nuit', 'Éteint tout', null], ['je_pars', '🚪', 'Je pars', 'Alarme + éco', 'CODE'], ['annuler_scenario', '↩️', 'Annuler', 'Je pars / Bonne nuit', null],
   ['sieste_calme', '🤫', 'Sieste / Calme', 'Coupe le coin DJ', null], ['tout_eteindre', '⚫', 'Tout éteindre', 'Toutes les lumières', 'Éteindre toutes les lumières ?']];
 const PEOPLE = [['person.greg', 'Greg'], ['person.sandrine', 'Sandrine'], ['person.matteo', 'Matteo']];
 const ALARM = 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison';
@@ -102,7 +102,7 @@ class HomeHubCard extends HTMLElement {
     customElements.whenDefined('floorplan-3d-card').then(() => { const p = document.createElement('floorplan-3d-card'); p.setConfig({ height: '100%', compact: true }); p.style.height = '100%'; this.$('.plan').appendChild(p); this.plan = p; if (this._h) p.hass = this._h; });
     // actions rapides (mêmes scripts que le dashboard Accueil) ; celles qui ont une confirmation demandent un 2e tap
     const amb = this.$('.dock'); ACTIONS.forEach(([sc, ic, n, sub, conf]) => { const b = document.createElement('button'); b.innerHTML = `<i>${ic}</i>${n}<small>${sub}</small>`;
-      b.onclick = () => { if (conf && !b.classList.contains('arm')) { amb.querySelectorAll('.arm').forEach((x) => { x.classList.remove('arm'); x.querySelector('small').textContent = x._sub; }); b.classList.add('arm'); b.querySelector('small').textContent = 'Retouchez pour confirmer'; b.title = conf; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('arm'); b.querySelector('small').textContent = sub; }, 4000); return; }
+      b.onclick = () => { if (conf === 'CODE') return this._codePad(sc, ic, n); if (conf && !b.classList.contains('arm')) { amb.querySelectorAll('.arm').forEach((x) => { x.classList.remove('arm'); x.querySelector('small').textContent = x._sub; }); b.classList.add('arm'); b.querySelector('small').textContent = 'Retouchez pour confirmer'; b.title = conf; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('arm'); b.querySelector('small').textContent = sub; }, 4000); return; }
         b.classList.remove('arm'); b.querySelector('small').textContent = sub; this._h.callService('script', 'turn_on', { entity_id: 'script.' + sc }); this._toast(`${ic} ${n} lancé`); }; b._sub = sub; amb.appendChild(b); });
     for (const [a, ic, n, sub] of [['cine', '🎬', 'Cinéma', 'Ambiance TV'], ['diner', '🍽️', 'Dîner', 'Table + cuisine']]) { const b = document.createElement('button'); b.innerHTML = `<i>${ic}</i>${n}<small>${sub}</small>`; b._sub = sub; b.onclick = () => { if (this.plan && this.plan._ambiance) this.plan._ambiance(a); this._toast(`${ic} ${n}`); }; amb.appendChild(b); }
     { const b = document.createElement('button'); b.className = 'sim'; b.innerHTML = '<i>🎭</i>Simulation<small>présence</small>'; b.onclick = () => this._h.callService('input_boolean', 'toggle', { entity_id: 'input_boolean.simulation_presence' }); amb.appendChild(b); this._sim = b; }
@@ -115,6 +115,34 @@ class HomeHubCard extends HTMLElement {
     this._clock(); this._forecast(); this._cal(); this._calT = setInterval(() => this._cal(), 15 * 60000);
   }
   _phase(el, rising) { const hub = this.$ && this.$('.hub'); if (!hub || el == null) return; const ph = el > 8 ? 'day' : el > -6 ? (rising ? 'dawn' : 'dusk') : 'night'; if (hub.dataset.ph !== ph) hub.dataset.ph = ph; }
+  _codePad(sc, ic, n) {
+    const old = this.shadowRoot.querySelector('.cpad'); if (old) old.remove();
+    const o = document.createElement('div'); o.className = 'cpad';
+    o.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
+    o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:20px;padding:18px 20px;width:280px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="font:700 17px sans-serif">' + ic + ' ' + n + '</div><div style="font-size:12px;opacity:.7;margin:4px 0 10px">Entrez le code de sécurité</div><div class="dots" style="font-size:26px;letter-spacing:8px;height:34px">····</div><div class="msg" style="font-size:12px;color:#ff8a80;height:16px"></div><div class="k" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px"></div><button class="ok" style="margin-top:12px;width:100%;padding:12px;border:none;border-radius:12px;background:#ff9d2e;color:#1c1206;font:700 15px sans-serif">Valider</button></div>';
+    let code = '';
+    const dots = o.querySelector('.dots'), msg = o.querySelector('.msg');
+    const upd = () => { dots.textContent = code ? '●'.repeat(code.length) : '····'; };
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '✕', '0', '⌫'].forEach((k) => {
+      const b = document.createElement('button'); b.textContent = k;
+      b.style.cssText = 'padding:14px 0;border:none;border-radius:12px;background:#2c2940;color:#fff;font:600 20px sans-serif';
+      b.onclick = (e) => { e.stopPropagation(); if (k === '✕') { o.remove(); return; } if (k === '⌫') code = code.slice(0, -1); else if (code.length < 12) code += k; msg.textContent = ''; upd(); };
+      o.querySelector('.k').appendChild(b);
+    });
+    o.onclick = (e) => { if (e.target === o) o.remove(); };
+    o.querySelector('.ok').onclick = async (e) => {
+      e.stopPropagation(); if (!code) return;
+      msg.style.color = '#ffd27a'; msg.textContent = 'Vérification…';
+      try {
+        const r = await this._h.callWS({ type: 'call_service', domain: 'script', service: sc + '_code', service_data: { code }, return_response: true });
+        if (r && r.response && r.response.ok) { o.remove(); this._toast(ic + ' ' + n + ' lancé'); return; }
+        msg.style.color = '#ff8a80'; msg.textContent = 'Code incorrect';
+      } catch (err) { msg.style.color = '#ff8a80'; msg.textContent = 'Erreur : ' + (err.message || err.code || ''); }
+      code = ''; upd();
+    };
+    this.shadowRoot.appendChild(o);
+  }
+
   _toast(t) { let el = this.$('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; this.$('.hub').appendChild(el); } el.textContent = t; el.classList.add('show'); clearTimeout(this._tt); this._tt = setTimeout(() => el.classList.remove('show'), 2500); }
   _go(path) { history.pushState(null, '', path); window.dispatchEvent(new CustomEvent('location-changed')); }
   _more(e) { this.dispatchEvent(new CustomEvent('hass-more-info', { bubbles: true, composed: true, detail: { entityId: e } })); }
