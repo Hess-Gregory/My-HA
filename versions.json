@@ -279,6 +279,11 @@
     "last_update": "2026-10-08T19:32:48.629815+02:00",
     "version": "0.1.1"
   },
+  "packages/scenes_ambiances.yaml": {
+    "last_change": "scenes ambiance piece de vie (TV, souper, cocooning, fete, noel, halloween, saint-valentin, nouvel an)",
+    "last_update": "2026-10-08T22:12:53.461607+02:00",
+    "version": "0.1.0"
+  },
   "packages/securite_matteo.yaml": {
     "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
     "last_update": "2026-10-08T17:47:55.468915+02:00",
