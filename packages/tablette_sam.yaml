@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.0 | 08/10/2026 11:08 | carillon a l ouverture de la porte d entree
+# [AUTO-VERSION] v0.3.0 | 08/10/2026 11:10 | carillon plus fort (volume 90%)
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
