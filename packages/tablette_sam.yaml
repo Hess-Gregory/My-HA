@@ -41,14 +41,15 @@ automation:
                 data:
                   media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
                   media_content_type: music
-          - action: notify.mobile_app_25099rp13g
-            continue_on_error: true
-            data:
-              message: command_webview
-              data:
-                command: /maison-accueil/accueil
-          - action: fully_kiosk.start_application
-            continue_on_error: true
-            data:
-              application: io.homeassistant.companion.android
-              device_id: f1aa9e7a06615d6cd968ef13a161d75c
+          - if:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.salon_sam_tablette_application_au_premier_plan
+                    state: io.homeassistant.companion.android
+            then:
+              - action: fully_kiosk.start_application
+                continue_on_error: true
+                data:
+                  application: io.homeassistant.companion.android
+                  device_id: f1aa9e7a06615d6cd968ef13a161d75c
