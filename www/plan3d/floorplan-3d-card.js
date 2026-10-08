@@ -173,7 +173,7 @@ class Floorplan3DCard extends HTMLElement {
     const views = this.$('.views');
     Object.keys(VIEWS).forEach((k) => { const b = document.createElement('button'); b.textContent = k; b.onclick = () => this._goTo(k); views.appendChild(b); });
     this.$('.mode').onclick = () => { this.mode = { auto: 'jour', jour: 'nuit', nuit: 'auto' }[this.mode]; this._sync(); };
-    this.$('.alarm').onclick = () => { const al = Object.keys(this._h.states).find((k) => k.startsWith('alarm_control_panel.')); if (al) this._more(al); };
+    this.$('.alarm').onclick = () => { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); if (al) this._more(al); };
     this.$('.walls').onclick = () => { this.wallTarget = this.wallTarget === 1 ? 0.28 : 1; this.$('.walls').textContent = this.wallTarget === 1 ? '🧱 Murs bas' : '🧱 Murs hauts'; this.$('.walls').classList.toggle('on', this.wallTarget !== 1); };
     root.querySelectorAll('.amb button').forEach((b) => (b.onclick = () => this._ambiance(b.dataset.a)));
     this._setupPanel();
@@ -188,7 +188,7 @@ class Floorplan3DCard extends HTMLElement {
       ray.setFromCamera(ptr, cam); const hit = ray.intersectObjects(this.clickables, false)[0];
       if (!hit) { this._closeOven(); return this._closePanel(); }
       const ent = hit.object.userData.entity, st = this._h.states[ent];
-      if (ent === '@alarm') { const al = Object.keys(this._h.states).find((k) => k.startsWith('alarm_control_panel.')); return al && this._more(al); }
+      if (ent === '@alarm') { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); return al && this._more(al); }
       if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
       if ((!st || st.state === 'unavailable') && !(ent.startsWith('light.') && this._grpOf(ent))) return this._toast('Lampe indisponible');
       if (Date.now() - down[2] > 550 || !ent.startsWith('light.')) return this._more(ent);
@@ -291,7 +291,8 @@ class Floorplan3DCard extends HTMLElement {
     // porte d'entrée (animée selon le capteur)
     { const [a, b] = P(235, 22.6); const piv = new THREE.Group(); piv.position.set(a, 0, b); scene.add(piv);
       const leaf = new THREE.Mesh(new THREE.BoxGeometry(4.4 * S, 2.06, 30.8 * S), M('#f3f2ee', { roughness: 0.45 })); leaf.position.set(0, 1.03, 15.4 * S); leaf.castShadow = true; piv.add(leaf);
-      const hdl = new THREE.Mesh(new THREE.BoxGeometry(1.6 * S, 0.025, 5 * S), M('#a9adb1', { metalness: 0.7, roughness: 0.3 })); hdl.position.set(2.9 * S, 1.02, 26.5 * S); piv.add(hdl); this.frontDoor = piv;
+      const hdl = new THREE.Mesh(new THREE.BoxGeometry(1.6 * S, 0.025, 5 * S), M('#a9adb1', { metalness: 0.7, roughness: 0.3 })); hdl.position.set(2.9 * S, 1.02, 26.5 * S); piv.add(hdl); this.frontDoor = piv; // détecteur d'ouverture Ajax : montant intérieur, en haut à gauche (côté ouverture)
+      clickable(box(239.6, 54.2, 241.2, 57.4, 1.93, 2.07, M('#f4f4f2', { roughness: 0.5 })), 'binary_sensor.hall_dentree_porte_entree_porte'); box(241.2, 55.4, 241.3, 56.2, 2.0, 2.02, M('#222', { emissive: '#3aff7a', emissiveIntensity: 0.6 }), false);
       box(230.5, 22.5, 239.5, 53.5, 2.08, WH, MAT.wall); box(230.5, 22.5, 239.5, 53.5, WH, WH + 0.03, MAT.wallTop, false); }
     /* ---- salle de bain / WC ---- */
     { // salle de bain : faïence blanche toute hauteur, baignoire contre le mur du fond (ouest), pare-bain givré côté sud + douche noire, bande de mosaïque,
@@ -739,11 +740,11 @@ class Floorplan3DCard extends HTMLElement {
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
-    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? -1.25 : 0;
+    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0;
     const sunSt = H['sun.sun']; const autoNight = sunSt ? sunSt.state === 'below_horizon' : false;
     this.nightTarget = this.mode === 'nuit' ? 1 : this.mode === 'jour' ? 0 : autoNight ? 1 : 0;
     this.$('.mode').textContent = { auto: '🌓 Auto', jour: '☀️ Jour', nuit: '🌙 Nuit' }[this.mode];
-    const al = Object.keys(H).find((k) => k.startsWith('alarm_control_panel.')); const as = al ? H[al].state : null;
+    const al = Object.keys(H).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); const as = al ? H[al].state : null;
     const alTxt = { disarmed: 'Désarmée', armed_away: 'Armée', armed_home: 'Armée (maison)', armed_night: 'Armée (nuit)', triggered: 'ALARME !', arming: 'Armement…', pending: 'En attente' }[as] || '—';
     const ab = this.$('.alarm'); ab.textContent = '🛡️ ' + alTxt; ab.classList.toggle('on', !!as && (as.startsWith('armed') || as === 'triggered' || as === 'arming' || as === 'pending')); ab.classList.toggle('hide', !al);
     const nOn = Object.values(this.lights).filter((r) => r.target && r.target.on).length;
