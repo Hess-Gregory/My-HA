@@ -494,6 +494,198 @@
                     "columns": 6,
                     "rows": "auto"
                   }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "📺 TV",
+                  "label": "Lumière douce derrière l’écran",
+                  "icon": "mdi:television-classic",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_tv"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#f3a356",
+                    "c2": "#b9651f",
+                    "c3": "#6e3510"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🍽️ Souper",
+                  "label": "Lustre chaud sur la table",
+                  "icon": "mdi:silverware-fork-knife",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_souper"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#f6d08a",
+                    "c2": "#c99431",
+                    "c3": "#6e4d10"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🕯️ Cocooning",
+                  "label": "Ambre tamisé, très doux",
+                  "icon": "mdi:candle",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_cocooning"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#ffb36b",
+                    "c2": "#c46a1f",
+                    "c3": "#5e2f0a"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎉 Fête",
+                  "label": "Magenta, cyan et violet + coin DJ",
+                  "icon": "mdi:party-popper",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_fete"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#e06bff",
+                    "c2": "#8a2be2",
+                    "c3": "#3b0f6e"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎄 Noël",
+                  "label": "Rouge, vert et or",
+                  "icon": "mdi:pine-tree",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_noel"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#ff6b6b",
+                    "c2": "#2e9e4a",
+                    "c3": "#14421f"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎃 Halloween",
+                  "label": "Orange citrouille et violet",
+                  "icon": "mdi:halloween",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_halloween"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#ff8c2e",
+                    "c2": "#7a2be2",
+                    "c3": "#2b0f4e"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "💕 Saint-Valentin",
+                  "label": "Rose et rouge intimes",
+                  "icon": "mdi:heart",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_saint_valentin"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#ff7aa8",
+                    "c2": "#d42a5c",
+                    "c3": "#5e0f26"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🥂 Nouvel An",
+                  "label": "Or et blanc pétillant",
+                  "icon": "mdi:glass-wine",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.ambiance_nouvel_an"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#ffe08a",
+                    "c2": "#d4a72a",
+                    "c3": "#5e470f"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
                 }
               ]
             },
