@@ -1,14 +1,17 @@
-# [AUTO-VERSION] v0.1.0 | 08/10/2026 22:45 | lumieres dynamiques sono par style musical
-# Lumières dynamiques pour la sono, selon le style musical (boucle tant que le style est choisi)
+# Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
+# Tempos : Hard techno 150, Rétro techno 135, Tech house 125, Afro house 120, Années 80 120, RnB 90, Chill 90 (changement toutes les 4 mesures de temps, 8 pour le chill)
+# Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
 input_select:
   sono_lumieres:
     name: Lumières sono musicale
     icon: mdi:music-circle
     options: [— Arrêt —, 🔊 Hard techno, 🎛️ Tech house, 🥁 Afro house, 🌙 Ambiance chill, 📼 Rétro techno, 💜 RnB, 🕹️ Années 80]
     initial: — Arrêt —
+input_number:
+  sono_tempo: {name: Tempo sono (BPM), icon: 'mdi:metronome', min: 60, max: 180, step: 1, mode: slider, unit_of_measurement: BPM}
 script:
   sono_lumieres:
-    alias: 🎵 Lumières sono musicale (boucle)
+    alias: 🎵 Lumières sono musicale (boucle au tempo)
     icon: mdi:music-circle
     mode: restart
     sequence:
@@ -16,24 +19,29 @@ script:
         style: '{{ states(''input_select.sono_lumieres'') }}'
         cfg:
           🔊 Hard techno:
+            bpm: 150
+            beats: 4
+            t: 0.15
             pal:
             - [255, 0, 0]
             - [255, 255, 255]
             - [180, 0, 0]
             - [255, 40, 0]
             bri: [255, 35, 255, 80]
-            d: 1.0
-            t: 0.1
           🎛️ Tech house:
+            bpm: 125
+            beats: 4
+            t: 0.5
             pal:
             - [0, 60, 255]
             - [0, 220, 200]
             - [150, 0, 255]
             - [255, 160, 80]
             bri: [220, 140, 200, 120]
-            d: 2.0
-            t: 0.8
           🥁 Afro house:
+            bpm: 120
+            beats: 4
+            t: 1.0
             pal:
             - [255, 140, 0]
             - [255, 70, 0]
@@ -41,36 +49,40 @@ script:
             - [0, 170, 70]
             - [200, 0, 120]
             bri: [200, 170, 230, 150, 180]
-            d: 2.5
-            t: 1.5
           🌙 Ambiance chill:
+            bpm: 90
+            beats: 8
+            t: 4.0
             pal:
             - [0, 180, 200]
             - [100, 60, 255]
             - [0, 90, 255]
             - [255, 120, 180]
             bri: [120, 95, 110, 85]
-            d: 6
-            t: 5
           📼 Rétro techno:
+            bpm: 135
+            beats: 4
+            t: 0.2
             pal:
             - [120, 255, 0]
             - [255, 240, 0]
             - [0, 255, 255]
             - [255, 0, 200]
             bri: [255, 170, 255, 170]
-            d: 1.2
-            t: 0.2
           💜 RnB:
+            bpm: 90
+            beats: 4
+            t: 2.0
             pal:
             - [140, 0, 255]
             - [255, 0, 140]
             - [220, 0, 40]
             - [255, 150, 40]
             bri: [150, 125, 140, 105]
-            d: 4
-            t: 3
           🕹️ Années 80:
+            bpm: 120
+            beats: 4
+            t: 0.4
             pal:
             - [255, 20, 150]
             - [0, 120, 255]
@@ -78,10 +90,7 @@ script:
             - [255, 220, 0]
             - [0, 255, 200]
             bri: [230, 190, 230, 200, 210]
-            d: 1.8
-            t: 0.5
-        lights: [light.salle_a_manger_lc, light.coin_dj_sono_gauche, light.salle_a_manger_ld, light.salon_panneau_mural, light.salle_a_manger_lg, light.coin_dj_sono_droite, light.salle_a_manger_vit_g, light.salon_ambilight_tv,
-          light.salle_a_manger_vit_d]
+        lights: [light.salle_a_manger_lc, light.coin_dj_sono_gauche, light.salle_a_manger_ld, light.salon_panneau_mural, light.salle_a_manger_lg, light.coin_dj_sono_droite, light.salle_a_manger_vit_g, light.salon_ambilight_tv, light.salle_a_manger_vit_d]
     - {condition: template, value_template: '{{ style in cfg }}'}
     - action: light.turn_off
       continue_on_error: true
@@ -91,19 +100,22 @@ script:
       continue_on_error: true
       target: {entity_id: light.cuisine_etagere_cafe}
       data: {brightness: 20}
+    - variables: {c: '{{ cfg[style] }}', t0: '{{ as_timestamp(now()) }}', next: '{{ as_timestamp(now()) }}'}
     - repeat:
         while:
-        - {condition: template, value_template: '{{ is_state(''input_select.sono_lumieres'', style) and repeat.index < 20000 }}'}
+        - {condition: template, value_template: '{{ is_state(''input_select.sono_lumieres'', style) and repeat.index < 50000 }}'}
         sequence:
-        - variables: {step: '{{ repeat.index }}', c: '{{ cfg[style] }}'}
+        - variables: {step: '{{ repeat.index }}', n: '{{ c.pal | length }}', beat: '{{ 60 / ([states(''input_number.sono_tempo'') | float(c.bpm), 40] | max) }}'}
         - repeat:
-            for_each: '{{ range(lights | length) | list }}'
+            for_each: '{{ range(n) | list }}'
             sequence:
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == repeat.item %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: light.turn_on
               continue_on_error: true
-              target: {entity_id: '{{ lights[repeat.item] }}'}
-              data: {rgb_color: '{{ c.pal[(step + repeat.item) % (c.pal | length)] }}', brightness: '{{ c.bri[(step + repeat.item) % (c.bri | length)] }}', transition: '{{ c.t }}'}
-        - delay: {seconds: '{{ c.d }}'}
+              target: {entity_id: '{{ grp }}'}
+              data: {rgb_color: '{{ c.pal[repeat.item] }}', brightness: '{{ c.bri[repeat.item] }}', transition: '{{ (beat * c.t) | round(2) }}'}
+        - delay: {seconds: '{{ [ (t0 + step * c.beats * beat) - as_timestamp(now()), 0.05 ] | max | round(2) }}'}
 automation:
 - id: sono_lumieres_selection
   alias: '🎵 Lumières sono : lancer/arrêter selon le style choisi'
@@ -118,5 +130,8 @@ automation:
       - action: script.turn_off
         target: {entity_id: script.sono_lumieres}
     default:
+    - action: input_number.set_value
+      target: {entity_id: input_number.sono_tempo}
+      data: {value: '{{ {''🔊 Hard techno'': 150, ''🎛️ Tech house'': 125, ''🥁 Afro house'': 120, ''🌙 Ambiance chill'': 90, ''📼 Rétro techno'': 135, ''💜 RnB'': 90, ''🕹️ Années 80'': 120}[trigger.to_state.state] }}'}
     - action: script.turn_on
       target: {entity_id: script.sono_lumieres}
