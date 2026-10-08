@@ -90,9 +90,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_eclairage": {
-    "last_change": "programmeur DMX (projecteurs, couleur, effet, intensite, vitesse)",
-    "last_update": "2026-10-08T23:27:39.396643+02:00",
-    "version": "0.9.0"
+    "last_change": "boutons projecteurs plus larges sur la console DMX",
+    "last_update": "2026-10-08T23:29:11.023063+02:00",
+    "version": "0.9.1"
   },
   ".storage/lovelace.maison_energie": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
