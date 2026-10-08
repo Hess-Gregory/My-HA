@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.4.0 | 08/10/2026 23:05 | 11 modes sono universels facon light jockey (strobe, bicolores, chase) au tempo
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
@@ -7,11 +6,25 @@ input_select:
     name: Lumières sono musicale
     icon: mdi:music-circle
     options: [— Arrêt —, 🔊 Hard techno, 🎛️ Tech house, 🥁 Afro house, 🌙 Ambiance chill, 📼 Rétro techno, 💜 RnB, 🕹️ Années 80, ⚡ Universel · Strobe blanc, 🔴 Universel · Bleu nuit & rouge, 🟡 Universel · Jaune & bleu ciel, 🟣 Universel · Magenta & cyan, 🟢 Universel ·
-        Laser vert & UV, 🟠 Universel · Ambre & violet, ❤️ Universel · Pulse rouge, ❄️ Universel · Flash blanc & bleu, 🌈 Universel · Chase arc-en-ciel, 🔥 Universel · Feu & or, 🌊 Universel · Océan profond]
+        Laser vert & UV, 🟠 Universel · Ambre & violet, ❤️ Universel · Pulse rouge, ❄️ Universel · Flash blanc & bleu, 🌈 Universel · Chase arc-en-ciel, 🔥 Universel · Feu & or, 🌊 Universel · Océan profond, 🏰 Show · Tomorrowland main stage, 🖤 Show · Afterlife (blanc
+        glacial & rouge), 🧊 Show · Anyma cyber néon, 🔺 Show · Daft Punk pyramide, 💙 Show · Swedish House Mafia, 🦇 Show · Berghain (rouge sombre), 🟥 Show · Hardstyle Defqon (rouge & blanc), 🎆 Show · Coldplay bracelets, 🌅 Show · Ibiza sunset]
     initial: — Arrêt —
 input_number:
   sono_tempo: {name: Tempo sono (BPM), icon: 'mdi:metronome', min: 60, max: 180, step: 1, mode: slider, unit_of_measurement: BPM}
 script:
+  sono_preparer:
+    alias: '🎵 Sono : préparer la pièce (lumières blanches coupées)'
+    mode: single
+    max_exceeded: silent
+    sequence:
+    - action: light.turn_off
+      continue_on_error: true
+      target:
+        entity_id: [light.salon_l_salon, light.cuisine_s_cuisine_1, light.cuisine_s_cuisine_2, light.cuisine_s_cuisine_3, light.cuisine_s_cuisine_4, light.cuisine_evier]
+    - action: light.turn_on
+      continue_on_error: true
+      target: {entity_id: light.cuisine_etagere_cafe}
+      data: {brightness: 20}
   sono_appliquer:
     alias: '🎵 Sono : appliquer une couleur (sans attendre)'
     mode: parallel
@@ -205,16 +218,100 @@ script:
             - [0, 170, 255]
             - [0, 255, 200]
             bri: [220, 180, 200]
+          🏰 Show · Tomorrowland main stage:
+            bpm: 128
+            beats: 2
+            t: 0.15
+            pal:
+            - [255, 170, 30]
+            - [230, 0, 200]
+            - [90, 0, 255]
+            - [255, 240, 200]
+            bri: [255, 230, 220, 255]
+          🖤 Show · Afterlife (blanc glacial & rouge):
+            bpm: 124
+            beats: 4
+            t: 0.6
+            pal:
+            - [220, 235, 255]
+            - [200, 0, 0]
+            - [40, 60, 255]
+            - [255, 255, 255]
+            bri: [200, 150, 90, 255]
+          🧊 Show · Anyma cyber néon:
+            bpm: 126
+            beats: 2
+            t: 0.2
+            pal:
+            - [0, 240, 255]
+            - [255, 255, 255]
+            - [255, 0, 170]
+            - [0, 80, 255]
+            bri: [240, 255, 220, 200]
+          🔺 Show · Daft Punk pyramide:
+            bpm: 124
+            beats: 2
+            t: 0.1
+            pal:
+            - [255, 0, 0]
+            - [0, 60, 255]
+            - [255, 255, 255]
+            bri: [255, 240, 255]
+          💙 Show · Swedish House Mafia:
+            bpm: 128
+            beats: 2
+            t: 0.15
+            pal:
+            - [0, 90, 255]
+            - [255, 255, 255]
+            - [0, 30, 180]
+            bri: [250, 255, 200]
+          🦇 Show · Berghain (rouge sombre):
+            bpm: 135
+            beats: 1
+            t: 0.1
+            sync: true
+            pal:
+            - [200, 0, 0]
+            - [255, 0, 0]
+            - [120, 0, 0]
+            - [255, 255, 255]
+            bri: [90, 255, 40, 180]
+          🟥 Show · Hardstyle Defqon (rouge & blanc):
+            bpm: 150
+            beats: 1
+            t: 0.0
+            pal:
+            - [255, 0, 0]
+            - [255, 255, 255]
+            bri: [255, 255]
+          🎆 Show · Coldplay bracelets:
+            bpm: 120
+            beats: 2
+            t: 0.3
+            pal:
+            - [255, 0, 90]
+            - [255, 200, 0]
+            - [0, 200, 255]
+            - [140, 0, 255]
+            - [0, 255, 120]
+            - [255, 90, 0]
+            bri: [240, 240, 240, 240, 240, 240]
+          🌅 Show · Ibiza sunset:
+            bpm: 118
+            beats: 4
+            t: 1.0
+            pal:
+            - [255, 90, 0]
+            - [255, 40, 120]
+            - [255, 170, 60]
+            - [160, 0, 200]
+            bri: [220, 200, 230, 180]
         lights: [light.salle_a_manger_lc, light.coin_dj_sono_gauche, light.salle_a_manger_ld, light.salon_panneau_mural, light.salle_a_manger_lg, light.coin_dj_sono_droite, light.salle_a_manger_vit_g, light.salon_ambilight_tv, light.salle_a_manger_vit_d]
     - {condition: template, value_template: '{{ style in cfg }}'}
-    - action: light.turn_off
+    - action: script.turn_on
       continue_on_error: true
-      target:
-        entity_id: [light.salon_l_salon, light.cuisine_s_cuisine_1, light.cuisine_s_cuisine_2, light.cuisine_s_cuisine_3, light.cuisine_s_cuisine_4, light.cuisine_evier]
-    - action: light.turn_on
-      continue_on_error: true
-      target: {entity_id: light.cuisine_etagere_cafe}
-      data: {brightness: 20}
+      target: {entity_id: script.sono_preparer}
     - variables: {c: '{{ cfg[style] }}', t0: '{{ as_timestamp(now()) }}', next: '{{ as_timestamp(now()) }}'}
     - repeat:
         while:
@@ -295,6 +392,7 @@ automation:
       target: {entity_id: input_number.sono_tempo}
       data: {value: '{{ {''🔊 Hard techno'': 150, ''🎛️ Tech house'': 125, ''🥁 Afro house'': 120, ''🌙 Ambiance chill'': 90, ''📼 Rétro techno'': 135, ''💜 RnB'': 90, ''🕹️ Années 80'': 120, ''⚡ Universel · Strobe blanc'': 128, ''🔴 Universel · Bleu nuit & rouge'': 128,
           ''🟡 Universel · Jaune & bleu ciel'': 128, ''🟣 Universel · Magenta & cyan'': 128, ''🟢 Universel · Laser vert & UV'': 128, ''🟠 Universel · Ambre & violet'': 128, ''❤️ Universel · Pulse rouge'': 128, ''❄️ Universel · Flash blanc & bleu'': 128, ''🌈 Universel
-          · Chase arc-en-ciel'': 128, ''🔥 Universel · Feu & or'': 128, ''🌊 Universel · Océan profond'': 128}[trigger.to_state.state] }}'}
+          · Chase arc-en-ciel'': 128, ''🔥 Universel · Feu & or'': 128, ''🌊 Universel · Océan profond'': 128, ''🏰 Show · Tomorrowland main stage'': 128, ''🖤 Show · Afterlife (blanc glacial & rouge)'': 124, ''🧊 Show · Anyma cyber néon'': 126, ''🔺 Show · Daft Punk
+          pyramide'': 124, ''💙 Show · Swedish House Mafia'': 128, ''🦇 Show · Berghain (rouge sombre)'': 135, ''🟥 Show · Hardstyle Defqon (rouge & blanc)'': 150, ''🎆 Show · Coldplay bracelets'': 120, ''🌅 Show · Ibiza sunset'': 118}[trigger.to_state.state] }}'}
     - action: script.turn_on
       target: {entity_id: script.sono_lumieres}
