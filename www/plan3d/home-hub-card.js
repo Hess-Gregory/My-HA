@@ -15,7 +15,7 @@ const POWER = 'sensor.buanderie_local_tech_compteur_general_maison_puissance', T
 class HomeHubCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
   getCardSize() { return 20; }
-  set hass(h) { this._h = h; if (!this._built) this._build(); if (this.plan) this.plan.hass = h; if (this._foot) this._foot.hass = h; this._render(); }
+  set hass(h) { if (this._rmEls) { Object.values(this._rmEls).forEach((e) => { e.hass = h; }); const ro = this.shadowRoot && this.shadowRoot.querySelector('.rmov'); if (ro && ro._upd) setTimeout(ro._upd, 0); } this._h = h; if (!this._built) this._build(); if (this.plan) this.plan.hass = h; if (this._foot) this._foot.hass = h; this._render(); }
   connectedCallback() { this._tick = setInterval(() => this._clock(), 1000); const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); }; this._fit = fit; window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000); }
   disconnectedCallback() { if (this._fit) window.removeEventListener('resize', this._fit); clearInterval(this._tick); clearInterval(this._calT); if (this._unsub) { this._unsub.then((u) => u()).catch(() => {}); this._unsub = null; } }
 
@@ -107,7 +107,7 @@ class HomeHubCard extends HTMLElement {
     for (const [a, ic, n, sub] of [['cine', '🎬', 'Cinéma', 'Ambiance TV'], ['diner', '🍽️', 'Dîner', 'Table + cuisine']]) { const b = document.createElement('button'); b.innerHTML = `<i>${ic}</i>${n}<small>${sub}</small>`; b._sub = sub; b.onclick = () => { if (this.plan && this.plan._ambiance) this.plan._ambiance(a); this._toast(`${ic} ${n}`); }; amb.appendChild(b); }
     { const b = document.createElement('button'); b.className = 'sim'; b.innerHTML = '<i>🎭</i>Simulation<small>présence</small>'; b.onclick = () => this._h.callService('input_boolean', 'toggle', { entity_id: 'input_boolean.simulation_presence' }); amb.appendChild(b); this._sim = b; }
     this.$('.alarm').onclick = () => this._more(ALARM);
-    this.$('.media').onclick = () => this._more('media_player.televiseur_du_salon');
+    this.$('.media').onclick = () => this._remote();
     this.$('.mp .h').onclick = () => this._go(MP_PATH);
     { const b = this.$('.sasb'), sm = b.querySelector('small'); b.onclick = () => { if (!b.classList.contains('arm')) { b.classList.add('arm'); sm.textContent = 'Retouchez pour ouvrir'; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('arm'); sm.textContent = 'Touchez puis confirmez'; }, 4000); return; }
       clearTimeout(b._t); b.classList.remove('arm'); const d = SAS.split('.')[0]; this._h.callService(d, d === 'lock' ? 'unlock' : d === 'button' ? 'press' : d === 'script' ? 'turn_on' : 'turn_on', { entity_id: SAS });
@@ -155,6 +155,29 @@ class HomeHubCard extends HTMLElement {
       this.shadowRoot.appendChild(o);
     }
     o.querySelector('.n').textContent = left + ' s';
+  }
+  async _remote() {
+    const old = this.shadowRoot.querySelector('.rmov'); if (old) old.remove();
+    const o = document.createElement('div'); o.className = 'rmov';
+    o.style.cssText = 'position:fixed;inset:0;z-index:997;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
+    o.innerHTML = '<div class="pn" style="background:#1d1b2a;color:#fff;border-radius:22px;padding:14px;width:min(440px,94vw);max-height:92vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6);font-family:sans-serif"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="flex:1;font-size:17px">📺 Télécommande</b><button class="inf" style="border:none;border-radius:10px;background:#2c2940;color:#fff;padding:8px 11px;font-size:15px">ⓘ</button><button class="x" style="border:none;border-radius:10px;background:#2c2940;color:#fff;padding:8px 12px;font-size:15px">✕</button></div><div class="sg" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div><div class="bd"></div></div>';
+    o.onclick = (e) => { if (e.target === o) o.remove(); };
+    o.querySelector('.x').onclick = () => o.remove();
+    o.querySelector('.inf').onclick = () => { o.remove(); this._more('media_player.televiseur_du_salon'); };
+    const SEL = 'input_select.telecommande_active', sg = o.querySelector('.sg'), bd = o.querySelector('.bd'), segs = {};
+    [['TV', '📺 TV'], ['Ampli', '🔊 Ampli']].forEach(([k, l]) => { const b = document.createElement('button'); b.textContent = l; b.style.cssText = 'padding:12px;border:none;border-radius:12px;font:700 15px sans-serif;color:#fff';
+      b.onclick = () => { this._rmCur = k; o._upd(); this._h.callService('input_select', 'select_option', { option: k }, { entity_id: SEL }); }; segs[k] = b; sg.appendChild(b); });
+    o._upd = () => { const st = this._h.states[SEL]; const cur = this._rmCur || (st && st.state) || 'TV'; if (st && st.state === this._rmCur) this._rmCur = null;
+      Object.entries(segs).forEach(([k, b]) => { b.style.background = k === cur ? '#ff9d2e' : '#2c2940'; b.style.color = k === cur ? '#1c1206' : '#fff'; });
+      if (this._rmEls) Object.entries(this._rmEls).forEach(([k, e]) => { e.style.display = k === cur ? '' : 'none'; }); };
+    this.shadowRoot.appendChild(o); o._upd();
+    try {
+      if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = c.views.find((v) => v.path === 'streaming').sections[0].cards;
+        const pick = (k) => cs.find((x) => { const v = JSON.stringify(x.visibility || []); return v.includes(SEL) && v.includes('"' + k + '"'); }); this._rmCfg = { TV: pick('TV'), Ampli: pick('Ampli') }; }
+      const hp = await window.loadCardHelpers(); this._rmEls = {};
+      for (const k of ['TV', 'Ampli']) { if (!this._rmCfg[k]) continue; const cfg = { ...this._rmCfg[k] }; delete cfg.visibility; const el = hp.createCardElement(cfg); el.hass = this._h; this._rmEls[k] = el; bd.appendChild(el); }
+      o._upd();
+    } catch (e) { bd.textContent = 'Télécommande indisponible : ' + e.message; }
   }
   _toast(t) { let el = this.$('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; this.$('.hub').appendChild(el); } el.textContent = t; el.classList.add('show'); clearTimeout(this._tt); this._tt = setTimeout(() => el.classList.remove('show'), 2500); }
   _go(path) { history.pushState(null, '', path); window.dispatchEvent(new CustomEvent('location-changed')); }
