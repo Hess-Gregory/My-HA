@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.0 | 03/10/2026 13:01 | alertes vocales urgence et appel manque, sons iPhone
+# [AUTO-VERSION] v0.3.1 | 08/10/2026 18:04 | restauration du package localisation ecrase, ajouts dans localisation_suivi
 # Localisation - sonneries a distance des smartphones (arret uniquement depuis Home Assistant, anti-vol)
 # modes : sonner (retrouver le tel, boucle infinie) | urgence (appeler en urgence, boucle infinie)
 #         rappel (appel manque / telephone en silencieux, 3 fois)

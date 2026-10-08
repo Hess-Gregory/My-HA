@@ -215,9 +215,14 @@
     "version": "0.1.0"
   },
   "packages/localisation.yaml": {
-    "last_change": "periode d historique et actualisation des positions",
-    "last_update": "2026-10-08T18:03:21.164035+02:00",
-    "version": "0.3.0"
+    "last_change": "restauration du package localisation ecrase, ajouts dans localisation_suivi",
+    "last_update": "2026-10-08T18:04:46.238190+02:00",
+    "version": "0.3.1"
+  },
+  "packages/localisation_suivi.yaml": {
+    "last_change": "restauration du package localisation ecrase, ajouts dans localisation_suivi",
+    "last_update": "2026-10-08T18:04:46.238190+02:00",
+    "version": "0.0.1"
   },
   "packages/matteo/matteo_calendar.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",

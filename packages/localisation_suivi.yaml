@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.3.0 | 08/10/2026 18:03 | periode d historique et actualisation des positions
+# [AUTO-VERSION] v0.0.1 | 08/10/2026 18:04 | restauration du package localisation ecrase, ajouts dans localisation_suivi
 # Localisation : période d'historique + actualisation des positions
 input_select:
   localisation_periode:
