@@ -18,7 +18,11 @@ const VIEWS = {
   'Salon': { pos: [6.0, 9.5, 6.5], tgt: [3.3, 0.6, -2.4] },
   'Salle à manger': { pos: [1.6, 9, 7.5], tgt: [4.2, 0.6, 1.4] },
   'Cuisine': { pos: [4.6, 6.5, 3.6], tgt: [0.4, 0.7, 1.9] },
-  'Chambres': { pos: [-3.5, 13, 9], tgt: [-4.2, 0, 2.2] },
+  'Chambre enfants': { pos: [-1.9, 8.5, 6.6], tgt: [-2.5, 0.4, 2.0] },
+  'Chambre adulte': { pos: [-5.0, 8.5, 6.6], tgt: [-5.7, 0.4, 2.0] },
+  'Salle de bain': { pos: [-5.9, 7.5, 3.4], tgt: [-6.36, 0.4, -0.66] },
+  'Buanderie': { pos: [0.3, 7.5, 3.4], tgt: [-0.2, 0.4, -0.64] },
+  'Hall d’entrée': { pos: [-0.4, 9, 2.6], tgt: [-1.1, 0.4, -2.4] },
 };
 
 const k2rgb = (k) => { const t = k / 100; let r, g, b; if (t <= 66) { r = 255; g = 99.47 * Math.log(t) - 161.12; b = t <= 19 ? 0 : 138.52 * Math.log(t - 10) - 305.04; } else { r = 329.7 * Math.pow(t - 60, -0.1332); g = 288.12 * Math.pow(t - 60, -0.0755); b = 255; } const c = (v) => Math.max(0, Math.min(255, Math.round(v))); return [c(r), c(g), c(b)]; };
@@ -111,7 +115,7 @@ class Floorplan3DCard extends HTMLElement {
     </style>
     <div class="wrap"><div class="stars"></div><canvas></canvas><div class="vig"></div><div class="ov"></div>
       <div class="bar"><div class="t">🏠 Ma maison en 3D<small>Touchez une lampe ou un radiateur · glissez pour tourner · pincez pour zoomer</small></div>
-        <button class="walls">🧱 Murs bas</button><button class="mode">🌓 Auto</button><button class="alarm">🛡️ …</button></div>
+        <button class="walls hide">🧱 Murs bas</button><button class="mode">🌓 Auto</button><button class="alarm">🛡️ …</button></div>
       <div class="amb"><button data-a="cine">🎬 Cinéma</button><button data-a="diner">🍽️ Dîner</button><button data-a="off">⚫ Tout éteindre</button></div>
       <div class="views"></div><div class="info"></div><div class="toast"></div>
       <div class="pn"><div class="ph"><div class="pdot">💡</div><div class="pt"><div class="pname"></div><small class="pst"></small></div><button class="pw"></button><button class="px">✕</button></div>
