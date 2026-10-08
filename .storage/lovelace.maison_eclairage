@@ -559,23 +559,6 @@
                     "columns": 6,
                     "rows": "auto"
                   }
-                },
-                {
-                  "type": "tile",
-                  "entity": "input_select.sono_lumieres",
-                  "name": "🎵 Lumières sono musicale",
-                  "icon": "mdi:music-circle",
-                  "features": [
-                    {
-                      "type": "select-options"
-                    }
-                  ],
-                  "features_position": "bottom",
-                  "vertical": false,
-                  "grid_options": {
-                    "columns": "full",
-                    "rows": "auto"
-                  }
                 }
               ]
             },
@@ -1498,6 +1481,1249 @@
                   },
                   "card_mod": {
                     "style": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\n"
+                  }
+                }
+              ]
+            }
+          ],
+          "visible": [
+            {
+              "user": "a8d03195e7eb4b36a625eb3c0fb3468d"
+            },
+            {
+              "user": "e825e82f685f4d829d1b4f7e66c022db"
+            },
+            {
+              "user": "3d6a26b6b25045a99cf89cd56c8c8cc3"
+            },
+            {
+              "user": "3c63ae801ed34154aa67f44ef472a03c"
+            },
+            {
+              "user": "72011b7b659b4d9497908e4fbb4539ce"
+            }
+          ]
+        },
+        {
+          "title": "Light Jockey",
+          "path": "light-jockey",
+          "icon": "mdi:party-popper",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "🎧 Console Light Jockey",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "{% set s = states('input_select.sono_lumieres') %}{% set on = not s.startswith('—') %}\n## {{ '🔴 EN DIRECT · ' ~ s if on else '⏸ Aucun set en cours' }}\n**Effet :** {{ states('input_select.sono_effet') }} · **Tempo :** {{ states('input_number.sono_tempo') | int }} BPM · **Intensité :** {{ states('input_number.sono_intensite') | int }} %\n\n{{ '🎤 Si l’Accueil est ouvert sur la tablette, son micro écoute la musique et cale le tempo automatiquement.' if on else 'Choisissez un set ci-dessous, puis réglez l’intensité et un effet par-dessus.' }}",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_select.sono_lumieres",
+                  "name": "Set en cours",
+                  "icon": "mdi:music-circle",
+                  "features": [
+                    {
+                      "type": "select-options"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_select.sono_effet",
+                  "name": "Effet par-dessus le set",
+                  "icon": "mdi:flash",
+                  "features": [
+                    {
+                      "type": "select-options"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_number.sono_intensite",
+                  "name": "Intensité",
+                  "icon": "mdi:brightness-6",
+                  "features": [
+                    {
+                      "type": "numeric-input",
+                      "style": "slider"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_number.sono_tempo",
+                  "name": "Tempo (BPM)",
+                  "icon": "mdi:metronome",
+                  "features": [
+                    {
+                      "type": "numeric-input",
+                      "style": "slider"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "⏸ Stop set",
+                  "label": "Garde les couleurs actuelles",
+                  "icon": "mdi:pause",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "— Arrêt —"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#9aa3b5",
+                    "c2": "#5a6377",
+                    "c3": "#262b38"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "⏹ Tout éteindre",
+                  "label": "Arrête le set et coupe la pièce",
+                  "icon": "mdi:lightbulb-off",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.sono_stop_eteindre"
+                    },
+                    "haptic": "medium"
+                  },
+                  "variables": {
+                    "c1": "#9aa3b5",
+                    "c2": "#5a6377",
+                    "c3": "#262b38"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "🏙️ Plan 3D en direct",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:floorplan-3d-card",
+                  "compact": true,
+                  "height": "460px",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "🔦 Projecteurs (9 canaux)",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salle_a_manger_lc",
+                  "name": "Lustre SAM · gauche",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salle_a_manger_ld",
+                  "name": "Lustre SAM · centre",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salle_a_manger_lg",
+                  "name": "Lustre SAM · droite",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salle_a_manger_vit_g",
+                  "name": "Vitrine gauche",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salle_a_manger_vit_d",
+                  "name": "Vitrine droite",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salon_panneau_mural",
+                  "name": "Panneau mural",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.salon_ambilight_tv",
+                  "name": "Ambilight TV",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.coin_dj_sono_gauche",
+                  "name": "Spot DJ gauche",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.coin_dj_sono_droite",
+                  "name": "Spot DJ droite",
+                  "vertical": true,
+                  "hide_state": false,
+                  "state_content": [
+                    "brightness"
+                  ],
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "✨ Effets",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "⚡ Strobe",
+                  "label": "Flash blanc 1 temps sur 2",
+                  "icon": "mdi:flash",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_effet"
+                    },
+                    "data": {
+                      "option": "⚡ Strobe blanc"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffffff",
+                    "c2": "#bfc6d6",
+                    "c3": "#3a3f4d"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🟣 Black light",
+                  "label": "Tout en ultraviolet",
+                  "icon": "mdi:lightbulb-fluorescent-tube",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_effet"
+                    },
+                    "data": {
+                      "option": "🟣 Black light (UV)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#7a3cff",
+                    "c2": "#4600ff",
+                    "c3": "#1a0059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "💥 Blinder",
+                  "label": "Flash chaud toutes les 4",
+                  "icon": "mdi:white-balance-sunny",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_effet"
+                    },
+                    "data": {
+                      "option": "💥 Blinder (flash chaud toutes les 4)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffd28a",
+                    "c2": "#ffb45a",
+                    "c3": "#5e3a10"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "⬛ Blackout",
+                  "label": "Coupures sur le temps",
+                  "icon": "mdi:checkbox-blank",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_effet"
+                    },
+                    "data": {
+                      "option": "⬛ Blackout (coupures sur le temps)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#555b66",
+                    "c2": "#2a2e36",
+                    "c3": "#0e0f12"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Aucun effet",
+                  "label": "Le set seul",
+                  "icon": "mdi:close",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_effet"
+                    },
+                    "data": {
+                      "option": "Aucun"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#9aa3b5",
+                    "c2": "#5a6377",
+                    "c3": "#262b38"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "🎵 Styles musicaux",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🔊 Hard techno",
+                  "label": "150 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🔊 Hard techno"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff0000",
+                    "c2": "#ffffff",
+                    "c3": "#3e0000"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎛️ Tech house",
+                  "label": "125 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🎛️ Tech house"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#003cff",
+                    "c2": "#00dcc8",
+                    "c3": "#340059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🥁 Afro house",
+                  "label": "120 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🥁 Afro house"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff8c00",
+                    "c2": "#ff4600",
+                    "c3": "#59460e"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🌙 Ambiance chill",
+                  "label": "90 BPM · tous les 8 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🌙 Ambiance chill"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#00b4c8",
+                    "c2": "#643cff",
+                    "c3": "#001f59"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "📼 Rétro techno",
+                  "label": "135 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "📼 Rétro techno"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#78ff00",
+                    "c2": "#fff000",
+                    "c3": "#005959"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "💜 RnB",
+                  "label": "90 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "💜 RnB"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#8c00ff",
+                    "c2": "#ff008c",
+                    "c3": "#4d000e"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🕹️ Années 80",
+                  "label": "120 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🕹️ Années 80"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff1496",
+                    "c2": "#0078ff",
+                    "c3": "#380059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "🎛️ Universels (pour toute musique)",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "⚡ Strobe blanc",
+                  "label": "128 BPM · chaque temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "⚡ Universel · Strobe blanc"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffffff",
+                    "c2": "#ffffff",
+                    "c3": "#595959"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🔴 Bleu nuit & rouge",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🔴 Universel · Bleu nuit & rouge"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#0000aa",
+                    "c2": "#ff0000",
+                    "c3": "#590000"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🟡 Jaune & bleu ciel",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🟡 Universel · Jaune & bleu ciel"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffc800",
+                    "c2": "#50c8ff",
+                    "c3": "#1c4659"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🟣 Magenta & cyan",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🟣 Universel · Magenta & cyan"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff00aa",
+                    "c2": "#00e6ff",
+                    "c3": "#005059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🟢 Laser vert & UV",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🟢 Universel · Laser vert & UV"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#3cff00",
+                    "c2": "#4600ff",
+                    "c3": "#180059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🟠 Ambre & violet",
+                  "label": "128 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🟠 Universel · Ambre & violet"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff6e00",
+                    "c2": "#6e00ff",
+                    "c3": "#260059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "❤️ Pulse rouge",
+                  "label": "128 BPM · chaque temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "❤️ Universel · Pulse rouge"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff0000",
+                    "c2": "#ff0000",
+                    "c3": "#590000"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "❄️ Flash blanc & bleu",
+                  "label": "128 BPM · chaque temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "❄️ Universel · Flash blanc & bleu"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffffff",
+                    "c2": "#0028ff",
+                    "c3": "#595959"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🌈 Chase arc-en-ciel",
+                  "label": "128 BPM · chaque temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🌈 Universel · Chase arc-en-ciel"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff0000",
+                    "c2": "#ff8c00",
+                    "c3": "#595000"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🔥 Feu & or",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🔥 Universel · Feu & or"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff1900",
+                    "c2": "#ff8c00",
+                    "c3": "#594b1c"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🌊 Océan profond",
+                  "label": "128 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🌊 Universel · Océan profond"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#0019be",
+                    "c2": "#00aaff",
+                    "c3": "#005946"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
+                  "name": "🏟️ Inspirés des grands shows",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🏰 Tomorrowland main stage",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🏰 Show · Tomorrowland main stage"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffaa1e",
+                    "c2": "#e600c8",
+                    "c3": "#1f0059"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🖤 Afterlife",
+                  "label": "124 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🖤 Show · Afterlife (blanc glacial & rouge)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#dcebff",
+                    "c2": "#c80000",
+                    "c3": "#0e1559"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🧊 Anyma cyber néon",
+                  "label": "126 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🧊 Show · Anyma cyber néon"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#00f0ff",
+                    "c2": "#ffffff",
+                    "c3": "#59003b"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🔺 Daft Punk pyramide",
+                  "label": "124 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🔺 Show · Daft Punk pyramide"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff0000",
+                    "c2": "#003cff",
+                    "c3": "#595959"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "💙 Swedish House Mafia",
+                  "label": "128 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "💙 Show · Swedish House Mafia"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#005aff",
+                    "c2": "#ffffff",
+                    "c3": "#000a3e"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🦇 Berghain",
+                  "label": "135 BPM · chaque temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🦇 Show · Berghain (rouge sombre)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#c80000",
+                    "c2": "#ff0000",
+                    "c3": "#2a0000"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🟥 Hardstyle Defqon",
+                  "label": "150 BPM · chaque temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🟥 Show · Hardstyle Defqon (rouge & blanc)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff0000",
+                    "c2": "#ffffff",
+                    "c3": "#595959"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎆 Coldplay bracelets",
+                  "label": "120 BPM · tous les 2 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🎆 Show · Coldplay bracelets"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff005a",
+                    "c2": "#ffc800",
+                    "c3": "#004659"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🌅 Ibiza sunset",
+                  "label": "118 BPM · tous les 4 temps",
+                  "icon": "mdi:music",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.sono_lumieres"
+                    },
+                    "data": {
+                      "option": "🌅 Show · Ibiza sunset"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff5a00",
+                    "c2": "#ff2878",
+                    "c3": "#593b15"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
                   }
                 }
               ]
