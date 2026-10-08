@@ -4,7 +4,7 @@ const WX = { 'clear-night': ['🌙', 'Nuit claire'], cloudy: ['☁️', 'Nuageux
 const ROOMS = [['Pièce de vie', 'piece_de_vie_sonoff_a480146b56', 'climate.living', 'piece_de_vie', 'piece-de-vie'], ['Couloir & entrée', 'couloir_sonoff_a480146b60', 'climate.couloir', 'couloir', 'couloir-entree'],
   ['Chambre enfants', 'chambre_enfants_sonoff_a480146b58', 'climate.chambre_enfants', 'chambre_enfants', 'chambre-enfants'], ['Chambre parents', 'chambre_adulte_sonoff_a480146b5b', 'climate.chambre_adulte', 'chambre_adulte', 'chambre-parents'],
   ['Salle de bain', 'salle_de_bain_sonoff_a480146b5d', 'climate.salle_de_bain', 'salle_de_bain', 'salle-de-bain']];
-const ACTIONS = [['bonne_nuit', '🌙', 'Bonne nuit', 'Éteint tout', null], ['je_pars', '🚪', 'Je pars', 'Alarme + éco', 'L’alarme passera en TOTAL dans 60 s'], ['retour', '🏡', 'Retour', 'Chauffage confort', null],
+const ACTIONS = [['bonne_nuit', '🌙', 'Bonne nuit', 'Éteint tout', null], ['je_pars', '🚪', 'Je pars', 'Alarme + éco', 'L’alarme passera en TOTAL dans 60 s'], ['annuler_scenario', '↩️', 'Annuler', 'Je pars / Bonne nuit', null],
   ['sieste_calme', '🤫', 'Sieste / Calme', 'Coupe le coin DJ', null], ['tout_eteindre', '⚫', 'Tout éteindre', 'Toutes les lumières', 'Éteindre toutes les lumières ?']];
 const PEOPLE = [['person.greg', 'Greg'], ['person.sandrine', 'Sandrine'], ['person.matteo', 'Matteo']];
 const ALARM = 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison';

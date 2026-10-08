@@ -1,0 +1,49 @@
+# Annuler un « Je pars » / « Bonne nuit » appuyé par erreur
+script:
+  scenario_memoriser:
+    alias: "↩️ Mémoriser l'état avant scénario"
+    icon: mdi:content-save-outline
+    mode: restart
+    sequence:
+      - action: scene.create
+        data:
+          scene_id: avant_scenario
+          snapshot_entities: >-
+            {{ (states.light | map(attribute='entity_id') | list)
+               + ['input_select.mode_chambre_adulte', 'input_select.mode_chambre_enfants',
+                  'input_select.mode_piece_de_vie', 'input_select.mode_salle_de_bain',
+                  'media_player.fire_tv_192_168_80_103', 'switch.salon_sam_tablette_economiseur_d_ecran']
+               | select('in', states | map(attribute='entity_id') | list) | list }}
+
+  annuler_scenario:
+    alias: "↩️ Annuler Je pars / Bonne nuit"
+    icon: mdi:undo-variant
+    mode: single
+    sequence:
+      - action: timer.cancel
+        continue_on_error: true
+        target:
+          entity_id: timer.compte_a_rebours_depart
+      - action: script.turn_off
+        continue_on_error: true
+        target:
+          entity_id: [script.je_pars, script.bonne_nuit]
+      - if:
+          - condition: template
+            value_template: >-
+              {% set a = states.alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax %}
+              {{ a is not none and a.state in ['armed_away', 'armed_home', 'armed_night', 'arming', 'pending', 'armed_custom_bypass']
+                 and (now() - a.last_changed).total_seconds() < 1800 }}
+        then:
+          - action: alarm_control_panel.alarm_disarm
+            continue_on_error: true
+            target:
+              entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+      - if:
+          - condition: template
+            value_template: "{{ states('scene.avant_scenario') not in ['unknown', 'unavailable'] }}"
+        then:
+          - action: scene.turn_on
+            continue_on_error: true
+            target:
+              entity_id: scene.avant_scenario

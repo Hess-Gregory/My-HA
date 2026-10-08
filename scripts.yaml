@@ -143,6 +143,8 @@ bonne_nuit:
   icon: mdi:weather-night
   mode: single
   sequence:
+  - action: script.scenario_memoriser
+    alias: Mémoriser l'état avant le scénario (bouton Annuler)
   - action: script.turn_on
     target:
       entity_id: script.1786831774432
@@ -205,6 +207,8 @@ je_pars:
   icon: mdi:home-export-outline
   mode: single
   sequence:
+  - action: script.scenario_memoriser
+    alias: Mémoriser l'état avant le scénario (bouton Annuler)
   - action: script.turn_on
     target:
       entity_id: script.1786831774432
