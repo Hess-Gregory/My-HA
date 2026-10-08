@@ -70,19 +70,19 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "partage du calendrier par QR code (popup)",
-    "last_update": "2026-10-04T10:46:08.692655+02:00",
-    "version": "0.8.0"
+    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
+    "last_update": "2026-10-08T17:47:55.468915+02:00",
+    "version": "0.9.0"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "vue Plan 3D sans image de fond, plan + barre = 100vh",
-    "last_update": "2026-10-07T09:11:13.630599+02:00",
-    "version": "0.6.1"
+    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
+    "last_update": "2026-10-08T17:47:55.468915+02:00",
+    "version": "0.7.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "plein ecran 100vh sans en-tete, fond jpeg retire, pied de page centre",
-    "last_update": "2026-10-07T09:08:58.742798+02:00",
-    "version": "2.0.1"
+    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
+    "last_update": "2026-10-08T17:47:55.468915+02:00",
+    "version": "2.1.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -257,6 +257,11 @@
   "packages/pollution_meteo.yaml": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
     "last_update": "2026-10-01T18:41:24.194696+02:00",
+    "version": "0.1.0"
+  },
+  "packages/securite_matteo.yaml": {
+    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
+    "last_update": "2026-10-08T17:47:55.468915+02:00",
     "version": "0.1.0"
   },
   "packages/tablette_sam.yaml": {
