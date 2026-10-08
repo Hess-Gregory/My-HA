@@ -39,7 +39,16 @@ TRACKED_PREFIXES = ("packages/", "themes/")
 DASHBOARD_PREFIX = ".storage/lovelace."
 
 
+# Cartes personnalisees (JS) : un changement bumpe aussi les dashboards qui les affichent
+LINKED = {
+    "www/plan3d/home-hub-card.js": [".storage/lovelace.maison_accueil"],
+    "www/plan3d/floorplan-3d-card.js": [".storage/lovelace.maison_accueil", ".storage/lovelace.ma_maison"],
+}
+
+
 def is_tracked(rel_path: str) -> bool:
+    if rel_path.startswith("www/") and rel_path.endswith(".js"):
+        return True
     if rel_path.startswith(DASHBOARD_PREFIX):
         return True
     if rel_path in TRACKED_ROOT_FILES:
@@ -124,6 +133,10 @@ def main() -> None:
     for k in pruned:
         versions.pop(k)
     changed = [f for f in get_changed_files() if is_tracked(f) and (ROOT / f).exists()]
+    for f in list(changed):
+        for d in LINKED.get(f, []):
+            if d not in changed and (ROOT / d).exists():
+                changed.append(d)
     if not changed and not pruned:
         return
 
