@@ -300,9 +300,9 @@
     "version": "0.10.0"
   },
   "packages/sono_strobe.yaml": {
-    "last_change": "console DMX lampe par lampe, melange rouge/jaune/bleu, flash 0-100, allume/blackout",
-    "last_update": "2026-10-08T23:34:29.569469+02:00",
-    "version": "0.3.0"
+    "last_change": "console DMX, la selection ne touche plus les lampes, envoi seulement sur ALLUME/BLACKOUT",
+    "last_update": "2026-10-08T23:35:45.524590+02:00",
+    "version": "0.3.1"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",

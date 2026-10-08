@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.3.1 | 08/10/2026 23:35 | console DMX, la selection ne touche plus les lampes, envoi seulement sur ALLUME/BLACKOUT
 # 🎚️ Console DMX : sélection lampe par lampe, couleur (palette + mélange rouge / jaune / bleu),
 # intensité, flash de 0 (fixe) à 100 (très rapide), effets spéciaux.
 # Les réglages ne partent vers les lampes qu'au clic sur ALLUMÉ ou BLACKOUT (comme un GO de console).
