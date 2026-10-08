@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.2.0 | 08/10/2026 22:55 | lumieres sono calees sur le tempo BPM de chaque style + curseur tempo
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150, Rétro techno 135, Tech house 125, Afro house 120, Années 80 120, RnB 90, Chill 90 (changement toutes les 4 mesures de temps, 8 pour le chill)
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
