@@ -15,3 +15,20 @@ automation:
         data:
           application: io.homeassistant.companion.android
           device_id: f1aa9e7a06615d6cd968ef13a161d75c
+
+  - id: tablette_sam_carillon_porte
+    alias: "🔔 Tablette Sam : carillon à l'ouverture de la porte d'entrée"
+    description: "Joue un carillon sur la tablette du salon quand la porte d'entrée s'ouvre."
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.hall_dentree_porte_entree_porte
+        from: "off"
+        to: "on"
+    actions:
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
+          media_content_type: music
