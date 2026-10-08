@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.5.0 | 08/10/2026 11:17 | porte ouverte = zoom hall + camera couloir, tablette ouvre l accueil
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
@@ -18,7 +17,7 @@ automation:
 
   - id: tablette_sam_carillon_porte
     alias: "🔔 Tablette Sam : carillon à l'ouverture de la porte d'entrée"
-    description: "Joue un carillon sur la tablette du salon quand la porte d'entrée s'ouvre."
+    description: "Porte d'entrée ouverte : carillon sur la tablette + HA au premier plan sur l'Accueil (zoom hall + caméra), tout en parallèle."
     mode: single
     triggers:
       - trigger: state
@@ -26,24 +25,29 @@ automation:
         from: "off"
         to: "on"
     actions:
-      - action: media_player.volume_set
-        target:
-          entity_id: media_player.salon_sam_tablette
-        data:
-          volume_level: 0.9
-      - action: media_player.play_media
-        target:
-          entity_id: media_player.salon_sam_tablette
-        data:
-          media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
-          media_content_type: music
-      - action: fully_kiosk.start_application
-        data:
-          application: io.homeassistant.companion.android
-          device_id: f1aa9e7a06615d6cd968ef13a161d75c
-      - delay: "00:00:02"
-      - action: notify.mobile_app_25099rp13g
-        data:
-          message: command_webview
-          data:
-            command: /maison-accueil/accueil
+      - parallel:
+          - sequence:
+              - action: media_player.volume_set
+                continue_on_error: true
+                target:
+                  entity_id: media_player.salon_sam_tablette
+                data:
+                  volume_level: 0.9
+              - action: media_player.play_media
+                continue_on_error: true
+                target:
+                  entity_id: media_player.salon_sam_tablette
+                data:
+                  media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
+                  media_content_type: music
+          - action: notify.mobile_app_25099rp13g
+            continue_on_error: true
+            data:
+              message: command_webview
+              data:
+                command: /maison-accueil/accueil
+          - action: fully_kiosk.start_application
+            continue_on_error: true
+            data:
+              application: io.homeassistant.companion.android
+              device_id: f1aa9e7a06615d6cd968ef13a161d75c
