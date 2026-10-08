@@ -294,6 +294,11 @@
     "last_update": "2026-10-08T17:47:55.468915+02:00",
     "version": "0.1.0"
   },
+  "packages/sono_lumieres.yaml": {
+    "last_change": "lumieres dynamiques sono par style musical",
+    "last_update": "2026-10-08T22:45:56.404427+02:00",
+    "version": "0.1.0"
+  },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
     "last_update": "2026-10-08T12:22:45.097104+02:00",

@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 08/10/2026 22:45 | lumieres dynamiques sono par style musical
 # Lumières dynamiques pour la sono, selon le style musical (boucle tant que le style est choisi)
 input_select:
   sono_lumieres:
