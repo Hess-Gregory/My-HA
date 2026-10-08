@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.8.0 | 08/10/2026 23:19 | vue Light Jockey (console, effets, sets) + arret propre de la sono
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
