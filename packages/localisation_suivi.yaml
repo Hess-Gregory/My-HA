@@ -1,0 +1,24 @@
+# [AUTO-VERSION] v0.3.0 | 08/10/2026 18:03 | periode d historique et actualisation des positions
+# Localisation : période d'historique + actualisation des positions
+input_select:
+  localisation_periode:
+    name: "Localisation – période"
+    icon: mdi:history
+    options: ["5 min", "1 h", "6 h", "24 h", "7 jours"]
+
+script:
+  localisation_actualiser:
+    alias: "📍 Localisation – actualiser les positions"
+    icon: mdi:crosshairs-gps
+    mode: single
+    sequence:
+      - parallel:
+          - action: notify.mobile_app_samsung_greg
+            continue_on_error: true
+            data: { message: request_location_update }
+          - action: notify.mobile_app_sandrine_smartphone
+            continue_on_error: true
+            data: { message: request_location_update }
+          - action: notify.mobile_app_iphone
+            continue_on_error: true
+            data: { message: request_location_update }
