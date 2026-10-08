@@ -215,9 +215,9 @@
     "version": "0.1.0"
   },
   "packages/localisation.yaml": {
-    "last_change": "alertes vocales urgence et appel manque, sons iPhone",
-    "last_update": "2026-10-03T13:01:41.758964+02:00",
-    "version": "0.2.0"
+    "last_change": "periode d historique et actualisation des positions",
+    "last_update": "2026-10-08T18:03:21.164035+02:00",
+    "version": "0.3.0"
   },
   "packages/matteo/matteo_calendar.yaml": {
     "last_change": "versionnage 1.0.0 des 6 packages du planning Matteo",
