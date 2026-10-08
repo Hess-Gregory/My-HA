@@ -284,6 +284,11 @@
     "last_update": "2026-10-08T22:12:53.461607+02:00",
     "version": "0.1.0"
   },
+  "packages/scenes_light_jockey.yaml": {
+    "last_change": "40 ambiances light jockey + menu deroulant ambiance piece de vie",
+    "last_update": "2026-10-08T22:45:15.017978+02:00",
+    "version": "0.1.0"
+  },
   "packages/securite_matteo.yaml": {
     "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
     "last_update": "2026-10-08T17:47:55.468915+02:00",
