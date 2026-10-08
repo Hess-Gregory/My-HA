@@ -1,67 +1,71 @@
-# [AUTO-VERSION] v0.2.0 | 08/10/2026 23:27 | programmeur DMX (projecteurs, couleur, effet, intensite, vitesse)
-# 🎚️ Programmeur DMX façon console light jockey :
-# 1) sélection des projecteurs  2) couleur  3) effet  4) intensité / vitesse  5) GO
-# Pendant que le programmeur est actif, les « Lumières sono » laissent les projecteurs sélectionnés au programmeur.
+# 🎚️ Console DMX : sélection lampe par lampe, couleur (palette + mélange rouge / jaune / bleu),
+# intensité, flash de 0 (fixe) à 100 (très rapide), effets spéciaux, et Allumé / Blackout / Libérer.
 input_boolean:
-  strobe_actif: {name: Programmeur DMX actif, icon: 'mdi:play-circle'}
-  strobe_lustre: {name: Projecteur · Lustre SAM, icon: 'mdi:ceiling-light-multiple'}
-  strobe_vitrines: {name: Projecteur · Vitrines, icon: 'mdi:wall-sconce-flat'}
-  strobe_panneau: {name: Projecteur · Panneau mural, icon: 'mdi:led-strip-variant'}
-  strobe_ambilight: {name: Projecteur · Ambilight, icon: 'mdi:television-ambient-light'}
-  strobe_dj: {name: Projecteur · Spots DJ, icon: 'mdi:spotlight-beam'}
+  strobe_actif: {name: Console DMX active, icon: 'mdi:play-circle'}
+  dmx_blackout: {name: Console DMX · blackout, icon: 'mdi:checkbox-blank'}
+  dmx_lc: {name: Lustre SAM 1, icon: 'mdi:lightbulb'}
+  dmx_ld: {name: Lustre SAM 2, icon: 'mdi:lightbulb'}
+  dmx_lg: {name: Lustre SAM 3, icon: 'mdi:lightbulb'}
+  dmx_vit_g: {name: Vitrine gauche, icon: 'mdi:wall-sconce-flat'}
+  dmx_vit_d: {name: Vitrine droite, icon: 'mdi:wall-sconce-flat'}
+  dmx_panneau: {name: Panneau mural, icon: 'mdi:led-strip-variant'}
+  dmx_ambilight: {name: Ambilight, icon: 'mdi:television-ambient-light'}
+  dmx_dj_g: {name: Spot DJ gauche, icon: 'mdi:spotlight-beam'}
+  dmx_dj_d: {name: Spot DJ droite, icon: 'mdi:spotlight-beam'}
 input_number:
-  strobe_intensite: {name: Intensité programmeur, icon: 'mdi:brightness-7', min: 5, max: 100, step: 5, initial: 60, mode: slider, unit_of_measurement: '%'}
-  strobe_vitesse: {name: Vitesse programmeur, icon: 'mdi:speedometer', min: 0.25, max: 5, step: 0.25, initial: 2, mode: slider, unit_of_measurement: Hz}
+  strobe_intensite: {name: Intensité console, icon: 'mdi:brightness-7', min: 5, max: 100, step: 5, initial: 60, mode: slider, unit_of_measurement: '%'}
+  dmx_flash: {name: 'Flash (0 = fixe, 100 = très rapide)', icon: 'mdi:flash', min: 0, max: 100, step: 5, initial: 0, mode: slider, unit_of_measurement: '%'}
+  dmx_rouge: {name: Rouge, icon: 'mdi:alpha-r-circle', min: 0, max: 100, step: 5, mode: slider, unit_of_measurement: '%'}
+  dmx_jaune: {name: Jaune, icon: 'mdi:alpha-j-circle', min: 0, max: 100, step: 5, mode: slider, unit_of_measurement: '%'}
+  dmx_bleu: {name: Bleu, icon: 'mdi:alpha-b-circle', min: 0, max: 100, step: 5, mode: slider, unit_of_measurement: '%'}
 input_select:
   strobe_mode:
-    name: Effet programmeur
+    name: Effet spécial console
     icon: mdi:auto-fix
-    options: [🎯 Fixe, ⚡ Strobe, 🫁 Pulse (respiration), 🏃 Chase (de projecteur en projecteur), 🌈 Arc-en-ciel, 💥 Rafales, 🌩️ Éclairs, 🥁 Strobe sync tempo]
-  strobe_couleur:
-    name: Couleur programmeur
+    options: [Aucun (couleur + flash), 🫁 Pulse (respiration), 🏃 Chase (de projecteur en projecteur), 🌈 Arc-en-ciel, 💥 Rafales, 🌩️ Éclairs, 🥁 Strobe sync tempo]
+template:
+- sensor:
+  - name: Console DMX couleur
+    unique_id: console_dmx_couleur
     icon: mdi:palette
-    options: [Blanc, Blanc chaud, Rouge, Orange, Jaune, Vert, Cyan, Bleu, UV, Magenta, Rose]
+    state: '{% set r = states(''input_number.dmx_rouge'') | float(0) / 100 %}{% set y = states(''input_number.dmx_jaune'') | float(0) / 100 %}{% set b = states(''input_number.dmx_bleu'') | float(0) / 100 %}{% set C = [[1,1,1],[1,0,0],[1,1,0],[0,0.15,1],[1,0.5,0],[0.5,0,0.5],[0,0.8,0.15],[0.2,0.094,0]]
+      %}{% set w = [(1-r)*(1-y)*(1-b), r*(1-y)*(1-b), (1-r)*y*(1-b), (1-r)*(1-y)*b, r*y*(1-b), r*(1-y)*b, (1-r)*y*b, r*y*b] %}{% set ns = namespace(o=[]) %}{% for ch in range(3) %}{% set t = namespace(v=0) %}{% for i in range(8) %}{% set t.v = t.v + w[i] * C[i][ch] %}{% endfor %}{% set ns.o = ns.o + [t.v]
+      %}{% endfor %}{% set mx = [ns.o | max, 0.01] | max %}{{ ns.o | map(''multiply'', 255 / mx) | map(''round'', 0) | map(''int'') | list | join('','') }}'
+    attributes: {hex: '{% set c = (this.state | default(''255,255,255'')).split('','') %}#{% for v in c %}{{ ''%02x'' % (v | int(255)) }}{% endfor %}'}
 script:
   strobe_lumieres:
-    alias: 🎚️ Programmeur DMX (projecteurs sélectionnés)
+    alias: 🎚️ Console DMX (projecteurs sélectionnés)
     icon: mdi:tune-vertical
     mode: restart
     sequence:
-    - variables:
-        cols:
-          Blanc: [255, 255, 255]
-          Blanc chaud: [255, 190, 110]
-          Rouge: [255, 0, 0]
-          Orange: [255, 90, 0]
-          Jaune: [255, 210, 0]
-          Vert: [40, 255, 0]
-          Cyan: [0, 230, 255]
-          Bleu: [0, 40, 255]
-          UV: [70, 0, 255]
-          Magenta: [255, 0, 170]
-          Rose: [255, 80, 150]
-        ents: '{% set m = {''input_boolean.strobe_lustre'':[''light.salle_a_manger_lc'',''light.salle_a_manger_ld'',''light.salle_a_manger_lg''],''input_boolean.strobe_vitrines'':[''light.salle_a_manger_vit_g'',''light.salle_a_manger_vit_d''],''input_boolean.strobe_panneau'':[''light.salon_panneau_mural''],''input_boolean.strobe_ambilight'':[''light.salon_ambilight_tv''],''input_boolean.strobe_dj'':[''light.coin_dj_sono_gauche'',''light.coin_dj_sono_droite'']}
-          %}{% set ns = namespace(l=[]) %}{% if true %}{% for b in m %}{% if is_state(b,''on'') %}{% set ns.l = ns.l + m[b] %}{% endif %}{% endfor %}{% endif %}{{ ns.l }}'
-        eff: '{{ states(''input_select.strobe_mode'') }}'
-        rgb: '{{ cols.get(states(''input_select.strobe_couleur''), [255,255,255]) }}'
-        bri: '{{ [ (255 * (states(''input_number.strobe_intensite'') | float(60)) / 100) | int, 1 ] | max }}'
-        period: '{% if ''sync'' in states(''input_select.strobe_mode'') %}{{ 60 / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% else %}{{ 1 / ([states(''input_number.strobe_vitesse'') | float(2), 0.25] | max) }}{% endif %}'
+    - variables: {ents: '{% set m = {''input_boolean.dmx_lc'':''light.salle_a_manger_lc'',''input_boolean.dmx_ld'':''light.salle_a_manger_ld'',''input_boolean.dmx_lg'':''light.salle_a_manger_lg'',''input_boolean.dmx_vit_g'':''light.salle_a_manger_vit_g'',''input_boolean.dmx_vit_d'':''light.salle_a_manger_vit_d'',''input_boolean.dmx_panneau'':''light.salon_panneau_mural'',''input_boolean.dmx_ambilight'':''light.salon_ambilight_tv'',''input_boolean.dmx_dj_g'':''light.coin_dj_sono_gauche'',''input_boolean.dmx_dj_d'':''light.coin_dj_sono_droite''}
+          %}{% set ns = namespace(l=[]) %}{% if true %}{% for b in m %}{% if is_state(b,''on'') %}{% set ns.l = ns.l + [m[b]] %}{% endif %}{% endfor %}{% endif %}{{ ns.l }}', eff: '{{ states(''input_select.strobe_mode'') }}', rgb: '{% set r = states(''input_number.dmx_rouge'') | float(0) / 100 %}{% set
+          y = states(''input_number.dmx_jaune'') | float(0) / 100 %}{% set b = states(''input_number.dmx_bleu'') | float(0) / 100 %}{% set C = [[1,1,1],[1,0,0],[1,1,0],[0,0.15,1],[1,0.5,0],[0.5,0,0.5],[0,0.8,0.15],[0.2,0.094,0]] %}{% set w = [(1-r)*(1-y)*(1-b), r*(1-y)*(1-b), (1-r)*y*(1-b), (1-r)*(1-y)*b,
+          r*y*(1-b), r*(1-y)*b, (1-r)*y*b, r*y*b] %}{% set ns = namespace(o=[]) %}{% for ch in range(3) %}{% set t = namespace(v=0) %}{% for i in range(8) %}{% set t.v = t.v + w[i] * C[i][ch] %}{% endfor %}{% set ns.o = ns.o + [t.v] %}{% endfor %}{% set mx = [ns.o | max, 0.01] | max %}{{ ns.o | map(''multiply'',
+          255 / mx) | map(''round'', 0) | map(''int'') | list }}', bri: '{{ [ (255 * (states(''input_number.strobe_intensite'') | float(60)) / 100) | int, 1 ] | max }}', flash: '{{ states(''input_number.dmx_flash'') | float(0) }}', period: '{% if ''sync'' in states(''input_select.strobe_mode'') %}{{ 60
+          / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% else %}{% set f = states(''input_number.dmx_flash'') | float(0) %}{{ (1 / (0.5 + f / 100 * 4.5)) if f > 0 else 1 }}{% endif %}'}
     - {condition: template, value_template: '{{ ents | length > 0 }}'}
     - choose:
       - conditions:
-        - {condition: template, value_template: '{{ ''Fixe'' in eff }}'}
+        - {condition: state, entity_id: input_boolean.dmx_blackout, state: 'on'}
+        sequence:
+        - action: light.turn_off
+          continue_on_error: true
+          target: {entity_id: '{{ ents }}'}
+          data: {transition: 0}
+      - conditions:
+        - {condition: template, value_template: '{{ eff.startswith(''Aucun'') and flash == 0 }}'}
         sequence:
         - action: light.turn_on
           continue_on_error: true
           target: {entity_id: '{{ ents }}'}
-          data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: 0.3}
-        - {wait_template: '{{ is_state(''input_boolean.strobe_actif'',''off'') }}'}
+          data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: 0.2}
       - conditions:
         - {condition: template, value_template: '{{ ''Pulse'' in eff }}'}
         sequence:
         - repeat:
-            while:
-            - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
+            while: &id001
+            - &id002 {condition: template, value_template: '{{ is_state(''input_boolean.strobe_actif'',''on'') and is_state(''input_boolean.dmx_blackout'',''off'') }}'}
             sequence:
             - action: light.turn_on
               continue_on_error: true
@@ -81,8 +85,7 @@ script:
           target: {entity_id: '{{ ents }}'}
           data: {rgb_color: '{{ rgb }}', brightness: 1, transition: 0}
         - repeat:
-            while:
-            - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
+            while: *id001
             sequence:
             - variables: {cur: '{{ ents[(repeat.index - 1) % (ents | length)] }}', prev: '{{ ents[(repeat.index - 2) % (ents | length)] }}'}
             - action: light.turn_on
@@ -101,8 +104,7 @@ script:
         - {condition: template, value_template: '{{ ''Arc-en-ciel'' in eff }}'}
         sequence:
         - repeat:
-            while:
-            - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
+            while: *id001
             sequence:
             - repeat:
                 for_each: '{{ range(ents | length) | list }}'
@@ -115,7 +117,7 @@ script:
       default:
       - repeat:
           while:
-          - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
+          - *id002
           - {condition: template, value_template: '{{ repeat.index < 100000 }}'}
           sequence:
           - variables: {p: '{% if ''Rafales'' in eff %}{{ 0.15 if repeat.index % 6 else 1.2 }}{% elif ''Éclairs'' in eff %}{{ (range(3, 26) | random) / 10 }}{% else %}{{ period }}{% endif %}'}
@@ -142,35 +144,85 @@ script:
               target: {entity_id: '{{ ents }}'}
               data: {brightness: 1, transition: 0}
           - delay: {seconds: '{{ [ p - [p / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
+  dmx_couleur:
+    alias: '🎨 Console DMX : couleur prédéfinie'
+    mode: restart
+    fields:
+      nom: {}
+    sequence:
+    - variables:
+        pre:
+          Blanc: [0, 0, 0]
+          Rouge: [100, 0, 0]
+          Orange: [100, 100, 0]
+          Ambre: [100, 70, 0]
+          Jaune: [0, 100, 0]
+          Vert: [0, 100, 100]
+          Turquoise: [0, 45, 100]
+          Bleu: [0, 0, 100]
+          Violet: [100, 0, 100]
+          UV: [45, 0, 100]
+          Magenta: [100, 0, 55]
+          Rose: [45, 0, 0]
+    - action: input_number.set_value
+      target: {entity_id: input_number.dmx_rouge}
+      data: {value: '{{ pre[nom][0] }}'}
+    - action: input_number.set_value
+      target: {entity_id: input_number.dmx_jaune}
+      data: {value: '{{ pre[nom][1] }}'}
+    - action: input_number.set_value
+      target: {entity_id: input_number.dmx_bleu}
+      data: {value: '{{ pre[nom][2] }}'}
+  dmx_mode:
+    alias: '🎚️ Console DMX : allumé / blackout / libérer'
+    mode: restart
+    fields:
+      mode: {}
+    sequence:
+    - choose:
+      - conditions: '{{ mode == ''allume'' }}'
+        sequence:
+        - action: input_boolean.turn_off
+          target: {entity_id: input_boolean.dmx_blackout}
+        - action: input_boolean.turn_on
+          target: {entity_id: input_boolean.strobe_actif}
+        - action: script.turn_on
+          target: {entity_id: script.strobe_lumieres}
+      - conditions: '{{ mode == ''blackout'' }}'
+        sequence:
+        - action: input_boolean.turn_on
+          target:
+            entity_id: [input_boolean.dmx_blackout, input_boolean.strobe_actif]
+        - action: script.turn_on
+          target: {entity_id: script.strobe_lumieres}
+      default:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: [input_boolean.strobe_actif, input_boolean.dmx_blackout]
 automation:
 - id: strobe_marche_arret
-  alias: '🎚️ Programmeur DMX : GO / STOP instantané'
+  alias: '🎚️ Console DMX : libérer les projecteurs'
   mode: restart
   triggers:
-  - {trigger: state, entity_id: input_boolean.strobe_actif}
+  - {trigger: state, entity_id: input_boolean.strobe_actif, to: 'off'}
   actions:
-  - choose:
-    - conditions:
-      - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
-      sequence:
-      - action: script.turn_on
-        target: {entity_id: script.strobe_lumieres}
-    default:
-    - action: script.turn_off
-      target: {entity_id: script.strobe_lumieres}
-    - if:
-      - {condition: template, value_template: '{{ not states(''input_select.sono_lumieres'').startswith(''—'') }}'}
-      then:
-      - action: script.turn_on
-        target: {entity_id: script.sono_lumieres}
+  - action: script.turn_off
+    target: {entity_id: script.strobe_lumieres}
+  - if:
+    - {condition: template, value_template: '{{ not states(''input_select.sono_lumieres'').startswith(''—'') }}'}
+    then:
+    - action: script.turn_on
+      target: {entity_id: script.sono_lumieres}
 - id: strobe_reglage_instantane
-  alias: '🎚️ Programmeur DMX : appliquer un réglage tout de suite'
+  alias: '🎚️ Console DMX : appliquer un réglage tout de suite'
   mode: restart
   triggers:
   - trigger: state
-    entity_id: [input_select.strobe_mode, input_select.strobe_couleur, input_number.strobe_intensite, input_number.strobe_vitesse, input_boolean.strobe_lustre, input_boolean.strobe_vitrines, input_boolean.strobe_panneau, input_boolean.strobe_ambilight, input_boolean.strobe_dj]
+    entity_id: [input_select.strobe_mode, input_number.strobe_intensite, input_number.dmx_flash, input_number.dmx_rouge, input_number.dmx_jaune, input_number.dmx_bleu, input_boolean.dmx_lc, input_boolean.dmx_ld, input_boolean.dmx_lg, input_boolean.dmx_vit_g, input_boolean.dmx_vit_d, input_boolean.dmx_panneau,
+      input_boolean.dmx_ambilight, input_boolean.dmx_dj_g, input_boolean.dmx_dj_d]
   conditions:
   - {condition: state, entity_id: input_boolean.strobe_actif, state: 'on'}
   actions:
+  - delay: {milliseconds: 150}
   - action: script.turn_on
     target: {entity_id: script.strobe_lumieres}

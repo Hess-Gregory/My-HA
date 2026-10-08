@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.9.0 | 08/10/2026 23:24 | strobe pro (projecteurs, couleur, intensite, vitesse, modes) + effets instantanes
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
@@ -339,9 +338,9 @@ script:
         while:
         - {condition: template, value_template: '{{ is_state(''input_select.sono_lumieres'', style) and repeat.index < 50000 }}'}
         sequence:
-        - variables: {sx: '{% set m = {''input_boolean.strobe_lustre'':[''light.salle_a_manger_lc'',''light.salle_a_manger_ld'',''light.salle_a_manger_lg''],''input_boolean.strobe_vitrines'':[''light.salle_a_manger_vit_g'',''light.salle_a_manger_vit_d''],''input_boolean.strobe_panneau'':[''light.salon_panneau_mural''],''input_boolean.strobe_ambilight'':[''light.salon_ambilight_tv''],''input_boolean.strobe_dj'':[''light.coin_dj_sono_gauche'',''light.coin_dj_sono_droite'']}
-              %}{% set ns = namespace(l=[]) %}{% if is_state(''input_boolean.strobe_actif'',''on'') %}{% for b in m %}{% if is_state(b,''on'') %}{% set ns.l = ns.l + m[b] %}{% endif %}{% endfor %}{% endif %}{{ ns.l }}', step: '{{ repeat.index }}', n: '{{ c.pal |
-              length }}', beat: '{{ 60 / ([states(''input_number.sono_tempo'') | float(c.bpm), 40] | max) }}'}
+        - variables: {sx: '{% set m = {''input_boolean.dmx_lc'':''light.salle_a_manger_lc'',''input_boolean.dmx_ld'':''light.salle_a_manger_ld'',''input_boolean.dmx_lg'':''light.salle_a_manger_lg'',''input_boolean.dmx_vit_g'':''light.salle_a_manger_vit_g'',''input_boolean.dmx_vit_d'':''light.salle_a_manger_vit_d'',''input_boolean.dmx_panneau'':''light.salon_panneau_mural'',''input_boolean.dmx_ambilight'':''light.salon_ambilight_tv'',''input_boolean.dmx_dj_g'':''light.coin_dj_sono_gauche'',''input_boolean.dmx_dj_d'':''light.coin_dj_sono_droite''}
+              %}{% set ns = namespace(l=[]) %}{% if is_state(''input_boolean.strobe_actif'',''on'') %}{% for b in m %}{% if is_state(b,''on'') %}{% set ns.l = ns.l + [m[b]] %}{% endif %}{% endfor %}{% endif %}{{ ns.l }}', step: '{{ repeat.index }}', n: '{{ c.pal
+              | length }}', beat: '{{ 60 / ([states(''input_number.sono_tempo'') | float(c.bpm), 40] | max) }}'}
         - parallel:
           - sequence:
             - {condition: template, value_template: '{{ 0 < n }}'}
