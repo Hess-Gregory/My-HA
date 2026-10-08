@@ -295,9 +295,9 @@
     "version": "0.1.0"
   },
   "packages/sono_lumieres.yaml": {
-    "last_change": "lumieres sono calees sur le tempo BPM de chaque style + curseur tempo",
-    "last_update": "2026-10-08T22:55:09.386029+02:00",
-    "version": "0.2.0"
+    "last_change": "lumieres sono en parallele, rythme 2/4/8 temps selon le style",
+    "last_update": "2026-10-08T22:59:41.037686+02:00",
+    "version": "0.2.1"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
