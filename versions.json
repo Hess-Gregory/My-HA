@@ -355,8 +355,8 @@
     "version": "2.6.0"
   },
   "www/plan3d/lj-console-card.js": {
-    "last_change": "console DMX multi-programmes (un reglage par projecteur) + carte Console Light Jockey",
-    "last_update": "2026-10-08T23:45:33.404047+02:00",
-    "version": "0.1.0"
+    "last_change": "ordre des lampes du lustre sur la console (1 = lg, 2 = lc, 3 = ld)",
+    "last_update": "2026-10-08T23:50:40.999454+02:00",
+    "version": "0.1.1"
   }
 }
