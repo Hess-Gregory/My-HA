@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 08/10/2026 17:49 | four bloque si alarme armee sauf code, bannissement IP apres 5 echecs
 # Sécurité du four : alarme armée totalement = four bloqué sauf code
 input_text:
   four_code_reference:

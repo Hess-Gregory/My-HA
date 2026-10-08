@@ -150,9 +150,9 @@
     "version": "0.0.5"
   },
   "configuration.yaml": {
-    "last_change": "performances - historique allege des entites tres bavardes sans interet",
-    "last_update": "2026-09-25T14:12:51.081860+02:00",
-    "version": "0.2.1"
+    "last_change": "four bloque si alarme armee sauf code, bannissement IP apres 5 echecs",
+    "last_update": "2026-10-08T17:49:46.091409+02:00",
+    "version": "0.3.0"
   },
   "packages/anniversaires.yaml": {
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
@@ -193,6 +193,11 @@
     "last_change": "four 2 etapes et reglages en cuisson, journal pollution, incendie cave, clim Eurom, telecommandes",
     "last_update": "2026-10-01T18:41:24.194696+02:00",
     "version": "0.2.0"
+  },
+  "packages/four_securite.yaml": {
+    "last_change": "four bloque si alarme armee sauf code, bannissement IP apres 5 echecs",
+    "last_update": "2026-10-08T17:49:46.091409+02:00",
+    "version": "0.1.0"
   },
   "packages/horaires_pro.yaml": {
     "last_change": "maintenance - journal nettoye (Todoist robuste, entites orphelines, flight radar)",
