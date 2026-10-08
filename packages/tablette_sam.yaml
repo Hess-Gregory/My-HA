@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.4.0 | 08/10/2026 11:14 | HA au premier plan quand le carillon sonne
+# [AUTO-VERSION] v0.5.0 | 08/10/2026 11:17 | porte ouverte = zoom hall + camera couloir, tablette ouvre l accueil
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
