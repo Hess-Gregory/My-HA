@@ -1,7 +1,7 @@
 /* Console Light Jockey — une seule vue, sans défilement : scène, sélection des projecteurs,
    couleur (palette + mélange rouge / jaune / bleu), faders, effets, banques de sets, sortie. */
 const FIX = [
-  ['dmx_lc', 'light.salle_a_manger_lc', 'LUS 1'], ['dmx_ld', 'light.salle_a_manger_ld', 'LUS 2'], ['dmx_lg', 'light.salle_a_manger_lg', 'LUS 3'],
+  ['dmx_lg', 'light.salle_a_manger_lg', 'LUS 1'], ['dmx_lc', 'light.salle_a_manger_lc', 'LUS 2'], ['dmx_ld', 'light.salle_a_manger_ld', 'LUS 3'],
   ['dmx_vit_g', 'light.salle_a_manger_vit_g', 'VIT G'], ['dmx_vit_d', 'light.salle_a_manger_vit_d', 'VIT D'],
   ['dmx_panneau', 'light.salon_panneau_mural', 'PANNEAU'], ['dmx_ambilight', 'light.salon_ambilight_tv', 'AMBI TV'],
   ['dmx_dj_g', 'light.coin_dj_sono_gauche', 'DJ G'], ['dmx_dj_d', 'light.coin_dj_sono_droite', 'DJ D'],
@@ -109,7 +109,7 @@ class LjConsoleCard extends HTMLElement {
     this.$ = (s) => r.querySelector(s);
     // scène : positions en % (plan de la pièce de vie vue de dessus)
     const POS = { dmx_dj_g: [8, 30, ''], dmx_dj_d: [20, 30, ''], dmx_ambilight: [52, 14, 'bar'], dmx_panneau: [52, 34, 'bar'],
-      dmx_vit_g: [82, 22, 'tall'], dmx_vit_d: [92, 22, 'tall'], dmx_lc: [38, 72, ''], dmx_ld: [52, 72, ''], dmx_lg: [66, 72, ''] };
+      dmx_vit_g: [82, 22, 'tall'], dmx_vit_d: [92, 22, 'tall'], dmx_lg: [38, 72, ''], dmx_lc: [52, 72, ''], dmx_ld: [66, 72, ''] };
     const stage = this.$('.stage'), fix = this.$('.fix');
     FIX.forEach(([k, e, n]) => {
       const [x, y, cls] = POS[k]; const b = document.createElement('button'); b.className = 'fx ' + cls; b.style.left = x + '%'; b.style.top = y + '%';
