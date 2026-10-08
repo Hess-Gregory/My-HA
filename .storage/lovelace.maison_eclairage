@@ -1814,6 +1814,344 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_title",
+                  "name": "⚡ Strobe",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.strobe_actif",
+                  "name": "STROBE",
+                  "icon": "mdi:flash",
+                  "grid_options": {
+                    "columns": "full",
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.strobe_lustre",
+                  "name": "Lustre SAM",
+                  "icon": "mdi:ceiling-light-multiple",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.strobe_vitrines",
+                  "name": "Vitrines",
+                  "icon": "mdi:wall-sconce-flat",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.strobe_panneau",
+                  "name": "Panneau",
+                  "icon": "mdi:led-strip-variant",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.strobe_ambilight",
+                  "name": "Ambilight",
+                  "icon": "mdi:television-ambient-light",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_switch",
+                  "entity": "input_boolean.strobe_dj",
+                  "name": "Spots DJ",
+                  "icon": "mdi:spotlight-beam",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "Tous",
+                  "label": "Sélectionner tout",
+                  "icon": "mdi:select-all",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_boolean.turn_on",
+                    "target": {
+                      "entity_id": [
+                        "input_boolean.strobe_lustre",
+                        "input_boolean.strobe_vitrines",
+                        "input_boolean.strobe_panneau",
+                        "input_boolean.strobe_ambilight",
+                        "input_boolean.strobe_dj"
+                      ]
+                    }
+                  },
+                  "variables": {
+                    "c1": "#9aa3b5",
+                    "c2": "#5a6377",
+                    "c3": "#262b38"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🐢 Lent",
+                  "label": "1 flash / s",
+                  "icon": "mdi:speedometer-slow",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "🐢 Lent"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#cfd6e6",
+                    "c2": "#7d8799",
+                    "c3": "#2a2f3a"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "⚡ Rapide",
+                  "label": "4 flashs / s",
+                  "icon": "mdi:speedometer",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "⚡ Rapide"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffffff",
+                    "c2": "#bfc6d6",
+                    "c3": "#3a3f4d"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🥁 Sync tempo",
+                  "label": "1 flash par temps",
+                  "icon": "mdi:metronome",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "🥁 Sync tempo (1 flash par temps)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ffd27a",
+                    "c2": "#c99431",
+                    "c3": "#5e4510"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "💥 Rafales",
+                  "label": "5 flashs puis pause",
+                  "icon": "mdi:flash-alert",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "💥 Rafales"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#ff9d6b",
+                    "c2": "#d4552a",
+                    "c3": "#5e1f0a"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🌩️ Éclairs",
+                  "label": "Aléatoire, double flash",
+                  "icon": "mdi:weather-lightning",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "🌩️ Éclairs (aléatoire)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#b8c8ff",
+                    "c2": "#5a6fd4",
+                    "c3": "#1a2559"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_push",
+                  "name": "🎚️ Manuel",
+                  "label": "Vitesse au curseur",
+                  "icon": "mdi:tune-vertical",
+                  "tap_action": {
+                    "haptic": "medium",
+                    "action": "call-service",
+                    "service": "input_select.select_option",
+                    "target": {
+                      "entity_id": "input_select.strobe_mode"
+                    },
+                    "data": {
+                      "option": "🎚️ Manuel (curseur vitesse)"
+                    }
+                  },
+                  "variables": {
+                    "c1": "#9aa3b5",
+                    "c2": "#5a6377",
+                    "c3": "#262b38"
+                  },
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_select.strobe_mode",
+                  "name": "Mode strobe",
+                  "icon": "mdi:flash-auto",
+                  "features": [
+                    {
+                      "type": "select-options"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_select.strobe_couleur",
+                  "name": "Couleur",
+                  "icon": "mdi:palette",
+                  "features": [
+                    {
+                      "type": "select-options"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_number.strobe_intensite",
+                  "name": "Intensité strobe",
+                  "icon": "mdi:brightness-7",
+                  "features": [
+                    {
+                      "type": "numeric-input",
+                      "style": "slider"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_number.strobe_vitesse",
+                  "name": "Vitesse (mode manuel)",
+                  "icon": "mdi:speedometer",
+                  "features": [
+                    {
+                      "type": "numeric-input",
+                      "style": "slider"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "template": "cc_title",
                   "name": "✨ Effets",
                   "grid_options": {
                     "columns": "full",
