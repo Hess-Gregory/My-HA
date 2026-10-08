@@ -740,7 +740,7 @@ class Floorplan3DCard extends HTMLElement {
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
-    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0;
+    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0; const dOn = !!door && door.state === 'on'; if (dOn && this._doorWas === false) this._doorAlert(); this._doorWas = dOn;
     const sunSt = H['sun.sun']; const autoNight = sunSt ? sunSt.state === 'below_horizon' : false;
     this.nightTarget = this.mode === 'nuit' ? 1 : this.mode === 'jour' ? 0 : autoNight ? 1 : 0;
     this.$('.mode').textContent = { auto: '🌓 Auto', jour: '☀️ Jour', nuit: '🌙 Nuit' }[this.mode];
@@ -756,6 +756,23 @@ class Floorplan3DCard extends HTMLElement {
       l.d.innerHTML = l.n + (isNaN(t) ? '' : `<b>${t.toFixed(1).replace('.', ',')}°</b>`) + extra; l.d.classList.toggle('alert', alert);
     });
     this._dirty = true;
+  }
+
+  _doorAlert() {
+    try {
+      this._goTo('Hall d’entrée');
+      const cam = this._h.states['camera.couloir']; if (!cam) return;
+      let o = this.$('.camov');
+      if (!o) {
+        o = document.createElement('div'); o.className = 'camov';
+        o.style.cssText = 'position:absolute;top:56px;right:12px;width:min(46%,420px);aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.6);border:2px solid #ffb347;z-index:30;background:#000;cursor:pointer';
+        o.innerHTML = '<img style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;top:6px;left:8px;font:600 12px sans-serif;color:#fff;text-shadow:0 1px 3px #000">🚪 Porte d’entrée ouverte · Couloir</div><div style="position:absolute;top:4px;right:9px;color:#fff;font:700 16px sans-serif;text-shadow:0 1px 3px #000">✕</div>';
+        o.onclick = () => { clearTimeout(this._camT); o.remove(); };
+        this.$('.wrap').appendChild(o);
+      }
+      o.querySelector('img').src = '/api/camera_proxy_stream/camera.couloir?token=' + cam.attributes.access_token;
+      clearTimeout(this._camT); this._camT = setTimeout(() => o.remove(), 60000);
+    } catch (e) { console.warn('doorAlert', e); }
   }
 
   _goTo(name, dur = 1200) { const v = VIEWS[name]; this._lastAct = Date.now(); this.ctl.autoRotate = false; this.anim = { p0: this.cam.position.clone(), t0: this.ctl.target.clone(), p1: new THREE.Vector3(...v.pos), t1: new THREE.Vector3(...v.tgt), k: 0, t: performance.now(), dur }; }

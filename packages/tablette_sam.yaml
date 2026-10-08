@@ -41,3 +41,9 @@ automation:
         data:
           application: io.homeassistant.companion.android
           device_id: f1aa9e7a06615d6cd968ef13a161d75c
+      - delay: "00:00:02"
+      - action: notify.mobile_app_25099rp13g
+        data:
+          message: command_webview
+          data:
+            command: /maison-accueil/accueil
