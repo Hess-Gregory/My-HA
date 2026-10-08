@@ -22,3 +22,22 @@ script:
           - action: notify.mobile_app_iphone
             continue_on_error: true
             data: { message: request_location_update }
+
+# Mémorise le dernier lieu quitté par chaque personne (pour « en déplacement entre X et Y »)
+template:
+  - trigger:
+      - trigger: state
+        entity_id: [person.greg, person.sandrine, person.matteo]
+        not_to: [unknown, unavailable]
+    sensor:
+      - name: "Localisation derniers lieux"
+        unique_id: localisation_derniers_lieux
+        icon: mdi:map-marker-path
+        state: "{{ now().isoformat() }}"
+        attributes:
+          greg: >-
+            {% if trigger.entity_id == 'person.greg' and trigger.to_state.state == 'not_home' and trigger.from_state.state not in ['not_home','unknown','unavailable'] %}{{ trigger.from_state.state }}{% else %}{{ this.attributes.get('greg', '') }}{% endif %}
+          sandrine: >-
+            {% if trigger.entity_id == 'person.sandrine' and trigger.to_state.state == 'not_home' and trigger.from_state.state not in ['not_home','unknown','unavailable'] %}{{ trigger.from_state.state }}{% else %}{{ this.attributes.get('sandrine', '') }}{% endif %}
+          matteo: >-
+            {% if trigger.entity_id == 'person.matteo' and trigger.to_state.state == 'not_home' and trigger.from_state.state not in ['not_home','unknown','unavailable'] %}{{ trigger.from_state.state }}{% else %}{{ this.attributes.get('matteo', '') }}{% endif %}
