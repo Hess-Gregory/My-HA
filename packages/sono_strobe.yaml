@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.4.0 | 08/10/2026 23:45 | console DMX multi-programmes (un reglage par projecteur) + carte Console Light Jockey
 # 🎚️ Console DMX : chaque projecteur garde SON programme (couleur, intensité, flash, effet).
 # On sélectionne des projecteurs, on règle, puis ALLUMÉ / BLACKOUT : seuls les projecteurs sélectionnés reçoivent le réglage.
 # Ex. : Lustre 1 + 3 en bleu fixe, puis Lustre 2 seul en strobe blanc -> les deux tournent en même temps.
@@ -43,9 +42,9 @@ script:
       k: {}
       ent: {}
     sequence:
-    - variables: {snap: '{{ states(''input_text.'' ~ k) }}'}
-    - {condition: template, value_template: '{{ snap not in ['''', ''unknown'', ''unavailable''] }}'}
-    - variables: {p: '{{ snap | from_json }}'}
+    - variables: {snap: '{{ ''S'' ~ states(''input_text.'' ~ k) }}'}
+    - {condition: template, value_template: '{{ snap not in [''S'', ''Sunknown'', ''Sunavailable''] }}'}
+    - variables: {p: '{{ snap[1:] | from_json }}'}
     - choose:
       - conditions: '{{ p.m == ''off'' }}'
         sequence:
@@ -63,7 +62,7 @@ script:
         sequence:
         - repeat:
             while: &id001
-            - &id002 {condition: template, value_template: '{{ states(''input_text.'' ~ k) == snap }}'}
+            - &id002 {condition: template, value_template: '{{ (''S'' ~ states(''input_text.'' ~ k)) == snap }}'}
             sequence:
             - action: light.turn_on
               continue_on_error: true
