@@ -260,9 +260,9 @@
     "version": "0.1.0"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "plus de rechargement de HA a l ouverture de porte, camera affichee meme si HA arrive en retard",
-    "last_update": "2026-10-08T12:00:50.423299+02:00",
-    "version": "0.5.2"
+    "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
+    "last_update": "2026-10-08T12:22:45.097104+02:00",
+    "version": "0.6.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",

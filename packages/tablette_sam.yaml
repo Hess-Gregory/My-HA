@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.5.2 | 08/10/2026 12:00 | plus de rechargement de HA a l ouverture de porte, camera affichee meme si HA arrive en retard
+# [AUTO-VERSION] v0.6.0 | 08/10/2026 12:22 | sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
