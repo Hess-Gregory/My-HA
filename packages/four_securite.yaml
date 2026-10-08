@@ -1,0 +1,106 @@
+# Sécurité du four : alarme armée totalement = four bloqué sauf code
+input_text:
+  four_code_reference:
+    name: "Four : code secret (à définir une fois)"
+    mode: password
+    max: 12
+    icon: mdi:form-textbox-password
+  four_code_saisi:
+    name: "Four : saisir le code pour autoriser"
+    mode: password
+    max: 12
+    icon: mdi:dialpad
+
+input_boolean:
+  four_autorise:
+    name: "Four autorisé (code valide, 15 min)"
+    icon: mdi:stove
+
+automation:
+  - id: four_code_verification
+    alias: "🔐 Four : vérification du code"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_text.four_code_saisi
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state not in ['', 'unknown', 'unavailable'] }}"
+    actions:
+      - if:
+          - condition: template
+            value_template: "{{ states('input_text.four_code_reference') | length >= 4 and trigger.to_state.state == states('input_text.four_code_reference') }}"
+        then:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.four_autorise
+          - action: notify.mobile_app_samsung_greg
+            continue_on_error: true
+            data:
+              title: "🔓 Four autorisé"
+              message: "Code correct : le four peut être utilisé pendant 15 minutes."
+        else:
+          - action: notify.mobile_app_samsung_greg
+            continue_on_error: true
+            data:
+              title: "⚠️ Four : code erroné"
+              message: "Un code incorrect a été saisi pour le four."
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.four_code_saisi
+        data:
+          value: ""
+
+  - id: four_autorisation_expiration
+    alias: "🔐 Four : fin d'autorisation après 15 min"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.four_autorise
+        to: "on"
+        for: "00:15:00"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.four_autorise
+
+  - id: four_blocage_alarme_armee
+    alias: "🔐 Four : blocage quand l'alarme est armée totalement"
+    description: "Alarme armée totalement = personne à la maison : toute mise en marche du four est coupée, sauf si le code a été saisi (15 min)."
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: switch.four_alimentation
+        to: "on"
+      - trigger: state
+        entity_id: sensor.four_etat
+        to: "run"
+      - trigger: state
+        entity_id: select.four_programme_actif
+        not_to: ["unknown", "unavailable"]
+    conditions:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison
+            state: armed_away
+          - condition: state
+            entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+            state: armed_away
+      - condition: state
+        entity_id: input_boolean.four_autorise
+        state: "off"
+    actions:
+      - action: button.press
+        continue_on_error: true
+        target:
+          entity_id: button.four_arreter_le_programme
+      - action: switch.turn_off
+        continue_on_error: true
+        target:
+          entity_id: switch.four_alimentation
+      - action: notify.mobile_app_samsung_greg
+        continue_on_error: true
+        data:
+          title: "🔐 Four bloqué"
+          message: "Mise en marche du four refusée : l'alarme est armée et aucun code n'a été saisi."
