@@ -26,6 +26,11 @@ automation:
         from: "off"
         to: "on"
     actions:
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          volume_level: 0.9
       - action: media_player.play_media
         target:
           entity_id: media_player.salon_sam_tablette
