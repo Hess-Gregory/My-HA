@@ -260,9 +260,9 @@
     "version": "0.1.0"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "carillon plus fort (volume 90%)",
-    "last_update": "2026-10-08T11:10:09.489022+02:00",
-    "version": "0.3.0"
+    "last_change": "HA au premier plan quand le carillon sonne",
+    "last_update": "2026-10-08T11:14:09.941727+02:00",
+    "version": "0.4.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
