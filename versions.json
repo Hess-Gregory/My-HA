@@ -90,9 +90,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_eclairage": {
-    "last_change": "vue Light Jockey (console, effets, sets) + arret propre de la sono",
-    "last_update": "2026-10-08T23:19:46.433625+02:00",
-    "version": "0.7.0"
+    "last_change": "strobe pro (projecteurs, couleur, intensite, vitesse, modes) + effets instantanes",
+    "last_update": "2026-10-08T23:24:15.803041+02:00",
+    "version": "0.8.0"
   },
   ".storage/lovelace.maison_energie": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -295,9 +295,14 @@
     "version": "0.1.0"
   },
   "packages/sono_lumieres.yaml": {
-    "last_change": "vue Light Jockey (console, effets, sets) + arret propre de la sono",
-    "last_update": "2026-10-08T23:19:46.433625+02:00",
-    "version": "0.8.0"
+    "last_change": "strobe pro (projecteurs, couleur, intensite, vitesse, modes) + effets instantanes",
+    "last_update": "2026-10-08T23:24:15.803041+02:00",
+    "version": "0.9.0"
+  },
+  "packages/sono_strobe.yaml": {
+    "last_change": "strobe pro (projecteurs, couleur, intensite, vitesse, modes) + effets instantanes",
+    "last_update": "2026-10-08T23:24:15.803041+02:00",
+    "version": "0.1.0"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",

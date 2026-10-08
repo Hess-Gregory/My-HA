@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 08/10/2026 23:24 | strobe pro (projecteurs, couleur, intensite, vitesse, modes) + effets instantanes
 # ⚡ Strobe façon console light jockey : choix des projecteurs, couleur, intensité, vitesse et modes prédéfinis
 # Pendant le strobe, la boucle « Lumières sono » laisse les projecteurs choisis au strobe.
 input_boolean:
