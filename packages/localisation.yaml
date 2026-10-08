@@ -1,99 +1,23 @@
-# [AUTO-VERSION] v0.2.0 | 03/10/2026 13:01 | alertes vocales urgence et appel manque, sons iPhone
-# Localisation - sonneries a distance des smartphones (arret uniquement depuis Home Assistant, anti-vol)
-# modes : sonner (retrouver le tel, boucle infinie) | urgence (appeler en urgence, boucle infinie)
-#         rappel (appel manque / telephone en silencieux, 3 fois)
-input_boolean:
-  loc_sonne_sandrine:
-    name: "Sonnerie smartphone Sandrine"
-    icon: mdi:bell-ring
-  loc_sonne_greg:
-    name: "Sonnerie smartphone Greg"
-    icon: mdi:bell-ring
-  loc_sonne_matteo:
-    name: "Sonnerie iPhone Matteo"
-    icon: mdi:bell-ring
+# Localisation : période d'historique + actualisation des positions
+input_select:
+  localisation_periode:
+    name: "Localisation – période"
+    icon: mdi:history
+    options: ["5 min", "1 h", "6 h", "24 h", "7 jours"]
 
 script:
-  localisation_sonner:
-    alias: "Localisation - faire sonner / alerte vocale smartphone"
-    icon: mdi:bell-ring
-    mode: parallel
-    max: 10
-    fields:
-      qui:
-        description: "sandrine, greg ou matteo"
-        example: greg
-      mode:
-        description: "sonner, urgence ou rappel"
-        example: sonner
-      appelant:
-        description: "Pour le mode rappel : qui essaie d'appeler (Gregory, Sandrine...)"
-        example: Gregory
-    variables:
-      cfg:
-        sandrine: { svc: notify.mobile_app_sandrine_smartphone, ios: false, nom: "de Sandrine" }
-        greg: { svc: notify.mobile_app_samsung_greg, ios: false, nom: "de Gregory" }
-        matteo: { svc: notify.mobile_app_iphone, ios: true, nom: "de Matteo" }
-      c: "{{ cfg[qui] }}"
-      flag: "input_boolean.loc_sonne_{{ qui }}"
-      m: "{{ mode | default('sonner', true) }}"
-      app: "{{ appelant | default('Quelqu’un de la famille', true) }}"
-      app_txt: "{{ 'Papa' if (qui == 'matteo' and app == 'Gregory') else app }}"
-      texte: >-
-        {% if m == 'urgence' %}{% if qui == 'sandrine' %}Urgent ! Sandrine, appelle Gregory immédiatement ! C'est urgent !{% elif qui == 'greg' %}Urgent ! Gregory, appelle Sandrine immédiatement ! C'est urgent !{% else %}Urgent ! Matteo, appelle tout de suite papa ou Sandrine ! C'est urgent !{% endif %}{% elif m == 'rappel' %}{{ app_txt }} essaie de t'appeler, mais ton téléphone est sûrement en silencieux. Rappelle {{ app_txt }} dès que possible !{% else %}Je suis ici ! Le téléphone {{ c.nom }} est ici !{% endif %}
-      titre: >-
-        {% if m == 'urgence' %}🚨 URGENT : appelle {{ 'Gregory' if qui == 'sandrine' else ('Sandrine' if qui == 'greg' else 'papa ou Sandrine') }} !{% elif m == 'rappel' %}📵 {{ app_txt }} essaie de t'appeler{% else %}🔔 Je suis ici !{% endif %}
-      son_ios: >-
-        {% if m == 'urgence' %}matteo_urgence.wav{% elif m == 'rappel' %}{{ 'matteo_rappel_sandrine.wav' if app_txt == 'Sandrine' else 'matteo_rappel_papa.wav' }}{% else %}matteo_sonnerie.wav{% endif %}
-      cadence: "{{ {'urgence': 18, 'rappel': 10}.get(m, 12) if c.ios else {'urgence': 10, 'rappel': 12}.get(m, 9) }}"
+  localisation_actualiser:
+    alias: "📍 Localisation – actualiser les positions"
+    icon: mdi:crosshairs-gps
+    mode: single
     sequence:
-      - action: input_boolean.turn_on
-        target:
-          entity_id: "{{ flag }}"
-      - repeat:
-          while:
-            - condition: template
-              value_template: "{{ is_state(flag, 'on') and (m != 'rappel' or repeat.index <= 3) }}"
-          sequence:
-            - if: "{{ c.ios }}"
-              then:
-                - action: "{{ c.svc }}"
-                  data:
-                    title: "{{ titre }}"
-                    message: "{{ texte }}"
-                    data:
-                      tag: loc_sonne
-                      push:
-                        sound:
-                          name: "{{ son_ios }}"
-                          critical: 1
-                          volume: 1.0
-                        interruption-level: critical
-              else:
-                - action: "{{ c.svc }}"
-                  data:
-                    message: TTS
-                    data:
-                      tts_text: "{{ texte }} {{ texte if m != 'rappel' else '' }}"
-                      media_stream: alarm_stream_max
-                      ttl: 0
-                      priority: high
-                - if: "{{ m != 'sonner' and repeat.index == 1 }}"
-                  then:
-                    - action: "{{ c.svc }}"
-                      data:
-                        title: "{{ titre }}"
-                        message: "{{ texte }}"
-                        data:
-                          tag: loc_msg
-                          ttl: 0
-                          priority: high
-            - delay: { seconds: "{{ cadence | int }}" }
-      - action: input_boolean.turn_off
-        target:
-          entity_id: "{{ flag }}"
-      - action: "{{ c.svc }}"
-        data:
-          message: clear_notification
-          data:
-            tag: loc_sonne
+      - parallel:
+          - action: notify.mobile_app_samsung_greg
+            continue_on_error: true
+            data: { message: request_location_update }
+          - action: notify.mobile_app_sandrine_smartphone
+            continue_on_error: true
+            data: { message: request_location_update }
+          - action: notify.mobile_app_iphone
+            continue_on_error: true
+            data: { message: request_location_update }
