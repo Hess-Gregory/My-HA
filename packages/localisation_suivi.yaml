@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.3.0 | 08/10/2026 18:14 | actualisation automatique reglable
+# [AUTO-VERSION] v0.4.0 | 08/10/2026 18:16 | actualisation automatique toutes les minutes possible
 # Localisation : période d'historique + actualisation des positions
 input_select:
   localisation_auto:
