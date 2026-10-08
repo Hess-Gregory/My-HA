@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.0 | 08/10/2026 18:13 | heure de depart et direction
+# [AUTO-VERSION] v0.3.0 | 08/10/2026 18:14 | actualisation automatique reglable
 # Localisation : période d'historique + actualisation des positions
 input_select:
   localisation_auto:
