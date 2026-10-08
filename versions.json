@@ -295,9 +295,9 @@
     "version": "0.1.0"
   },
   "packages/sono_lumieres.yaml": {
-    "last_change": "9 modes sono inspires des grands shows + demarrage immediat",
-    "last_update": "2026-10-08T23:08:40.501994+02:00",
-    "version": "0.5.0"
+    "last_change": "intensite reglable des lumieres sono (50 % par defaut)",
+    "last_update": "2026-10-08T23:11:53.555583+02:00",
+    "version": "0.6.0"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
