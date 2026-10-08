@@ -30,7 +30,7 @@ class HomeHubCard extends HTMLElement {
       .tile{background:var(--g);border:1px solid var(--b);border-radius:20px;padding:14px 16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);min-height:0}
       .h{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--m);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center}
       .clock{font:200 clamp(54px,6.2vw,92px)/0.95 system-ui,Roboto,sans-serif;letter-spacing:-.03em}.clock small{font-size:.32em;font-weight:300;color:var(--m);margin-left:4px}
-      .date{font-size:15px;color:var(--m);margin-top:6px;text-transform:capitalize}.hello{font-size:17px;margin-top:10px}
+      .date{font-size:22px;font-weight:500;color:var(--m);margin-top:8px;text-transform:capitalize}.hello{font-size:17px;margin-top:10px}
       .wnow{display:flex;align-items:center;gap:12px}.wico{font-size:46px;line-height:1}.wt{font:300 40px/1 system-ui}.wt small{font-size:15px;color:var(--m);display:block;margin-top:4px}
       .wmeta{display:flex;gap:12px;color:var(--m);font-size:12px;margin-top:8px;white-space:nowrap}.wind i{display:inline-block;font-style:normal;color:#9fd3ff;transform-origin:50% 50%;margin-right:2px;transition:transform .8s}
       .fc{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px;text-align:center;font-size:12px}.fc div{background:rgba(255,255,255,.04);border-radius:12px;padding:6px 0}.fc b{display:block;font-size:18px;margin:2px 0}.fc i{font-style:normal;color:var(--m)}
@@ -76,7 +76,7 @@ class HomeHubCard extends HTMLElement {
 .foot{padding:0 8px 4px;text-align:center}.foot ha-markdown{text-align:center}.foot ha-card{background:none!important;box-shadow:none!important;border:none!important}
       .hero{display:flex;flex-direction:column;}.hero .ppl{margin-top:auto}.hero .sun{margin:10px auto 8px}.hero{background:linear-gradient(160deg,rgba(255,210,122,.10),rgba(255,255,255,.04) 45%)}
       @media (max-width:1100px){.hub{grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr);gap:8px}.mid{grid-column:1/3;grid-row:2}.c1{grid-row:1;grid-column:1;gap:8px}.c3{grid-row:1;grid-column:2}.hide-s,.fc,.sun,.hello,.wmeta,.rm em,.dock button small{display:none!important}
-        .tile{padding:10px 12px;border-radius:16px}.clock{font-size:44px}.date{font-size:12px;margin-top:2px}.ppl{margin-top:6px;padding-top:6px}.av{width:28px;height:28px}.wico{font-size:30px}.wt{font-size:26px}.wt small{font-size:12px}
+        .tile{padding:10px 12px;border-radius:16px}.clock{font-size:44px}.date{font-size:16px;margin-top:2px}.ppl{margin-top:6px;padding-top:6px}.av{width:28px;height:28px}.wico{font-size:30px}.wt{font-size:26px}.wt small{font-size:12px}
         .rooms{gap:3px}.rm{padding:3px 8px}.rm b{font-size:16px}.rm span{font-size:11px}.h{margin-bottom:4px}.mid .plan{min-height:44vh}.dock{grid-template-columns:repeat(8,1fr);gap:4px;padding:6px}.dock button{padding:6px 2px;font-size:10px;border-radius:12px}.dock button i{font-size:18px}}
     </style>
     <div class="hub"><div class="bgfx"><i></i><i></i><i></i></div><div class="grain"></div><div class="vig"></div>
@@ -88,8 +88,8 @@ class HomeHubCard extends HTMLElement {
       </div>
       <div class="mid"><div class="plan"></div><div class="dock"></div></div>
       <div class="col c3">
-        <div class="tile"><div class="h">Climat <span class="lights"></span></div><div class="rooms"></div></div>
-        <div class="tile hide-s"><div class="h">Énergie maison</div><div class="en"><div><b class="pw"></b><small>en ce moment</small></div><div><b class="td" style="font-size:22px"></b><small>aujourd’hui</small></div></div><div class="bar"><i></i></div></div>
+        <div class="tile"><div class="h">Climat</div><div class="rooms"></div></div>
+        <div class="tile hide-s"><div class="h">Énergie maison <span class="lights"></span></div><div class="en"><div><b class="pw"></b><small>en ce moment</small></div><div><b class="td" style="font-size:22px"></b><small>aujourd’hui</small></div></div><div class="bar"><i></i></div></div>
         <div class="tile media hide-s"><div class="bg"></div><div class="h">Salon · TV</div><div class="mt"></div><div class="ms"></div></div>
         <div class="tile grow hide-s mp"><div class="h">Planning Matteo <span>›</span></div><div class="ag"></div></div>
       </div>
@@ -148,7 +148,7 @@ class HomeHubCard extends HTMLElement {
   _more(e) { this.dispatchEvent(new CustomEvent('hass-more-info', { bubbles: true, composed: true, detail: { entityId: e } })); }
   _clock() {
     if (!this.$) return; const d = new Date(), hh = d.getHours();
-    this.$('.clock').innerHTML = `${String(hh).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}<small>${String(d.getSeconds()).padStart(2, '0')}</small>`;
+    this.$('.clock').innerHTML = `${String(hh).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     this.$('.date').textContent = d.toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' });
     const sa = this._h && this._h.states['sun.sun']; if (sa && sa.attributes.next_rising) { const r = new Date(sa.attributes.next_rising), st = new Date(sa.attributes.next_setting), f = (x) => x.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' });
       let rise = new Date(r), set = new Date(st); if (rise > set) rise = new Date(rise - 86400000); const up = sa.state === 'above_horizon', t = up ? Math.min(1, Math.max(0, (d - rise) / (set - rise))) : (d > set ? 1 : 0);
