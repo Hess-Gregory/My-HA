@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.3.0 | 08/10/2026 23:04 | sono envoyee sans attendre (tempo tenu) + 8 modes universels par palette
 # Lumières dynamiques pour la sono, calées sur le tempo (BPM) du style musical
 # Tempos : Hard techno 150 / Rétro techno 135 / Années 80 120 (changement tous les 2 temps), Tech house 125 / Afro house 120 / RnB 90 (tous les 4 temps), Chill 90 (tous les 8 temps) - commandes envoyées en parallèle
 # Le curseur « Tempo sono » permet d'ajuster au morceau en cours (pris en compte au changement suivant)
@@ -6,8 +5,8 @@ input_select:
   sono_lumieres:
     name: Lumières sono musicale
     icon: mdi:music-circle
-    options: [— Arrêt —, 🔊 Hard techno, 🎛️ Tech house, 🥁 Afro house, 🌙 Ambiance chill, 📼 Rétro techno, 💜 RnB, 🕹️ Années 80, 🌈 Universel · Arc-en-ciel, 🔥 Universel · Feu, 🌊 Universel · Océan, 💡 Universel · Néon, 🧊 Universel · Glace, 🌿 Universel · Jungle, ✨ Universel
-        · Or & blanc, 🍬 Universel · Bonbon]
+    options: [— Arrêt —, 🔊 Hard techno, 🎛️ Tech house, 🥁 Afro house, 🌙 Ambiance chill, 📼 Rétro techno, 💜 RnB, 🕹️ Années 80, ⚡ Universel · Strobe blanc, 🔴 Universel · Bleu nuit & rouge, 🟡 Universel · Jaune & bleu ciel, 🟣 Universel · Magenta & cyan, 🟢 Universel ·
+        Laser vert & UV, 🟠 Universel · Ambre & violet, ❤️ Universel · Pulse rouge, ❄️ Universel · Flash blanc & bleu, 🌈 Universel · Chase arc-en-ciel, 🔥 Universel · Feu & or, 🌊 Universel · Océan profond]
     initial: — Arrêt —
 input_number:
   sono_tempo: {name: Tempo sono (BPM), icon: 'mdi:metronome', min: 60, max: 180, step: 1, mode: slider, unit_of_measurement: BPM}
@@ -107,10 +106,78 @@ script:
             - [255, 220, 0]
             - [0, 255, 200]
             bri: [230, 190, 230, 200, 210]
-          🌈 Universel · Arc-en-ciel:
-            bpm: 120
+          ⚡ Universel · Strobe blanc:
+            bpm: 128
+            beats: 1
+            t: 0.0
+            sync: true
+            pal:
+            - [255, 255, 255]
+            - [255, 255, 255]
+            bri: [255, 1]
+          🔴 Universel · Bleu nuit & rouge:
+            bpm: 128
+            beats: 2
+            t: 0.08
+            pal:
+            - [0, 0, 170]
+            - [255, 0, 0]
+            bri: [230, 255]
+          🟡 Universel · Jaune & bleu ciel:
+            bpm: 128
+            beats: 2
+            t: 0.1
+            pal:
+            - [255, 200, 0]
+            - [80, 200, 255]
+            bri: [255, 230]
+          🟣 Universel · Magenta & cyan:
+            bpm: 128
+            beats: 2
+            t: 0.08
+            pal:
+            - [255, 0, 170]
+            - [0, 230, 255]
+            bri: [255, 240]
+          🟢 Universel · Laser vert & UV:
+            bpm: 128
+            beats: 2
+            t: 0.08
+            pal:
+            - [60, 255, 0]
+            - [70, 0, 255]
+            bri: [255, 255]
+          🟠 Universel · Ambre & violet:
+            bpm: 128
             beats: 4
             t: 0.5
+            pal:
+            - [255, 110, 0]
+            - [110, 0, 255]
+            bri: [240, 220]
+          ❤️ Universel · Pulse rouge:
+            bpm: 128
+            beats: 1
+            t: 0.05
+            sync: true
+            pal:
+            - [255, 0, 0]
+            - [255, 0, 0]
+            bri: [255, 25]
+          ❄️ Universel · Flash blanc & bleu:
+            bpm: 128
+            beats: 1
+            t: 0.0
+            pal:
+            - [255, 255, 255]
+            - [0, 40, 255]
+            - [255, 255, 255]
+            - [0, 0, 110]
+            bri: [255, 220, 255, 60]
+          🌈 Universel · Chase arc-en-ciel:
+            bpm: 128
+            beats: 1
+            t: 0.15
             pal:
             - [255, 0, 0]
             - [255, 140, 0]
@@ -118,77 +185,25 @@ script:
             - [0, 220, 60]
             - [0, 120, 255]
             - [150, 0, 255]
-            bri: [220, 220, 220, 220, 220, 220]
-          🔥 Universel · Feu:
-            bpm: 120
-            beats: 4
-            t: 0.5
+            bri: [230, 230, 230, 230, 230, 230]
+          🔥 Universel · Feu & or:
+            bpm: 128
+            beats: 2
+            t: 0.2
             pal:
-            - [255, 30, 0]
-            - [255, 100, 0]
-            - [255, 170, 20]
-            - [200, 0, 0]
-            bri: [230, 180, 240, 160]
-          🌊 Universel · Océan:
-            bpm: 120
+            - [255, 25, 0]
+            - [255, 140, 0]
+            - [255, 215, 80]
+            bri: [255, 200, 240]
+          🌊 Universel · Océan profond:
+            bpm: 128
             beats: 4
-            t: 0.6
+            t: 0.8
             pal:
-            - [0, 60, 255]
-            - [0, 190, 255]
+            - [0, 25, 190]
+            - [0, 170, 255]
             - [0, 255, 200]
-            - [0, 20, 160]
-            bri: [200, 170, 220, 150]
-          💡 Universel · Néon:
-            bpm: 120
-            beats: 4
-            t: 0.3
-            pal:
-            - [255, 0, 200]
-            - [0, 255, 255]
-            - [180, 255, 0]
-            - [120, 0, 255]
-            bri: [240, 220, 240, 220]
-          🧊 Universel · Glace:
-            bpm: 120
-            beats: 4
-            t: 0.6
-            pal:
-            - [170, 220, 255]
-            - [90, 160, 255]
-            - [230, 245, 255]
-            - [60, 90, 255]
-            bri: [210, 170, 230, 160]
-          🌿 Universel · Jungle:
-            bpm: 120
-            beats: 4
-            t: 0.5
-            pal:
-            - [0, 255, 80]
-            - [150, 255, 0]
-            - [0, 170, 90]
-            - [255, 200, 0]
-            bri: [210, 190, 180, 200]
-          ✨ Universel · Or & blanc:
-            bpm: 120
-            beats: 4
-            t: 0.5
-            pal:
-            - [255, 190, 60]
-            - [255, 240, 200]
-            - [255, 150, 20]
-            - [255, 215, 120]
-            bri: [230, 200, 240, 190]
-          🍬 Universel · Bonbon:
-            bpm: 120
-            beats: 4
-            t: 0.4
-            pal:
-            - [255, 100, 180]
-            - [120, 220, 255]
-            - [200, 140, 255]
-            - [255, 200, 120]
-            bri: [220, 200, 220, 200]
+            bri: [220, 180, 200]
         lights: [light.salle_a_manger_lc, light.coin_dj_sono_gauche, light.salle_a_manger_ld, light.salon_panneau_mural, light.salle_a_manger_lg, light.coin_dj_sono_droite, light.salle_a_manger_vit_g, light.salon_ambilight_tv, light.salle_a_manger_vit_d]
     - {condition: template, value_template: '{{ style in cfg }}'}
     - action: light.turn_off
@@ -208,7 +223,7 @@ script:
         - parallel:
           - sequence:
             - {condition: template, value_template: '{{ 0 < n }}'}
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 0 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 0 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: script.turn_on
               continue_on_error: true
@@ -217,7 +232,7 @@ script:
                 variables: {ents: '{{ grp }}', rgb: '{{ c.pal[0] }}', bri: '{{ c.bri[0] }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 1 < n }}'}
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 1 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 1 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: script.turn_on
               continue_on_error: true
@@ -226,7 +241,7 @@ script:
                 variables: {ents: '{{ grp }}', rgb: '{{ c.pal[1] }}', bri: '{{ c.bri[1] }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 2 < n }}'}
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 2 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 2 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: script.turn_on
               continue_on_error: true
@@ -235,7 +250,7 @@ script:
                 variables: {ents: '{{ grp }}', rgb: '{{ c.pal[2] }}', bri: '{{ c.bri[2] }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 3 < n }}'}
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 3 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 3 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: script.turn_on
               continue_on_error: true
@@ -244,7 +259,7 @@ script:
                 variables: {ents: '{{ grp }}', rgb: '{{ c.pal[3] }}', bri: '{{ c.bri[3] }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 4 < n }}'}
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 4 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 4 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: script.turn_on
               continue_on_error: true
@@ -253,7 +268,7 @@ script:
                 variables: {ents: '{{ grp }}', rgb: '{{ c.pal[4] }}', bri: '{{ c.bri[4] }}', tr: '{{ (beat * c.t) | round(2) }}'}
           - sequence:
             - {condition: template, value_template: '{{ 5 < n }}'}
-            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if (step + j) % n == 5 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
+            - variables: {grp: '{% set ns = namespace(l=[]) %}{% for j in range(lights | length) %}{% if ((step + (0 if c.sync is defined and c.sync else j)) % n) == 5 %}{% set ns.l = ns.l + [lights[j]] %}{% endif %}{% endfor %}{{ ns.l }}'}
             - {condition: template, value_template: '{{ grp | length > 0 }}'}
             - action: script.turn_on
               continue_on_error: true
@@ -277,7 +292,8 @@ automation:
     default:
     - action: input_number.set_value
       target: {entity_id: input_number.sono_tempo}
-      data: {value: '{{ {''🔊 Hard techno'': 150, ''🎛️ Tech house'': 125, ''🥁 Afro house'': 120, ''🌙 Ambiance chill'': 90, ''📼 Rétro techno'': 135, ''💜 RnB'': 90, ''🕹️ Années 80'': 120, ''🌈 Universel · Arc-en-ciel'': 120, ''🔥 Universel · Feu'': 120, ''🌊 Universel
-          · Océan'': 120, ''💡 Universel · Néon'': 120, ''🧊 Universel · Glace'': 120, ''🌿 Universel · Jungle'': 120, ''✨ Universel · Or & blanc'': 120, ''🍬 Universel · Bonbon'': 120}[trigger.to_state.state] }}'}
+      data: {value: '{{ {''🔊 Hard techno'': 150, ''🎛️ Tech house'': 125, ''🥁 Afro house'': 120, ''🌙 Ambiance chill'': 90, ''📼 Rétro techno'': 135, ''💜 RnB'': 90, ''🕹️ Années 80'': 120, ''⚡ Universel · Strobe blanc'': 128, ''🔴 Universel · Bleu nuit & rouge'': 128,
+          ''🟡 Universel · Jaune & bleu ciel'': 128, ''🟣 Universel · Magenta & cyan'': 128, ''🟢 Universel · Laser vert & UV'': 128, ''🟠 Universel · Ambre & violet'': 128, ''❤️ Universel · Pulse rouge'': 128, ''❄️ Universel · Flash blanc & bleu'': 128, ''🌈 Universel
+          · Chase arc-en-ciel'': 128, ''🔥 Universel · Feu & or'': 128, ''🌊 Universel · Océan profond'': 128}[trigger.to_state.state] }}'}
     - action: script.turn_on
       target: {entity_id: script.sono_lumieres}
