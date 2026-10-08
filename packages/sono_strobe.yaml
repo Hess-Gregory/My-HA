@@ -1,10 +1,9 @@
-# [AUTO-VERSION] v0.3.1 | 08/10/2026 23:35 | console DMX, la selection ne touche plus les lampes, envoi seulement sur ALLUME/BLACKOUT
-# 🎚️ Console DMX : sélection lampe par lampe, couleur (palette + mélange rouge / jaune / bleu),
-# intensité, flash de 0 (fixe) à 100 (très rapide), effets spéciaux.
-# Les réglages ne partent vers les lampes qu'au clic sur ALLUMÉ ou BLACKOUT (comme un GO de console).
+# 🎚️ Console DMX : chaque projecteur garde SON programme (couleur, intensité, flash, effet).
+# On sélectionne des projecteurs, on règle, puis ALLUMÉ / BLACKOUT : seuls les projecteurs sélectionnés reçoivent le réglage.
+# Ex. : Lustre 1 + 3 en bleu fixe, puis Lustre 2 seul en strobe blanc -> les deux tournent en même temps.
+# LIBÉRER rend les projecteurs sélectionnés (ou tous si aucun) au set musical.
 input_boolean:
   strobe_actif: {name: Console DMX active, icon: 'mdi:play-circle'}
-  dmx_blackout: {name: Console DMX · blackout, icon: 'mdi:checkbox-blank'}
   dmx_lc: {name: Lustre SAM 1, icon: 'mdi:lightbulb'}
   dmx_ld: {name: Lustre SAM 2, icon: 'mdi:lightbulb'}
   dmx_lg: {name: Lustre SAM 3, icon: 'mdi:lightbulb'}
@@ -35,117 +34,84 @@ template:
       %}{% endfor %}{% set mx = [ns.o | max, 0.01] | max %}{{ ns.o | map(''multiply'', 255 / mx) | map(''round'', 0) | map(''int'') | list | join('','') }}'
     attributes: {hex: '{% set c = (this.state | default(''255,255,255'')).split('','') %}#{% for v in c %}{{ ''%02x'' % (v | int(255)) }}{% endfor %}'}
 script:
-  strobe_lumieres:
-    alias: 🎚️ Console DMX (projecteurs sélectionnés)
-    icon: mdi:tune-vertical
-    mode: restart
+  dmx_moteur:
+    alias: '🎚️ Console DMX : moteur d''un projecteur'
+    mode: parallel
+    max: 20
+    fields:
+      k: {}
+      ent: {}
     sequence:
-    - variables: {ents: '{% set m = {''input_boolean.dmx_lc'':''light.salle_a_manger_lc'',''input_boolean.dmx_ld'':''light.salle_a_manger_ld'',''input_boolean.dmx_lg'':''light.salle_a_manger_lg'',''input_boolean.dmx_vit_g'':''light.salle_a_manger_vit_g'',''input_boolean.dmx_vit_d'':''light.salle_a_manger_vit_d'',''input_boolean.dmx_panneau'':''light.salon_panneau_mural'',''input_boolean.dmx_ambilight'':''light.salon_ambilight_tv'',''input_boolean.dmx_dj_g'':''light.coin_dj_sono_gauche'',''input_boolean.dmx_dj_d'':''light.coin_dj_sono_droite''}
-          %}{% set ns = namespace(l=[]) %}{% if true %}{% for b in m %}{% if is_state(b,''on'') %}{% set ns.l = ns.l + [m[b]] %}{% endif %}{% endfor %}{% endif %}{{ ns.l }}', eff: '{{ states(''input_select.strobe_mode'') }}', rgb: '{% set r = states(''input_number.dmx_rouge'') | float(0) / 100 %}{% set
-          y = states(''input_number.dmx_jaune'') | float(0) / 100 %}{% set b = states(''input_number.dmx_bleu'') | float(0) / 100 %}{% set C = [[1,1,1],[1,0,0],[1,1,0],[0,0.15,1],[1,0.5,0],[0.5,0,0.5],[0,0.8,0.15],[0.2,0.094,0]] %}{% set w = [(1-r)*(1-y)*(1-b), r*(1-y)*(1-b), (1-r)*y*(1-b), (1-r)*(1-y)*b,
-          r*y*(1-b), r*(1-y)*b, (1-r)*y*b, r*y*b] %}{% set ns = namespace(o=[]) %}{% for ch in range(3) %}{% set t = namespace(v=0) %}{% for i in range(8) %}{% set t.v = t.v + w[i] * C[i][ch] %}{% endfor %}{% set ns.o = ns.o + [t.v] %}{% endfor %}{% set mx = [ns.o | max, 0.01] | max %}{{ ns.o | map(''multiply'',
-          255 / mx) | map(''round'', 0) | map(''int'') | list }}', bri: '{{ [ (255 * (states(''input_number.strobe_intensite'') | float(60)) / 100) | int, 1 ] | max }}', flash: '{{ states(''input_number.dmx_flash'') | float(0) }}', period: '{% if ''sync'' in states(''input_select.strobe_mode'') %}{{ 60
-          / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% else %}{% set f = states(''input_number.dmx_flash'') | float(0) %}{{ (1 / (0.5 + f / 100 * 4.5)) if f > 0 else 1 }}{% endif %}'}
-    - {condition: template, value_template: '{{ ents | length > 0 }}'}
+    - variables: {snap: '{{ states(''input_text.'' ~ k) }}'}
+    - {condition: template, value_template: '{{ snap not in ['''', ''unknown'', ''unavailable''] }}'}
+    - variables: {p: '{{ snap | from_json }}'}
     - choose:
-      - conditions:
-        - {condition: state, entity_id: input_boolean.dmx_blackout, state: 'on'}
+      - conditions: '{{ p.m == ''off'' }}'
         sequence:
         - action: light.turn_off
           continue_on_error: true
-          target: {entity_id: '{{ ents }}'}
+          target: {entity_id: '{{ ent }}'}
           data: {transition: 0}
-      - conditions:
-        - {condition: template, value_template: '{{ eff.startswith(''Aucun'') and flash == 0 }}'}
+      - conditions: '{{ p.e == ''fixe'' and p.f == 0 }}'
         sequence:
         - action: light.turn_on
           continue_on_error: true
-          target: {entity_id: '{{ ents }}'}
-          data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: 0.2}
-      - conditions:
-        - {condition: template, value_template: '{{ ''Pulse'' in eff }}'}
+          target: {entity_id: '{{ ent }}'}
+          data: {rgb_color: '{{ p.c }}', brightness: '{{ p.b }}', transition: 0.2}
+      - conditions: '{{ p.e == ''pulse'' }}'
         sequence:
         - repeat:
             while: &id001
-            - &id002 {condition: template, value_template: '{{ is_state(''input_boolean.strobe_actif'',''on'') and is_state(''input_boolean.dmx_blackout'',''off'') }}'}
+            - &id002 {condition: template, value_template: '{{ states(''input_text.'' ~ k) == snap }}'}
             sequence:
             - action: light.turn_on
               continue_on_error: true
-              target: {entity_id: '{{ ents }}'}
-              data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: '{{ (period / 2) | round(2) }}'}
-            - delay: {seconds: '{{ (period / 2) | round(2) }}'}
+              target: {entity_id: '{{ ent }}'}
+              data: {rgb_color: '{{ p.c }}', brightness: '{{ p.b }}', transition: '{{ (p.per / 2) | round(2) }}'}
+            - delay: {seconds: '{{ (p.per / 2) | round(2) }}'}
             - action: light.turn_on
               continue_on_error: true
-              target: {entity_id: '{{ ents }}'}
-              data: {rgb_color: '{{ rgb }}', brightness: '{{ [ (bri * 0.08) | int, 1 ] | max }}', transition: '{{ (period / 2) | round(2) }}'}
-            - delay: {seconds: '{{ (period / 2) | round(2) }}'}
-      - conditions:
-        - {condition: template, value_template: '{{ ''Chase'' in eff }}'}
-        sequence:
-        - action: light.turn_on
-          continue_on_error: true
-          target: {entity_id: '{{ ents }}'}
-          data: {rgb_color: '{{ rgb }}', brightness: 1, transition: 0}
-        - repeat:
-            while: *id001
-            sequence:
-            - variables: {cur: '{{ ents[(repeat.index - 1) % (ents | length)] }}', prev: '{{ ents[(repeat.index - 2) % (ents | length)] }}'}
-            - action: light.turn_on
-              continue_on_error: true
-              target: {entity_id: '{{ cur }}'}
-              data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: 0}
-            - if:
-              - {condition: template, value_template: '{{ ents | length > 1 }}'}
-              then:
-              - action: light.turn_on
-                continue_on_error: true
-                target: {entity_id: '{{ prev }}'}
-                data: {brightness: 1, transition: 0}
-            - delay: {seconds: '{{ [period, 0.15] | max | round(2) }}'}
-      - conditions:
-        - {condition: template, value_template: '{{ ''Arc-en-ciel'' in eff }}'}
+              target: {entity_id: '{{ ent }}'}
+              data: {rgb_color: '{{ p.c }}', brightness: '{{ [ (p.b * 0.08) | int, 1 ] | max }}', transition: '{{ (p.per / 2) | round(2) }}'}
+            - delay: {seconds: '{{ (p.per / 2) | round(2) }}'}
+      - conditions: '{{ p.e == ''chase'' }}'
         sequence:
         - repeat:
             while: *id001
             sequence:
-            - repeat:
-                for_each: '{{ range(ents | length) | list }}'
-                sequence:
-                - action: light.turn_on
-                  continue_on_error: true
-                  target: {entity_id: '{{ ents[repeat.item] }}'}
-                  data: {hs_color: '{{ [ ((as_timestamp(now()) * 40 + repeat.item * 360 / (ents | length)) % 360) | round(0), 100 ] }}', brightness: '{{ bri }}', transition: '{{ [period, 0.3] | max | round(2) }}'}
-            - delay: {seconds: '{{ [period, 0.3] | max | round(2) }}'}
+            - variables: {slot: '{{ ((as_timestamp(now()) / p.per) | int) % p.n }}'}
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ ent }}'}
+              data: {rgb_color: '{{ p.c }}', brightness: '{{ p.b if slot == p.i else 1 }}', transition: 0}
+            - delay: {seconds: '{{ [ p.per - (as_timestamp(now()) % p.per), 0.05 ] | max | round(2) }}'}
+      - conditions: '{{ p.e == ''rainbow'' }}'
+        sequence:
+        - repeat:
+            while: *id001
+            sequence:
+            - action: light.turn_on
+              continue_on_error: true
+              target: {entity_id: '{{ ent }}'}
+              data: {hs_color: '{{ [ ((as_timestamp(now()) * 40 + p.i * 360 / p.n) % 360) | round(0), 100 ] }}', brightness: '{{ p.b }}', transition: '{{ [p.per, 0.3] | max | round(2) }}'}
+            - delay: {seconds: '{{ [p.per, 0.3] | max | round(2) }}'}
       default:
       - repeat:
           while:
           - *id002
           - {condition: template, value_template: '{{ repeat.index < 100000 }}'}
           sequence:
-          - variables: {p: '{% if ''Rafales'' in eff %}{{ 0.15 if repeat.index % 6 else 1.2 }}{% elif ''Éclairs'' in eff %}{{ (range(3, 26) | random) / 10 }}{% else %}{{ period }}{% endif %}'}
+          - variables: {q: '{% if p.e == ''rafales'' %}{{ 0.15 if repeat.index % 6 else 1.2 }}{% elif p.e == ''eclairs'' %}{{ (range(3, 26) | random) / 10 }}{% elif p.e == ''sync'' %}{{ 60 / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% else %}{{ p.per }}{% endif %}'}
           - action: light.turn_on
             continue_on_error: true
-            target: {entity_id: '{{ ents }}'}
-            data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: 0}
-          - delay: {seconds: '{{ [ [p / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
+            target: {entity_id: '{{ ent }}'}
+            data: {rgb_color: '{{ p.c }}', brightness: '{{ p.b }}', transition: 0}
+          - delay: {seconds: '{{ [ [q / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
           - action: light.turn_on
             continue_on_error: true
-            target: {entity_id: '{{ ents }}'}
+            target: {entity_id: '{{ ent }}'}
             data: {brightness: 1, transition: 0}
-          - if:
-            - {condition: template, value_template: '{{ ''Éclairs'' in eff and (range(0,3) | random) == 0 }}'}
-            then:
-            - delay: {seconds: 0.08}
-            - action: light.turn_on
-              continue_on_error: true
-              target: {entity_id: '{{ ents }}'}
-              data: {rgb_color: '{{ rgb }}', brightness: '{{ bri }}', transition: 0}
-            - delay: {seconds: 0.08}
-            - action: light.turn_on
-              continue_on_error: true
-              target: {entity_id: '{{ ents }}'}
-              data: {brightness: 1, transition: 0}
-          - delay: {seconds: '{{ [ p - [p / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
+          - delay: {seconds: '{{ [ q - [q / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
   dmx_couleur:
     alias: '🎨 Console DMX : couleur prédéfinie'
     mode: restart
@@ -176,42 +142,63 @@ script:
       target: {entity_id: input_number.dmx_bleu}
       data: {value: '{{ pre[nom][2] }}'}
   dmx_mode:
-    alias: '🎚️ Console DMX : allumé / blackout / libérer'
-    mode: restart
+    alias: '🎚️ Console DMX : ALLUMÉ / BLACKOUT / LIBÉRER (projecteurs sélectionnés)'
+    mode: queued
     fields:
       mode: {}
     sequence:
     - choose:
-      - conditions: '{{ mode == ''allume'' }}'
+      - conditions: '{{ mode in [''allume'',''blackout''] }}'
         sequence:
-        - action: input_boolean.turn_off
-          target: {entity_id: input_boolean.dmx_blackout}
+        - variables:
+            mp: '{''dmx_lc'':''light.salle_a_manger_lc'',''dmx_ld'':''light.salle_a_manger_ld'',''dmx_lg'':''light.salle_a_manger_lg'',''dmx_vit_g'':''light.salle_a_manger_vit_g'',''dmx_vit_d'':''light.salle_a_manger_vit_d'',''dmx_panneau'':''light.salon_panneau_mural'',''dmx_ambilight'':''light.salon_ambilight_tv'',''dmx_dj_g'':''light.coin_dj_sono_gauche'',''dmx_dj_d'':''light.coin_dj_sono_droite''}'
+            sel: '{% set ns = namespace(l=[]) %}{% for k in [''dmx_lc'', ''dmx_ld'', ''dmx_lg'', ''dmx_vit_g'', ''dmx_vit_d'', ''dmx_panneau'', ''dmx_ambilight'', ''dmx_dj_g'', ''dmx_dj_d''] %}{% if is_state(''input_boolean.'' ~ k, ''on'') %}{% set ns.l = ns.l + [k] %}{% endif %}{% endfor %}{{ ns.l }}'
+            em: {Aucun (couleur + flash): fixe, 🫁 Pulse (respiration): pulse, 🏃 Chase (de projecteur en projecteur): chase, 🌈 Arc-en-ciel: rainbow, 💥 Rafales: rafales, 🌩️ Éclairs: eclairs, 🥁 Strobe sync tempo: sync}
+            col: '{% set r = states(''input_number.dmx_rouge'') | float(0) / 100 %}{% set y = states(''input_number.dmx_jaune'') | float(0) / 100 %}{% set b = states(''input_number.dmx_bleu'') | float(0) / 100 %}{% set C = [[1,1,1],[1,0,0],[1,1,0],[0,0.15,1],[1,0.5,0],[0.5,0,0.5],[0,0.8,0.15],[0.2,0.094,0]]
+              %}{% set w = [(1-r)*(1-y)*(1-b), r*(1-y)*(1-b), (1-r)*y*(1-b), (1-r)*(1-y)*b, r*y*(1-b), r*(1-y)*b, (1-r)*y*b, r*y*b] %}{% set ns = namespace(o=[]) %}{% for ch in range(3) %}{% set t = namespace(v=0) %}{% for i in range(8) %}{% set t.v = t.v + w[i] * C[i][ch] %}{% endfor %}{% set ns.o =
+              ns.o + [t.v] %}{% endfor %}{% set mx = [ns.o | max, 0.01] | max %}{{ ns.o | map(''multiply'', 255 / mx) | map(''round'', 0) | map(''int'') | list }}'
+            bri: '{{ [ (255 * (states(''input_number.strobe_intensite'') | float(60)) / 100) | int, 1 ] | max }}'
+            fl: '{{ states(''input_number.dmx_flash'') | float(0) }}'
+            eff: '{{ em.get(states(''input_select.strobe_mode''), ''fixe'') }}'
+            per: '{% set f = states(''input_number.dmx_flash'') | float(0) %}{{ ((1 / (0.5 + f / 100 * 4.5)) if f > 0 else 1) | round(3) }}'
+            ts: '{{ now().timestamp() | round(3) }}'
+        - {condition: template, value_template: '{{ sel | length > 0 }}'}
+        - repeat:
+            for_each: '{{ sel }}'
+            sequence:
+            - variables: {i: '{% set ns = namespace(i=0) %}{% for x in sel %}{% if x == repeat.item %}{% set ns.i = loop.index0 %}{% endif %}{% endfor %}{{ ns.i }}'}
+            - action: input_text.set_value
+              target: {entity_id: 'input_text.{{ repeat.item }}'}
+              data: {value: '{% if mode == ''blackout'' %}{{ {''m'':''off'',''t'':ts} | to_json }}{% else %}{{ {''m'':''on'',''c'':col,''b'':bri,''f'':fl,''e'':eff,''per'':per,''i'':i,''n'':sel|length,''t'':ts} | to_json }}{% endif %}'}
+            - action: script.turn_on
+              target: {entity_id: script.dmx_moteur}
+              data:
+                variables: {k: '{{ repeat.item }}', ent: '{{ mp[repeat.item] }}'}
         - action: input_boolean.turn_on
           target: {entity_id: input_boolean.strobe_actif}
-        - action: script.turn_on
-          target: {entity_id: script.strobe_lumieres}
-      - conditions: '{{ mode == ''blackout'' }}'
-        sequence:
-        - action: input_boolean.turn_on
-          target:
-            entity_id: [input_boolean.dmx_blackout, input_boolean.strobe_actif]
-        - action: script.turn_on
-          target: {entity_id: script.strobe_lumieres}
       default:
-      - action: input_boolean.turn_off
-        target:
-          entity_id: [input_boolean.strobe_actif, input_boolean.dmx_blackout]
-automation:
-- id: strobe_marche_arret
-  alias: '🎚️ Console DMX : libérer les projecteurs'
-  mode: restart
-  triggers:
-  - {trigger: state, entity_id: input_boolean.strobe_actif, to: 'off'}
-  actions:
-  - action: script.turn_off
-    target: {entity_id: script.strobe_lumieres}
-  - if:
-    - {condition: template, value_template: '{{ not states(''input_select.sono_lumieres'').startswith(''—'') }}'}
-    then:
-    - action: script.turn_on
-      target: {entity_id: script.sono_lumieres}
+      - variables:
+          sel: '{% set ns = namespace(l=[]) %}{% for k in [''dmx_lc'', ''dmx_ld'', ''dmx_lg'', ''dmx_vit_g'', ''dmx_vit_d'', ''dmx_panneau'', ''dmx_ambilight'', ''dmx_dj_g'', ''dmx_dj_d''] %}{% if is_state(''input_boolean.'' ~ k, ''on'') %}{% set ns.l = ns.l + [k] %}{% endif %}{% endfor %}{{ ns.l }}'
+          ks: [dmx_lc, dmx_ld, dmx_lg, dmx_vit_g, dmx_vit_d, dmx_panneau, dmx_ambilight, dmx_dj_g, dmx_dj_d]
+      - variables: {cible: '{{ sel if sel | length > 0 else ks }}'}
+      - repeat:
+          for_each: '{{ cible }}'
+          sequence:
+          - action: input_text.set_value
+            target: {entity_id: 'input_text.{{ repeat.item }}'}
+            data: {value: ''}
+      - if:
+        - {condition: template, value_template: '{{ not states(''input_select.sono_lumieres'').startswith(''—'') }}'}
+        then:
+        - action: script.turn_on
+          target: {entity_id: script.sono_lumieres}
+input_text:
+  dmx_lc: {name: Programme console · Lustre SAM 1, max: 255, initial: ''}
+  dmx_ld: {name: Programme console · Lustre SAM 2, max: 255, initial: ''}
+  dmx_lg: {name: Programme console · Lustre SAM 3, max: 255, initial: ''}
+  dmx_vit_g: {name: Programme console · Vitrine gauche, max: 255, initial: ''}
+  dmx_vit_d: {name: Programme console · Vitrine droite, max: 255, initial: ''}
+  dmx_panneau: {name: Programme console · Panneau mural, max: 255, initial: ''}
+  dmx_ambilight: {name: Programme console · Ambilight, max: 255, initial: ''}
+  dmx_dj_g: {name: Programme console · Spot DJ gauche, max: 255, initial: ''}
+  dmx_dj_d: {name: Programme console · Spot DJ droite, max: 255, initial: ''}
