@@ -740,7 +740,7 @@ class Floorplan3DCard extends HTMLElement {
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
-    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0; const dOn = !!door && door.state === 'on'; if (dOn && this._doorWas === false) this._doorAlert(); else if (!dOn && this._doorWas === true) this._doorClear(); this._doorWas = dOn;
+    const door = H['binary_sensor.hall_dentree_porte_entree_porte']; this.doorTarget = door && door.state === 'on' ? 1.25 : 0; const dOn = !!door && door.state === 'on'; if (dOn && this._doorWas === false) this._doorAlert(); else if (!dOn && this._doorWas === true) { clearTimeout(this._dcT); this._dcT = setTimeout(() => this._doorClear(), 10000); } this._doorWas = dOn;
     const sunSt = H['sun.sun']; const autoNight = sunSt ? sunSt.state === 'below_horizon' : false;
     this.nightTarget = this.mode === 'nuit' ? 1 : this.mode === 'jour' ? 0 : autoNight ? 1 : 0;
     this.$('.mode').textContent = { auto: '🌓 Auto', jour: '☀️ Jour', nuit: '🌙 Nuit' }[this.mode];
@@ -762,6 +762,7 @@ class Floorplan3DCard extends HTMLElement {
 
   _doorAlert() {
     try {
+      clearTimeout(this._dcT);
       this._goTo('Hall d’entrée');
       const cam = this._h.states['camera.couloir']; if (!cam) return;
       let o = this.$('.camov');
