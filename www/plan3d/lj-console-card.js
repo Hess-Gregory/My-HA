@@ -108,8 +108,9 @@ class LjConsoleCard extends HTMLElement {
     </div>`;
     this.$ = (s) => r.querySelector(s);
     // scène : positions en % (plan de la pièce de vie vue de dessus)
-    const POS = { dmx_dj_g: [8, 30, ''], dmx_dj_d: [20, 30, ''], dmx_ambilight: [52, 14, 'bar'], dmx_panneau: [52, 34, 'bar'],
-      dmx_vit_g: [82, 22, 'tall'], dmx_vit_d: [92, 22, 'tall'], dmx_lg: [38, 72, ''], dmx_lc: [52, 72, ''], dmx_ld: [66, 72, ''] };
+    // positions reprises du plan 3D (vue de dessus) : vitrines au mur de gauche, panneau + TV au fond, lustre au centre, coin DJ à droite
+    const POS = { dmx_vit_d: [8, 38, 'tall'], dmx_vit_g: [8, 64, 'tall'], dmx_panneau: [40, 12, 'bar'], dmx_ambilight: [40, 28, 'bar'],
+      dmx_lg: [42, 80, ''], dmx_lc: [52, 80, ''], dmx_ld: [62, 80, ''], dmx_dj_g: [90, 62, ''], dmx_dj_d: [90, 82, ''] };
     const stage = this.$('.stage'), fix = this.$('.fix');
     FIX.forEach(([k, e, n]) => {
       const [x, y, cls] = POS[k]; const b = document.createElement('button'); b.className = 'fx ' + cls; b.style.left = x + '%'; b.style.top = y + '%';
