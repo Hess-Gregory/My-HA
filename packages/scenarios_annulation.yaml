@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.0 | 08/10/2026 19:32 | bouton Annuler (Je pars / Bonne nuit) qui remet l etat precedent
+# [AUTO-VERSION] v0.1.1 | 08/10/2026 19:32 | restauration de la scene avant scenario
 # Annuler un « Je pars » / « Bonne nuit » appuyé par erreur
 script:
   scenario_memoriser:
