@@ -179,11 +179,45 @@ class HomeHubCard extends HTMLElement {
       o._upd();
     } catch (e) { bd.textContent = 'Télécommande indisponible : ' + e.message; }
   }
+  // 🎤 Détection du tempo par le micro (tablette uniquement, seulement quand un style « Lumières sono » est choisi)
+  _bpmTick() {
+    const h = this._h; if (!h) return; const st = h.states['input_select.sono_lumieres'];
+    const on = !!(st && st.state && !st.state.startsWith('—')), tab = /^sam/i.test((h.user && h.user.name) || '');
+    if (on && tab && !this._bpm) this._bpmStart(); else if ((!on || !tab) && this._bpm && !this._bpm.err) this._bpmStop();
+    if (!on && this._bpm && this._bpm.err) this._bpm = null;
+  }
+  async _bpmStart() {
+    this._bpm = { starting: true };
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+      const ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') await ac.resume().catch(() => {});
+      const src = ac.createMediaStreamSource(s), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 160;
+      const N = 512, sp = ac.createScriptProcessor(N, 1, 1), fr = ac.sampleRate / N, env = []; let prev = 0;
+      sp.onaudioprocess = (ev) => { const d = ev.inputBuffer.getChannelData(0); let e = 0; for (let i = 0; i < d.length; i++) e += d[i] * d[i]; e = Math.sqrt(e / d.length);
+        env.push(Math.max(0, e - prev)); prev = e; if (env.length > fr * 10) env.shift(); };
+      const mute = ac.createGain(); mute.gain.value = 0; src.connect(lp); lp.connect(sp); sp.connect(mute); mute.connect(ac.destination);
+      const est = setInterval(() => this._bpmEstimate(env, fr), 4000);
+      this._bpm = { s, ac, sp, est }; this._toast('🎤 Écoute du tempo de la musique…');
+    } catch (e) { this._bpm = { err: e.message }; this._toast('🎤 Micro indisponible : ' + e.message); }
+  }
+  _bpmStop() { const b = this._bpm; this._bpm = null; this._bpmHist = []; if (!b) return; clearInterval(b.est); try { b.sp.disconnect(); b.s.getTracks().forEach((t) => t.stop()); b.ac.close(); } catch (e) {} }
+  _bpmEstimate(env, fr) {
+    if (env.length < fr * 6) return; const x = env.slice(-Math.round(fr * 8)); const m = x.reduce((a, b) => a + b, 0) / x.length; const y = x.map((v) => v - m);
+    const s0 = y.reduce((a, v) => a + v * v, 0); if (s0 <= 1e-9) return;
+    const lo = Math.floor(60 * fr / 180), hi = Math.ceil(60 * fr / 70), sc = {}; let best = -1, bl = 0;
+    for (let L = lo; L <= hi; L++) { let t = 0; for (let i = L; i < y.length; i++) t += y[i] * y[i - L]; t /= s0; sc[L] = t; if (t > best) { best = t; bl = L; } }
+    if (best < 0.1) return; // pas de rythme assez net (musique trop faible ou trop de bruit)
+    const a = sc[bl - 1] || 0, c = sc[bl + 1] || 0, den = a - 2 * best + c; const off = den ? Math.max(-0.5, Math.min(0.5, (a - c) / (2 * den))) : 0;
+    let bpm = 60 * fr / (bl + off); while (bpm < 85) bpm *= 2; while (bpm > 175) bpm /= 2; bpm = Math.round(bpm);
+    this._bpmHist = (this._bpmHist || []).concat(bpm).slice(-3); const med = [...this._bpmHist].sort((p, q) => p - q)[Math.floor(this._bpmHist.length / 2)];
+    const cur = +((this._h.states['input_number.sono_tempo'] || {}).state || 0);
+    if (Math.abs(med - cur) >= 2) { this._h.callService('input_number', 'set_value', { value: med }, { entity_id: 'input_number.sono_tempo' }); this._toast('🎤 Tempo détecté : ' + med + ' BPM'); }
+  }
   _toast(t) { let el = this.$('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; this.$('.hub').appendChild(el); } el.textContent = t; el.classList.add('show'); clearTimeout(this._tt); this._tt = setTimeout(() => el.classList.remove('show'), 2500); }
   _go(path) { history.pushState(null, '', path); window.dispatchEvent(new CustomEvent('location-changed')); }
   _more(e) { this.dispatchEvent(new CustomEvent('hass-more-info', { bubbles: true, composed: true, detail: { entityId: e } })); }
   _clock() {
-    if (!this.$) return; this._cdTick(); const d = new Date(), hh = d.getHours();
+    if (!this.$) return; this._cdTick(); this._bpmTick(); const d = new Date(), hh = d.getHours();
     this.$('.clock').innerHTML = `${String(hh).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     this.$('.date').textContent = d.toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' });
     const sa = this._h && this._h.states['sun.sun']; if (sa && sa.attributes.next_rising) { const r = new Date(sa.attributes.next_rising), st = new Date(sa.attributes.next_setting), f = (x) => x.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' });
