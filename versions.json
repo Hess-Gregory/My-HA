@@ -90,9 +90,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_eclairage": {
-    "last_change": "boutons des 8 ambiances piece de vie",
-    "last_update": "2026-10-08T22:14:55.038428+02:00",
-    "version": "0.5.0"
+    "last_change": "menus deroulants ambiances + lumieres sono, boutons Rejouer/Eteindre",
+    "last_update": "2026-10-08T22:47:44.814836+02:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.maison_energie": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
