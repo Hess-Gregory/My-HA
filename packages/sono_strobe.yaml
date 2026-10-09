@@ -107,18 +107,18 @@ script:
           - {condition: template, value_template: '{{ repeat.index < 100000 }}'}
           sequence:
           - variables: {q: '{% if p.e == ''rafales'' %}{{ 0.15 if repeat.index % 6 else 1.2 }}{% elif p.e == ''eclairs'' %}{{ (range(3, 26) | random) / 10 }}{% elif p.e == ''sync'' %}{{ 60 / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% elif p.e == ''rampup'' %}{{ p.per * (2.5 - 2 * (repeat.index % 8) / 7) }}{% elif p.e == ''rampdown'' %}{{ p.per * (0.5 + 2 * (repeat.index % 8) / 7) }}{% else %}{{ p.per }}{% endif %}'}
-          - variables: {on: '{{ [ q * (0.1 + 0.8 * (p.d | default(20)) / 100), 0.05 ] | max | round(2) }}'}
-          - variables: {off: '{{ [ q - on, 0.05 ] | max | round(2) }}'}
+          - variables: {t_on: '{{ [ q * (0.1 + 0.8 * (p.d | default(20)) / 100), 0.05 ] | max | round(2) }}'}
+          - variables: {t_off: '{{ [ q - t_on, 0.05 ] | max | round(2) }}'}
           - action: light.turn_on
             continue_on_error: true
             target: {entity_id: '{{ ent }}'}
             data: {rgb_color: '{{ p.c }}', brightness: '{{ p.b }}', transition: 0}
-          - delay: {seconds: '{{ on }}'}
+          - delay: {seconds: '{{ t_on }}'}
           - action: light.turn_on
             continue_on_error: true
             target: {entity_id: '{{ ent }}'}
-            data: {brightness: '{{ [ (p.b * (p.a | default(0)) / 100) | int, 1 ] | max }}', transition: '{{ (off * (p.s | default(0)) / 100) | round(2) }}'}
-          - delay: {seconds: '{{ off }}'}
+            data: {brightness: '{{ [ (p.b * (p.a | default(0)) / 100) | int, 1 ] | max }}', transition: '{{ (t_off * (p.s | default(0)) / 100) | round(2) }}'}
+          - delay: {seconds: '{{ t_off }}'}
   dmx_couleur:
     alias: '🎨 Console DMX : couleur prédéfinie'
     mode: restart
