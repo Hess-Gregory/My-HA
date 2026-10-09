@@ -80,9 +80,9 @@
     "version": "0.7.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "detection du tempo par le micro de la tablette pour les lumieres sono",
-    "last_update": "2026-10-08T23:04:24.412906+02:00",
-    "version": "2.6.0"
+    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
+    "last_update": "2026-10-09T07:48:51.054282+02:00",
+    "version": "2.7.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -295,14 +295,14 @@
     "version": "0.1.0"
   },
   "packages/sono_lumieres.yaml": {
-    "last_change": "console DMX, envoi vers les bons projecteurs, scene disposee comme le plan 3D, tempo master 65-170 BPM",
-    "last_update": "2026-10-09T00:04:25.908280+02:00",
-    "version": "0.11.1"
+    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
+    "last_update": "2026-10-09T07:48:51.054282+02:00",
+    "version": "0.12.0"
   },
   "packages/sono_strobe.yaml": {
-    "last_change": "console DMX, envoi vers les bons projecteurs, scene disposee comme le plan 3D, tempo master 65-170 BPM",
-    "last_update": "2026-10-09T00:04:25.908280+02:00",
-    "version": "0.4.2"
+    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
+    "last_update": "2026-10-09T07:48:51.054282+02:00",
+    "version": "0.5.0"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
@@ -350,13 +350,13 @@
     "version": "0.0.1"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "detection du tempo par le micro de la tablette pour les lumieres sono",
-    "last_update": "2026-10-08T23:04:24.412906+02:00",
-    "version": "2.6.0"
+    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
+    "last_update": "2026-10-09T07:48:51.054282+02:00",
+    "version": "2.7.0"
   },
   "www/plan3d/lj-console-card.js": {
-    "last_change": "console DMX, envoi vers les bons projecteurs, scene disposee comme le plan 3D, tempo master 65-170 BPM",
-    "last_update": "2026-10-09T00:04:25.908280+02:00",
-    "version": "0.1.2"
+    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
+    "last_update": "2026-10-09T07:48:51.054282+02:00",
+    "version": "0.2.0"
   }
 }
