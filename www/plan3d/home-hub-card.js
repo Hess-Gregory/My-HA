@@ -180,12 +180,8 @@ class HomeHubCard extends HTMLElement {
     } catch (e) { bd.textContent = 'Télécommande indisponible : ' + e.message; }
   }
   // 🎤 Détection du tempo par le micro (tablette uniquement, seulement quand un style « Lumières sono » est choisi)
-  _bpmTick() {
-    const h = this._h; if (!h) return; const st = h.states['input_select.sono_lumieres'];
-    const on = !!(st && st.state && !st.state.startsWith('—')), tab = /^sam/i.test((h.user && h.user.name) || '');
-    if (on && tab && !this._bpm) this._bpmStart(); else if ((!on || !tab) && this._bpm && !this._bpm.err) this._bpmStop();
-    if (!on && this._bpm && this._bpm.err) this._bpm = null;
-  }
+  // 🎤 tempo micro : moteur partagé avec la console Light Jockey (bouton MICRO TABLETTE)
+  _bpmTick() { const h = this._h; if (h && window.__sonoMic) window.__sonoMic.tick(h, (t) => this._toast(t)); }
   async _bpmStart() {
     this._bpm = { starting: true };
     try {

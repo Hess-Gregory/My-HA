@@ -16,7 +16,7 @@ input_select:
     initial: — Arrêt —
 input_number:
   sono_intensite: {name: Intensité sono, icon: 'mdi:brightness-6', min: 10, max: 100, step: 5, initial: 50, mode: slider, unit_of_measurement: '%'}
-  sono_tempo: {name: Tempo sono (BPM), icon: 'mdi:metronome', min: 65, max: 170, step: 1, mode: slider, unit_of_measurement: BPM}
+  sono_tempo: {name: Tempo sono (BPM), icon: 'mdi:metronome', min: 65, max: 180, step: 1, mode: slider, unit_of_measurement: BPM}
 script:
   sono_stop_eteindre:
     alias: '⏹ Sono : arrêter le set et éteindre la pièce de vie'

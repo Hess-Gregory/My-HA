@@ -22,19 +22,61 @@ const SETS = [
 ];
 const FX = [['Aucun', 'AUCUN'], ['⚡ Strobe blanc', 'STROBE'], ['🟣 Black light (UV)', 'BLACK LIGHT'], ['💥 Blinder (flash chaud toutes les 4)', 'BLINDER'], ['⬛ Blackout (coupures sur le temps)', 'BLACKOUT /T']];
 const EFF = [['Aucun (couleur + flash)', 'FIXE'], ['🫁 Pulse (respiration)', 'PULSE'], ['🏃 Chase (de projecteur en projecteur)', 'CHASE'], ['🌈 Arc-en-ciel', 'RAINBOW'],
-  ['💥 Rafales', 'RAFALES'], ['🌩️ Éclairs', 'ÉCLAIRS'], ['🥁 Strobe sync tempo', 'SYNC BPM']];
+  ['💥 Rafales', 'RAFALES'], ['🌩️ Éclairs', 'ÉCLAIRS'], ['🥁 Strobe sync tempo', 'SYNC BPM'], ['📈 Ramp up (accélère)', 'RAMP ↑'], ['📉 Ramp down (ralentit)', 'RAMP ↓']];
 const FADERS = [
   ['input_number.dmx_rouge', 'R', '#ff3b3b'], ['input_number.dmx_jaune', 'J', '#ffd21a'], ['input_number.dmx_bleu', 'B', '#3b6bff'],
-  ['input_number.strobe_intensite', 'DIM', '#f3ead8'], ['input_number.dmx_flash', 'FLASH', '#ffffff'],
+  ['input_number.strobe_intensite', 'DIM', '#f3ead8'],
   ['input_number.sono_intensite', 'MASTER', '#ff9d2e'], ['input_number.sono_tempo', 'BPM', '#5dff8a'],
 ];
+
+// 🎤 Tempo par le micro de la tablette : un seul micro partagé entre l'accueil et la console (activé par input_boolean.sono_micro)
+// faders du strobe, comme sur un vrai strobe DMX : rate, durée du flash, splash (fondu), aura (fond)
+const STROBE = [['input_number.dmx_flash', 'RATE'], ['input_number.dmx_duree', 'DURÉE'], ['input_number.dmx_splash', 'SPLASH'], ['input_number.dmx_aura', 'AURA']];
+const MIC = 'input_boolean.sono_micro';
+window.__sonoMic = window.__sonoMic || (() => {
+  const m = { a: null, hist: [], toast: null, h: null };
+  const say = (t) => { try { m.toast && m.toast(t); } catch (e) {} };
+  m.tick = (h, toast) => {
+    m.h = h; if (toast) m.toast = toast;
+    const want = (h.states[MIC] || {}).state === 'on' && /^sam/i.test((h.user && h.user.name) || '');
+    if (want && !m.a) m.start(); else if (!want && m.a && !m.a.err) m.stop(); else if (!want && m.a && m.a.err) m.a = null;
+  };
+  m.start = async () => {
+    m.a = { starting: true };
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+      const ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') await ac.resume().catch(() => {});
+      const src = ac.createMediaStreamSource(s), lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 160;
+      const N = 512, sp = ac.createScriptProcessor(N, 1, 1), fr = ac.sampleRate / N, env = []; let prev = 0;
+      sp.onaudioprocess = (ev) => { const d = ev.inputBuffer.getChannelData(0); let e = 0; for (let i = 0; i < d.length; i++) e += d[i] * d[i]; e = Math.sqrt(e / d.length);
+        env.push(Math.max(0, e - prev)); prev = e; if (env.length > fr * 10) env.shift(); };
+      const mute = ac.createGain(); mute.gain.value = 0; src.connect(lp); lp.connect(sp); sp.connect(mute); mute.connect(ac.destination);
+      const est = setInterval(() => m.est(env, fr), 3000);
+      m.a = { s, ac, sp, est }; say('🎤 Écoute du tempo de la musique…');
+    } catch (e) { m.a = { err: e.message }; say('🎤 Micro indisponible : ' + e.message); }
+  };
+  m.stop = () => { const b = m.a; m.a = null; m.hist = []; if (!b) return; clearInterval(b.est); try { b.sp.disconnect(); b.s.getTracks().forEach((t) => t.stop()); b.ac.close(); } catch (e) {} };
+  m.est = (env, fr) => {
+    if (env.length < fr * 6 || !m.h) return; const x = env.slice(-Math.round(fr * 8)); const mn = x.reduce((a, b) => a + b, 0) / x.length; const y = x.map((v) => v - mn);
+    const s0 = y.reduce((a, v) => a + v * v, 0); if (s0 <= 1e-9) return;
+    const lo = Math.floor(60 * fr / 185), hi = Math.ceil(60 * fr / 70), sc = {}; let best = -1, bl = 0;
+    for (let L = lo; L <= hi; L++) { let t = 0; for (let i = L; i < y.length; i++) t += y[i] * y[i - L]; t /= s0; sc[L] = t; if (t > best) { best = t; bl = L; } }
+    if (best < 0.1) return; // rythme pas assez net
+    const a = sc[bl - 1] || 0, c = sc[bl + 1] || 0, den = a - 2 * best + c; const off = den ? Math.max(-0.5, Math.min(0.5, (a - c) / (2 * den))) : 0;
+    let bpm = 60 * fr / (bl + off); while (bpm < 90) bpm *= 2; while (bpm > 180) bpm /= 2; bpm = Math.round(bpm);
+    m.hist = m.hist.concat(bpm).slice(-3); const med = [...m.hist].sort((p, q) => p - q)[Math.floor(m.hist.length / 2)];
+    const cur = +((m.h.states['input_number.sono_tempo'] || {}).state || 0);
+    if (Math.abs(med - cur) >= 2) { m.h.callService('input_number', 'set_value', { value: Math.max(65, Math.min(180, med)) }, { entity_id: 'input_number.sono_tempo' }); say('🎤 Tempo détecté : ' + med + ' BPM'); }
+  };
+  return m;
+})();
 
 class LjConsoleCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
   getCardSize() { return 12; }
   getGridOptions() { return { columns: 'full', rows: 'auto' }; }
   set hass(h) {
-    this._h = h;
+    this._h = h; window.__sonoMic.tick(h);
     if (!this._built) this._build();
     if (!this._raf) this._raf = requestAnimationFrame(() => { this._raf = null; this._update(); });
   }
@@ -64,14 +106,14 @@ class LjConsoleCard extends HTMLElement {
       .pal{grid-template-columns:repeat(6,minmax(0,1fr))} .pal button{height:30px;border-radius:50px;border:2px solid #000;box-shadow:inset 0 -6px 10px rgba(0,0,0,.35)}
       .pal button.on{outline:2px solid #fff;outline-offset:2px}
       .mix{display:flex;gap:8px;align-items:stretch;flex:1;min-height:0}
-      .fd{flex:1;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;min-height:0}
+      .fd{flex:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;min-height:0}
       .f{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:0;background:var(--pn2);border:1px solid var(--ln);border-radius:7px;padding:5px 2px}
       .f .v{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums} .f .k{font-size:10px;font-weight:700;color:var(--mu)}
       .f input{writing-mode:vertical-lr;direction:rtl;flex:1;min-height:40px;width:22px;margin:0;accent-color:var(--c)}
       .prev{width:clamp(48px,6vw,80px);border-radius:8px;border:1px solid var(--ln);display:flex;align-items:flex-end;justify-content:center;font-size:10px;font-weight:700;color:#000;padding-bottom:4px}
-      .eff{grid-template-columns:repeat(7,minmax(0,1fr))} .eff button,.fxr button{height:30px;font-size:10px;font-weight:700}
+      .eff{grid-template-columns:repeat(5,minmax(0,1fr))} .stb{grid-template-columns:1fr 1fr;gap:4px} .f.hz{flex-direction:row;padding:3px 6px;gap:6px} .f.hz .k{order:0;width:46px;text-align:left;color:#7fd8ff} .f.hz input{order:1;writing-mode:horizontal-tb;direction:ltr;flex:1;min-height:0;width:auto;height:18px} .f.hz .v{order:2;width:26px;text-align:right} .eff button,.fxr button{height:30px;font-size:10px;font-weight:700}
       .eff button.on,.fxr button.on{background:#0f2a3a;border-color:#2ab8ff;color:#7fd8ff}
-      .fxr{grid-template-columns:repeat(5,minmax(0,1fr))}
+      .fxr{grid-template-columns:repeat(5,minmax(0,1fr))} .mic{grid-template-columns:1fr} .mic button{height:30px;font-size:11px;font-weight:700} .mic button.on{background:#0d2a17;border-color:#5dff8a;color:#5dff8a} .f.lock{opacity:.45} .f.lock .k::before{content:'🎤 '}
       .out{grid-template-columns:1.2fr 1.2fr 1fr} .out button{height:46px;font-size:15px;font-weight:800;letter-spacing:.12em}
       .go{background:#0d2a17;border-color:#1f8f45;color:#6dffa0} .go.on{background:#1fae4a;color:#04170a;box-shadow:0 0 18px #1fae4a}
       .bo{background:#1a1a1f;border-color:#555;color:#ccc} .bo.on{background:#000;color:#fff;box-shadow:0 0 0 2px #fff inset}
@@ -99,8 +141,12 @@ class LjConsoleCard extends HTMLElement {
       </div>
       <div class="p"><div class="h">Programmeur · effet</div>
         <div class="row eff"></div>
+        <div class="h">Strobe <b>rate · durée · splash · aura</b></div>
+        <div class="row stb"></div>
         <div class="h">FX sur le set musical</div>
         <div class="row fxr"></div>
+        <div class="h">Tempo <b class="tsrc">CURSEUR BPM</b></div>
+        <div class="row mic"><button class="mb">🎤 MICRO TABLETTE · OFF</button></div>
         <div class="h">Sortie programmeur <b class="ost">LIBRE</b></div>
         <div class="row out"><button class="go">● ALLUMÉ</button><button class="bo">■ BLACKOUT</button><button class="rel">↩ LIBÉRER</button></div>
       </div>
@@ -129,6 +175,13 @@ class LjConsoleCard extends HTMLElement {
       i.oninput = () => { d.querySelector('.v').textContent = i.value; i._busy = true; };
       i.onchange = () => { i._busy = false; this._call('input_number', 'set_value', { value: +i.value }, { entity_id: e }); };
       d.dataset.e = e; fd.appendChild(d); });
+    this.$('.mb').onclick = () => this._call('input_boolean', 'toggle', {}, { entity_id: MIC });
+    const stb = this.$('.stb');
+    STROBE.forEach(([e, k]) => { const d = document.createElement('div'); d.className = 'f hz'; d.style.setProperty('--c', '#2ab8ff');
+      d.innerHTML = `<span class="v">–</span><input type="range" aria-label="${k}"><span class="k">${k}</span>`; const i = d.querySelector('input');
+      i.oninput = () => { d.querySelector('.v').textContent = i.value; i._busy = true; };
+      i.onchange = () => { i._busy = false; this._call('input_number', 'set_value', { value: +i.value }, { entity_id: e }); };
+      d.dataset.e = e; stb.appendChild(d); });
     const eff = this.$('.eff'); EFF.forEach(([o, l]) => { const b = document.createElement('button'); b.textContent = l; b.dataset.o = o; b.onclick = () => this._sel(EFS, o); eff.appendChild(b); });
     const fxr = this.$('.fxr'); FX.forEach(([o, l]) => { const b = document.createElement('button'); b.textContent = l; b.dataset.o = o; b.onclick = () => this._sel(FXS, o); fxr.appendChild(b); });
     const dm = (m) => this._call('script', 'turn_on', { variables: { mode: m } }, { entity_id: 'script.dmx_mode' });
@@ -166,9 +219,13 @@ class LjConsoleCard extends HTMLElement {
       this.shadowRoot.querySelectorAll(`.fix [data-k="${k}"]`).forEach((b) => { b.dataset.tag = tag; }); });
     this.$('.go').classList.toggle('on', nOn > 0); this.$('.bo').classList.toggle('on', nOff > 0);
     this.$('.ost').textContent = (nOn || nOff) ? `${nOn} allumé${nOn > 1 ? 's' : ''} · ${nOff} blackout` : 'TOUT RENDU AU SET';
+    const micOn = (this._st(MIC) || {}).state === 'on', mb = this.$('.mb');
+    mb.classList.toggle('on', micOn); mb.textContent = micOn ? '🎤 MICRO TABLETTE · ÉCOUTE DU TEMPO' : '🎤 MICRO TABLETTE · OFF';
+    this.$('.tsrc').textContent = micOn ? 'MICRO (TABLETTE)' : 'CURSEUR BPM';
+    this.shadowRoot.querySelectorAll('.f').forEach((d) => { if (d.dataset.e !== 'input_number.sono_tempo') return; d.classList.toggle('lock', micOn); d.querySelector('input').disabled = micOn; });
     const live = !sS.startsWith('—'); const bpm = Math.round(+((this._st('input_number.sono_tempo') || {}).state || 0));
     this.$('.stat').innerHTML = (live ? `<span class="live"><span class="dot"></span>LIVE</span> <b>${sS.replace(/^\S+\s/, '')}</b>` : '<span>AUCUN SET</span>')
-      + ` · <b>${bpm}</b> BPM · FX <b>${(fS || 'Aucun').replace(/ \(.*\)/, '')}</b>`;
+      + ` · <b>${bpm}</b> BPM${micOn ? ' 🎤' : ''} · FX <b>${(fS || 'Aucun').replace(/ \(.*\)/, '')}</b>`;
   }
 }
 customElements.define('lj-console-card', LjConsoleCard);

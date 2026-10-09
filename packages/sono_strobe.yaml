@@ -1,10 +1,10 @@
-# [AUTO-VERSION] v0.4.2 | 09/10/2026 00:04 | console DMX, envoi vers les bons projecteurs, scene disposee comme le plan 3D, tempo master 65-170 BPM
 # 🎚️ Console DMX : chaque projecteur garde SON programme (couleur, intensité, flash, effet).
 # On sélectionne des projecteurs, on règle, puis ALLUMÉ / BLACKOUT : seuls les projecteurs sélectionnés reçoivent le réglage.
 # Ex. : Lustre 1 + 3 en bleu fixe, puis Lustre 2 seul en strobe blanc -> les deux tournent en même temps.
 # LIBÉRER rend les projecteurs sélectionnés (ou tous si aucun) au set musical.
 input_boolean:
   strobe_actif: {name: Console DMX active, icon: 'mdi:play-circle'}
+  sono_micro: {name: Tempo par le micro de la tablette, icon: 'mdi:microphone'}
   dmx_lc: {name: Lustre SAM 1, icon: 'mdi:lightbulb'}
   dmx_ld: {name: Lustre SAM 2, icon: 'mdi:lightbulb'}
   dmx_lg: {name: Lustre SAM 3, icon: 'mdi:lightbulb'}
@@ -17,6 +17,9 @@ input_boolean:
 input_number:
   strobe_intensite: {name: Intensité console, icon: 'mdi:brightness-7', min: 5, max: 100, step: 5, initial: 60, mode: slider, unit_of_measurement: '%'}
   dmx_flash: {name: 'Flash (0 = fixe, 100 = très rapide)', icon: 'mdi:flash', min: 0, max: 100, step: 5, initial: 0, mode: slider, unit_of_measurement: '%'}
+  dmx_duree: {name: 'Strobe : durée du flash', icon: 'mdi:timer-outline', min: 0, max: 100, step: 5, initial: 20, mode: slider, unit_of_measurement: '%'}
+  dmx_splash: {name: 'Strobe : splash (extinction en fondu)', icon: 'mdi:water-outline', min: 0, max: 100, step: 5, initial: 0, mode: slider, unit_of_measurement: '%'}
+  dmx_aura: {name: 'Strobe : aura (fond entre les flashs)', icon: 'mdi:blur', min: 0, max: 100, step: 5, initial: 0, mode: slider, unit_of_measurement: '%'}
   dmx_rouge: {name: Rouge, icon: 'mdi:alpha-r-circle', min: 0, max: 100, step: 5, mode: slider, unit_of_measurement: '%'}
   dmx_jaune: {name: Jaune, icon: 'mdi:alpha-j-circle', min: 0, max: 100, step: 5, mode: slider, unit_of_measurement: '%'}
   dmx_bleu: {name: Bleu, icon: 'mdi:alpha-b-circle', min: 0, max: 100, step: 5, mode: slider, unit_of_measurement: '%'}
@@ -24,7 +27,7 @@ input_select:
   strobe_mode:
     name: Effet spécial console
     icon: mdi:auto-fix
-    options: [Aucun (couleur + flash), 🫁 Pulse (respiration), 🏃 Chase (de projecteur en projecteur), 🌈 Arc-en-ciel, 💥 Rafales, 🌩️ Éclairs, 🥁 Strobe sync tempo]
+    options: [Aucun (couleur + flash), 🫁 Pulse (respiration), 🏃 Chase (de projecteur en projecteur), 🌈 Arc-en-ciel, 💥 Rafales, 🌩️ Éclairs, 🥁 Strobe sync tempo, 📈 Ramp up (accélère), 📉 Ramp down (ralentit)]
 template:
 - sensor:
   - name: Console DMX couleur
@@ -102,17 +105,19 @@ script:
           - *id002
           - {condition: template, value_template: '{{ repeat.index < 100000 }}'}
           sequence:
-          - variables: {q: '{% if p.e == ''rafales'' %}{{ 0.15 if repeat.index % 6 else 1.2 }}{% elif p.e == ''eclairs'' %}{{ (range(3, 26) | random) / 10 }}{% elif p.e == ''sync'' %}{{ 60 / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% else %}{{ p.per }}{% endif %}'}
+          - variables: {q: '{% if p.e == ''rafales'' %}{{ 0.15 if repeat.index % 6 else 1.2 }}{% elif p.e == ''eclairs'' %}{{ (range(3, 26) | random) / 10 }}{% elif p.e == ''sync'' %}{{ 60 / ([states(''input_number.sono_tempo'') | float(128), 40] | max) }}{% elif p.e == ''rampup'' %}{{ p.per * (2.5 - 2 * (repeat.index % 8) / 7) }}{% elif p.e == ''rampdown'' %}{{ p.per * (0.5 + 2 * (repeat.index % 8) / 7) }}{% else %}{{ p.per }}{% endif %}'}
+          - variables: {on: '{{ [ q * (0.1 + 0.8 * (p.d | default(20)) / 100), 0.05 ] | max | round(2) }}'}
+          - variables: {off: '{{ [ q - on, 0.05 ] | max | round(2) }}'}
           - action: light.turn_on
             continue_on_error: true
             target: {entity_id: '{{ ent }}'}
             data: {rgb_color: '{{ p.c }}', brightness: '{{ p.b }}', transition: 0}
-          - delay: {seconds: '{{ [ [q / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
+          - delay: {seconds: '{{ on }}'}
           - action: light.turn_on
             continue_on_error: true
             target: {entity_id: '{{ ent }}'}
-            data: {brightness: 1, transition: 0}
-          - delay: {seconds: '{{ [ q - [q / 2, 0.12] | min, 0.05 ] | max | round(2) }}'}
+            data: {brightness: '{{ [ (p.b * (p.a | default(0)) / 100) | int, 1 ] | max }}', transition: '{{ (off * (p.s | default(0)) / 100) | round(2) }}'}
+          - delay: {seconds: '{{ off }}'}
   dmx_couleur:
     alias: '🎨 Console DMX : couleur prédéfinie'
     mode: restart
@@ -155,12 +160,15 @@ script:
             mp: {dmx_lc: light.salle_a_manger_lc, dmx_ld: light.salle_a_manger_ld, dmx_lg: light.salle_a_manger_lg, dmx_vit_g: light.salle_a_manger_vit_g, dmx_vit_d: light.salle_a_manger_vit_d, dmx_panneau: light.salon_panneau_mural, dmx_ambilight: light.salon_ambilight_tv, dmx_dj_g: light.coin_dj_sono_gauche,
               dmx_dj_d: light.coin_dj_sono_droite}
             sel: '{% set ns = namespace(l=[]) %}{% for k in [''dmx_lc'', ''dmx_ld'', ''dmx_lg'', ''dmx_vit_g'', ''dmx_vit_d'', ''dmx_panneau'', ''dmx_ambilight'', ''dmx_dj_g'', ''dmx_dj_d''] %}{% if is_state(''input_boolean.'' ~ k, ''on'') %}{% set ns.l = ns.l + [k] %}{% endif %}{% endfor %}{{ ns.l }}'
-            em: {Aucun (couleur + flash): fixe, 🫁 Pulse (respiration): pulse, 🏃 Chase (de projecteur en projecteur): chase, 🌈 Arc-en-ciel: rainbow, 💥 Rafales: rafales, 🌩️ Éclairs: eclairs, 🥁 Strobe sync tempo: sync}
+            em: {Aucun (couleur + flash): fixe, 🫁 Pulse (respiration): pulse, 🏃 Chase (de projecteur en projecteur): chase, 🌈 Arc-en-ciel: rainbow, 💥 Rafales: rafales, 🌩️ Éclairs: eclairs, 🥁 Strobe sync tempo: sync, 📈 Ramp up (accélère): rampup, 📉 Ramp down (ralentit): rampdown}
             col: '{% set r = states(''input_number.dmx_rouge'') | float(0) / 100 %}{% set y = states(''input_number.dmx_jaune'') | float(0) / 100 %}{% set b = states(''input_number.dmx_bleu'') | float(0) / 100 %}{% set C = [[1,1,1],[1,0,0],[1,1,0],[0,0.15,1],[1,0.5,0],[0.5,0,0.5],[0,0.8,0.15],[0.2,0.094,0]]
               %}{% set w = [(1-r)*(1-y)*(1-b), r*(1-y)*(1-b), (1-r)*y*(1-b), (1-r)*(1-y)*b, r*y*(1-b), r*(1-y)*b, (1-r)*y*b, r*y*b] %}{% set ns = namespace(o=[]) %}{% for ch in range(3) %}{% set t = namespace(v=0) %}{% for i in range(8) %}{% set t.v = t.v + w[i] * C[i][ch] %}{% endfor %}{% set ns.o =
               ns.o + [t.v] %}{% endfor %}{% set mx = [ns.o | max, 0.01] | max %}{{ ns.o | map(''multiply'', 255 / mx) | map(''round'', 0) | map(''int'') | list }}'
             bri: '{{ [ (255 * (states(''input_number.strobe_intensite'') | float(60)) / 100) | int, 1 ] | max }}'
             fl: '{{ states(''input_number.dmx_flash'') | float(0) }}'
+            sd: '{{ states(''input_number.dmx_duree'') | int(20) }}'
+            ss: '{{ states(''input_number.dmx_splash'') | int(0) }}'
+            sa: '{{ states(''input_number.dmx_aura'') | int(0) }}'
             eff: '{{ em.get(states(''input_select.strobe_mode''), ''fixe'') }}'
             per: '{% set f = states(''input_number.dmx_flash'') | float(0) %}{{ ((1 / (0.5 + f / 100 * 4.5)) if f > 0 else 1) | round(3) }}'
             ts: '{{ now().timestamp() | round(3) }}'
@@ -171,7 +179,7 @@ script:
             - variables: {i: '{% set ns = namespace(i=0) %}{% for x in sel %}{% if x == repeat.item %}{% set ns.i = loop.index0 %}{% endif %}{% endfor %}{{ ns.i }}'}
             - action: input_text.set_value
               target: {entity_id: 'input_text.{{ repeat.item }}'}
-              data: {value: '{% if mode == ''blackout'' %}{{ {''m'':''off'',''t'':ts} | to_json }}{% else %}{{ {''m'':''on'',''c'':col,''b'':bri,''f'':fl,''e'':eff,''per'':per,''i'':i,''n'':sel|length,''t'':ts} | to_json }}{% endif %}'}
+              data: {value: '{% if mode == ''blackout'' %}{{ {''m'':''off'',''t'':ts} | to_json }}{% else %}{{ {''m'':''on'',''c'':col,''b'':bri,''f'':fl,''d'':sd,''s'':ss,''a'':sa,''e'':eff,''per'':per,''i'':i,''n'':sel|length,''t'':ts} | to_json }}{% endif %}'}
             - action: script.turn_on
               target: {entity_id: script.dmx_moteur}
               data:
