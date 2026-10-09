@@ -90,9 +90,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_eclairage": {
-    "last_change": "moteur DMX par projecteur (lecture du programme) + vue Light Jockey en console plein ecran",
-    "last_update": "2026-10-08T23:48:29.256392+02:00",
-    "version": "0.10.1"
+    "last_change": "vue Eclairage en panneau (plan + pieces + scenes), ancienne vue gardee cachee",
+    "last_update": "2026-10-09T08:01:50.308548+02:00",
+    "version": "0.11.0"
   },
   ".storage/lovelace.maison_energie": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
