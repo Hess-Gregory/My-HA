@@ -350,9 +350,9 @@
     "version": "0.0.1"
   },
   "www/plan3d/eclairage-card.js": {
-    "last_change": "meme plan 3D et meme dock que l Accueil",
-    "last_update": "2026-10-09T08:15:21.448798+02:00",
-    "version": "0.1.2"
+    "last_change": "plan 2D de la maison dans le design Accueil (dock de scenes conserve)",
+    "last_update": "2026-10-09T08:25:56.086843+02:00",
+    "version": "0.1.3"
   },
   "www/plan3d/home-hub-card.js": {
     "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
