@@ -113,7 +113,7 @@ class LjConsoleCard extends HTMLElement {
       .prev{width:clamp(48px,6vw,80px);border-radius:8px;border:1px solid var(--ln);display:flex;align-items:flex-end;justify-content:center;font-size:10px;font-weight:700;color:#000;padding-bottom:4px}
       .eff{grid-template-columns:repeat(5,minmax(0,1fr))} .stb{grid-template-columns:1fr;gap:3px} .f.hz{flex-direction:row;padding:1px 6px;gap:6px} .f.hz .k{order:0;width:46px;text-align:left;color:#7fd8ff} .f.hz input{order:1;writing-mode:horizontal-tb;direction:ltr;flex:1;min-height:0;width:auto;height:18px} .f.hz .v{order:2;width:26px;text-align:right} .eff button,.fxr button{height:30px;font-size:10px;font-weight:700}
       .eff button.on,.fxr button.on{background:#0f2a3a;border-color:#2ab8ff;color:#7fd8ff}
-      .fxr{grid-template-columns:repeat(5,minmax(0,1fr))} .mic{grid-template-columns:1fr} .mic button{height:30px;font-size:11px;font-weight:700} .mic button.on{background:#0d2a17;border-color:#5dff8a;color:#5dff8a} .f.lock{opacity:.45} .f.lock .k::before{content:'🎤 '}
+      .fxr{grid-template-columns:repeat(5,minmax(0,1fr))} .back{height:22px;padding:0 8px;font-size:10px;font-weight:700;margin-right:6px;border-radius:6px} .mic{grid-template-columns:1fr} .mic button{height:30px;font-size:11px;font-weight:700} .mic button.on{background:#0d2a17;border-color:#5dff8a;color:#5dff8a} .f.lock{opacity:.45} .f.lock .k::before{content:'🎤 '}
       .out{grid-template-columns:1.2fr 1.2fr 1fr} .out button{height:46px;font-size:15px;font-weight:800;letter-spacing:.12em}
       .go{background:#0d2a17;border-color:#1f8f45;color:#6dffa0} .go.on{background:#1fae4a;color:#04170a;box-shadow:0 0 18px #1fae4a}
       .bo{background:#1a1a1f;border-color:#555;color:#ccc} .bo.on{background:#000;color:#fff;box-shadow:0 0 0 2px #fff inset}
@@ -130,7 +130,7 @@ class LjConsoleCard extends HTMLElement {
       @media (max-width:900px){.c{height:auto;grid-template-columns:1fr;overflow:visible}.sets{grid-template-columns:repeat(7,minmax(0,1fr))}}
     </style>
     <div class="c">
-      <div class="p"><div class="h">Scène · projecteurs <b class="nsel">0 sélectionné</b></div>
+      <div class="p"><div class="h"><span><button class="back">← Éclairage</button> Scène · projecteurs</span> <b class="nsel">0 sélectionné</b></div>
         <div class="stage"></div>
         <div class="row fix"></div>
         <div class="row two"><button class="all">TOUT SÉLECTIONNER</button><button class="none">AUCUN</button></div>
@@ -175,6 +175,7 @@ class LjConsoleCard extends HTMLElement {
       i.oninput = () => { d.querySelector('.v').textContent = i.value; i._busy = true; };
       i.onchange = () => { i._busy = false; this._call('input_number', 'set_value', { value: +i.value }, { entity_id: e }); };
       d.dataset.e = e; fd.appendChild(d); });
+    this.$('.back').onclick = () => { history.pushState(null, '', '/maison-eclairage/eclairage'); window.dispatchEvent(new CustomEvent('location-changed', { detail: { replace: false } })); };
     this.$('.mb').onclick = () => this._call('input_boolean', 'toggle', {}, { entity_id: MIC });
     const stb = this.$('.stb');
     STROBE.forEach(([e, k]) => { const d = document.createElement('div'); d.className = 'f hz'; d.style.setProperty('--c', '#2ab8ff');

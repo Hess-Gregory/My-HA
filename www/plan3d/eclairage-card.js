@@ -45,38 +45,48 @@ class EclairageCard extends HTMLElement {
   _build() {
     this._b = true; const r = this.attachShadow({ mode: 'open' });
     r.innerHTML = `<style>
-      :host{container-type:inline-size;--bg:#0b0d14;--pn:rgba(18,21,32,.92);--pn2:#161a28;--ln:#262b3d;--tx:#eef0f6;--mu:#8a90a6;--ac:#ffb02e;display:block;color:var(--tx);font-family:Inter,system-ui,sans-serif}
-      *{box-sizing:border-box} button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--ln);background:var(--pn2);border-radius:9px;-webkit-tap-highlight-color:transparent}
-      button:active{transform:scale(.97)}
-      .w{display:grid;gap:8px;padding:8px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--header-height,56px));min-height:520px}
-      .p{background:var(--pn);border:1px solid var(--ln);border-radius:14px;padding:10px;min-height:0;backdrop-filter:blur(10px)}
-      .top{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-      .tt{font-size:18px;font-weight:800;margin-right:4px} .cnt{font-size:12px;color:var(--mu);font-weight:700;margin-right:auto} .cnt b{color:var(--ac);font-size:15px}
-      .top button{height:34px;padding:0 12px;font-size:12px;font-weight:700} .on1{border-color:#5b4a1d;background:#2a2210;color:#ffd27a} .off1{color:#9aa}
-      .amb{display:flex;gap:6px;align-items:center} select{height:34px;max-width:240px;background:var(--pn2);color:var(--tx);border:1px solid var(--ln);border-radius:9px;padding:0 8px;font:inherit;font-size:12px}
-      .lj{border-color:#2ab8ff55;color:#7fd8ff}
+      :host{container-type:inline-size;display:block;--g:rgba(255,255,255,.06);--b:rgba(255,255,255,.09);--t:#f3eee6;--m:rgba(243,238,230,.6);--a:#ffd27a;--o1:#ff9a5a;--o2:#7b5cff;--o3:#1fb6c9;color:var(--t);font:500 14px system-ui,Roboto,sans-serif}
+      *{box-sizing:border-box} button{appearance:none;font:700 12px system-ui,Roboto,sans-serif;color:var(--t);cursor:pointer;border:1px solid var(--b);background:rgba(255,255,255,.06);border-radius:14px;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s}
+      button:active{transform:scale(.96)}
+      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--top,56px) - 1px);min-height:560px;
+        background:radial-gradient(140% 90% at 50% 0%,#121426 0%,#07080f 70%)}
+      .w>*{position:relative;z-index:1}
+      .bgfx{position:absolute;inset:-20%;z-index:0!important;pointer-events:none;filter:blur(70px) saturate(130%);opacity:.55}
+      .bgfx i{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:drift 38s ease-in-out infinite alternate}
+      .bgfx i:nth-child(1){width:55%;height:60%;left:2%;top:4%;background:radial-gradient(circle,var(--o1),transparent 65%)}
+      .bgfx i:nth-child(2){width:52%;height:58%;right:4%;top:18%;background:radial-gradient(circle,var(--o2),transparent 65%);animation-duration:46s;animation-delay:-12s}
+      .bgfx i:nth-child(3){width:44%;height:48%;left:30%;bottom:2%;background:radial-gradient(circle,var(--o3),transparent 65%);animation-duration:52s;animation-delay:-24s}
+      @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6%,5%) scale(1.08)}}
+      .vig{position:absolute;inset:0;z-index:0!important;pointer-events:none;background:radial-gradient(120% 100% at 50% 40%,transparent 55%,rgba(0,0,0,.55) 100%)}
+      .p{background:var(--g);border:1px solid var(--b);border-radius:20px;padding:12px 14px;min-height:0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+      .top{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px}
+      .tt{font:300 26px/1 system-ui,Roboto,sans-serif;letter-spacing:-.02em;margin-right:6px} .cnt{font-size:12px;color:var(--m);margin-right:auto} .cnt b{color:var(--a);font:300 22px system-ui;margin-right:3px}
+      .top button{height:38px;padding:0 14px} .on1{background:var(--a);color:#1c1826;border-color:var(--a)} .off1{}
+      .amb{display:flex;gap:6px;align-items:center} select{height:38px;max-width:250px;background:rgba(255,255,255,.06);color:var(--t);border:1px solid var(--b);border-radius:14px;padding:0 10px;font:500 13px system-ui}
+      select option{background:#14162a}
+      .ap,.ae{width:38px;padding:0!important} .lj{background:linear-gradient(135deg,#b48cff,#7a4fe0)!important;border-color:transparent!important}
       .plan{display:flex;flex-direction:column} .plan svg{flex:1;min-height:0;width:100%;height:100%}
-      .h{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between}
-      .zone{fill:#ffffff05;stroke:none;cursor:pointer;transition:fill .3s} .zone:hover{fill:#ffffff10} .zone.sel{fill:#ffb02e14}
-      .zl{fill:#8a90a6;font-size:13px;font-weight:700;pointer-events:none;text-anchor:middle} .zl.mute{fill:#4b5068;font-size:11px}
-      .wl{stroke:#c9cfdd;stroke-width:4;stroke-linecap:round}
-      .pt{cursor:pointer} .pt .c{stroke:#000;stroke-width:1.5;transition:fill .3s}
-      .rooms{display:grid;grid-template-columns:1fr 1fr;gap:7px;overflow:auto;align-content:start}
-      .rm{background:var(--pn2);border:1px solid var(--ln);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px;transition:border-color .3s}
-      .rm.sel{border-color:var(--ac)} .rm.lit{box-shadow:inset 0 0 0 1px #ffb02e33}
-      .rh{display:flex;align-items:center;gap:6px} .rn{font-weight:800;font-size:13px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .rc{font-size:11px;color:var(--mu);font-weight:700}
-      .sw{width:38px;height:22px;border-radius:11px;padding:0;position:relative;background:#2a2f40} .sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#8a90a6;transition:.2s}
-      .sw.on{background:#5b4a1d;border-color:#8a6d22} .sw.on::after{left:18px;background:#ffd27a}
-      input[type=range]{width:100%;accent-color:var(--ac);height:16px;margin:0}
-      .ls{display:flex;flex-wrap:wrap;gap:4px} .ls button{height:26px;padding:0 8px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px}
-      .ls button i{width:9px;height:9px;border-radius:50%;background:#3a3f52;display:block;flex:none} .ls button.on{border-color:#6b5520;background:#241d0e} .ls button.na{opacity:.4}
-      .ir{display:flex;gap:4px;flex-wrap:wrap} .ir button{height:24px;padding:0 7px;font-size:11px} .ir .gx{border-color:#7a4fd055;color:#c9a8ff}
-      .sc{grid-column:1/-1;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;align-items:center;scrollbar-width:thin} .sc button{flex:none} .sc .h{margin:0 6px 0 0} .sc button{height:32px;padding:0 10px;font-size:12px;font-weight:600}
-      .sep{width:1px;height:22px;background:var(--ln);margin:0 4px}
-      @container (max-width:1050px){.rooms{grid-template-columns:1fr}.w{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}.hint{display:none}.lj span{display:none}}
+      .h{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--m);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+      .zone{fill:rgba(255,255,255,.02);stroke:none;cursor:pointer;transition:fill .3s} .zone:hover{fill:rgba(255,255,255,.06)} .zone.sel{fill:rgba(255,210,122,.1)}
+      .zl{fill:rgba(243,238,230,.6);font:500 13px system-ui;pointer-events:none;text-anchor:middle} .zl.mute{fill:rgba(243,238,230,.28);font-size:11px}
+      .wl{stroke:rgba(243,238,230,.75);stroke-width:4;stroke-linecap:round}
+      .pt{cursor:pointer} .pt .c{stroke:rgba(0,0,0,.6);stroke-width:1.5;transition:fill .3s}
+      .rooms{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;overflow:auto;align-content:start;scrollbar-width:thin}
+      .rm{min-width:0;background:rgba(255,255,255,.04);border:1px solid transparent;border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;transition:border-color .3s,background .3s}
+      .rm.sel{border-color:rgba(255,210,122,.6)} .rm.lit{background:rgba(255,210,122,.06)}
+      .rh{display:flex;align-items:center;gap:8px} .rn{font:300 17px/1.1 system-ui,Roboto,sans-serif;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .rc{font-size:12px;color:var(--m)}
+      .sw{width:42px;height:24px;border-radius:12px;padding:0;position:relative;background:rgba(255,255,255,.1)} .sw::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:rgba(243,238,230,.6);transition:.2s}
+      .sw.on{background:var(--a);border-color:var(--a)} .sw.on::after{left:21px;background:#1c1826}
+      input[type=range]{width:100%;accent-color:var(--a);height:16px;margin:0}
+      .ls{display:flex;flex-wrap:wrap;gap:5px} .ls button{height:28px;padding:0 10px;font:600 12px system-ui;border-radius:999px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05)}
+      .ls button i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.18);display:block;flex:none} .ls button.on{border-color:rgba(255,210,122,.45);background:rgba(255,210,122,.1)} .ls button.na{opacity:.35}
+      .ir{display:flex;gap:5px;flex-wrap:wrap} .ir button{height:26px;padding:0 9px;font:600 11px system-ui;border-radius:999px} .ir .gx{background:linear-gradient(135deg,#b48cff,#7a4fe0);border-color:transparent}
+      .sc{grid-column:1/-1;display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;align-items:center;scrollbar-width:thin;padding:8px 10px} .sc .h{margin:0 4px 0 4px} .sc button{flex:none;height:38px;padding:0 14px;font:600 13px system-ui}
+      .sep{width:1px;height:24px;background:var(--b);margin:0 4px;flex:none}
+      @container (max-width:1050px){.rooms{grid-template-columns:minmax(0,1fr)}.w{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}.hint{display:none}.lj span{display:none}}
       @container (max-width:680px){.w{grid-template-columns:1fr;grid-template-rows:auto;height:auto}.plan svg{height:240px}.rooms{overflow:visible}}
     </style>
-    <div class="w">
+    <div class="w"><div class="bgfx"><i></i><i></i><i></i></div><div class="vig"></div>
       <div class="p top"><span class="tt">💡 Éclairage</span><span class="cnt"><b class="n">0</b> allumée(s)</span>
         <button class="on1 all">Tout allumer</button><button class="off1 none">Tout éteindre</button>
         <span class="amb"><select class="as" aria-label="Ambiance pièce de vie"></select><button class="ap" title="Rejouer l'ambiance">▶</button><button class="ae" title="Éteindre la pièce de vie">⏹</button></span>
@@ -123,6 +133,9 @@ class EclairageCard extends HTMLElement {
     this.$('.ae').onclick = () => this._call('script', 'turn_on', {}, { entity_id: 'script.ambiance_eteindre' });
     this.$('.lj').onclick = () => this._nav('/maison-eclairage/light-jockey');
   }
+  connectedCallback() { const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); };
+    this._fit = fit; window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000); }
+  disconnectedCallback() { if (this._fit) window.removeEventListener('resize', this._fit); }
   _nav(p) { history.pushState(null, '', p); window.dispatchEvent(new CustomEvent('location-changed', { detail: { replace: false } })); }
   _pick(id) { this._sel = this._sel === id ? null : id; Object.entries(this._rm).forEach(([k, o]) => o.d.classList.toggle('sel', k === this._sel)); Object.entries(this._zones).forEach(([k, z]) => z.classList.toggle('sel', k === this._sel));
     if (this._sel) this._rm[id].d.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
