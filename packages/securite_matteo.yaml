@@ -17,7 +17,10 @@ automation:
           {% set d = trigger.event.data.domain %}{% set s = trigger.event.data.service %}
           {% set e = ((trigger.event.data.service_data | default({})).get('entity_id', '')) | string %}
           {{ not (d == 'input_text' and 'note_matteo' in e)
-             and not (d == 'script' and ('kanban_todoist_move_task' in s or 'kanban_todoist_move_task' in e)) }}
+             and not (d == 'script' and ('kanban_todoist_move_task' in s or 'kanban_todoist_move_task' in e))
+             and not (d == 'rest_command' and s == 'todoist_move_task')
+             and not (d == 'homeassistant' and s == 'update_entity' and 'sensor.kanban_' in e
+                      and (e | regex_findall('(light|switch|script|lock|alarm_control_panel|climate|cover|input_boolean)[.]') | length) == 0) }}
     actions:
       - variables:
           d: "{{ trigger.event.data.domain }}"
