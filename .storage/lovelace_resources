@@ -206,7 +206,17 @@
       },
       {
         "id": "d0f09a1642dd483d905fb918b6026903",
-        "url": "/local/plan3d/home-hub-card.js?v=44",
+        "url": "/local/plan3d/home-hub-card.js?v=1791525032736",
+        "type": "module"
+      },
+      {
+        "id": "bd23e16c556446ea8ab0c90e8c5c7f09",
+        "url": "/local/plan3d/lj-console-card.js?v=1791525197551",
+        "type": "module"
+      },
+      {
+        "id": "687cec736da04cdea1a6135a191b9468",
+        "url": "/local/plan3d/eclairage-card.js?v=1791525664988",
         "type": "module"
       }
     ]
