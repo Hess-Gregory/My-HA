@@ -90,9 +90,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_eclairage": {
-    "last_change": "vue Eclairage en panneau (plan + pieces + scenes), ancienne vue gardee cachee",
-    "last_update": "2026-10-09T08:01:50.308548+02:00",
-    "version": "0.11.0"
+    "last_change": "meme plan 3D et meme dock que l Accueil",
+    "last_update": "2026-10-09T08:15:21.448798+02:00",
+    "version": "0.11.1"
   },
   ".storage/lovelace.maison_energie": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -350,9 +350,9 @@
     "version": "0.0.1"
   },
   "www/plan3d/eclairage-card.js": {
-    "last_change": "design harmonise avec Accueil (fond, tuiles, cadre plein ecran) + bouton retour dans la console LJ",
-    "last_update": "2026-10-09T08:09:11.392737+02:00",
-    "version": "0.1.1"
+    "last_change": "meme plan 3D et meme dock que l Accueil",
+    "last_update": "2026-10-09T08:15:21.448798+02:00",
+    "version": "0.1.2"
   },
   "www/plan3d/home-hub-card.js": {
     "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
