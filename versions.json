@@ -349,6 +349,11 @@
     "last_update": "2026-09-17T14:01:47.050330+02:00",
     "version": "0.0.1"
   },
+  "www/plan3d/eclairage-card.js": {
+    "last_change": "nouvelle vue Eclairage, plan de la maison + pieces + scenes (carte eclairage-card)",
+    "last_update": "2026-10-09T08:00:50.045462+02:00",
+    "version": "0.1.0"
+  },
   "www/plan3d/home-hub-card.js": {
     "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
     "last_update": "2026-10-09T07:48:51.054282+02:00",
