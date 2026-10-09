@@ -290,9 +290,9 @@
     "version": "0.1.0"
   },
   "packages/securite_matteo.yaml": {
-    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
-    "last_update": "2026-10-08T17:47:55.468915+02:00",
-    "version": "0.1.0"
+    "last_change": "Matteo peut deplacer ses taches Kanban sans fausse alerte (envoi Todoist + rafraichissement Kanban autorises)",
+    "last_update": "2026-10-09T21:26:51.473834+02:00",
+    "version": "0.1.1"
   },
   "packages/sono_lumieres.yaml": {
     "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",

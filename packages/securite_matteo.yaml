@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.0 | 08/10/2026 17:47 | compte Matteo limite a son dashboard, commandes annulees + restauration + alerte
+# [AUTO-VERSION] v0.1.1 | 09/10/2026 21:26 | Matteo peut deplacer ses taches Kanban sans fausse alerte (envoi Todoist + rafraichissement Kanban autorises)
 # Sécurité compte Matteo : seul son dashboard (note + missions) est autorisé
 automation:
   - id: securite_matteo_blocage
