@@ -300,9 +300,9 @@
     "version": "0.12.0"
   },
   "packages/sono_strobe.yaml": {
-    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
-    "last_update": "2026-10-09T07:48:51.054282+02:00",
-    "version": "0.5.0"
+    "last_change": "moteur strobe, variables on/off renommees (YAML les lisait comme booleens)",
+    "last_update": "2026-10-09T07:51:31.303588+02:00",
+    "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
     "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",

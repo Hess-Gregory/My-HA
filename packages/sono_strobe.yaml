@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.5.0 | 09/10/2026 07:48 | micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down
+# [AUTO-VERSION] v0.5.1 | 09/10/2026 07:51 | moteur strobe, variables on/off renommees (YAML les lisait comme booleens)
 # 🎚️ Console DMX : chaque projecteur garde SON programme (couleur, intensité, flash, effet).
 # On sélectionne des projecteurs, on règle, puis ALLUMÉ / BLACKOUT : seuls les projecteurs sélectionnés reçoivent le réglage.
 # Ex. : Lustre 1 + 3 en bleu fixe, puis Lustre 2 seul en strobe blanc -> les deux tournent en même temps.
