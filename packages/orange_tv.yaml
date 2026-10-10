@@ -9,6 +9,9 @@ input_text:
   orange_tv_horaire:
     name: Orange TV horaire
     max: 30
+  orange_tv_lecture:
+    name: Orange TV direct/différé
+    max: 40
 
 script:
   orange_tv_bandeau:
@@ -43,6 +46,8 @@ script:
                   {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/start_time"') + [''])[0] }}
                 fin: >-
                   {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/end_time"') + [''])[0] }}
+                pos: >-
+                  {{ (r | regex_findall('text="([0-9:]+)"[|]resource-id="[^"]*:id/progress_holder"') + [''])[0] }}
             - if:
                 - condition: template
                   value_template: "{{ ch != '' }}"
@@ -50,6 +55,10 @@ script:
                 - variables:
                     vc: "{{ ((num ~ ' · ') if num else '') ~ ch }}"
                     vh: "{{ (deb ~ '–' ~ fin) if deb and fin else '' }}"
+                    vl: >-
+                      {% set p = today_at(pos) if pos else none %}
+                      {% if p %}{% set d = (now() - p).total_seconds() %}{% set d = d + 86400 if d < -3600 else d %}{% else %}{% set d = 0 %}{% endif %}
+                      {{ 'Direct' if d < 90 else 'Différé −' ~ ((d / 60) | round(0) | int) ~ ' min' }}
                 - if:
                     - condition: template
                       value_template: "{{ states('input_text.orange_tv_chaine') != vc }}"
@@ -71,6 +80,13 @@ script:
                     - action: input_text.set_value
                       target: {entity_id: input_text.orange_tv_horaire}
                       data: {value: "{{ vh[:30] }}"}
+                - if:
+                    - condition: template
+                      value_template: "{{ states('input_text.orange_tv_lecture') != vl }}"
+                  then:
+                    - action: input_text.set_value
+                      target: {entity_id: input_text.orange_tv_lecture}
+                      data: {value: "{{ vl[:40] }}"}
             - delay: 4
 
 automation:
