@@ -39,6 +39,7 @@ class Floorplan3DCard extends HTMLElement {
   getCardSize() { return 12; }
   set hass(h) {
     this._h = h;
+    if (this._cwEls) this._cwEls.forEach((e) => { e.hass = h; });
     if (this._rmEls) { Object.values(this._rmEls).forEach((e) => { e.hass = h; }); const ro = this.shadowRoot && this.shadowRoot.querySelector('.rmov'); if (ro && ro._upd) ro._upd(); }
     if (!this._ready) { if (!this._building) { this._building = true; requestAnimationFrame(() => this._setup()); } return; }
     this._sync();
@@ -188,7 +189,7 @@ class Floorplan3DCard extends HTMLElement {
       const r = canvas.getBoundingClientRect(); ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ptr, cam); const hit = ray.intersectObjects(this.clickables, false)[0];
       if (!hit) { this._closeOven(); return this._closePanel(); }
-      const ent = hit.object.userData.entity, st = this._h.states[ent]; if (ent === 'media_player.televiseur_du_salon' || ent === '@tvbox') return this._tvRemote('TV'); if (ent === '@ampli') return this._tvRemote('Ampli');
+      const ent = hit.object.userData.entity, st = this._h.states[ent]; if (ent === 'media_player.televiseur_du_salon' || ent === '@tvbox') return this._tvRemote('TV'); if (ent === '@ampli') return this._tvRemote('Ampli'); if (ent === '@nvr') return this._camWall();
       if (ent === '@alarm') { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); return al && this._more(al); }
       if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
       if ((!st || st.state === 'unavailable') && !(ent.startsWith('light.') && this._grpOf(ent))) return this._toast('Lampe indisponible');
@@ -513,7 +514,7 @@ class Floorplan3DCard extends HTMLElement {
     /* ---- salon ---- */
     box(441, 15, 465, 33, 0.56, 0.6, M('#a88b62', { roughness: 0.8 })); for (const [x, y] of [[441.5, 15.5], [463.5, 15.5], [441.5, 31.5], [463.5, 31.5]]) box(x, y, x + 1, y + 1, 0, 0.56, MAT.black); box(444, 17, 462, 31, 0.6, 0.86, MAT.white); box(445, 31, 461, 31.4, 0.66, 0.74, M('#2a2a2c'), false); box(442, 14.6, 462, 24, 1.0, 1.06, MAT.oakLight); box(444, 14.6, 462, 16, 1.25, 1.55, MAT.black, false); box(450.8, 14.6, 455.2, 15.5, 1.64, 1.73, MAT.white, false); box(451.4, 15.5, 454.6, 15.6, 1.665, 1.715, M('#c9d2c8', { roughness: 0.4 }), false);
     { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180; this.nvrCv = cv; this.nvrTex = new THREE.CanvasTexture(cv); this.nvrTex.colorSpace = THREE.SRGBColorSpace;
-      const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, 'camera.rue_fluide'); };
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(17 * S, 0.27), new THREE.MeshBasicMaterial({ map: this.nvrTex, toneMapped: false })); const [a, b] = P(453, 16.1); scr.position.set(a, 1.4, b); scene.add(scr); clickable(scr, '@nvr'); };
     // mur TV (d'après photos) : lattes chêne sol-plafond, panneau blanc 2,4 x 1,2 m posé devant la moitié droite des lattes (LED derrière), TV + Ambilight, KEF colonnes + centrale
     { const back = M('#2a2522', { roughness: 0.9 }), slat = M('#cdb08a', { roughness: 0.75 }), kefW = M('#eeeeec', { roughness: 0.5 }), kefG = M('#9a9c9e', { roughness: 0.9 });
       box(476, 14.5, 506, 15.5, 0, WH, back, false); for (let x = 476.3; x < 505.6; x += 1.95) box(x, 15.5, x + 1.35, 16.7, 0, WH, slat, false);
@@ -1021,6 +1022,43 @@ class Floorplan3DCard extends HTMLElement {
       for (const k of ['TV', 'Ampli']) { if (!this._rmCfg[k]) continue; const cfg = { ...this._rmCfg[k] }; delete cfg.visibility; const el = hp.createCardElement(cfg); el.hass = this._h; this._rmEls[k] = el; bd.appendChild(el); }
       o._upd();
     } catch (e) { bd.textContent = 'Télécommande indisponible : ' + e.message; }
+  }
+
+  // 📹 clic sur l'écran de surveillance du salon : mur de caméras en direct + replay NVR Reolink
+  async _camWall() {
+    const CAMS = [['camera.rue_fluide', 'Rue', '1'], ['camera.salon_fluide', 'Salon', '9'], ['camera.rlc_843a_fluide', 'Balcon', '6'], ['camera.couloir', 'Couloir', '8'], ['camera.chambre_enfant', 'Chambre enfants', '0'], ['camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue', 'Platine de rue', null]];
+    const NVR = 'switch.enregistreur_nvr_enregistrer', NVRID = '01KZVMHX9QGY5A5CQ9QQDFM490';
+    const old = this.shadowRoot.querySelector('.cwov'); if (old) old.remove();
+    const B = 'border:none;border-radius:12px;background:#2c2940;color:#fff;padding:10px 12px;font:700 13px sans-serif;cursor:pointer';
+    const o = document.createElement('div'); o.className = 'cwov';
+    o.style.cssText = 'position:fixed;inset:0;z-index:997;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center';
+    o.innerHTML = `<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:14px;width:min(1100px,96vw);max-height:94vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6);font-family:sans-serif">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="flex:1;font-size:17px">📹 Surveillance</b><button class="rec" style="${B}"></button><button class="x" style="${B}">✕</button></div>
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px"></div>
+      <div class="big" style="display:none"></div>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="font-size:13px;opacity:.7;margin-right:4px">📼 Replay NVR :</b><span class="rp" style="display:flex;flex-wrap:wrap;gap:8px"></span></div></div>`;
+    o.onclick = (e) => { if (e.target === o) close(); };
+    const close = () => { this._cwEls = null; o.remove(); };
+    o.querySelector('.x').onclick = close;
+    const grid = o.querySelector('.grid'), big = o.querySelector('.big'), rec = o.querySelector('.rec'), rp = o.querySelector('.rp');
+    const recUpd = () => { const s = this._h.states[NVR]; const on = s && s.state === 'on'; rec.textContent = on ? '⏺ Enregistrement : ON' : '⏹ Enregistrement : OFF'; rec.style.background = on ? '#7a1f2b' : '#2c2940'; };
+    rec.onclick = () => { if (!rec._arm) { rec._arm = true; rec.textContent = 'Retouchez pour confirmer'; setTimeout(() => { rec._arm = false; recUpd(); }, 3000); return; } rec._arm = false; this._h.callService('switch', 'toggle', {}, { entity_id: NVR }); setTimeout(recUpd, 800); };
+    recUpd();
+    this.shadowRoot.appendChild(o);
+    const hp = await window.loadCardHelpers(); this._cwEls = [];
+    const mk = (cfg) => { const el = hp.createCardElement(cfg); el.hass = this._h; this._cwEls.push(el); return el; };
+    CAMS.filter(([e]) => this._h.states[e]).forEach(([e, n]) => {
+      const w = document.createElement('div'); w.style.cssText = 'cursor:pointer;border-radius:14px;overflow:hidden;position:relative';
+      w.appendChild(mk({ type: 'picture-entity', entity: e, name: n, camera_view: 'auto', show_state: false, tap_action: { action: 'none' }, hold_action: { action: 'none' } }));
+      const cover = document.createElement('div'); cover.style.cssText = 'position:absolute;inset:0'; cover.onclick = () => openBig(e, n); w.appendChild(cover); grid.appendChild(w); });
+    const openBig = (e, n) => { grid.style.display = 'none'; big.style.display = ''; big.innerHTML = '';
+      const bar = document.createElement('div'); bar.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px'; bar.innerHTML = `<button style="${B}">← Toutes les caméras</button><b style="flex:1">🔴 ${n} — direct</b>`;
+      bar.querySelector('button').onclick = () => { big.style.display = 'none'; big.innerHTML = ''; grid.style.display = 'grid'; }; big.appendChild(bar);
+      big.appendChild(mk({ type: 'picture-entity', entity: e, name: n, camera_view: 'live', show_state: false, tap_action: { action: 'more-info' } })); };
+    CAMS.filter(([, , ch]) => ch !== null).forEach(([, n, ch]) => { const b = document.createElement('button'); b.style.cssText = B; b.textContent = '▶ ' + n;
+      b.onclick = () => { const ids = ['media-source://', 'media-source://reolink', 'media-source://reolink/CAM|' + NVRID + '|' + ch]; close();
+        history.pushState(null, '', '/media-browser/browser/' + ids.map((x) => encodeURIComponent('app,' + x)).join('/')); window.dispatchEvent(new CustomEvent('location-changed', { detail: { replace: false } })); };
+      rp.appendChild(b); });
   }
 
   _closePanel() { this.sel = null; this.$('.pn').classList.remove('show'); this.selRing.visible = false; this._dirty = true; }
