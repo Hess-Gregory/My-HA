@@ -40,7 +40,7 @@ class Floorplan3DCard extends HTMLElement {
   set hass(h) {
     this._h = h;
     if (this._cwEls) this._cwEls.forEach((e) => { e.hass = h; });
-    if (this._rmEls) { Object.values(this._rmEls).forEach((e) => { e.hass = h; }); const ro = this.shadowRoot && this.shadowRoot.querySelector('.rmov'); if (ro && ro._upd) ro._upd(); }
+    if (this._rmEls) { Object.values(this._rmEls).forEach((e) => { e.hass = h; }); const ro = this.shadowRoot && document.querySelector('.rmov'); if (ro && ro._upd) ro._upd(); }
     if (!this._ready) { if (!this._building) { this._building = true; requestAnimationFrame(() => this._setup()); } return; }
     this._sync();
   }
@@ -1000,7 +1000,7 @@ class Floorplan3DCard extends HTMLElement {
   }
   // 📺 clic sur la TV / le décodeur (télécommande Orange) ou sur l'ampli (télécommande ampli) : popup avec bascule TV / Ampli (mêmes cartes que le dashboard Streaming)
   async _tvRemote(k0) {
-    const old = this.shadowRoot.querySelector('.rmov'); if (old) old.remove();
+    const old = document.querySelector('.rmov'); if (old) old.remove();
     const o = document.createElement('div'); o.className = 'rmov';
     o.style.cssText = 'position:fixed;inset:0;z-index:997;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
     o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:14px;width:min(440px,94vw);max-height:92vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6);font-family:sans-serif"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="flex:1;font-size:17px">📺 Télécommande</b><button class="inf" style="border:none;border-radius:10px;background:#2c2940;color:#fff;padding:8px 11px;font-size:15px">ⓘ</button><button class="x" style="border:none;border-radius:10px;background:#2c2940;color:#fff;padding:8px 12px;font-size:15px">✕</button></div><div class="sg" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div><div class="bd"></div></div>';
@@ -1015,7 +1015,7 @@ class Floorplan3DCard extends HTMLElement {
       if (this._rmEls) Object.entries(this._rmEls).forEach(([k, e]) => { e.style.display = k === cur ? '' : 'none'; }); };
     if (k0) { this._rmCur = k0; const s0 = this._h.states[SEL]; if (!s0 || s0.state !== k0) this._h.callService('input_select', 'select_option', { option: k0 }, { entity_id: SEL }); }
     o.style.pointerEvents = 'none'; setTimeout(() => { o.style.pointerEvents = ''; }, 450);
-    this.shadowRoot.appendChild(o); o._upd();
+    document.body.appendChild(o); o._upd();
     try {
       if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = c.views.find((v) => v.path === 'streaming').sections[0].cards;
         const pick = (k) => cs.find((x) => { const v = JSON.stringify(x.visibility || []); return v.includes(SEL) && v.includes('"' + k + '"'); }); this._rmCfg = { TV: pick('TV'), Ampli: pick('Ampli') }; }
@@ -1029,7 +1029,7 @@ class Floorplan3DCard extends HTMLElement {
   async _camWall() {
     const CAMS = [['camera.rue_fluide', 'Rue', '1'], ['camera.salon_fluide', 'Salon', '9'], ['camera.rlc_843a_fluide', 'Balcon', '6'], ['camera.couloir', 'Couloir', '8'], ['camera.chambre_enfant', 'Chambre enfants', '0']];
     const NVR = 'switch.enregistreur_nvr_enregistrer', NVRID = '01KZVMHX9QGY5A5CQ9QQDFM490';
-    const old = this.shadowRoot.querySelector('.cwov'); if (old) old.remove();
+    const old = document.querySelector('.cwov'); if (old) old.remove();
     const B = 'border:none;border-radius:12px;background:#2c2940;color:#fff;padding:10px 12px;font:700 13px sans-serif;cursor:pointer';
     const o = document.createElement('div'); o.className = 'cwov';
     o.style.cssText = 'position:fixed;inset:0;z-index:997;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center';
@@ -1046,7 +1046,7 @@ class Floorplan3DCard extends HTMLElement {
     rec.onclick = () => { if (!rec._arm) { rec._arm = true; rec.textContent = 'Retouchez pour confirmer'; setTimeout(() => { rec._arm = false; recUpd(); }, 3000); return; } rec._arm = false; this._h.callService('switch', 'toggle', {}, { entity_id: NVR }); setTimeout(recUpd, 800); };
     recUpd();
     o.style.pointerEvents = 'none'; setTimeout(() => { o.style.pointerEvents = ''; }, 450);
-    this.shadowRoot.appendChild(o);
+    document.body.appendChild(o);
     const hp = await window.loadCardHelpers(); this._cwEls = [];
     const mk = (cfg) => { const el = hp.createCardElement(cfg); el.hass = this._h; this._cwEls.push(el); return el; };
     CAMS.filter(([e]) => this._h.states[e]).forEach(([e, n]) => {
