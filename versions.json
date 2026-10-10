@@ -75,14 +75,14 @@
     "version": "0.9.0"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
-    "last_update": "2026-10-08T17:47:55.468915+02:00",
-    "version": "0.7.0"
+    "last_change": "clic sur la TV du salon = popup telecommande TV / Ampli (Accueil + Ma Maison)",
+    "last_update": "2026-10-10T22:32:38.972749+02:00",
+    "version": "0.8.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
-    "last_update": "2026-10-09T07:48:51.054282+02:00",
-    "version": "2.7.0"
+    "last_change": "clic sur la TV du salon = popup telecommande TV / Ampli (Accueil + Ma Maison)",
+    "last_update": "2026-10-10T22:32:38.972749+02:00",
+    "version": "2.8.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -353,6 +353,11 @@
     "last_change": "plan 2D de la maison dans le design Accueil (dock de scenes conserve)",
     "last_update": "2026-10-09T08:25:56.086843+02:00",
     "version": "0.1.3"
+  },
+  "www/plan3d/floorplan-3d-card.js": {
+    "last_change": "clic sur la TV du salon = popup telecommande TV / Ampli (Accueil + Ma Maison)",
+    "last_update": "2026-10-10T22:32:38.972749+02:00",
+    "version": "0.1.0"
   },
   "www/plan3d/home-hub-card.js": {
     "last_change": "micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down",
