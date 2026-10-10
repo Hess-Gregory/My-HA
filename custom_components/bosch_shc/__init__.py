@@ -14,7 +14,11 @@ from pathlib import Path
 from typing import Any
 
 import aiohttp
-import voluptuous as vol
+
+try:
+    import probatio as vol
+except ImportError:  # HA < 2026.10
+    import voluptuous as vol  # type: ignore[no-redef]
 from boschshcpy import SHCSessionAsync, SHCUniversalSwitch
 from boschshcpy.api import JSONRPCError
 from boschshcpy.api_async import build_ssl_context
@@ -703,6 +707,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
                 + dh.micromodule_dimmers
                 + dh.light_switches_bsm
             )
+            bool_devices = [
+                d
+                for d in bool_devices
+                if "ChildProtection"
+                in getattr(d, "device_service_ids", ("ChildProtection",))
+            ]
             return thermostats, bool_devices
 
         async def _set_child_lock_one(device: Any, lock_state: bool) -> None:

@@ -201,6 +201,3 @@ recorder:
       - binary_sensor.*_intrusion_area_1_*
       - binary_sensor.*_franchissement_de_ligne_*
 
-http:
-  ip_ban_enabled: true
-  login_attempts_threshold: 5
