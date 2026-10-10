@@ -738,7 +738,7 @@ class Floorplan3DCard extends HTMLElement {
     this._ovenSync(H);
     (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
-    if (this.tvMat) { const tv = [H['media_player.televiseur_du_salon'], H['media_player.orange_tv_box']].find((x) => x && !['off', 'unavailable', 'standby', 'unknown'].includes(x.state)) || H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
+    if (this.tvMat) { const tv = ((s) => (s && !s.attributes.media_title && /^com\./.test(s.attributes.app_name || '') ? { ...s, attributes: { ...s.attributes, media_title: 'TV Orange', app_name: 'TV Orange' } } : s))([H['media_player.televiseur_du_salon'], H['media_player.orange_tv_box']].find((x) => x && !['off', 'unavailable', 'standby', 'unknown'].includes(x.state)) || H['media_player.televiseur_du_salon']); this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
