@@ -188,7 +188,7 @@ class Floorplan3DCard extends HTMLElement {
       const r = canvas.getBoundingClientRect(); ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ptr, cam); const hit = ray.intersectObjects(this.clickables, false)[0];
       if (!hit) { this._closeOven(); return this._closePanel(); }
-      const ent = hit.object.userData.entity, st = this._h.states[ent]; if (ent === 'media_player.televiseur_du_salon') return this._tvRemote();
+      const ent = hit.object.userData.entity, st = this._h.states[ent]; if (ent === 'media_player.televiseur_du_salon' || ent === '@tvbox') return this._tvRemote('TV'); if (ent === '@ampli') return this._tvRemote('Ampli');
       if (ent === '@alarm') { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); return al && this._more(al); }
       if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
       if ((!st || st.state === 'unavailable') && !(ent.startsWith('light.') && this._grpOf(ent))) return this._toast('Lampe indisponible');
@@ -549,7 +549,7 @@ class Floorplan3DCard extends HTMLElement {
     { const groove = M('#dcdcd8'); box(478, 15, 670, 28, 0, 0.16, MAT.oakLight); box(472, 14.5, 676, 34, 0.16, 0.56, MAT.white); box(480, 16, 668, 30, 0.145, 0.16, decor('#ffcf88', 0.9), false);
       for (let x = 502; x < 676; x += 30) box(x - 0.3, 34, x + 0.3, 34.3, 0.18, 0.54, groove, false);
       box(551, 16, 553, 33, 0.56, 0.9, MAT.oakLight); box(588, 16, 590, 33, 0.56, 0.88, MAT.oakLight); box(551, 16, 636, 33, 0.88, 0.9, MAT.oakLight); box(553, 16, 588, 33, 0.71, 0.725, MAT.oakLight); box(553, 15, 636, 16, 0.56, 0.88, MAT.oakLight);
-      box(557, 18, 584, 30, 0.56, 0.6, MAT.black); box(560, 19, 575, 28, 0.725, 0.76, MAT.black); box(592, 18, 634, 31, 0.56, 0.72, M('#1a1a1c', { roughness: 0.4 })); box(617, 31, 625, 31.3, 0.66, 0.69, decor('#5ab4ff', 1.5), false);
+      clickable(box(557, 18, 584, 30, 0.56, 0.6, MAT.black), '@tvbox'); clickable(box(560, 19, 575, 28, 0.725, 0.76, MAT.black), '@tvbox'); clickable(box(592, 18, 634, 31, 0.56, 0.72, M('#1a1a1c', { roughness: 0.4 })), '@ampli'); box(617, 31, 625, 31.3, 0.66, 0.69, decor('#5ab4ff', 1.5), false);
       box(636, 14.5, 638, 33, 0.56, 2.28, MAT.oakLight); box(674, 14.5, 676, 33, 0.56, 2.28, MAT.oakLight); box(638, 14.5, 674, 15.5, 0.56, 2.28, MAT.oakLight); box(636, 14.5, 676, 33, 2.26, 2.28, MAT.oakLight); box(638, 15.5, 674, 33, 0.56, 0.6, MAT.oakLight);
       for (const z of [0.95, 1.28, 1.6, 1.93]) box(638, 15.5, 674, 32.5, z, z + 0.025, MAT.oakLight, false);
       box(634.4, 15, 636, 17, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
@@ -997,8 +997,8 @@ class Floorplan3DCard extends HTMLElement {
     const w = wrap.clientWidth, h = wrap.clientHeight; pn.style.left = Math.max(8, Math.min(w - 308, x + 18)) + 'px'; pn.style.top = Math.max(60, Math.min(h - pn.offsetHeight - 8, y - 80)) + 'px';
     pn.classList.remove('show'); void pn.offsetWidth; pn.classList.add('show'); this._closeOven(); this._dirty = true;
   }
-  // 📺 clic sur la TV du salon : popup télécommande TV / Ampli (mêmes cartes que le dashboard Streaming)
-  async _tvRemote() {
+  // 📺 clic sur la TV / le décodeur (télécommande Orange) ou sur l'ampli (télécommande ampli) : popup avec bascule TV / Ampli (mêmes cartes que le dashboard Streaming)
+  async _tvRemote(k0) {
     const old = this.shadowRoot.querySelector('.rmov'); if (old) old.remove();
     const o = document.createElement('div'); o.className = 'rmov';
     o.style.cssText = 'position:fixed;inset:0;z-index:997;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
@@ -1012,6 +1012,7 @@ class Floorplan3DCard extends HTMLElement {
     o._upd = () => { const st = this._h.states[SEL]; const cur = this._rmCur || (st && st.state) || 'TV'; if (st && st.state === this._rmCur) this._rmCur = null;
       Object.entries(segs).forEach(([k, b]) => { b.style.background = k === cur ? '#ff9d2e' : '#2c2940'; b.style.color = k === cur ? '#1c1206' : '#fff'; });
       if (this._rmEls) Object.entries(this._rmEls).forEach(([k, e]) => { e.style.display = k === cur ? '' : 'none'; }); };
+    if (k0) { this._rmCur = k0; const s0 = this._h.states[SEL]; if (!s0 || s0.state !== k0) this._h.callService('input_select', 'select_option', { option: k0 }, { entity_id: SEL }); }
     this.shadowRoot.appendChild(o); o._upd();
     try {
       if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = c.views.find((v) => v.path === 'streaming').sections[0].cards;
