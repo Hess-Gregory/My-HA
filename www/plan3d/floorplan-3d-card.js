@@ -552,7 +552,7 @@ class Floorplan3DCard extends HTMLElement {
       clickable(box(557, 18, 584, 30, 0.56, 0.6, MAT.black), '@tvbox'); clickable(box(560, 19, 575, 28, 0.725, 0.76, MAT.black), '@tvbox'); clickable(box(592, 18, 634, 31, 0.56, 0.72, M('#1a1a1c', { roughness: 0.4 })), '@ampli'); box(617, 31, 625, 31.3, 0.66, 0.69, decor('#5ab4ff', 1.5), false);
       box(636, 14.5, 638, 33, 0.56, 2.28, MAT.oakLight); box(674, 14.5, 676, 33, 0.56, 2.28, MAT.oakLight); box(638, 14.5, 674, 15.5, 0.56, 2.28, MAT.oakLight); box(636, 14.5, 676, 33, 2.26, 2.28, MAT.oakLight); box(638, 15.5, 674, 33, 0.56, 0.6, MAT.oakLight);
       for (const z of [0.95, 1.28, 1.6, 1.93]) box(638, 15.5, 674, 32.5, z, z + 0.025, MAT.oakLight, false);
-      box(634.4, 15, 636, 17, 0.6, 2.2, decor('#ffcf88', 1.2), false); }
+      }
     box(510, 52, 632, 138, 0, 0.022, M('#c4b4ad', { roughness: 1 }), false); { const gl = M('#fafaf8', { roughness: 0.12, metalness: 0.05 }), oakT = M('#caa372', { roughness: 0.6 }), gr = M('#d6d6d2');
       box(549, 80.5, 609, 105.5, 0, 0.03, M('#bdbdb9')); box(546, 78, 612, 108, 0.03, 0.4, gl); box(546, 108, 612, 108.3, 0.2, 0.21, gr, false); box(578.8, 108, 579.2, 108.3, 0.04, 0.2, gr, false);
       box(580, 77.5, 614, 105, 0.4, 0.46, oakT); box(612, 77.5, 614, 105, 0.27, 0.4, oakT); }
