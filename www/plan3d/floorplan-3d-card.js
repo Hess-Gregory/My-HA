@@ -39,6 +39,7 @@ class Floorplan3DCard extends HTMLElement {
   getCardSize() { return 12; }
   set hass(h) {
     this._h = h;
+    if (this._rmEls) { Object.values(this._rmEls).forEach((e) => { e.hass = h; }); const ro = this.shadowRoot && this.shadowRoot.querySelector('.rmov'); if (ro && ro._upd) ro._upd(); }
     if (!this._ready) { if (!this._building) { this._building = true; requestAnimationFrame(() => this._setup()); } return; }
     this._sync();
   }
@@ -187,7 +188,7 @@ class Floorplan3DCard extends HTMLElement {
       const r = canvas.getBoundingClientRect(); ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ptr, cam); const hit = ray.intersectObjects(this.clickables, false)[0];
       if (!hit) { this._closeOven(); return this._closePanel(); }
-      const ent = hit.object.userData.entity, st = this._h.states[ent];
+      const ent = hit.object.userData.entity, st = this._h.states[ent]; if (ent === 'media_player.televiseur_du_salon') return this._tvRemote();
       if (ent === '@alarm') { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); return al && this._more(al); }
       if (ent === 'sensor.four_etat') { this._closePanel(); return this._openOven(e.clientX - r.left, e.clientY - r.top); }
       if ((!st || st.state === 'unavailable') && !(ent.startsWith('light.') && this._grpOf(ent))) return this._toast('Lampe indisponible');
@@ -996,6 +997,31 @@ class Floorplan3DCard extends HTMLElement {
     const w = wrap.clientWidth, h = wrap.clientHeight; pn.style.left = Math.max(8, Math.min(w - 308, x + 18)) + 'px'; pn.style.top = Math.max(60, Math.min(h - pn.offsetHeight - 8, y - 80)) + 'px';
     pn.classList.remove('show'); void pn.offsetWidth; pn.classList.add('show'); this._closeOven(); this._dirty = true;
   }
+  // 📺 clic sur la TV du salon : popup télécommande TV / Ampli (mêmes cartes que le dashboard Streaming)
+  async _tvRemote() {
+    const old = this.shadowRoot.querySelector('.rmov'); if (old) old.remove();
+    const o = document.createElement('div'); o.className = 'rmov';
+    o.style.cssText = 'position:fixed;inset:0;z-index:997;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
+    o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:14px;width:min(440px,94vw);max-height:92vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6);font-family:sans-serif"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="flex:1;font-size:17px">📺 Télécommande</b><button class="inf" style="border:none;border-radius:10px;background:#2c2940;color:#fff;padding:8px 11px;font-size:15px">ⓘ</button><button class="x" style="border:none;border-radius:10px;background:#2c2940;color:#fff;padding:8px 12px;font-size:15px">✕</button></div><div class="sg" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div><div class="bd"></div></div>';
+    o.onclick = (e) => { if (e.target === o) o.remove(); };
+    o.querySelector('.x').onclick = () => o.remove();
+    o.querySelector('.inf').onclick = () => { o.remove(); this._more('media_player.televiseur_du_salon'); };
+    const SEL = 'input_select.telecommande_active', sg = o.querySelector('.sg'), bd = o.querySelector('.bd'), segs = {};
+    [['TV', '📺 TV'], ['Ampli', '🔊 Ampli']].forEach(([k, l]) => { const b = document.createElement('button'); b.textContent = l; b.style.cssText = 'padding:12px;border:none;border-radius:12px;font:700 15px sans-serif;color:#fff';
+      b.onclick = () => { this._rmCur = k; o._upd(); this._h.callService('input_select', 'select_option', { option: k }, { entity_id: SEL }); }; segs[k] = b; sg.appendChild(b); });
+    o._upd = () => { const st = this._h.states[SEL]; const cur = this._rmCur || (st && st.state) || 'TV'; if (st && st.state === this._rmCur) this._rmCur = null;
+      Object.entries(segs).forEach(([k, b]) => { b.style.background = k === cur ? '#ff9d2e' : '#2c2940'; b.style.color = k === cur ? '#1c1206' : '#fff'; });
+      if (this._rmEls) Object.entries(this._rmEls).forEach(([k, e]) => { e.style.display = k === cur ? '' : 'none'; }); };
+    this.shadowRoot.appendChild(o); o._upd();
+    try {
+      if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = c.views.find((v) => v.path === 'streaming').sections[0].cards;
+        const pick = (k) => cs.find((x) => { const v = JSON.stringify(x.visibility || []); return v.includes(SEL) && v.includes('"' + k + '"'); }); this._rmCfg = { TV: pick('TV'), Ampli: pick('Ampli') }; }
+      const hp = await window.loadCardHelpers(); this._rmEls = {};
+      for (const k of ['TV', 'Ampli']) { if (!this._rmCfg[k]) continue; const cfg = { ...this._rmCfg[k] }; delete cfg.visibility; const el = hp.createCardElement(cfg); el.hass = this._h; this._rmEls[k] = el; bd.appendChild(el); }
+      o._upd();
+    } catch (e) { bd.textContent = 'Télécommande indisponible : ' + e.message; }
+  }
+
   _closePanel() { this.sel = null; this.$('.pn').classList.remove('show'); this.selRing.visible = false; this._dirty = true; }
   _renderPanel(force) {
     if (!this.sel || !this.$) return; const st = this._h.states[this.sel]; if (!st) return; const A = st.attributes, on = st.state === 'on', $ = this.$;
