@@ -1,9 +1,9 @@
-# [AUTO-VERSION] v0.6.2 | 10/10/2026 22:24 | apres Fotoo, remettre Fully (Accueil) devant
+# [AUTO-VERSION] v0.6.0 | 08/10/2026 12:22 | sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
     alias: "📱 Tablette Sam : relancer Home Assistant après Fotoo"
-    description: "Quand on quitte le diaporama Fotoo et que la tablette retombe sur le lanceur Fully, remet Fully (Accueil) au premier plan."
+    description: "Quand on quitte le diaporama Fotoo et que la tablette retombe sur le lanceur Fully, rouvre automatiquement l'app Home Assistant."
     mode: single
     triggers:
       - trigger: state
@@ -11,13 +11,14 @@ automation:
         from: com.bo.fotoo
         to: de.ozerov.fully
     actions:
-      - action: button.press
-        target:
-          entity_id: button.salon_sam_tablette_mettre_au_premier_plan
+      - action: fully_kiosk.start_application
+        data:
+          application: io.homeassistant.companion.android
+          device_id: f1aa9e7a06615d6cd968ef13a161d75c
 
   - id: tablette_sam_carillon_porte
     alias: "🔔 Tablette Sam : carillon à l'ouverture de la porte d'entrée"
-    description: "Porte d'entrée ouverte : carillon sur la tablette + Fully (Accueil) au premier plan sur l'Accueil (zoom hall + caméra), tout en parallèle."
+    description: "Porte d'entrée ouverte : carillon sur la tablette + HA au premier plan sur l'Accueil (zoom hall + caméra), tout en parallèle."
     mode: single
     triggers:
       - trigger: state
@@ -45,12 +46,13 @@ automation:
                 conditions:
                   - condition: state
                     entity_id: sensor.salon_sam_tablette_application_au_premier_plan
-                    state: de.ozerov.fully
+                    state: io.homeassistant.companion.android
             then:
-              - action: button.press
+              - action: fully_kiosk.start_application
                 continue_on_error: true
-                target:
-                  entity_id: button.salon_sam_tablette_mettre_au_premier_plan
+                data:
+                  application: io.homeassistant.companion.android
+                  device_id: f1aa9e7a06615d6cd968ef13a161d75c
 
   - id: tablette_sam_interphone
     alias: "🔔 Tablette Sam : sonnerie interphone BTicino"
