@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.6.0 | 08/10/2026 12:22 | sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)
+# [AUTO-VERSION] v0.6.3 | 10/10/2026 22:26 | retour au fonctionnement avec l app Home Assistant (Fully en lanceur)
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo

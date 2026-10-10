@@ -305,9 +305,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "apres Fotoo, remettre Fully (Accueil) devant",
-    "last_update": "2026-10-10T22:24:38.200675+02:00",
-    "version": "0.6.2"
+    "last_change": "retour au fonctionnement avec l app Home Assistant (Fully en lanceur)",
+    "last_update": "2026-10-10T22:26:35.449592+02:00",
+    "version": "0.6.3"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
