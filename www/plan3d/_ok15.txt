@@ -1,0 +1,2 @@
+ok
+40f570b chore(version): bump 1 fichier(s) (localisation_suivi.yaml)

@@ -1,0 +1,3 @@
+3
+45563dc chore(version): bump 1 fichier(s) (tablette_sam.yaml)
+FIN

@@ -1,0 +1,1 @@
+526dce2 chore(version): bump 3 fichier(s) (sono_lumieres.yaml, sono_strobe.yaml, lj-console-card.js)

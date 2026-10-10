@@ -1,0 +1,3 @@
+5
+6468873 chore(version): bump 1 fichier(s) (sono_strobe.yaml)
+FIN

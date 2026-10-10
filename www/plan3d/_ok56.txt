@@ -1,0 +1,7 @@
+1c99de8e75dc3b63a0bedbcc505cb1cc  -
+0c717dd18391ea2650f424f6cfe9eb00  -
+hub ok
+020392b chore(version): bump 5 fichier(s) (sono_lumieres.yaml, sono_strobe.yaml, home-hub-card.js, lj-console-card.js, lovelace.maison_accueil)
+4a4d51e feat(eclairage): micro tablette pour le tempo (verrouille le curseur BPM), BPM jusqu a 180, strobe rate/duree/splash/aura + ramp up/down
+min: 65, max: 180
+FIN

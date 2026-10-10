@@ -1,0 +1,2 @@
+ok
+c80167e fix(accueil): camera reste ouverte tant que la camera Reolink du couloir detecte du mouvement

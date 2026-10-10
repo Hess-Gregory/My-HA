@@ -1,0 +1,2 @@
+cbb85ac chore(version): bump 1 fichier(s) (lovelace.maison_eclairage)
+7240838 feat(eclairage): boutons des 8 ambiances piece de vie

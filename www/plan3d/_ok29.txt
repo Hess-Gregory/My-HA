@@ -1,0 +1,2 @@
+95c381c chore(version): bump 1 fichier(s) (scenes_ambiances.yaml)
+b8ccd0e feat(eclairage): scenes ambiance piece de vie (TV, souper, cocooning, fete, noel, halloween, saint-valentin, nouvel an)

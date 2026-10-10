@@ -1,3 +1,4 @@
+window.__orangeTv = window.__orangeTv || ((s, H) => { const g = (e) => { const x = H[e]; return x && !['unknown','unavailable',''].includes(x.state) ? x.state : ''; }; const c = g('input_text.orange_tv_chaine'), t = g('input_text.orange_tv_titre'), hr = g('input_text.orange_tv_horaire'); let ok = !!t; const m = hr.match(/(\d\d):(\d\d)\D+(\d\d):(\d\d)/); if (m && t) { const d = new Date(), n = d.getHours() * 60 + d.getMinutes(), a = +m[1] * 60 + +m[2], b = +m[3] * 60 + +m[4]; ok = a <= b ? (n >= a - 5 && n < b + 5) : (n >= a - 5 || n < b + 5); } return { ...s, attributes: { ...s.attributes, media_title: ok ? t : (c || 'TV Orange'), app_name: c || 'TV Orange' } }; });
 /* Plan 3D interactif de la maison — lumières, températures, portes et mouvements en direct */
 import * as THREE from '/local/plan3d/three.module.min.js';
 import { OrbitControls } from '/local/plan3d/OrbitControls.js';
@@ -738,7 +739,7 @@ class Floorplan3DCard extends HTMLElement {
     this._ovenSync(H);
     (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
-    if (this.tvMat) { const tv = ((s) => (s && !s.attributes.media_title && /^com\./.test(s.attributes.app_name || '') ? { ...s, attributes: { ...s.attributes, media_title: 'TV Orange', app_name: 'TV Orange' } } : s))([H['media_player.televiseur_du_salon'], H['media_player.orange_tv_box']].find((x) => x && !['off', 'unavailable', 'standby', 'unknown'].includes(x.state)) || H['media_player.televiseur_du_salon']); this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
+    if (this.tvMat) { const tv = ((s) => (s && !s.attributes.media_title && /^com\./.test(s.attributes.app_name || '') ? window.__orangeTv(s, H) : s))([H['media_player.televiseur_du_salon'], H['media_player.orange_tv_box']].find((x) => x && !['off', 'unavailable', 'standby', 'unknown'].includes(x.state)) || H['media_player.televiseur_du_salon']); this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }

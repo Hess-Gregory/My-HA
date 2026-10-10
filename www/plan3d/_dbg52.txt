@@ -1,0 +1,15 @@
+6401 /tmp/q.b64
+21917d2aa81864f97f41e1e0c4b3f5cf  /tmp/q.b64
+22dc10a chore(version): bump 1 fichier(s) (lj-console-card.js)
+5e771bb fix(eclairage): ordre des lampes du lustre sur la console (1 = lg, 2 = lc, 3 = ld)
+3109cef chore(version): bump 2 fichier(s) (lovelace.maison_eclairage, sono_strobe.yaml)
+ M .storage/lovelace_resources
+?? .storage/lovelace.lovelace
+?? custom_components/aegis_ajax/api/webrtc.py
+?? custom_components/aegis_ajax/monitoring_companies.py
+?? custom_components/aegis_ajax/photo_download.py
+?? custom_components/aegis_ajax/service_security.py
+?? custom_components/aegis_ajax/video_bridge.py
+?? custom_components/ui_lovelace_minimalist/lovelace/themefiles/minimalist-ios-mobile/
+?? www/_r997.txt
+?? www/_r999.txt

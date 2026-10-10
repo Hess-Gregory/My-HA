@@ -1,0 +1,2 @@
+ok
+9f109e8 chore(version): bump 1 fichier(s) (anniversaires.yaml)

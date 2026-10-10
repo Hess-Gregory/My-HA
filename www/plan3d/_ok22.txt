@@ -1,0 +1,2 @@
+ok
+7950e61 chore(version): bump 2 fichier(s) (scenarios_annulation.yaml, scripts.yaml)

@@ -1,0 +1,1 @@
+15cddf3 chore(version): bump 3 fichier(s) (lovelace.maison_eclairage, sono_lumieres.yaml, sono_strobe.yaml)

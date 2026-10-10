@@ -1,0 +1,95 @@
+# Orange TV : lit le bandeau de l'app Orange (chaîne + programme) quand il est affiché
+input_text:
+  orange_tv_chaine:
+    name: Orange TV chaîne
+    max: 100
+  orange_tv_titre:
+    name: Orange TV programme
+    max: 255
+  orange_tv_horaire:
+    name: Orange TV horaire
+    max: 30
+
+script:
+  orange_tv_bandeau:
+    alias: Orange TV – lecture du bandeau
+    mode: single
+    max_exceeded: silent
+    sequence:
+      - repeat:
+          while:
+            - condition: template
+              value_template: >-
+                {{ is_state_attr('media_player.orange_tv_box','app_id','com.orange.be.nexx4.tv.android')
+                   and states('media_player.orange_stb2') not in ['off','unavailable','unknown'] }}
+          sequence:
+            - action: androidtv.adb_command
+              continue_on_error: true
+              target:
+                entity_id: media_player.orange_stb2
+              data:
+                command: >-
+                  dumpsys activity top | grep -q 'V.ED.*app:id/channel_name}' && uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 && grep -oE '(text|resource-id)="[^"]*"' /data/local/tmp/ui.xml | tr '\n' '|' || echo NOBANNER
+            - variables:
+                r: >-
+                  {{ (state_attr('media_player.orange_stb2','adb_response') or '') | replace('&amp;','&') | replace('&#39;',"'") | replace('&apos;',"'") | replace('&quot;','') }}
+                num: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/channel_number"') + [''])[0] }}
+                ch: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/channel_name"') + [''])[0] }}
+                ti: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/event_title(?:_play_control)?"') + [''])[0] }}
+                deb: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/start_time"') + [''])[0] }}
+                fin: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/end_time"') + [''])[0] }}
+            - if:
+                - condition: template
+                  value_template: "{{ ch != '' }}"
+              then:
+                - variables:
+                    vc: "{{ ((num ~ ' · ') if num else '') ~ ch }}"
+                    vh: "{{ (deb ~ '–' ~ fin) if deb and fin else '' }}"
+                - if:
+                    - condition: template
+                      value_template: "{{ states('input_text.orange_tv_chaine') != vc }}"
+                  then:
+                    - action: input_text.set_value
+                      target: {entity_id: input_text.orange_tv_chaine}
+                      data: {value: "{{ vc[:100] }}"}
+                - if:
+                    - condition: template
+                      value_template: "{{ states('input_text.orange_tv_titre') != ti }}"
+                  then:
+                    - action: input_text.set_value
+                      target: {entity_id: input_text.orange_tv_titre}
+                      data: {value: "{{ ti[:255] }}"}
+                - if:
+                    - condition: template
+                      value_template: "{{ states('input_text.orange_tv_horaire') != vh }}"
+                  then:
+                    - action: input_text.set_value
+                      target: {entity_id: input_text.orange_tv_horaire}
+                      data: {value: "{{ vh[:30] }}"}
+            - delay: 4
+
+automation:
+  - id: orange_tv_bandeau_start
+    alias: Orange TV – démarrer lecture du bandeau
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: media_player.orange_tv_box
+      - platform: time_pattern
+        minutes: "/5"
+    condition:
+      - condition: template
+        value_template: >-
+          {{ is_state_attr('media_player.orange_tv_box','app_id','com.orange.be.nexx4.tv.android')
+             and is_state('script.orange_tv_bandeau','off') }}
+    action:
+      - action: script.turn_on
+        target:
+          entity_id: script.orange_tv_bandeau

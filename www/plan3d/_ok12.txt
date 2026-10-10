@@ -1,0 +1,10 @@
+28b9cd9 chore(version): bump 1 fichier(s) (localisation.yaml)
+3cb121c feat(localisation): periode d historique et actualisation des positions
+dfe274f chore(version): bump 2 fichier(s) (lovelace.maison_localisation, localisation.yaml)
+# Localisation : période d'historique + actualisation des positions
+input_select:
+  localisation_periode:
+    name: "Localisation – période"
+    icon: mdi:history
+    options: ["5 min", "1 h", "6 
+23

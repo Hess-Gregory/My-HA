@@ -1,0 +1,7 @@
+./packages/securite_matteo.yaml
+18-          {% set e = ((trigger.event.data.service_data | default({})).get('entity_id', '')) | string %}
+19-          {{ not (d == 'input_text' and 'note_matteo' in e)
+20:             and not (d == 'script' and ('kanban_todoist_move_task' in s or 'kanban_todoist_move_task' in e)) }}
+21-    actions:
+22-      - variables:
+23-          d: "{{ trigger.event.data.domain }}"

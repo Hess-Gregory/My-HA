@@ -1,0 +1,10 @@
+d5a8982 chore(version): bump 1 fichier(s) (tablette_sam.yaml)
+115ccef fix(tablette): carillon et ouverture accueil en parallele, camera fermee 10 s apres porte fermee et couloir calme
+f615a8d feat(accueil): fenetre camera du hall agrandie
+ca2e613 feat(accueil): popup camera se ferme 10 s apres la fermeture de la porte
+
+ packages/tablette_sam.yaml      | 50 ++++++++++++++++++++++-------------------
+ www/plan3d/floorplan-3d-card.js |  4 ++--
+ 2 files changed, 29 insertions(+), 25 deletions(-)
+1
+2
