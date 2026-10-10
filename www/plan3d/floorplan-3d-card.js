@@ -1049,18 +1049,65 @@ class Floorplan3DCard extends HTMLElement {
     document.body.appendChild(o);
     const hp = await window.loadCardHelpers(); this._cwEls = [];
     const mk = (cfg) => { const el = hp.createCardElement(cfg); el.hass = this._h; this._cwEls.push(el); return el; };
-    CAMS.filter(([e]) => this._h.states[e]).forEach(([e, n]) => {
+    CAMS.filter(([e]) => this._h.states[e]).forEach(([e, n, ch]) => {
       const w = document.createElement('div'); w.style.cssText = 'cursor:pointer;border-radius:14px;overflow:hidden;position:relative';
       w.appendChild(mk({ type: 'picture-entity', entity: e, name: n, camera_view: 'auto', show_state: false, tap_action: { action: 'none' }, hold_action: { action: 'none' } }));
-      const cover = document.createElement('div'); cover.style.cssText = 'position:absolute;inset:0'; cover.onclick = () => openBig(e, n); w.appendChild(cover); grid.appendChild(w); });
-    const openBig = (e, n) => { grid.style.display = 'none'; big.style.display = ''; big.innerHTML = '';
+      const cover = document.createElement('div'); cover.style.cssText = 'position:absolute;inset:0'; cover.onclick = () => openBig(e, n, ch); w.appendChild(cover); grid.appendChild(w); });
+    const openBig = (e, n, ch) => { grid.style.display = 'none'; big.style.display = ''; big.innerHTML = '';
       const bar = document.createElement('div'); bar.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px'; bar.innerHTML = `<button style="${B}">← Toutes les caméras</button><b style="flex:1">🔴 ${n} — direct</b>`;
       bar.querySelector('button').onclick = () => { big.style.display = 'none'; big.innerHTML = ''; grid.style.display = 'grid'; }; big.appendChild(bar);
-      big.appendChild(mk({ type: 'picture-entity', entity: e, name: n, camera_view: 'live', show_state: false, tap_action: { action: 'more-info' } })); };
+      const lv = mk({ type: 'picture-entity', entity: e, name: n, camera_view: 'live', show_state: false, tap_action: { action: 'more-info' } }); big.appendChild(lv);
+      if (ch !== null && ch !== undefined) this._camReplay(big, ch, n, lv); };
     CAMS.filter(([, , ch]) => ch !== null).forEach(([, n, ch]) => { const b = document.createElement('button'); b.style.cssText = B; b.textContent = '▶ ' + n;
       b.onclick = () => { const ids = ['media-source://', 'media-source://reolink', 'media-source://reolink/CAM|' + NVRID + '|' + ch]; close();
         history.pushState(null, '', '/media-browser/browser/' + ids.map((x) => encodeURIComponent('app,' + x)).join('/')); window.dispatchEvent(new CustomEvent('location-changed', { detail: { replace: false } })); };
       rp.appendChild(b); });
+  }
+
+  // 📼 replay NVR Reolink avec barre de temps sur 24 h (comme sur le NVR) : jours, segments d'enregistrement, toucher = lecture à ce moment
+  async _camReplay(box, ch, n, liveEl) {
+    const NVRID = '01KZVMHX9QGY5A5CQ9QQDFM490', h = this._h, B = (id) => h.callWS({ type: 'media_source/browse_media', media_content_id: id });
+    const S = 'border:none;border-radius:10px;background:#2c2940;color:#fff;padding:7px 10px;font:700 12px sans-serif;cursor:pointer';
+    const w = document.createElement('div'); w.style.cssText = 'margin-top:10px';
+    w.innerHTML = `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px"><b style="font-size:13px;margin-right:4px">📼 Replay</b><span class="days" style="display:flex;gap:6px;flex-wrap:wrap"></span><span style="flex:1"></span><button class="hd" style="${S}">Qualité : SD</button><button class="live" style="${S};display:none;background:#7a1f2b">🔴 Revenir au direct</button></div>
+      <video class="vid" controls playsinline style="display:none;width:100%;border-radius:12px;margin-bottom:8px;background:#000;max-height:58vh"></video>
+      <div class="tl" style="position:relative;height:46px;border-radius:10px;background:#141320;cursor:pointer;overflow:hidden"></div>
+      <div class="ax" style="position:relative;height:16px;font:11px sans-serif;opacity:.6"></div>
+      <div class="info" style="font:12px sans-serif;opacity:.8;margin-top:4px">Chargement des enregistrements…</div>
+      <div style="font:11px sans-serif;opacity:.55;margin-top:4px">🟦 mouvement · 🟥 personne · 🟧 véhicule · 🟩 animal</div>`;
+    box.appendChild(w);
+    const days = w.querySelector('.days'), tl = w.querySelector('.tl'), ax = w.querySelector('.ax'), info = w.querySelector('.info'), vid = w.querySelector('.vid'), hd = w.querySelector('.hd'), live = w.querySelector('.live');
+    let res = 'sub', clips = [], dayStart = 0, cur = -1, cursor = null, sel = null;
+    for (let k = 0; k <= 24; k += 3) { const s = document.createElement('span'); s.style.cssText = `position:absolute;left:${k / 24 * 100}%;transform:translateX(${k === 0 ? '0' : k === 24 ? '-100%' : '-50%'})`; s.textContent = k + 'h'; ax.appendChild(s); }
+    const parse = (x) => new Date(+x.slice(0, 4), +x.slice(4, 6) - 1, +x.slice(6, 8), +x.slice(8, 10), +x.slice(10, 12), +x.slice(12, 14)).getTime();
+    const loadDay = async (y, m, d) => { info.textContent = 'Chargement…'; tl.innerHTML = ''; clips = []; cursor = null; dayStart = new Date(y, m - 1, d).getTime();
+      try { const r = await B(`media-source://reolink/DAY|${NVRID}|${ch}|${res}|${y}|${m}|${d}`);
+        clips = r.children.filter((c) => c.can_play).map((c) => { const p = c.media_content_id.split('|'); return { id: c.media_content_id, s: parse(p[p.length - 2]), e: parse(p[p.length - 1]), t: c.title }; }).sort((a, b) => a.s - b.s);
+        clips.forEach((c) => { const a = Math.max(0, (c.s - dayStart) / 864e5), b = Math.min(1, (c.e - dayStart) / 864e5); if (b <= 0 || a >= 1) return;
+          const col = /person/i.test(c.t) ? '#ff5a6a' : /vehicle/i.test(c.t) ? '#ffb02e' : /animal|pet/i.test(c.t) ? '#7be38b' : '#4a7dff';
+          const seg = document.createElement('div'); seg.style.cssText = `position:absolute;top:8px;bottom:8px;left:${a * 100}%;width:${Math.max((b - a) * 100, 0.15)}%;background:${col};opacity:.85;border-radius:2px;pointer-events:none`; tl.appendChild(seg); });
+        cursor = document.createElement('div'); cursor.style.cssText = 'position:absolute;top:0;bottom:0;width:2px;background:#fff;display:none;box-shadow:0 0 6px #fff;pointer-events:none'; tl.appendChild(cursor);
+        info.textContent = clips.length ? clips.length + ' enregistrements — touche la barre au moment voulu pour lancer la lecture.' : 'Aucun enregistrement ce jour-là.';
+      } catch (e) { info.textContent = 'Replay indisponible : ' + e.message; } };
+    const play = async (i, off) => { const c = clips[i]; if (!c) return; cur = i;
+      info.textContent = '▶ ' + n + ' — ' + new Date(c.s + off * 1000).toLocaleString('fr-BE') + ' (' + c.t + ')';
+      try { const r = await h.callWS({ type: 'media_source/resolve_media', media_content_id: c.id });
+        if (liveEl) liveEl.style.display = 'none'; live.style.display = ''; vid.style.display = '';
+        vid.src = r.url; vid.onloadedmetadata = () => { try { vid.currentTime = Math.max(0, Math.min(off, (vid.duration || off + 1) - 0.5)); } catch (e) {} vid.play().catch(() => {}); };
+      } catch (e) { info.textContent = 'Lecture impossible : ' + e.message; } };
+    vid.ontimeupdate = () => { const c = clips[cur]; if (!c || !cursor) return; cursor.style.display = ''; cursor.style.left = ((c.s + vid.currentTime * 1000 - dayStart) / 864e5 * 100) + '%'; };
+    vid.onended = () => { if (cur + 1 < clips.length) play(cur + 1, 0); };
+    tl.addEventListener('click', (ev) => { const r = tl.getBoundingClientRect(); const tt = dayStart + Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)) * 864e5;
+      let i = clips.findIndex((c) => tt >= c.s && tt < c.e), off = 0; if (i < 0) i = clips.findIndex((c) => c.s > tt); else off = (tt - clips[i].s) / 1000;
+      if (i >= 0) play(i, off); else info.textContent = "Pas d'enregistrement après ce moment."; });
+    live.onclick = () => { vid.pause(); vid.removeAttribute('src'); vid.load(); vid.style.display = 'none'; live.style.display = 'none'; if (liveEl) liveEl.style.display = ''; if (cursor) cursor.style.display = 'none'; };
+    hd.onclick = () => { res = res === 'sub' ? 'main' : 'sub'; hd.textContent = 'Qualité : ' + (res === 'sub' ? 'SD' : 'HD'); if (sel) loadDay(...sel); };
+    try { const r = await B(`media-source://reolink/RES|${NVRID}|${ch}|sub`); const ds = r.children.map((c) => c.media_content_id.split('|').slice(-3).map(Number)).slice(-7);
+      const today = new Date(); ds.forEach((d) => { const b = document.createElement('button'); b.style.cssText = S; const dt = new Date(d[0], d[1] - 1, d[2]);
+        b.textContent = dt.toDateString() === today.toDateString() ? "Aujourd'hui" : dt.toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric' });
+        b.onclick = () => { days.querySelectorAll('button').forEach((x) => { x.style.background = '#2c2940'; x.style.color = '#fff'; }); b.style.background = '#ff9d2e'; b.style.color = '#1c1206'; sel = d; loadDay(...d); }; days.appendChild(b); });
+      if (days.lastChild) days.lastChild.click(); else info.textContent = 'Aucun enregistrement disponible.';
+    } catch (e) { info.textContent = 'Replay indisponible : ' + e.message; }
   }
 
   _closePanel() { this.sel = null; this.$('.pn').classList.remove('show'); this.selRing.visible = false; this._dirty = true; }
