@@ -18,7 +18,7 @@ automation:
 
   - id: tablette_sam_carillon_porte
     alias: "🔔 Tablette Sam : carillon à l'ouverture de la porte d'entrée"
-    description: "Porte d'entrée ouverte : carillon sur la tablette + HA au premier plan sur l'Accueil (zoom hall + caméra), tout en parallèle."
+    description: "Porte d'entrée ouverte : carillon sur la tablette + Fully (Accueil) au premier plan sur l'Accueil (zoom hall + caméra), tout en parallèle."
     mode: single
     triggers:
       - trigger: state
@@ -46,13 +46,12 @@ automation:
                 conditions:
                   - condition: state
                     entity_id: sensor.salon_sam_tablette_application_au_premier_plan
-                    state: io.homeassistant.companion.android
+                    state: de.ozerov.fully
             then:
-              - action: fully_kiosk.start_application
+              - action: button.press
                 continue_on_error: true
-                data:
-                  application: io.homeassistant.companion.android
-                  device_id: f1aa9e7a06615d6cd968ef13a161d75c
+                target:
+                  entity_id: button.salon_sam_tablette_mettre_au_premier_plan
 
   - id: tablette_sam_interphone
     alias: "🔔 Tablette Sam : sonnerie interphone BTicino"
