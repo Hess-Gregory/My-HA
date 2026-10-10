@@ -1026,7 +1026,7 @@ class Floorplan3DCard extends HTMLElement {
 
   // 📹 clic sur l'écran de surveillance du salon : mur de caméras en direct + replay NVR Reolink
   async _camWall() {
-    const CAMS = [['camera.rue_fluide', 'Rue', '1'], ['camera.salon_fluide', 'Salon', '9'], ['camera.rlc_843a_fluide', 'Balcon', '6'], ['camera.couloir', 'Couloir', '8'], ['camera.chambre_enfant', 'Chambre enfants', '0'], ['camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue', 'Platine de rue', null]];
+    const CAMS = [['camera.rue_fluide', 'Rue', '1'], ['camera.salon_fluide', 'Salon', '9'], ['camera.rlc_843a_fluide', 'Balcon', '6'], ['camera.couloir', 'Couloir', '8'], ['camera.chambre_enfant', 'Chambre enfants', '0']];
     const NVR = 'switch.enregistreur_nvr_enregistrer', NVRID = '01KZVMHX9QGY5A5CQ9QQDFM490';
     const old = this.shadowRoot.querySelector('.cwov'); if (old) old.remove();
     const B = 'border:none;border-radius:12px;background:#2c2940;color:#fff;padding:10px 12px;font:700 13px sans-serif;cursor:pointer';
