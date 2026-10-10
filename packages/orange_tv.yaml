@@ -46,6 +46,10 @@ script:
                   {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/start_time"') + [''])[0] }}
                 fin: >-
                   {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/end_time"') + [''])[0] }}
+                et: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/event_time"') + [''])[0] }}
+                li: >-
+                  {{ (r | regex_findall('text="([^"]*)"[|]resource-id="[^"]*:id/direct_access_live_indicator"') + [''])[0] }}
                 pos: >-
                   {{ (r | regex_findall('text="([0-9:]+)"[|]resource-id="[^"]*:id/progress_holder"') + [''])[0] }}
             - if:
@@ -54,11 +58,11 @@ script:
               then:
                 - variables:
                     vc: "{{ ((num ~ ' · ') if num else '') ~ ch }}"
-                    vh: "{{ (deb ~ '–' ~ fin) if deb and fin else '' }}"
+                    vh: "{{ (deb ~ '–' ~ fin) if deb and fin else (et | replace(' - ','–')) }}"
                     vl: >-
                       {% set p = today_at(pos) if pos else none %}
                       {% if p %}{% set d = (now() - p).total_seconds() %}{% set d = d + 86400 if d < -3600 else d %}{% else %}{% set d = 0 %}{% endif %}
-                      {{ 'Direct' if d < 90 else 'Différé −' ~ ((d / 60) | round(0) | int) ~ ' min' }}
+                      {{ 'Direct' if li or d < 90 else 'Différé −' ~ ((d / 60) | round(0) | int) ~ ' min' }}
                 - if:
                     - condition: template
                       value_template: "{{ states('input_text.orange_tv_chaine') != vc }}"

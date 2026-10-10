@@ -82,6 +82,79 @@
                   }
                 },
                 {
+                  "type": "conditional",
+                  "conditions": [
+                    {
+                      "condition": "state",
+                      "entity": "media_player.orange_tv_box",
+                      "state": "on"
+                    }
+                  ],
+                  "card": {
+                    "type": "custom:button-card",
+                    "entity": "media_player.orange_tv_box",
+                    "name": "orange-now",
+                    "show_name": false,
+                    "show_icon": false,
+                    "show_state": false,
+                    "tap_action": {
+                      "action": "none"
+                    },
+                    "triggers_update": [
+                      "input_text.orange_tv_chaine",
+                      "input_text.orange_tv_titre",
+                      "input_text.orange_tv_horaire",
+                      "input_text.orange_tv_lecture"
+                    ],
+                    "custom_fields": {
+                      "x": "[[[ const g=(e)=>{const x=states[e];return x&&!['unknown','unavailable',''].includes(x.state)?x.state:''}; const c=g('input_text.orange_tv_chaine'),t=g('input_text.orange_tv_titre'),hr=g('input_text.orange_tv_horaire'),lv=g('input_text.orange_tv_lecture')||'Direct'; const m=hr.match(/(\\d\\d):(\\d\\d)\\D+(\\d\\d):(\\d\\d)/); let pc=-1,ok=!!t; if(m){const d=new Date(),n=d.getHours()*60+d.getMinutes(),a=+m[1]*60+ +m[2];let b=+m[3]*60+ +m[4];let nn=n;if(b<a){b+=1440;if(n<a)nn+=1440;} ok=ok&&nn>=a-5&&nn<b+5; pc=Math.max(0,Math.min(100,(nn-a)/(b-a)*100));} const live=/^Direct/.test(lv); const badge=live?'<span style=\"background:#e53935;color:#fff;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em\">● DIRECT</span>':'<span style=\"background:#ffb74d;color:#2a1a00;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em\">⏪ '+lv.toUpperCase()+'</span>'; return '<div style=\"display:flex;align-items:center;justify-content:space-between;gap:10px\"><span style=\"font-size:11px;letter-spacing:.14em;color:#ffd27a;font-weight:700\">📺 EN COURS · ORANGE TV</span>'+(ok?badge:'')+'</div><div style=\"margin-top:10px;font-size:22px;font-weight:800;line-height:1.2;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis\">'+(ok?t:(c||'TV Orange'))+'</div><div style=\"margin-top:4px;font-size:14px;color:rgba(255,255,255,.75)\">'+[c,ok?hr:''].filter(Boolean).join('  ·  ')+'</div>'+(ok&&pc>=0?'<div style=\"margin-top:12px;height:5px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden\"><div style=\"height:100%;width:'+pc.toFixed(1)+'%;background:linear-gradient(90deg,#ffd27a,#ff9a5a)\"></div></div>':''); ]]]"
+                    },
+                    "styles": {
+                      "card": [
+                        {
+                          "display": "[[[ return entity && entity.attributes.app_id==='com.orange.be.nexx4.tv.android' ? 'block' : 'none' ]]]"
+                        },
+                        {
+                          "padding": "16px 18px"
+                        },
+                        {
+                          "border-radius": "20px"
+                        },
+                        {
+                          "background": "linear-gradient(135deg,rgba(40,30,55,.82),rgba(20,18,32,.82))"
+                        },
+                        {
+                          "backdrop-filter": "blur(14px)"
+                        },
+                        {
+                          "border": "1px solid rgba(255,210,122,.25)"
+                        },
+                        {
+                          "text-align": "left"
+                        }
+                      ],
+                      "grid": [
+                        {
+                          "grid-template-areas": "\"x\""
+                        }
+                      ],
+                      "custom_fields": {
+                        "x": [
+                          {
+                            "justify-self": "stretch"
+                          },
+                          {
+                            "text-align": "left"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                },
+                {
                   "type": "custom:yet-another-media-player",
                   "template": "large_modern",
                   "details_alignment": "left",
