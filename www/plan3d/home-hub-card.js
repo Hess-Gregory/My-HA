@@ -253,7 +253,7 @@ class HomeHubCard extends HTMLElement {
     const pw = num(POWER), td = num(TODAY); $('.pw').textContent = pw != null ? (pw < 1 ? Math.round(pw * 1000) + ' W' : pw.toFixed(2).replace('.', ',') + ' kW') : '—'; $('.td').textContent = td != null ? td.toFixed(1).replace('.', ',') + ' kWh' : '—';
     $('.bar i').style.width = Math.min(100, ((pw || 0) / 6) * 100) + '%';
     // média
-    const tv = H['media_player.televiseur_du_salon'], on = tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state);
+    const tv = [H['media_player.televiseur_du_salon'], H['media_player.orange_tv_box']].find((x) => x && !['off', 'unavailable', 'standby', 'unknown'].includes(x.state)) || H['media_player.televiseur_du_salon'], on = tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state);
     $('.mt').textContent = on ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || 'En lecture') : 'Éteinte';
     $('.ms').textContent = on ? [tv.attributes.media_series_title, tv.attributes.app_name, tv.state === 'paused' ? 'en pause' : ''].filter(Boolean).join(' · ') : 'Touchez pour allumer';
     const pic = on ? tv.attributes.entity_picture : null; $('.media .bg').style.backgroundImage = pic ? `url("${pic}")` : 'none';

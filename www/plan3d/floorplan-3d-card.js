@@ -738,7 +738,7 @@ class Floorplan3DCard extends HTMLElement {
     this._ovenSync(H);
     (this.djLit || []).forEach((d) => { const on = H[d.ent] && H[d.ent].state === 'on'; if (d.screen) d.m.color.set(on ? '#ffffff' : '#000000'); else d.m.emissiveIntensity = on ? d.base : 0; });
     this._nvr(H);
-    if (this.tvMat) { const tv = H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
+    if (this.tvMat) { const tv = [H['media_player.televiseur_du_salon'], H['media_player.orange_tv_box']].find((x) => x && !['off', 'unavailable', 'standby', 'unknown'].includes(x.state)) || H['media_player.televiseur_du_salon']; this.tvOn = !!tv && !['off', 'unavailable', 'standby', 'unknown'].includes(tv.state); this.tvMat.emissiveIntensity = this.tvOn ? 0.9 : 0;
       if (this.tvScr) this.tvScr.visible = this.tvOn; const pic = this.tvOn ? tv.attributes.entity_picture : null;
       if (pic !== this._tvPic) { this._tvPic = pic; this._tvImg = null; if (pic) { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => (this._tvImg = im); im.src = /^https?:/.test(pic) ? pic : (this._h.hassUrl ? this._h.hassUrl(pic) : pic); } }
       this._tvTitle = this.tvOn ? (tv.attributes.media_title || tv.attributes.app_name || tv.attributes.source || '') : ''; }
@@ -1014,6 +1014,7 @@ class Floorplan3DCard extends HTMLElement {
       Object.entries(segs).forEach(([k, b]) => { b.style.background = k === cur ? '#ff9d2e' : '#2c2940'; b.style.color = k === cur ? '#1c1206' : '#fff'; });
       if (this._rmEls) Object.entries(this._rmEls).forEach(([k, e]) => { e.style.display = k === cur ? '' : 'none'; }); };
     if (k0) { this._rmCur = k0; const s0 = this._h.states[SEL]; if (!s0 || s0.state !== k0) this._h.callService('input_select', 'select_option', { option: k0 }, { entity_id: SEL }); }
+    o.style.pointerEvents = 'none'; setTimeout(() => { o.style.pointerEvents = ''; }, 450);
     this.shadowRoot.appendChild(o); o._upd();
     try {
       if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = c.views.find((v) => v.path === 'streaming').sections[0].cards;
@@ -1044,6 +1045,7 @@ class Floorplan3DCard extends HTMLElement {
     const recUpd = () => { const s = this._h.states[NVR]; const on = s && s.state === 'on'; rec.textContent = on ? '⏺ Enregistrement : ON' : '⏹ Enregistrement : OFF'; rec.style.background = on ? '#7a1f2b' : '#2c2940'; };
     rec.onclick = () => { if (!rec._arm) { rec._arm = true; rec.textContent = 'Retouchez pour confirmer'; setTimeout(() => { rec._arm = false; recUpd(); }, 3000); return; } rec._arm = false; this._h.callService('switch', 'toggle', {}, { entity_id: NVR }); setTimeout(recUpd, 800); };
     recUpd();
+    o.style.pointerEvents = 'none'; setTimeout(() => { o.style.pointerEvents = ''; }, 450);
     this.shadowRoot.appendChild(o);
     const hp = await window.loadCardHelpers(); this._cwEls = [];
     const mk = (cfg) => { const el = hp.createCardElement(cfg); el.hass = this._h; this._cwEls.push(el); return el; };
