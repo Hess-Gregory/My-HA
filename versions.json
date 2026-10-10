@@ -305,9 +305,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "sonnerie forte sur la tablette, camera rue et bouton SAS sur le plan (tablette)",
-    "last_update": "2026-10-08T12:22:45.097104+02:00",
-    "version": "0.6.0"
+    "last_change": "carillon remet Fully (Accueil) devant au lieu de relancer l app HA",
+    "last_update": "2026-10-10T22:24:13.362335+02:00",
+    "version": "0.6.1"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
