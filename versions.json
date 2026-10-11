@@ -75,14 +75,14 @@
     "version": "0.9.0"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "replay NVR avec barre de temps 24h par camera (jours, segments, lecture au moment choisi)",
-    "last_update": "2026-10-10T22:54:47.325419+02:00",
-    "version": "0.11.0"
+    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
+    "last_update": "2026-10-11T08:09:55.932077+02:00",
+    "version": "0.11.1"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "replay NVR avec barre de temps 24h par camera (jours, segments, lecture au moment choisi)",
-    "last_update": "2026-10-10T22:54:47.325419+02:00",
-    "version": "2.11.0"
+    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
+    "last_update": "2026-10-11T08:09:55.932077+02:00",
+    "version": "2.11.1"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -355,18 +355,23 @@
     "version": "0.1.3"
   },
   "www/plan3d/floorplan-3d-card.js": {
-    "last_change": "replay NVR avec barre de temps 24h par camera (jours, segments, lecture au moment choisi)",
-    "last_update": "2026-10-10T22:54:47.325419+02:00",
-    "version": "0.4.0"
+    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
+    "last_update": "2026-10-11T08:09:55.932077+02:00",
+    "version": "0.4.1"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "afficher TV Orange au lieu du nom technique de l application",
-    "last_update": "2026-10-10T22:48:46.212189+02:00",
-    "version": "2.7.2"
+    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
+    "last_update": "2026-10-11T08:09:55.932077+02:00",
+    "version": "2.7.3"
   },
   "www/plan3d/lj-console-card.js": {
     "last_change": "design harmonise avec Accueil (fond, tuiles, cadre plein ecran) + bouton retour dans la console LJ",
     "last_update": "2026-10-09T08:09:11.392737+02:00",
     "version": "0.2.2"
+  },
+  "www/plan3d/streaming-card.js": {
+    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
+    "last_update": "2026-10-11T08:09:55.932077+02:00",
+    "version": "0.0.1"
   }
 }
