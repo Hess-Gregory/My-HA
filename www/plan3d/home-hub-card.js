@@ -84,7 +84,7 @@ class HomeHubCard extends HTMLElement {
       <div class="col c1">
         <div class="tile hero grow"><div class="clock"></div><div class="date"></div><div class="hello"></div><svg class="sun" viewBox="0 0 200 64"><path d="M10 58 Q100 -18 190 58" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2" stroke-dasharray="3 5"/><path class="arcp" d="M10 58 Q100 -18 190 58" fill="none" stroke="url(#sg)" stroke-width="3" stroke-linecap="round"/><defs><linearGradient id="sg"><stop offset="0" stop-color="#ffb86b"/><stop offset="1" stop-color="#ffd27a"/></linearGradient></defs><circle class="sdot" r="6" fill="#ffd27a"/><text class="sr" x="8" y="63">—</text><text class="ss" x="192" y="63" text-anchor="end">—</text><text class="sel" x="100" y="63" text-anchor="middle">—</text></svg><div class="ppl"></div></div>
         <div class="tile"><div class="h">Météo · Engis</div><div class="wnow"><div class="wico"></div><div class="wt"></div></div><div class="wmeta"></div><div class="fc"></div></div>
-        <div class="tile alarm hide-s"><div class="al-i">🛡️</div><div><div class="al-t"></div><div class="al-s">Alarme Ajax · maison</div></div><button class="cvb" style="margin-left:auto;align-self:center;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#f3eee6;border-radius:12px;padding:8px 10px;font:700 11px system-ui;cursor:pointer;white-space:nowrap">🛡️ Cave</button></div>
+        <div class="tile alarm hide-s"><div class="al-i">🛡️</div><div><div class="al-t"></div><div class="al-s">Alarme Ajax · maison</div></div></div>
         <div class="tile sas hide-s"><div class="h">Porte du SAS · BTicino</div><button class="sasb"><i>🔓</i><b>Ouvrir le SAS</b><small>Touchez puis confirmez</small></button></div>
       </div>
       <div class="mid"><div class="plan"></div><div class="dock"></div></div>
@@ -246,10 +246,6 @@ class HomeHubCard extends HTMLElement {
     // alarme
     const a = H[ALARM], as = a ? a.state : 'unknown', armed = as.startsWith('armed') || as === 'triggered', AT = { disarmed: 'Désarmée', armed_away: 'Armée · totale', armed_home: 'Armée · maison', armed_night: 'Armée · nuit', armed_custom_bypass: 'Armée · partielle', triggered: 'ALARME !', arming: 'Armement…', pending: 'En attente' };
     const al = $('.alarm'); al.classList.toggle('armed', armed); al.classList.toggle('off', as === 'disarmed'); $('.al-t').textContent = AT[as] || as;
-    { const cb = $('.cvb'), cv = this._h.states['alarm_control_panel.buanderie_centrale_alarme_ajax_cave'], ct = this._h.states['timer.cave_rearmement'], cd = this._h.states['binary_sensor.cave_sous_sol_cave_porte'];
-      if (cb && cv) { if (!cb._b) { cb._b = 1; cb.onclick = (e) => { e.stopPropagation(); const s = this._h.states['alarm_control_panel.buanderie_centrale_alarme_ajax_cave']; if (s && s.state === 'disarmed') this._h.callService('script', 'turn_on', { entity_id: 'script.cave_popup' }); else this._codePad('script.cave_desarmer', '🔓', 'Désarmement cave'); }; }
-        const dis = cv.state === 'disarmed'; cb.textContent = dis ? ('🔓 Cave' + (cd && cd.state === 'on' ? ' · ouverte' : ct && ct.state === 'active' ? ' · réarm. ' + new Date(ct.attributes.finishes_at).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' }) : '')) : '🛡️ Cave';
-        cb.style.borderColor = dis ? 'rgba(255,183,77,.6)' : 'rgba(127,224,168,.45)'; cb.style.color = dis ? '#ffcf8a' : '#f3eee6'; } }
     // climat
     $('.rooms').innerHTML = ROOMS.map(([n, id, cl, k, path]) => { const t = num(`sensor.temp_${id}_temperature`), hu = num(`sensor.temp_${id}_humidity`), c = H[cl], heat = c && c.attributes.hvac_action === 'heating';
       const cons = H['sensor.consigne_' + k] ? H['sensor.consigne_' + k].state : (c ? c.attributes.temperature : null), mode = H['input_select.mode_' + k] ? H['input_select.mode_' + k].state : '';

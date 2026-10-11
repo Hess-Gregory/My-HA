@@ -1,1 +1,1 @@
-cave_trig jp_popup hub stream
+hub fp

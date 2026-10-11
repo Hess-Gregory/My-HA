@@ -118,7 +118,7 @@ class Floorplan3DCard extends HTMLElement {
     </style>
     <div class="wrap"><div class="stars"></div><canvas></canvas><div class="vig"></div><div class="ov"></div>
       <div class="bar"><div class="t">🏠 Ma maison en 3D<small>Touchez une lampe ou un radiateur · glissez pour tourner · pincez pour zoomer</small></div>
-        <button class="walls hide">🧱 Murs bas</button><button class="mode">🌓 Auto</button><button class="alarm">🛡️ …</button></div>
+        <button class="walls hide">🧱 Murs bas</button><button class="mode">🌓 Auto</button><button class="alarm">🛡️ …</button><button class="cave">🛡️ Désarmer cave</button></div>
       <div class="amb"><button data-a="cine">🎬 Cinéma</button><button data-a="diner">🍽️ Dîner</button><button data-a="off">⚫ Tout éteindre</button></div>
       <div class="views"></div><div class="info"></div><div class="toast"></div>
       <div class="pn"><div class="ph"><div class="pdot">💡</div><div class="pt"><div class="pname"></div><small class="pst"></small></div><button class="pw"></button><button class="px">✕</button></div>
@@ -176,7 +176,7 @@ class Floorplan3DCard extends HTMLElement {
     const views = this.$('.views');
     Object.keys(VIEWS).forEach((k) => { const b = document.createElement('button'); b.textContent = k; b.onclick = () => this._goTo(k); views.appendChild(b); });
     this.$('.mode').onclick = () => { this.mode = { auto: 'jour', jour: 'nuit', nuit: 'auto' }[this.mode]; this._sync(); };
-    this.$('.alarm').onclick = () => { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); if (al) this._more(al); };
+    this.$('.alarm').onclick = () => { const al = Object.keys(this._h.states).find((k) => k === 'alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_maison'); if (al) this._more(al); }; this.$('.cave').onclick = () => { if (window.__caveTap) window.__caveTap(this._h); else this._more('alarm_control_panel.buanderie_centrale_alarme_ajax_cave'); }; if (!this._cvIv) this._cvIv = setInterval(() => { const b = this.$('.cave'); if (!b || !this._h || !window.__caveLabel) return; const s = window.__caveLabel(this._h); if (b.textContent !== s) b.textContent = s; const w = !s.startsWith('🛡️'); b.style.color = w ? '#f6d68a' : ''; b.style.borderColor = w ? 'rgba(246,214,138,.6)' : ''; }, 1000);
     this.$('.walls').onclick = () => { this.wallTarget = this.wallTarget === 1 ? 0.28 : 1; this.$('.walls').textContent = this.wallTarget === 1 ? '🧱 Murs bas' : '🧱 Murs hauts'; this.$('.walls').classList.toggle('on', this.wallTarget !== 1); };
     root.querySelectorAll('.amb button').forEach((b) => (b.onclick = () => this._ambiance(b.dataset.a)));
     this._setupPanel();

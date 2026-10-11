@@ -1,4 +1,5 @@
 ﻿Date;Heure du pic;AQI;Polluant dominant;PM2.5;PM10;NO2;SO2;O3;Température (°C);Humidité (%);Pression (hPa);Vent (km/h);Direction du vent (°);Précipitations (mm);AQI moyen du jour
+12/10/2026;00h;1;PM2.5;17;8;9;1;1;8.2;81.0;1017.0;5.0;168.0;;1
 11/10/2026;16h;32;PM2.5;32;10;3;1;16;13.0;62.0;1014.0;15.0;270.0;;22
 10/10/2026;10h;40;PM2.5;40;23;13;1;0;11.4;87.0;1013.0;14.8;233.0;;22
 09/10/2026;00h;30;PM2.5;30;15;7;1;6;10.0;84.0;1022.0;10.0;235.0;;20
