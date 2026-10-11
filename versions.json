@@ -115,9 +115,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_streaming": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "0.6.2"
+    "last_change": "ecran video YouTube, mise en page vinyle",
+    "last_update": "2026-10-11T08:21:29.560891+02:00",
+    "version": "0.6.3"
   },
   ".storage/lovelace.maison_taches": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -370,8 +370,8 @@
     "version": "0.2.2"
   },
   "www/plan3d/streaming-card.js": {
-    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
-    "last_update": "2026-10-11T08:09:55.932077+02:00",
-    "version": "0.0.1"
+    "last_change": "ecran video YouTube, mise en page vinyle",
+    "last_update": "2026-10-11T08:21:29.560891+02:00",
+    "version": "0.0.2"
   }
 }
