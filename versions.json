@@ -390,9 +390,9 @@
     "version": "0.0.2"
   },
   "www/plan3d/streaming-card.js": {
-    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
-    "last_update": "2026-10-12T00:06:02.043336+02:00",
-    "version": "0.1.0"
+    "last_change": "streaming radios = favoris Net Radio de l ampli",
+    "last_update": "2026-10-12T01:29:32.586066+02:00",
+    "version": "0.2.0"
   },
   "www/plan3d/v2-board.js": {
     "last_change": "V2 board hauteur tuiles + traductions",
