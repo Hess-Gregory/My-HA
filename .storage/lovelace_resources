@@ -228,6 +228,11 @@
         "id": "7a9e8b4a58494700a59c0920d193e115",
         "url": "/local/plan3d/maison-card.js?v=1791703155356",
         "type": "module"
+      },
+      {
+        "id": "3335a737511b447aaa694ba8307d4b7e",
+        "url": "/local/plan3d/v2-board.js?v=1791710951270",
+        "type": "module"
       }
     ]
   }

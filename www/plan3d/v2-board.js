@@ -1,7 +1,7 @@
 /* V2 Board — moteur générique au design Accueil : en-tête + KPI, onglets, tuiles (stats, interrupteurs, listes, graphes, caméras, cartes HA intégrées), dock d'actions, pied de page. */
 const OFFS = ['off', 'unavailable', 'unknown', 'standby', 'idle', 'closed', 'locked', 'not_home', 'disarmed'];
 const fmtNum = (v, d) => { const n = parseFloat(v); if (isNaN(n)) return v; return n.toLocaleString('fr-BE', { maximumFractionDigits: d == null ? (Math.abs(n) >= 100 ? 0 : 1) : d }); };
-const TR = { on: 'Allumé', off: 'Éteint', open: 'Ouvert', closed: 'Fermé', locked: 'Verrouillé', unlocked: 'Déverrouillé', home: 'Maison', not_home: 'Absent', unavailable: 'Indispo.', unknown: '–', armed_away: 'Armée (absent)', armed_home: 'Armée (présent)', armed_night: 'Armée (nuit)', disarmed: 'Désarmée', triggered: '⚠️ Déclenchée', heat: 'Chauffe', idle: 'Repos', playing: 'Lecture', paused: 'Pause', above_horizon: 'Jour', below_horizon: 'Nuit' };
+const TR = { on: 'Allumé', off: 'Éteint', open: 'Ouvert', closed: 'Fermé', locked: 'Verrouillé', unlocked: 'Déverrouillé', home: 'Maison', not_home: 'Absent', unavailable: 'Indispo.', unknown: '–', armed_away: 'Armée (absent)', armed_home: 'Armée (présent)', armed_night: 'Armée (nuit)', disarmed: 'Désarmée', triggered: '⚠️ Déclenchée', heat: 'Chauffe', idle: 'Repos', playing: 'Lecture', paused: 'Pause', above_horizon: 'Jour', below_horizon: 'Nuit', rainy: 'Pluie', sunny: 'Soleil', cloudy: 'Nuageux', partlycloudy: 'Éclaircies', pouring: 'Averses', fog: 'Brouillard', snowy: 'Neige', windy: 'Venteux', 'clear-night': 'Nuit claire', lightning: 'Orage', 'lightning-rainy': 'Orage', armed_vacation: 'Armée (vacances)', arming: 'Armement…', pending: 'En attente' };
 
 class V2Board extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; this._page = 0; }
@@ -44,8 +44,8 @@ class V2Board extends HTMLElement {
       .kpi span.warn{border-color:rgba(255,183,77,.55);color:#ffcf8a} .kpi span.warn b{color:#ffcf8a} .kpi span.ok b{color:#7fe0a8}
       .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap} .tabs button{height:36px;padding:0 14px;border-radius:999px;font-size:12px} .tabs button.on{background:rgba(255,210,122,.14);border-color:rgba(255,210,122,.6);color:var(--a)}
       .clk{font:300 22px system-ui;color:var(--m);font-variant-numeric:tabular-nums}
-      .main{min-height:0;overflow:auto;scrollbar-width:thin;display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--col,340px),1fr));grid-auto-flow:row dense;gap:12px;align-content:start;padding-bottom:4px}
-      .t{display:flex;flex-direction:column;min-height:0} .t.s2{grid-column:span 2} .t.s3{grid-column:span 3} .t.full{grid-column:1/-1} .t.r2{grid-row:span 2}
+      .main{min-height:0;overflow:auto;scrollbar-width:thin;display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--col,340px),1fr));grid-auto-flow:row dense;grid-auto-rows:max-content;gap:12px;align-content:start;padding-bottom:4px}
+      .t{display:flex;flex-direction:column} .t.s2{grid-column:span 2} .t.s3{grid-column:span 3} .t.full{grid-column:1/-1} .t.r2{grid-row:span 2}
       .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
       .st{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);cursor:pointer;min-width:0} .st b{display:block;font:300 26px/1.1 system-ui;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .st span{font-size:11px;color:var(--m);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
       .st.big b{font-size:40px} .st.warn b{color:#ffcf8a} .st.ok b{color:#7fe0a8} .st.hot b{color:#ff8a65}
