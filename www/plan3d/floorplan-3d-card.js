@@ -1018,7 +1018,7 @@ class Floorplan3DCard extends HTMLElement {
     o.style.pointerEvents = 'none'; setTimeout(() => { o.style.pointerEvents = ''; }, 450);
     document.body.appendChild(o); o._upd();
     try {
-      if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = c.views.find((v) => v.path === 'streaming').sections[0].cards;
+      if (!this._rmCfg) { const c = await this._h.callWS({ type: 'lovelace/config', url_path: 'maison-streaming' }); const cs = []; const walk = (o) => { if (Array.isArray(o)) o.forEach(walk); else if (o && typeof o === 'object') { if (o.visibility && o.type) cs.push(o); Object.values(o).forEach(walk); } }; walk(c.views.find((v) => v.path === 'streaming') || c.views);
         const pick = (k) => cs.find((x) => { const v = JSON.stringify(x.visibility || []); return v.includes(SEL) && v.includes('"' + k + '"'); }); this._rmCfg = { TV: pick('TV'), Ampli: pick('Ampli') }; }
       const hp = await window.loadCardHelpers(); this._rmEls = {};
       for (const k of ['TV', 'Ampli']) { if (!this._rmCfg[k]) continue; const cfg = { ...this._rmCfg[k] }; delete cfg.visibility; const el = hp.createCardElement(cfg); el.hass = this._h; this._rmEls[k] = el; bd.appendChild(el); }
