@@ -1,3 +1,6 @@
 1
 940 automations.yaml
-cave_trig jp_popup hub stream
+cave_trig jp_popup hub stream[master dc1afa1] chore(version): bump 8 fichier(s) (automations.yaml, ampli_yxc.yaml, cave_alarme.yaml, scripts.yaml, cave-alarm-card.js...)
+ 5 files changed, 34 insertions(+), 16 deletions(-)
+[bump_version] 8 fichier(s) mis a jour (minor)
+dc1afa1 chore(version): bump 8 fichier(s) (automations.yaml, ampli_yxc.yaml, cave_alarme.yaml, scripts.yaml, cave-alarm-card.js...)

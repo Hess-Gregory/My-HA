@@ -64,6 +64,19 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Cave",
+                  "icon": "mdi:shield-home"
+                },
+                {
+                  "type": "custom:cave-alarm-card"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
                   "type": "conditional",
                   "conditions": [
                     {
