@@ -43,6 +43,8 @@ command_line:
       json_attributes:
         - ".storage/lovelace.1_accueil"
         - ".storage/lovelace.maison_accueil"
+        - ".storage/lovelace.maison_streaming"
+        - ".storage/lovelace.maison_eclairage"
         - ".storage/lovelace.ma_maison"
         - ".storage/lovelace.1_courses"
         - ".storage/lovelace.1_eclairage"

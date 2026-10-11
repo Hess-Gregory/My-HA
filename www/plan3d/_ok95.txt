@@ -1,0 +1,4 @@
+1:# [AUTO-VERSION] v0.5.0 | 07/10/2026 08:51 | suivi des dashboards maison_accueil et ma_maison
+45:        - ".storage/lovelace.maison_accueil"
+eae9e607e1212422a4a0b849ba39651f  www/plan3d/eclairage-card.js
+41687760bd31d590a8376a65609c6dda  www/plan3d/streaming-card.js

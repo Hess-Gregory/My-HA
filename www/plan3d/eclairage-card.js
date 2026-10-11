@@ -31,7 +31,7 @@ const AMB = 'input_select.ambiance_piece_de_vie';
 class EclairageCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
   getCardSize() { return 12; }
-  set hass(h) { this._h = h; if (!this._b) this._build(); if (!this._raf) this._raf = requestAnimationFrame(() => { this._raf = null; this._upd(); }); }
+  set hass(h) { this._h = h; if (this._ftr) this._ftr.hass = h; if (!this._b) this._build(); if (!this._raf) this._raf = requestAnimationFrame(() => { this._raf = null; this._upd(); }); }
   _s(e) { return this._h.states[e]; }
   _on(e) { const s = this._s(e); return !!s && s.state === 'on'; }
   _call(d, s, data, t) { return this._h.callService(d, s, data || {}, t); }
@@ -48,7 +48,7 @@ class EclairageCard extends HTMLElement {
       :host{container-type:inline-size;display:block;--g:rgba(255,255,255,.06);--b:rgba(255,255,255,.09);--t:#f3eee6;--m:rgba(243,238,230,.6);--a:#ffd27a;--o1:#ff9a5a;--o2:#7b5cff;--o3:#1fb6c9;color:var(--t);font:500 14px system-ui,Roboto,sans-serif}
       *{box-sizing:border-box} button{appearance:none;font:700 12px system-ui,Roboto,sans-serif;color:var(--t);cursor:pointer;border:1px solid var(--b);background:rgba(255,255,255,.06);border-radius:14px;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s}
       button:active{transform:scale(.96)}
-      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--top,56px) - 1px);min-height:560px;
+      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--top,56px) - var(--fh,0px) - 1px);min-height:560px;
         background:radial-gradient(140% 90% at 50% 0%,#121426 0%,#07080f 70%)}
       .w>*{position:relative;z-index:1}
       .bgfx{position:absolute;inset:-20%;z-index:0!important;pointer-events:none;filter:blur(70px) saturate(130%);opacity:.55}
@@ -133,8 +133,8 @@ class EclairageCard extends HTMLElement {
     this.$('.ae').onclick = () => this._call('script', 'turn_on', {}, { entity_id: 'script.ambiance_eteindre' });
     this.$('.lj').onclick = () => this._nav('/maison-eclairage/light-jockey');
   }
-  connectedCallback() { const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); };
-    this._fit = fit; window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000); }
+  connectedCallback() { const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); const ft = this.shadowRoot && this.shadowRoot.querySelector('.ftr'); this.style.setProperty('--fh', (ft ? ft.offsetHeight : 0) + 'px'); };
+    this._fit = fit; if (this.cfg && this.cfg.footer && !this._fd) { const fd = document.createElement('div'); fd.className = 'ftr'; fd.style.cssText = 'padding-top:4px'; this.shadowRoot.appendChild(fd); this._fd = fd; window.loadCardHelpers().then((hp) => { const el = hp.createCardElement(this.cfg.footer); el.hass = this._h; this._ftr = el; fd.appendChild(el); setTimeout(fit, 300); setTimeout(fit, 1500); }); } window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000); }
   disconnectedCallback() { if (this._fit) window.removeEventListener('resize', this._fit); }
   _nav(p) { history.pushState(null, '', p); window.dispatchEvent(new CustomEvent('location-changed', { detail: { replace: false } })); }
   _pick(id) { this._sel = this._sel === id ? null : id; Object.entries(this._rm).forEach(([k, o]) => o.d.classList.toggle('sel', k === this._sel)); Object.entries(this._zones).forEach(([k, z]) => z.classList.toggle('sel', k === this._sel));

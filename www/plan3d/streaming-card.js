@@ -18,7 +18,7 @@ const OFF = ['off', 'unavailable', 'unknown', 'standby'];
 class StreamingCard extends HTMLElement {
   setConfig(c) { this.cfg = c || {}; }
   getCardSize() { return 12; }
-  set hass(h) { this._h = h; if (!this._b) this._build(); if (!this._raf) this._raf = requestAnimationFrame(() => { this._raf = null; this._upd(); }); (this._pops || []).forEach((el) => { el.hass = h; }); }
+  set hass(h) { this._h = h; if (this._ftr) this._ftr.hass = h; if (!this._b) this._build(); if (!this._raf) this._raf = requestAnimationFrame(() => { this._raf = null; this._upd(); }); (this._pops || []).forEach((el) => { el.hass = h; }); }
   _s(e) { return this._h && this._h.states[e]; }
   _a(e, k) { const s = this._s(e); return s ? s.attributes[k] : undefined; }
   _txt(e) { const s = this._s(e); return s && !['unknown', 'unavailable', ''].includes(s.state) ? s.state : ''; }
@@ -31,7 +31,7 @@ class StreamingCard extends HTMLElement {
       :host{container-type:inline-size;display:block;--g:rgba(255,255,255,.06);--b:rgba(255,255,255,.09);--t:#f3eee6;--m:rgba(243,238,230,.6);--a:#ffd27a;--amb:#ff7a1a;color:var(--t);font:500 14px system-ui,Roboto,sans-serif}
       *{box-sizing:border-box} button{appearance:none;font:700 12px system-ui,Roboto,sans-serif;color:var(--t);cursor:pointer;border:1px solid var(--b);background:rgba(255,255,255,.06);border-radius:14px;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,transform .1s}
       button:active{transform:scale(.95)}
-      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--top,56px) - 1px);min-height:600px;background:radial-gradient(140% 90% at 50% 0%,#121426 0%,#07080f 70%)}
+      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--top,56px) - var(--fh,0px) - 1px);min-height:600px;background:radial-gradient(140% 90% at 50% 0%,#121426 0%,#07080f 70%)}
       .w>*{position:relative;z-index:1}
       .bgfx{position:absolute;inset:-20%;z-index:0!important;pointer-events:none;filter:blur(80px) saturate(140%);opacity:.5}
       .bgfx i{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:drift 40s ease-in-out infinite alternate;transition:background 1.5s}
@@ -167,8 +167,8 @@ class StreamingCard extends HTMLElement {
     $('.scr').onclick = () => { const m = this._mode; this._more(m === 'spotify' ? E.sp : m === 'youtube' ? E.tv : m === 'tv' ? E.box : E.amp); };
     const vr = $('.vr'); vr.oninput = () => { $('.vv').textContent = vr.value + '%'; this._vdrag = Date.now(); clearTimeout(this._vt); this._vt = setTimeout(() => this._call('media_player', 'volume_set', { entity_id: E.amp, volume_level: vr.value / 100 }), 250); };
     $('.mu').onclick = () => this._call('media_player', 'volume_mute', { entity_id: E.amp, is_volume_muted: !this._a(E.amp, 'is_volume_muted') });
-    const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); };
-    this._fit = fit; window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000);
+    const fit = () => { const t = Math.max(0, Math.round(this.getBoundingClientRect().top + window.scrollY)); this.style.setProperty('--top', t + 'px'); const ft = this.shadowRoot && this.shadowRoot.querySelector('.ftr'); this.style.setProperty('--fh', (ft ? ft.offsetHeight : 0) + 'px'); };
+    this._fit = fit; if (this.cfg && this.cfg.footer && !this._fd) { const fd = document.createElement('div'); fd.className = 'ftr'; fd.style.cssText = 'padding-top:4px'; this.shadowRoot.appendChild(fd); this._fd = fd; window.loadCardHelpers().then((hp) => { const el = hp.createCardElement(this.cfg.footer); el.hass = this._h; this._ftr = el; fd.appendChild(el); setTimeout(fit, 300); setTimeout(fit, 1500); }); } window.addEventListener('resize', fit); requestAnimationFrame(fit); setTimeout(fit, 600); setTimeout(fit, 2000);
     this._tick = setInterval(() => this._prog(), 1000);
   }
   connectedCallback() { if (this._b && !this._tick) this._tick = setInterval(() => this._prog(), 1000); }
