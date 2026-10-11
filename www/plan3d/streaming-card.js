@@ -98,9 +98,9 @@ class StreamingCard extends HTMLElement {
       .lnk{display:flex;gap:6px;margin-left:6px} .lnk button{height:42px;padding:0 12px;font-size:12px}
       /* colonne droite */
       .side{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto;scrollbar-width:thin}
-      .rad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+      .rad{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:4px 2px} .side>.p{flex-shrink:0} .rd .lg.im{overflow:hidden;background:#fff} .rd .lg.im img{width:100%;height:100%;object-fit:cover;display:block}
       .rd{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 2px;border-radius:16px;background:transparent;border-color:transparent}
-      .rd .lg{width:100%;max-width:60px;aspect-ratio:1;border-radius:16px;display:flex;align-items:center;justify-content:center;font:900 14px system-ui;letter-spacing:.04em;background:rgba(255,255,255,.06);border:1px solid var(--b);border-bottom:3px solid var(--rc);position:relative}
+      .rd .lg{width:100%;max-width:52px;aspect-ratio:1;border-radius:16px;display:flex;align-items:center;justify-content:center;font:900 14px system-ui;letter-spacing:.04em;background:rgba(255,255,255,.06);border:1px solid var(--b);border-bottom:3px solid var(--rc);position:relative}
       .rd span{font:600 11px system-ui;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
       .rd.on .lg{outline:2px solid var(--a);outline-offset:3px} .rd.on span{color:var(--a)}
       .rd.on .lg{background:rgba(255,210,122,.1)} .rd.on .lg::after{content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:22px;height:8px;background:repeating-linear-gradient(90deg,var(--a) 0 3px,transparent 3px 5px);animation:eq .8s ease-in-out infinite alternate;border-radius:2px}
@@ -209,14 +209,18 @@ class StreamingCard extends HTMLElement {
   _yxc() { const s = this._s('sensor.ampli_yxc_statut'); return s ? s.attributes : {}; }
   _radRender() {
     const g = (e) => { const s = this._s(e); return (s && s.attributes.preset_info) || []; };
-    if (!this._favT || Date.now() - this._favT > 1800000) { this._favT = Date.now(); const B = (id) => this._h.callWS({ type: 'media_player/browse_media', entity_id: 'media_player.ampli_cine', media_content_id: id, media_content_type: 'directory' }); B('input:net_radio').then(() => B('list:net_radio:1:0')).then(() => B('list:net_radio:2:0')).then((r) => { const f = (r.children || []).filter((c) => c.can_play).map((c) => ({ n: c.title, id: c.media_content_id, p: null })); if (f.length) { this._fav = f; this._radKey = null; this._radRender(); } }).catch(() => {}); }
-    let list = (this._fav || []).slice(); if (!list.length) g('sensor.ampli_presets_net').forEach((p, i) => { if (p.text && p.input === 'net_radio') list.push({ n: p.text, p: 'netusb/recallPreset?zone=main&num=' + (i + 1) }); });
+    if (!this._favT || Date.now() - this._favT > 1800000) { this._favT = Date.now(); const B = (id) => this._h.callWS({ type: 'media_player/browse_media', entity_id: 'media_player.ampli_cine', media_content_id: id, media_content_type: 'directory' }); B('input:net_radio').then(() => B('list:net_radio:1:0')).then(() => B('list:net_radio:2:0')).then((r) => { const f = (r.children || []).filter((c) => c.can_play).map((c) => ({ n: c.title, id: c.media_content_id, p: null, img: (c.thumbnail || '').replace('http://static.airable.io:80', 'https://static.airable.io') })); if (f.length) { this._fav = f; this._radKey = null; this._radRender(); } }).catch(() => {}); }
+    let list = (this._fav || []).slice();
+    const K = (s) => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\+/g, ' plus').replace(/\(.*?\)/g, '').replace(/vivacite/g, 'viva').replace(/\b(radio|fm|rtbf|belgique)\b/g, '').replace(/[^a-z0-9]/g, '');
+    const LOGO = { nostalgie: 'https://nl.nostalgie.be/icons/icon-144x144.png', vivaplus: 'https://www.radio.fr/300/rtbfvivaplus.jpeg', ln: 'https://www.radio.fr/300/lnradio.jpeg', contactmax: 'https://www.radiocontact.be/apple-touch-icon.png' };
+    if (list.length) { const seen = new Set(list.map((x) => K(x.n))); g('sensor.ampli_presets_dab').forEach((p, i) => { const n = (p.text || '').trim(); const k = K(n); if (!n || !k || seen.has(k)) return; seen.add(k); const br = list.find((x) => x.img && k.startsWith(K(x.n)) && K(x.n).length > 2); list.push({ n, p: 'tuner/recallPreset?zone=main&band=dab&num=' + (i + 1), img: LOGO[k] || (br ? br.img : '') }); }); }
+    if (!list.length) g('sensor.ampli_presets_net').forEach((p, i) => { if (p.text && p.input === 'net_radio') list.push({ n: p.text, p: 'netusb/recallPreset?zone=main&num=' + (i + 1) }); });
     if (!list.length) g('sensor.ampli_presets_dab').forEach((p, i) => { if (p.text) list.push({ n: p.text, p: 'tuner/recallPreset?zone=main&band=dab&num=' + (i + 1) }); });
     if (!list.length) g('sensor.ampli_presets_fm').forEach((p, i) => { if (p.number) list.push({ n: p.text || ((p.number / 1000).toFixed(1) + ' FM'), p: 'tuner/recallPreset?zone=main&band=fm&num=' + (i + 1) }); });
     if (!list.length) list = RADIOS.map(([n, id]) => ({ n, id, p: null }));
-    list = list.slice(0, 16); const key = list.map((x) => x.n).join('|'); if (key === this._radKey) return; this._radKey = key; this._radList = list;
+    list = list.slice(0, 24); const key = list.map((x) => x.n).join('|'); if (key === this._radKey) return; this._radKey = key; this._radList = list;
     const rad = this.$('.rad'); rad.innerHTML = ''; const COLS = ['#ff5a5f', '#ff2d87', '#00a3e0', '#8e5cff', '#ffb400', '#1fb6c9', '#7fe0a8', '#ff8a65'];
-    this._rads = list.map((r, i) => { const b = document.createElement('button'); b.className = 'rd'; const c = COLS[i % COLS.length]; const ab = (r.n.replace(/[^A-Za-z0-9À-ÿ ]/g, '').trim().split(/\s+/)[0] || r.n).slice(0, 4).toUpperCase(); b.innerHTML = `<div class="lg" style="color:${c};--rc:${c}">${ab}</div><span>${r.n}</span>`; b.onclick = () => this._radio(r); rad.appendChild(b); return [r, b]; });
+    this._rads = list.map((r, i) => { const b = document.createElement('button'); b.className = 'rd'; const c = COLS[i % COLS.length]; const ab = (r.n.replace(/[^A-Za-z0-9À-ÿ ]/g, '').trim().split(/\s+/)[0] || r.n).slice(0, 4).toUpperCase(); const nm = r.n.replace(/\s*\(.*?\)\s*/g, ' ').trim(); b.title = r.n; b.innerHTML = r.img ? `<div class="lg im" style="--rc:${c}"><img src="${r.img}" alt="" loading="lazy"></div><span>${nm}</span>` : `<div class="lg" style="color:${c};--rc:${c}">${ab}</div><span>${nm}</span>`; const im = b.querySelector('img'); if (im) im.onerror = () => { const l = im.parentNode; l.classList.remove('im'); l.style.color = c; l.textContent = ab; }; b.onclick = () => this._radio(r); rad.appendChild(b); return [r, b]; });
   }
   _tr(a) {
     const m = this._mode;

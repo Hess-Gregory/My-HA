@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.1.2 | 12/10/2026 01:27 | cave sans boutons Reamer/+10 min
 # Cave — désarmement par code depuis HA, popup tablette avec décompte, annonces vocales, réarmement auto 10 min après fermeture de la porte
 # Le réarmement lui-même reste fait par l'automation « cave_rearmement_auto » (automations.yaml), déclenchée par la fin du timer.
 timer:
@@ -49,6 +48,30 @@ script:
               message: "Un code incorrect a été saisi pour désarmer la cave."
       - stop: fin
         response_variable: r
+
+  cave_annonce:
+    alias: Cave – annonce vocale (tablette)
+    mode: queued
+    fields:
+      message:
+        name: Message
+        selector:
+          text:
+    sequence:
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          volume_level: 0.9
+      - action: tts.speak
+        continue_on_error: true
+        target:
+          entity_id: tts.home_assistant_cloud
+        data:
+          media_player_entity_id: media_player.salon_sam_tablette
+          language: fr-FR
+          message: "{{ message }}"
 
   cave_popup:
     alias: Cave – popup décompte (tablette)
@@ -121,12 +144,12 @@ automation:
             data:
               duration: "00:10:00"
           - action: script.cave_popup
-          - action: notify.salon_sam_tablette_synthese_vocale
+          - action: script.cave_annonce
             continue_on_error: true
             data:
               message: "La cave est désactivée. Elle se réarmera automatiquement dans 10 minutes si la porte reste fermée."
         else:
-          - action: notify.salon_sam_tablette_synthese_vocale
+          - action: script.cave_annonce
             continue_on_error: true
             data:
               message: "La cave est désactivée. La porte est ouverte."
@@ -151,7 +174,7 @@ automation:
         data:
           browser_id:
             - browser_mod_59a39768_1e3bd7e4
-      - action: notify.salon_sam_tablette_synthese_vocale
+      - action: script.cave_annonce
         continue_on_error: true
         data:
           message: "La porte de la cave est ouverte. Le réarmement est suspendu."
@@ -178,7 +201,7 @@ automation:
         data:
           duration: "00:10:00"
       - action: script.cave_popup
-      - action: notify.salon_sam_tablette_synthese_vocale
+      - action: script.cave_annonce
         continue_on_error: true
         data:
           message: "Porte de la cave refermée. Réarmement automatique dans 10 minutes."
@@ -210,7 +233,7 @@ automation:
         data:
           browser_id:
             - browser_mod_59a39768_1e3bd7e4
-      - action: notify.salon_sam_tablette_synthese_vocale
+      - action: script.cave_annonce
         continue_on_error: true
         data:
           message: "La cave est désormais protégée."
