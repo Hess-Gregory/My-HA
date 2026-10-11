@@ -70,9 +70,9 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "nettoyage des vues deja en prod",
-    "last_update": "2026-10-11T08:59:30.729421+02:00",
-    "version": "0.9.1"
+    "last_change": "Ma Maison v2 mise en page",
+    "last_update": "2026-10-11T09:18:33.440193+02:00",
+    "version": "0.9.2"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
@@ -370,9 +370,9 @@
     "version": "0.2.2"
   },
   "www/plan3d/maison-card.js": {
-    "last_change": "Ma Maison v2 (carte pieces design Accueil)",
-    "last_update": "2026-10-11T09:09:23.951865+02:00",
-    "version": "0.0.1"
+    "last_change": "Ma Maison v2 mise en page",
+    "last_update": "2026-10-11T09:18:33.440193+02:00",
+    "version": "0.0.2"
   },
   "www/plan3d/streaming-card.js": {
     "last_change": "harmonisation design avec Accueil (dock, accents or)",
