@@ -68,9 +68,11 @@ class StreamingCard extends HTMLElement {
       .chn{font:800 clamp(54px,9cqw,120px)/1 system-ui;letter-spacing:-.04em;color:#fff;text-shadow:0 0 40px var(--amb)}
       .chl{font:300 clamp(18px,2.6cqw,30px)/1.1 system-ui;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.85)}
       /* mode musique : vinyle */
-      .mus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:0}
-      .slv{position:relative;height:72%;aspect-ratio:1;border-radius:10px;background:#222 center/cover;box-shadow:0 20px 50px rgba(0,0,0,.7);z-index:2}
-      .vin{height:68%;aspect-ratio:1;border-radius:50%;margin-left:-26%;z-index:1;background:repeating-radial-gradient(circle,#0c0c0e 0 2px,#17171b 2px 4px);box-shadow:0 18px 40px rgba(0,0,0,.7),inset 0 0 0 2px #000;display:flex;align-items:center;justify-content:center;animation:spin 5s linear infinite;animation-play-state:paused;transition:margin .8s cubic-bezier(.2,.8,.2,1)}
+      .mus{position:absolute;inset:0 0 24% 0;display:flex;align-items:center;justify-content:center;gap:0}
+      .vid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(80% 70% at 50% 45%,color-mix(in srgb,var(--amb) 30%,#000),#05060b 75%)}
+      .vimg{position:absolute;inset:0;background:center/cover no-repeat} .vlogo{width:110px;height:76px;border-radius:22px;background:#ff1f33;color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 0 60px rgba(255,31,51,.6)}
+      .slv{position:relative;height:80%;aspect-ratio:1;border-radius:10px;background:#222 center/cover;box-shadow:0 20px 50px rgba(0,0,0,.7);z-index:2}
+      .vin{height:76%;aspect-ratio:1;border-radius:50%;margin-left:-26%;z-index:1;background:repeating-radial-gradient(circle,#0c0c0e 0 2px,#17171b 2px 4px);box-shadow:0 18px 40px rgba(0,0,0,.7),inset 0 0 0 2px #000;display:flex;align-items:center;justify-content:center;animation:spin 5s linear infinite;animation-play-state:paused;transition:margin .8s cubic-bezier(.2,.8,.2,1)}
       .vin.go{animation-play-state:running;margin-left:-8%}
       .vin::before{content:'';position:absolute;width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 20%,rgba(255,255,255,.08) 25%,transparent 30% 70%,rgba(255,255,255,.06) 75%,transparent 80%)}
       .lbl{width:36%;aspect-ratio:1;border-radius:50%;background:#333 center/cover;border:3px solid #0c0c0e}
@@ -126,7 +128,7 @@ class StreamingCard extends HTMLElement {
           <div class="art"></div>
           <div class="lay">
             <div class="tvv"><div class="chn"></div><div class="chl"></div></div>
-            <div class="mus"><div class="slv"></div><div class="vin"><div class="lbl"></div></div></div>
+            <div class="vid"><div class="vimg"></div><div class="vlogo">▶</div></div><div class="mus"><div class="slv"></div><div class="vin"><div class="lbl"></div></div></div>
             <div class="idl"><div class="beam"></div><b>La salle est prête</b><span>Choisis une source : la TV, une radio ou Spotify</span></div>
           </div>
           <div class="meta"><div class="bdg"></div><div class="ttl"></div><div class="sub"></div><div class="pg"><i></i></div><div class="tm"><span class="t1"></span><span class="t2"></span></div></div>
@@ -249,9 +251,9 @@ class StreamingCard extends HTMLElement {
     if (this._focus && Date.now() - (this._focusT || 0) > 15 * 60000 && !this._live(this._focus)) this._focus = null;
     const mode = this._focus || this._auto(); this._mode = mode;
     Object.entries(this._pills).forEach(([k, b]) => { b.classList.toggle('live', this._live(k)); b.classList.toggle('foc', k === mode); });
-    const scr = $('.scr'), tvv = $('.tvv'), mus = $('.mus'), idl = $('.idl');
+    const scr = $('.scr'), tvv = $('.tvv'), mus = $('.mus'), idl = $('.idl'), vid = $('.vid');
     let title = '', sub = '', bdg = '', art = null, ambFb = mode in MODES ? MODES[mode][2] : '#ffb15a';
-    tvv.style.opacity = mode === 'tv' ? 1 : 0; mus.style.opacity = ['spotify', 'radio', 'youtube'].includes(mode) ? 1 : 0; idl.style.opacity = mode === 'idle' ? 1 : 0;
+    tvv.style.opacity = mode === 'tv' ? 1 : 0; mus.style.opacity = ['spotify', 'radio'].includes(mode) ? 1 : 0; vid.style.opacity = mode === 'youtube' ? 1 : 0; idl.style.opacity = mode === 'idle' ? 1 : 0;
     if (mode === 'tv') {
       const o = this._orange(); $('.chn').textContent = o.num || '📺'; $('.chl').textContent = o.name;
       title = o.title || o.name; sub = [o.chan, o.hr].filter(Boolean).join('  ·  ');
@@ -268,6 +270,7 @@ class StreamingCard extends HTMLElement {
       $('.slv').style.backgroundImage = art ? `url("${art}")` : `linear-gradient(135deg,${ambFb},#111)`;
       $('.lbl').style.backgroundImage = art ? `url("${art}")` : 'none';
       $('.vin').classList.toggle('go', s.state === 'playing');
+      $('.vimg').style.backgroundImage = mode === 'youtube' && art ? `url("${art}")` : 'none'; $('.vlogo').style.display = mode === 'youtube' && art ? 'none' : '';
     }
     $('.art').style.backgroundImage = art ? `url("${art}")` : 'none';
     this._ambi(art, ambFb);
