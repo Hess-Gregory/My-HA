@@ -75,9 +75,9 @@
     "version": "0.9.4"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "bouton cave cc_push dans securite et ma maison entree",
-    "last_update": "2026-10-12T01:32:13.786703+02:00",
-    "version": "0.13.0"
+    "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
+    "last_update": "2026-10-12T01:53:57.774685+02:00",
+    "version": "0.13.1"
   },
   ".storage/lovelace.maison_accueil": {
     "last_change": "cave code, bouton cave dans le plan 3D, popups au design des dashboards",
@@ -110,9 +110,9 @@
     "version": "0.7.2"
   },
   ".storage/lovelace.maison_securite": {
-    "last_change": "bouton cave cc_push dans securite et ma maison entree",
-    "last_update": "2026-10-12T01:32:13.786703+02:00",
-    "version": "0.6.0"
+    "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
+    "last_update": "2026-10-12T01:53:57.774685+02:00",
+    "version": "0.6.1"
   },
   ".storage/lovelace.maison_streaming": {
     "last_change": "refonte integrale (design Accueil)",
@@ -170,9 +170,9 @@
     "version": "0.1.0"
   },
   "packages/cave_alarme.yaml": {
-    "last_change": "cave sans boutons Reamer/+10 min",
-    "last_update": "2026-10-12T01:27:11.255983+02:00",
-    "version": "0.1.2"
+    "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
+    "last_update": "2026-10-12T01:53:57.774685+02:00",
+    "version": "0.1.3"
   },
   "packages/chambre_enfants.yaml": {
     "last_change": "interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal",
@@ -390,9 +390,9 @@
     "version": "0.0.2"
   },
   "www/plan3d/streaming-card.js": {
-    "last_change": "streaming radios = favoris Net Radio de l ampli",
-    "last_update": "2026-10-12T01:29:32.586066+02:00",
-    "version": "0.2.0"
+    "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
+    "last_update": "2026-10-12T01:53:57.774685+02:00",
+    "version": "0.2.1"
   },
   "www/plan3d/v2-board.js": {
     "last_change": "V2 board hauteur tuiles + traductions",
