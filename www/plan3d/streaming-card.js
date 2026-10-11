@@ -31,11 +31,11 @@ class StreamingCard extends HTMLElement {
       :host{container-type:inline-size;display:block;--g:rgba(255,255,255,.06);--b:rgba(255,255,255,.09);--t:#f3eee6;--m:rgba(243,238,230,.6);--a:#ffd27a;--amb:#ff7a1a;color:var(--t);font:500 14px system-ui,Roboto,sans-serif}
       *{box-sizing:border-box} button{appearance:none;font:700 12px system-ui,Roboto,sans-serif;color:var(--t);cursor:pointer;border:1px solid var(--b);background:rgba(255,255,255,.06);border-radius:14px;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,transform .1s}
       button:active{transform:scale(.95)}
-      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);grid-template-rows:auto minmax(0,1fr);height:calc(100vh - var(--top,56px) - 1px);min-height:600px;background:radial-gradient(140% 90% at 50% 0%,#121426 0%,#07080f 70%)}
+      .w{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:12px;padding:10px;border-radius:22px;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);grid-template-rows:auto minmax(0,1fr) auto;height:calc(100vh - var(--top,56px) - 1px);min-height:600px;background:radial-gradient(140% 90% at 50% 0%,#121426 0%,#07080f 70%)}
       .w>*{position:relative;z-index:1}
       .bgfx{position:absolute;inset:-20%;z-index:0!important;pointer-events:none;filter:blur(80px) saturate(140%);opacity:.5}
       .bgfx i{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:drift 40s ease-in-out infinite alternate;transition:background 1.5s}
-      .bgfx i:nth-child(1){width:60%;height:65%;left:0;top:10%;background:radial-gradient(circle,var(--amb),transparent 65%)}
+      .bgfx i:nth-child(1){width:60%;height:65%;left:0;top:10%;background:radial-gradient(circle,#ff9a5a,transparent 65%)}
       .bgfx i:nth-child(2){width:50%;height:55%;right:2%;top:5%;background:radial-gradient(circle,#7b5cff,transparent 65%);animation-duration:48s;animation-delay:-14s}
       .bgfx i:nth-child(3){width:45%;height:50%;left:35%;bottom:0;background:radial-gradient(circle,#1fb6c9,transparent 65%);animation-duration:55s;animation-delay:-25s}
       @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6%,5%) scale(1.08)}}
@@ -48,14 +48,13 @@ class StreamingCard extends HTMLElement {
       .pill{height:38px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:7px;font-size:13px}
       .pill i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.18);font-style:normal}
       .pill.live i{background:var(--c);box-shadow:0 0 10px var(--c);animation:pulse 1.6s infinite}
-      .pill.foc{background:color-mix(in srgb,var(--c) 22%,transparent);border-color:color-mix(in srgb,var(--c) 70%,transparent)}
+      .pill.foc{background:rgba(255,210,122,.14);border-color:rgba(255,210,122,.6);color:var(--a)}
       @keyframes pulse{50%{opacity:.35}}
-      .rmb{height:38px;padding:0 16px;background:linear-gradient(135deg,#ffd27a,#ff9a5a)!important;color:#1c1826!important;border-color:transparent!important;font-size:13px}
       /* scène */
       .stage{display:flex;flex-direction:column;gap:12px;min-height:0}
       .scr-w{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
-      .amb{position:absolute;inset:8% 6%;border-radius:40px;background:var(--amb);filter:blur(60px);opacity:.55;transition:background 1.5s,opacity 1s;animation:breathe 6s ease-in-out infinite}
-      @keyframes breathe{50%{opacity:.35;transform:scale(.97)}}
+      .amb{position:absolute;inset:8% 6%;border-radius:40px;background:var(--amb);filter:blur(60px);opacity:.3;transition:background 1.5s,opacity 1s;animation:breathe 6s ease-in-out infinite}
+      @keyframes breathe{50%{opacity:.18;transform:scale(.97)}}
       .scr{position:relative;width:100%;max-height:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#05060b;border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.04);cursor:pointer}
       @supports (height:100cqh){.scr-w{container-type:size}.scr{width:min(100%,calc(100cqh*16/9))}}
       .art{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(30px) brightness(.55) saturate(1.3);transform:scale(1.1);transition:background-image .6s}
@@ -91,7 +90,7 @@ class StreamingCard extends HTMLElement {
       .tm{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums;margin-top:3px}
       .ctl{display:flex;align-items:center;gap:10px;padding:10px 14px}
       .ctl .tb{width:48px;height:48px;border-radius:50%;font-size:18px;padding:0}
-      .ctl .pp{width:62px;height:62px;font-size:24px;background:#fff;color:#111;border-color:#fff;box-shadow:0 0 30px color-mix(in srgb,var(--amb) 60%,transparent)}
+      .ctl .pp{width:62px;height:62px;font-size:24px;background:var(--a);color:#1c1826;border-color:var(--a);box-shadow:0 0 24px rgba(255,210,122,.3)}
       .vol{flex:1;display:flex;align-items:center;gap:10px;margin-left:10px;min-width:0}
       .vol .mu{width:42px;height:42px;border-radius:50%;padding:0;font-size:17px}
       .vol b{font:300 22px system-ui;min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
@@ -101,15 +100,13 @@ class StreamingCard extends HTMLElement {
       .side{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto;scrollbar-width:thin}
       .rad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
       .rd{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 2px;border-radius:16px;background:transparent;border-color:transparent}
-      .rd .lg{width:100%;max-width:64px;aspect-ratio:1;border-radius:18px;display:flex;align-items:center;justify-content:center;font:900 15px system-ui;color:#fff;letter-spacing:.04em;box-shadow:0 8px 20px rgba(0,0,0,.4);position:relative}
+      .rd .lg{width:100%;max-width:60px;aspect-ratio:1;border-radius:16px;display:flex;align-items:center;justify-content:center;font:900 14px system-ui;letter-spacing:.04em;background:rgba(255,255,255,.06);border:1px solid var(--b);border-bottom:3px solid var(--rc);position:relative}
       .rd span{font:600 11px system-ui;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
       .rd.on .lg{outline:2px solid var(--a);outline-offset:3px} .rd.on span{color:var(--a)}
-      .rd.on .lg::after{content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:22px;height:8px;background:repeating-linear-gradient(90deg,#fff 0 3px,transparent 3px 5px);animation:eq .8s ease-in-out infinite alternate;border-radius:2px}
+      .rd.on .lg{background:rgba(255,210,122,.1)} .rd.on .lg::after{content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:22px;height:8px;background:repeating-linear-gradient(90deg,var(--a) 0 3px,transparent 3px 5px);animation:eq .8s ease-in-out infinite alternate;border-radius:2px}
       @keyframes eq{to{height:3px}}
       .ql{display:grid;grid-template-columns:1fr 1fr;gap:8px}
       .ql button{height:52px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;border-radius:16px}
-      .nf{background:linear-gradient(135deg,#e50914,#7a0209)!important;border-color:transparent!important} .yt{background:linear-gradient(135deg,#ff3040,#a3001b)!important;border-color:transparent!important}
-      .spb{background:linear-gradient(135deg,#1ed760,#0d6b30)!important;border-color:transparent!important;color:#04150a!important}
       .ap{display:flex;flex-direction:column;gap:10px}
       .ah{display:flex;align-items:center;gap:10px} .ah .an{flex:1;font:300 18px system-ui} .ah .as{font-size:12px;color:var(--m)}
       .sw{width:46px;height:26px;border-radius:13px;padding:0;position:relative;background:rgba(255,255,255,.1)} .sw::after{content:'';position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:50%;background:rgba(243,238,230,.6);transition:.2s}
@@ -117,12 +114,16 @@ class StreamingCard extends HTMLElement {
       .chips{display:flex;flex-wrap:wrap;gap:6px} .chips button{height:32px;padding:0 12px;border-radius:999px;font:600 12px system-ui}
       .chips button.on{background:rgba(255,210,122,.16);border-color:rgba(255,210,122,.6);color:var(--a)}
       select{height:38px;flex:1;min-width:0;background:rgba(255,255,255,.06);color:var(--t);border:1px solid var(--b);border-radius:14px;padding:0 10px;font:500 13px system-ui} select option{background:#14162a}
+      .dock{grid-column:1/-1;display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:8px;border-radius:20px;background:var(--g);border:1px solid var(--b);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+      .dock button{border-radius:14px;padding:10px 4px;font:700 12px system-ui;display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap;overflow:hidden}
+      .dock button i{font-style:normal;font-size:20px} .dock button small{font:500 10px system-ui;color:var(--m);text-align:center;line-height:1.15}
+      .dock button.on{background:#ffd27a;color:#1c1826;border-color:#ffd27a} .dock button.on small{color:#1c1826}
       .row{display:flex;gap:8px;align-items:center} .row button{height:38px;padding:0 12px;white-space:nowrap}
-      @container (max-width:1100px){.lnk span{display:none}.pills .pill span{display:none}}
+      @container (max-width:1100px){.pills .pill span{display:none}.dock{grid-template-columns:repeat(4,1fr)}}
       @container (max-width:820px){.w{grid-template-columns:1fr;grid-template-rows:auto;height:auto}.scr-w{flex:none;container-type:inline-size!important}.scr{width:100%!important}.side{overflow:visible}.clk{display:none}}
     </style>
     <div class="w"><div class="bgfx"><i></i><i></i><i></i></div><div class="vig"></div>
-      <div class="p top"><span class="tt">Streaming</span><div class="pills"></div><span class="clk"></span><button class="rmb">🎛 Télécommande</button></div>
+      <div class="p top"><span class="tt">Streaming</span><div class="pills"></div><span class="clk"></span></div>
       <div class="stage">
         <div class="scr-w"><div class="amb"></div><div class="scr">
           <div class="art"></div>
@@ -134,29 +135,27 @@ class StreamingCard extends HTMLElement {
           <div class="meta"><div class="bdg"></div><div class="ttl"></div><div class="sub"></div><div class="pg"><i></i></div><div class="tm"><span class="t1"></span><span class="t2"></span></div></div>
         </div></div>
         <div class="p ctl"><button class="tb pv">⏮</button><button class="tb pp">▶</button><button class="tb nx">⏭</button>
-          <div class="vol"><button class="mu">🔊</button><input class="vr" type="range" min="0" max="100" step="1"><b class="vv">–</b></div>
-          <div class="lnk"><button class="srch">🔍 <span>Rechercher</span></button></div></div>
+          <div class="vol"><button class="mu">🔊</button><input class="vr" type="range" min="0" max="100" step="1"><b class="vv">–</b></div></div>
       </div>
       <div class="side">
         <div class="p"><div class="h"><span>📻 Radios</span><span class="rnow"></span></div><div class="rad"></div></div>
-        <div class="p"><div class="h"><span>🚀 Lancer</span></div><div class="ql">
-          <button class="nf">N&nbsp; Netflix</button><button class="yt">▶&nbsp; YouTube</button>
-          <button class="spb">🎵 Spotify</button><button class="otv">📺 Orange TV</button></div></div>
         <div class="p ap"><div class="ah"><span class="an">🔈 Ampli ciné</span><span class="as"></span><button class="sw apw"></button></div>
           <div class="chips src"></div>
           <div class="row"><select class="smode"></select><button class="adv">⚙️ Réglages son</button></div></div>
       </div>
+      <div class="dock"><button class="rmb"><i>🎛️</i>Télécommande<small>TV · Ampli</small></button><button class="otv"><i>📺</i>Orange TV<small>Live TV</small></button><button class="yt"><i>▶️</i>YouTube<small>Box Orange</small></button><button class="nf"><i>🎬</i>Netflix<small>Box Orange</small></button><button class="spb"><i>🎵</i>Spotify<small>Bibliothèque</small></button><button class="srch"><i>🔍</i>Rechercher<small>Box Orange</small></button><button class="adv2"><i>🎚️</i>Réglages son<small>Ampli ciné</small></button><button class="apw2"><i>⏻</i>Ampli<small class="aps">—</small></button></div>
     </div>`;
     const $ = (s) => r.querySelector(s); this.$ = $;
     // pastilles sources
     const pills = $('.pills'); this._pills = {};
     Object.entries(MODES).forEach(([k, [ic, n, c]]) => { const b = document.createElement('button'); b.className = 'pill'; b.style.setProperty('--c', c); b.innerHTML = `<i></i>${ic} <span>${n}</span>`; b.onclick = () => this._pick(k); pills.appendChild(b); this._pills[k] = b; });
     // radios
-    const rad = $('.rad'); this._rads = RADIOS.map(([n, id, ab, [c1, c2]]) => { const b = document.createElement('button'); b.className = 'rd'; b.innerHTML = `<div class="lg" style="background:linear-gradient(135deg,${c1},${c2})">${ab}</div><span>${n}</span>`; b.onclick = () => this._radio(id); rad.appendChild(b); return [n, b]; });
+    const rad = $('.rad'); this._rads = RADIOS.map(([n, id, ab, [c1, c2]]) => { const b = document.createElement('button'); b.className = 'rd'; b.innerHTML = `<div class="lg" style="color:${c1};--rc:${c1}">${ab}</div><span>${n}</span>`; b.onclick = () => this._radio(id); rad.appendChild(b); return [n, b]; });
     // sources ampli
     const src = $('.src'); this._srcs = SOURCES.map(([v, l]) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => this._call('media_player', 'select_source', { entity_id: E.amp, source: v }); src.appendChild(b); return [v, b]; });
     $('.smode').onchange = (ev) => this._call('media_player', 'select_sound_mode', { entity_id: E.amp, sound_mode: ev.target.value });
     $('.apw').onclick = () => this._call('media_player', this._on(E.amp) ? 'turn_off' : 'turn_on', { entity_id: E.amp });
+    $('.adv2').onclick = () => $('.adv').onclick(); $('.apw2').onclick = () => $('.apw').onclick();
     $('.adv').onclick = () => this._popCards('⚙️ Réglages son — Ampli ciné', this.cfg.amp_settings || []);
     $('.spb').onclick = () => this.cfg.spotify ? this._popCards('🎵 Spotify', [this.cfg.spotify]) : this._more(E.sp);
     $('.nf').onclick = () => this._call('remote', 'turn_on', { entity_id: E.rem, activity: 'com.netflix.ninja' });
@@ -292,7 +291,7 @@ class StreamingCard extends HTMLElement {
     this._rads.forEach(([n, b], i) => { const on = isRad && hay.includes(n.toLowerCase().replace(/\s|belgique/g, '').slice(0, 5)); if (on) this._radIdx = i; b.classList.toggle('on', on); });
     $('.rnow').textContent = isRad ? (this._radIdx >= 0 ? RADIOS[this._radIdx][0] : (amp.attributes.media_title || 'En écoute')) : '';
     // ampli
-    $('.apw').classList.toggle('on', ampOn); $('.as').textContent = ampOn ? (amp.attributes.source || '') : 'éteint';
+    $('.apw').classList.toggle('on', ampOn); $('.apw2').classList.toggle('on', ampOn); $('.aps').textContent = ampOn ? 'Allumé · ' + vol + '%' : 'Éteint'; $('.as').textContent = ampOn ? (amp.attributes.source || '') : 'éteint';
     this._srcs.forEach(([v, b]) => { b.classList.toggle('on', ampOn && amp.attributes.source === v); b.disabled = !ampOn; b.style.opacity = ampOn ? 1 : .4; });
     const sm = $('.smode'), lst = amp.attributes.sound_mode_list || [], key = lst.join('|');
     if (sm._k !== key) { sm._k = key; sm.innerHTML = lst.map((x) => `<option>${x}</option>`).join(''); }
