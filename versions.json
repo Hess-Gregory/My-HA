@@ -92,7 +92,7 @@
   ".storage/lovelace.maison_eclairage": {
     "last_change": "refonte integrale (design Accueil)",
     "last_update": "2026-10-11T08:53:08.196890+02:00",
-    "version": "1.9.9"
+    "version": "2.0.0"
   },
   ".storage/lovelace.maison_energie": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -117,7 +117,7 @@
   ".storage/lovelace.maison_streaming": {
     "last_change": "refonte integrale (design Accueil)",
     "last_update": "2026-10-11T08:53:08.196890+02:00",
-    "version": "1.9.9"
+    "version": "2.0.0"
   },
   ".storage/lovelace.maison_taches": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
