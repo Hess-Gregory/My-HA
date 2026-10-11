@@ -170,9 +170,9 @@
     "version": "0.1.0"
   },
   "packages/cave_alarme.yaml": {
-    "last_change": "cave code, bouton cave dans le plan 3D, popups au design des dashboards",
-    "last_update": "2026-10-12T01:24:40.527713+02:00",
-    "version": "0.1.1"
+    "last_change": "cave sans boutons Reamer/+10 min",
+    "last_update": "2026-10-12T01:27:11.255983+02:00",
+    "version": "0.1.2"
   },
   "packages/chambre_enfants.yaml": {
     "last_change": "interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal",
@@ -360,9 +360,9 @@
     "version": "0.0.1"
   },
   "www/plan3d/cave-alarm-card.js": {
-    "last_change": "cave code, bouton cave dans le plan 3D, popups au design des dashboards",
-    "last_update": "2026-10-12T01:24:40.527713+02:00",
-    "version": "0.1.1"
+    "last_change": "cave sans boutons Reamer/+10 min",
+    "last_update": "2026-10-12T01:27:11.255983+02:00",
+    "version": "0.1.2"
   },
   "www/plan3d/eclairage-card.js": {
     "last_change": "plan 2D de la maison dans le design Accueil (dock de scenes conserve)",
