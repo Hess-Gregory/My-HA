@@ -80,9 +80,9 @@
     "version": "0.11.1"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
-    "last_update": "2026-10-11T08:09:55.932077+02:00",
-    "version": "2.11.1"
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "2.12.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -145,14 +145,19 @@
     "version": "0.4.2"
   },
   "automations.yaml": {
-    "last_change": "modifications de Gregory (integrations, cave, planning Matteo)",
-    "last_update": "2026-10-01T18:41:22.917171+02:00",
-    "version": "0.0.5"
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "0.1.0"
   },
   "configuration.yaml": {
     "last_change": "four bloque si alarme armee sauf code, bannissement IP apres 5 echecs",
     "last_update": "2026-10-08T17:49:46.091409+02:00",
     "version": "0.3.0"
+  },
+  "packages/ampli_yxc.yaml": {
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "0.1.0"
   },
   "packages/anniversaires.yaml": {
     "last_change": "annee saisie au clavier bien prise en compte",
@@ -162,6 +167,11 @@
   "packages/calendriers.yaml": {
     "last_change": "grilles mensuelles famille et horaires pro, lumieres unifiees",
     "last_update": "2026-09-27T12:02:00.548425+02:00",
+    "version": "0.1.0"
+  },
+  "packages/cave_alarme.yaml": {
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
     "version": "0.1.0"
   },
   "packages/chambre_enfants.yaml": {
@@ -325,9 +335,9 @@
     "version": "0.0.1"
   },
   "scripts.yaml": {
-    "last_change": "bouton Annuler (Je pars / Bonne nuit) qui remet l etat precedent",
-    "last_update": "2026-10-08T19:32:19.407986+02:00",
-    "version": "0.4.0"
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "0.5.0"
   },
   "themes/Alpine-night.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -349,6 +359,11 @@
     "last_update": "2026-09-17T14:01:47.050330+02:00",
     "version": "0.0.1"
   },
+  "www/plan3d/cave-alarm-card.js": {
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "0.1.0"
+  },
   "www/plan3d/eclairage-card.js": {
     "last_change": "plan 2D de la maison dans le design Accueil (dock de scenes conserve)",
     "last_update": "2026-10-09T08:25:56.086843+02:00",
@@ -360,9 +375,9 @@
     "version": "0.4.1"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
-    "last_update": "2026-10-11T08:09:55.932077+02:00",
-    "version": "2.7.3"
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "2.8.0"
   },
   "www/plan3d/lj-console-card.js": {
     "last_change": "design harmonise avec Accueil (fond, tuiles, cadre plein ecran) + bouton retour dans la console LJ",
@@ -375,9 +390,9 @@
     "version": "0.0.2"
   },
   "www/plan3d/streaming-card.js": {
-    "last_change": "harmonisation design avec Accueil (dock, accents or)",
-    "last_update": "2026-10-11T08:39:58.214066+02:00",
-    "version": "0.0.3"
+    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
+    "last_update": "2026-10-12T00:06:02.043336+02:00",
+    "version": "0.1.0"
   },
   "www/plan3d/v2-board.js": {
     "last_change": "V2 board hauteur tuiles + traductions",

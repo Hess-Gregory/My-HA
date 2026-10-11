@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 12/10/2026 00:06 | cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC
 # Cave — désarmement par code depuis HA, popup tablette avec décompte, annonces vocales, réarmement auto 10 min après fermeture de la porte
 # Le réarmement lui-même reste fait par l'automation « cave_rearmement_auto » (automations.yaml), déclenchée par la fin du timer.
 timer:

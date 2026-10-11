@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.5.0 | 12/10/2026 00:06 | cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command

@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 12/10/2026 00:06 | cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC
 # Yamaha RX-A6A — API locale MusicCast (YXC) : Surround AI, sorties HDMI, scènes, favoris radio (Net / DAB / FM)
 rest:
   - resource: http://192.168.0.4/YamahaExtendedControl/v1/main/getStatus
