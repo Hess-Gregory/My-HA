@@ -70,9 +70,9 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "moteur V2 board (design Accueil)",
-    "last_update": "2026-10-11T09:34:46.983159+02:00",
-    "version": "0.9.3"
+    "last_change": "V2 board hauteur tuiles + traductions",
+    "last_update": "2026-10-11T11:33:41.589342+02:00",
+    "version": "0.9.4"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
@@ -380,8 +380,8 @@
     "version": "0.0.3"
   },
   "www/plan3d/v2-board.js": {
-    "last_change": "moteur V2 board (design Accueil)",
-    "last_update": "2026-10-11T09:34:46.983159+02:00",
-    "version": "0.0.1"
+    "last_change": "V2 board hauteur tuiles + traductions",
+    "last_update": "2026-10-11T11:33:41.589342+02:00",
+    "version": "0.0.2"
   }
 }
