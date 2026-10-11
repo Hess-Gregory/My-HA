@@ -58,8 +58,8 @@ class MaisonCard extends HTMLElement {
       .top button{height:38px;padding:0 14px}
       .rooms{display:flex;flex-direction:column;gap:8px;overflow:auto;scrollbar-width:thin;padding:8px}
       .rm{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;text-align:left;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);border-color:transparent}
-      .rm .ri{font-size:22px;grid-row:1/3} .rm .rn{font:500 15px system-ui;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .rm .rt{font:300 22px system-ui;grid-row:1/3;font-variant-numeric:tabular-nums}
-      .rm .rs{font:500 11px system-ui;color:var(--m);display:flex;gap:8px;white-space:nowrap;overflow:hidden}
+      .rm{grid-template-areas:'i n t' 'i s t'} .rm .ri{font-size:24px;grid-area:i} .rm .rn{grid-area:n;font:500 15px system-ui;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .rm .rt{grid-area:t;font:300 22px system-ui;font-variant-numeric:tabular-nums}
+      .rm .rs{grid-area:s;font:500 11px system-ui;color:var(--m);display:flex;gap:8px;white-space:nowrap;overflow:hidden}
       .rm.sel{background:rgba(255,210,122,.1);border-color:rgba(255,210,122,.55)} .rm.sel .rn{color:var(--a)}
       .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3fbf7f;box-shadow:0 0 8px #3fbf7f;vertical-align:middle;animation:pulse 1.6s infinite} @keyframes pulse{50%{opacity:.35}}
       .main{display:flex;flex-direction:column;gap:12px;min-height:0}
@@ -67,7 +67,7 @@ class MaisonCard extends HTMLElement {
       .hd .hi{font-size:34px} .hd .hn{font:300 30px/1.05 system-ui;letter-spacing:-.02em} .hd .hm{font-size:12px;color:var(--m);margin-top:4px}
       .hd .ht{margin-left:auto;display:flex;align-items:baseline;gap:14px} .hd .ht b{font:200 44px/1 system-ui;font-variant-numeric:tabular-nums} .hd .ht span{color:var(--m);font-size:14px}
       .hd .full{height:40px;padding:0 14px;background:#ffd27a;color:#1c1826;border-color:#ffd27a}
-      .grid{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;align-content:start}
+      .grid{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-content:start} .t.wide{grid-column:span 2} .t.wide .cams{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
       .t{display:flex;flex-direction:column;gap:10px}
       .chips{display:flex;flex-wrap:wrap;gap:6px} .chips button{height:34px;padding:0 12px;border-radius:999px;display:flex;align-items:center;gap:7px;font:600 12px system-ui}
       .chips button i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.18);font-style:normal} .chips button.on{border-color:rgba(255,210,122,.5);background:rgba(255,210,122,.12)} .chips button.on i{background:var(--a);box-shadow:0 0 8px var(--a)} .chips button.na{opacity:.35}
@@ -131,7 +131,7 @@ class MaisonCard extends HTMLElement {
     if ((rm.l || []).length) { const d = tile('💡 Lumières'); const ch = document.createElement('div'); ch.className = 'chips'; d.appendChild(ch);
       this._el.l = rm.l.map(([e, n]) => { const b = document.createElement('button'); b.innerHTML = `<i></i>${n}`; b.onclick = () => this._call(e.split('.')[0], 'toggle', { entity_id: e }); b.oncontextmenu = (ev) => { ev.preventDefault(); this._more(e); }; ch.appendChild(b); return [e, b]; });
       const off = document.createElement('button'); off.textContent = 'Tout éteindre'; off.style.cssText = 'height:30px;padding:0 10px;font-size:11px'; off.onclick = () => rm.l.forEach(([e]) => this._on(e) && this._call(e.split('.')[0], 'turn_off', { entity_id: e })); d.querySelector('.hx').appendChild(off); this._el.lt = d; }
-    if (rm.clim && this._s(rm.clim[0])) { const d = tile('🌡️ Chauffage'); d.insertAdjacentHTML('beforeend', `<div class="big"><b class="ct"></b><div><div class="cm2"></div><small class="cp"></small></div><div class="stp"><button class="mn">−</button><span class="tg"></span><button class="pl">+</button></div></div><div class="chips pr"></div>`);
+    if (rm.clim && this._s(rm.clim[0])) { const d = tile('🌡️ Chauffage'); d.insertAdjacentHTML('beforeend', `<div class="big"><b class="ct"></b><div class="stp"><button class="mn">−</button><span class="tg"></span><button class="pl">+</button></div></div><div style="font-size:13px;color:var(--m)"><span class="cm2"></span> <span class="cp"></span></div><div class="chips pr"></div>`);
       const e = rm.clim[0]; const step = (dl) => { const s = this._s(e); const v = (s.attributes.temperature || 19) + dl; this._call('climate', 'set_temperature', { entity_id: e, temperature: Math.round(v * 2) / 2 }); };
       d.querySelector('.mn').onclick = () => step(-0.5); d.querySelector('.pl').onclick = () => step(0.5); d.querySelector('.ct').onclick = () => this._more(e); this._el.c = d; }
     if ((rm.d || []).length || rm.lock) { const d = tile('🚪 Accès & ouvertures'); this._el.d = (rm.d || []).map(([e, n]) => { const r = document.createElement('div'); r.className = 'row'; r.innerHTML = `<span class="rl">${n}</span><span class="st"></span>`; r.onclick = () => this._more(e); d.appendChild(r); return [e, r]; });
@@ -139,7 +139,7 @@ class MaisonCard extends HTMLElement {
         b.onclick = () => { const s = this._s(rm.lock); if (!s) return; if (!b._arm) { b._arm = true; b.classList.add('arm'); b.textContent = 'Confirmer ?'; clearTimeout(b._t); b._t = setTimeout(() => { b._arm = false; b.classList.remove('arm'); this._updGrid(rm); }, 3000); return; } b._arm = false; b.classList.remove('arm'); this._call('lock', s.state === 'locked' ? 'unlock' : 'lock', { entity_id: rm.lock }); };
         d.appendChild(r); this._el.lk = r; } }
     if ((rm.med || []).length) { const d = tile('🎵 Médias'); this._el.m = rm.med.map((e) => { const r = document.createElement('div'); r.className = 'mp'; r.innerHTML = `<div class="art"></div><div style="min-width:0"><div class="mt"></div><div class="ms"></div></div><button class="pp"></button>`; r.querySelector('.art').onclick = () => this._more(e); r.querySelector('.pp').onclick = () => { const s = this._s(e); this._call('media_player', OFF.includes(s.state) && s.state !== 'idle' ? 'turn_on' : 'media_play_pause', { entity_id: e }); }; d.appendChild(r); return [e, r]; }); }
-    if ((rm.cam || []).length) { const d = tile('📹 Caméras'); const w = document.createElement('div'); w.className = 'cams'; d.appendChild(w); this._el.cam = rm.cam.map((e) => { const r = document.createElement('div'); r.className = 'cm'; r.innerHTML = '<span></span>'; r.onclick = () => this._more(e); w.appendChild(r); return [e, r]; }); this._camRefresh(); }
+    if ((rm.cam || []).length) { const d = tile('📹 Caméras'); const w = document.createElement('div'); w.className = 'cams'; d.classList.add('wide'); d.appendChild(w); this._el.cam = rm.cam.map((e) => { const r = document.createElement('div'); r.className = 'cm'; r.innerHTML = '<span></span>'; r.onclick = () => this._more(e); w.appendChild(r); return [e, r]; }); this._camRefresh(); }
     if (!g.children.length) g.innerHTML = '<div class="p empty">Rien à afficher ici : utilise « Commandes complètes » pour tous les réglages de la pièce.</div>';
   }
   _camRefresh() { (this._el && this._el.cam || []).forEach(([e, r]) => { const s = this._s(e); if (!s || !s.attributes.entity_picture) return; r.style.backgroundImage = `url("${s.attributes.entity_picture}&t=${Date.now()}")`; r.querySelector('span').textContent = s.attributes.friendly_name || ''; }); }
@@ -149,7 +149,7 @@ class MaisonCard extends HTMLElement {
     if (E.lt) E.lt.querySelector('.h span').textContent = `💡 Lumières · ${this._lightsOn(rm)}/${rm.l.length}`;
     if (E.c) { const s = this._s(rm.clim[0]), A = s.attributes, t = this._temp(rm); E.c.querySelector('.ct').textContent = t != null ? t.toFixed(1) + '°' : '–';
       E.c.querySelector('.tg').textContent = (A.temperature ?? '–') + '°'; E.c.querySelector('.cm2').textContent = (HV[s.state] || s.state) + (A.hvac_action ? ' · ' + (A.hvac_action === 'heating' ? '🔥 en chauffe' : A.hvac_action === 'idle' ? 'au repos' : A.hvac_action) : '');
-      E.c.querySelector('.cp').textContent = A.preset_mode ? 'Mode : ' + A.preset_mode : '';
+      E.c.querySelector('.cp').textContent = '';
       const pr = E.c.querySelector('.pr'), pl = A.preset_modes || []; if (pr._k !== pl.join()) { pr._k = pl.join(); pr.innerHTML = ''; pl.forEach((p) => { const b = document.createElement('button'); b.innerHTML = `<i></i>${p}`; b.onclick = () => this._call('climate', 'set_preset_mode', { entity_id: rm.clim[0], preset_mode: p }); pr.appendChild(b); }); }
       Array.from(pr.children).forEach((b, i) => b.classList.toggle('on', pl[i] === A.preset_mode)); }
     (E.d || []).forEach(([e, r]) => { const s = this._s(e), o = s && s.state === 'on'; const st = r.querySelector('.st'); st.textContent = !s ? '–' : o ? 'Ouverte' : 'Fermée'; st.className = 'st ' + (o ? 'op' : 'ok'); });

@@ -7,6 +7,17 @@
       "title": "Dashboard Test - Popup Universel",
       "views": [
         {
+          "title": "V2 · Ma Maison",
+          "path": "v2-ma-maison",
+          "icon": "mdi:home-variant",
+          "type": "panel",
+          "cards": [
+            {
+              "type": "custom:maison-card"
+            }
+          ]
+        },
+        {
           "title": "Test Popups",
           "path": "test-popups",
           "icon": "mdi:test-tube",
