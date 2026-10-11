@@ -370,8 +370,8 @@
     "version": "0.2.2"
   },
   "www/plan3d/streaming-card.js": {
-    "last_change": "ecran video YouTube, mise en page vinyle",
-    "last_update": "2026-10-11T08:21:29.560891+02:00",
-    "version": "0.0.2"
+    "last_change": "harmonisation design avec Accueil (dock, accents or)",
+    "last_update": "2026-10-11T08:39:58.214066+02:00",
+    "version": "0.0.3"
   }
 }
