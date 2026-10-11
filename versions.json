@@ -369,6 +369,11 @@
     "last_update": "2026-10-09T08:09:11.392737+02:00",
     "version": "0.2.2"
   },
+  "www/plan3d/maison-card.js": {
+    "last_change": "Ma Maison v2 (carte pieces design Accueil)",
+    "last_update": "2026-10-11T09:09:23.951865+02:00",
+    "version": "0.0.1"
+  },
   "www/plan3d/streaming-card.js": {
     "last_change": "harmonisation design avec Accueil (dock, accents or)",
     "last_update": "2026-10-11T08:39:58.214066+02:00",
