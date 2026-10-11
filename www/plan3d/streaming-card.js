@@ -209,11 +209,12 @@ class StreamingCard extends HTMLElement {
   _yxc() { const s = this._s('sensor.ampli_yxc_statut'); return s ? s.attributes : {}; }
   _radRender() {
     const g = (e) => { const s = this._s(e); return (s && s.attributes.preset_info) || []; };
-    let list = []; g('sensor.ampli_presets_net').forEach((p, i) => { if (p.text && p.input === 'net_radio') list.push({ n: p.text, p: 'netusb/recallPreset?zone=main&num=' + (i + 1) }); });
+    if (!this._favT || Date.now() - this._favT > 1800000) { this._favT = Date.now(); const B = (id) => this._h.callWS({ type: 'media_player/browse_media', entity_id: 'media_player.ampli_cine', media_content_id: id, media_content_type: 'directory' }); B('input:net_radio').then(() => B('list:net_radio:1:0')).then(() => B('list:net_radio:2:0')).then((r) => { const f = (r.children || []).filter((c) => c.can_play).map((c) => ({ n: c.title, id: c.media_content_id, p: null })); if (f.length) { this._fav = f; this._radKey = null; this._radRender(); } }).catch(() => {}); }
+    let list = (this._fav || []).slice(); if (!list.length) g('sensor.ampli_presets_net').forEach((p, i) => { if (p.text && p.input === 'net_radio') list.push({ n: p.text, p: 'netusb/recallPreset?zone=main&num=' + (i + 1) }); });
     if (!list.length) g('sensor.ampli_presets_dab').forEach((p, i) => { if (p.text) list.push({ n: p.text, p: 'tuner/recallPreset?zone=main&band=dab&num=' + (i + 1) }); });
     if (!list.length) g('sensor.ampli_presets_fm').forEach((p, i) => { if (p.number) list.push({ n: p.text || ((p.number / 1000).toFixed(1) + ' FM'), p: 'tuner/recallPreset?zone=main&band=fm&num=' + (i + 1) }); });
     if (!list.length) list = RADIOS.map(([n, id]) => ({ n, id, p: null }));
-    list = list.slice(0, 15); const key = list.map((x) => x.n).join('|'); if (key === this._radKey) return; this._radKey = key; this._radList = list;
+    list = list.slice(0, 16); const key = list.map((x) => x.n).join('|'); if (key === this._radKey) return; this._radKey = key; this._radList = list;
     const rad = this.$('.rad'); rad.innerHTML = ''; const COLS = ['#ff5a5f', '#ff2d87', '#00a3e0', '#8e5cff', '#ffb400', '#1fb6c9', '#7fe0a8', '#ff8a65'];
     this._rads = list.map((r, i) => { const b = document.createElement('button'); b.className = 'rd'; const c = COLS[i % COLS.length]; const ab = (r.n.replace(/[^A-Za-z0-9À-ÿ ]/g, '').trim().split(/\s+/)[0] || r.n).slice(0, 4).toUpperCase(); b.innerHTML = `<div class="lg" style="color:${c};--rc:${c}">${ab}</div><span>${r.n}</span>`; b.onclick = () => this._radio(r); rad.appendChild(b); return [r, b]; });
   }
