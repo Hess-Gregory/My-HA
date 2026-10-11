@@ -70,9 +70,9 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "compte Matteo limite a son dashboard, commandes annulees + restauration + alerte",
-    "last_update": "2026-10-08T17:47:55.468915+02:00",
-    "version": "0.9.0"
+    "last_change": "nettoyage des vues deja en prod",
+    "last_update": "2026-10-11T08:59:30.729421+02:00",
+    "version": "0.9.1"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "nouvelle carte salle de cinema + recherche telecommandes recursive",
