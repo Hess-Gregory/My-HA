@@ -1,0 +1,3 @@
+e349585 chore(versions): eclairage et streaming en v2.0.0 (refonte integrale)
+582d3fb feat(eclairage,streaming)!: refonte integrale design Accueil + footer versioning
+fccea11 chore(version): bump 1 fichier(s) (streaming-card.js)
