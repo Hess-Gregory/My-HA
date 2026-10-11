@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.1.1 | 12/10/2026 01:24 | cave code, bouton cave dans le plan 3D, popups au design des dashboards
 # Cave — désarmement par code depuis HA, popup tablette avec décompte, annonces vocales, réarmement auto 10 min après fermeture de la porte
 # Le réarmement lui-même reste fait par l'automation « cave_rearmement_auto » (automations.yaml), déclenchée par la fin du timer.
 timer:
@@ -50,36 +49,6 @@ script:
       - stop: fin
         response_variable: r
 
-  cave_rearmer_maintenant:
-    alias: 🛡️ Réarmer la cave maintenant
-    mode: single
-    sequence:
-      - if: "{{ is_state('binary_sensor.cave_sous_sol_cave_porte', 'off') }}"
-        then:
-          - action: timer.start
-            target:
-              entity_id: timer.cave_rearmement
-            data:
-              duration: "00:00:01"
-        else:
-          - action: notify.salon_sam_tablette_synthese_vocale
-            continue_on_error: true
-            data:
-              message: "Impossible de réarmer : la porte de la cave est ouverte."
-
-  cave_prolonger:
-    alias: ⏱️ Cave – prolonger de 10 minutes
-    mode: single
-    sequence:
-      - action: timer.start
-        target:
-          entity_id: timer.cave_rearmement
-        data:
-          duration: >-
-            {% set f = state_attr('timer.cave_rearmement', 'finishes_at') %}
-            {% set left = ((as_datetime(f) - now()).total_seconds() | int) if f and is_state('timer.cave_rearmement', 'active') else 0 %}
-            {{ (left + 600) | timestamp_custom('%H:%M:%S', false) }}
-
   cave_popup:
     alias: Cave – popup décompte (tablette)
     mode: restart
@@ -105,20 +74,6 @@ script:
                   - entity: timer.cave_rearmement
                     name: Réarmement dans
                     icon: mdi:shield-sync
-              - type: horizontal-stack
-                cards:
-                  - type: button
-                    name: Réarmer maintenant
-                    icon: mdi:shield-lock
-                    tap_action:
-                      action: perform-action
-                      perform_action: script.cave_rearmer_maintenant
-                  - type: button
-                    name: "+10 min"
-                    icon: mdi:timer-plus
-                    tap_action:
-                      action: perform-action
-                      perform_action: script.cave_prolonger
 
   je_pars_pause:
     alias: ⏸ Je pars – pause / reprise du décompte

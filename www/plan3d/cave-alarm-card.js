@@ -48,10 +48,7 @@ window.__cavePad = (hh) => {
 window.__caveSheet = () => {
   const o = cvOpen(`<div class="cvh"><div class="cvi off">🔓</div><div><div class="cvt">Cave désactivée</div><div class="cvs st"></div></div></div>
     <div class="cvn">—</div><div class="cvm">Ouvrir la porte suspend le décompte.</div>
-    <div class="cvr"><button class="p re">🛡️ Réarmer</button><button class="pl">⏱️ +10 min</button><button class="x">Fermer</button></div>`);
-  const call = (s) => cvH().callService('script', 'turn_on', { entity_id: 'script.' + s });
-  o.querySelector('.re').onclick = () => call('cave_rearmer_maintenant');
-  o.querySelector('.pl').onclick = () => call('cave_prolonger');
+    <div class="cvr"><button class="x">Fermer</button></div>`);
   o.querySelector('.x').onclick = () => o.remove();
   const tick = () => {
     if (!o.isConnected) return clearInterval(iv); const h = cvH(); if (!h) return; const a = h.states[CV.a], d = h.states[CV.d];

@@ -1,0 +1,1 @@
+82c8266 chore(version): bump 6 fichier(s) (cave_alarme.yaml, cave-alarm-card.js, floorplan-3d-card.js, home-hub-card.js, lovelace.maison_accueil...)
