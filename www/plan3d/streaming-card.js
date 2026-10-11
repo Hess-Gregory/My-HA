@@ -11,7 +11,7 @@ const RADIOS = [
   ['GalaxieFM', 'list:net_radio:3:4', 'GXY', ['#8e5cff', '#2b1a6b']],
   ['Contact FM', 'list:net_radio:3:7', 'CTC', ['#ffb400', '#c4501b']],
 ];
-const SOURCES = [['ORANGE BOX', '📺 Box'], ['Spotify', '🎵 Spotify'], ['NET RADIO', '📻 Radio'], ['TV', '🖥️ TV'], ['Bluetooth', 'ᛒ Bluetooth'], ['AirPlay', '⌁ AirPlay']];
+const SOURCES = [['ORANGE BOX', '📺 Box'], ['Spotify', '🎵 Spotify'], ['NET RADIO', '📻 Radio'], ['TV', '🖥️ TV'], ['Bluetooth', 'ᛒ Bluetooth']];
 const MODES = { tv: ['📺', 'Orange TV', '#ff7a1a'], youtube: ['▶', 'YouTube', '#ff3040'], spotify: ['🎵', 'Spotify', '#1ed760'], radio: ['📻', 'Radio', '#8e5cff'] };
 const OFF = ['off', 'unavailable', 'unknown', 'standby'];
 
@@ -118,7 +118,7 @@ class StreamingCard extends HTMLElement {
       .dock button{border-radius:14px;padding:10px 4px;font:700 12px system-ui;display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap;overflow:hidden}
       .dock button i{font-style:normal;font-size:20px} .dock button small{font:500 10px system-ui;color:var(--m);text-align:center;line-height:1.15}
       .dock button.on{background:#ffd27a;color:#1c1826;border-color:#ffd27a} .dock button.on small{color:#1c1826}
-      .row{display:flex;gap:8px;align-items:center} .row button{height:38px;padding:0 12px;white-space:nowrap}
+      .row{display:flex;gap:8px;align-items:center} .scn{gap:6px;flex-wrap:wrap} .scn button{width:34px;height:32px;padding:0;border-radius:10px} .chips button i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.18);display:inline-block;margin-right:6px;font-style:normal} .chips button.on i{background:#1c1826} .row button{height:38px;padding:0 12px;white-space:nowrap}
       @container (max-width:1100px){.pills .pill span{display:none}.dock{grid-template-columns:repeat(4,1fr)}}
       @container (max-width:820px){.w{grid-template-columns:1fr;grid-template-rows:auto;height:auto}.scr-w{flex:none;container-type:inline-size!important}.scr{width:100%!important}.side{overflow:visible}.clk{display:none}}
     </style>
@@ -141,7 +141,7 @@ class StreamingCard extends HTMLElement {
         <div class="p"><div class="h"><span>📻 Radios</span><span class="rnow"></span></div><div class="rad"></div></div>
         <div class="p ap"><div class="ah"><span class="an">🔈 Ampli ciné</span><span class="as"></span><button class="sw apw"></button></div>
           <div class="chips src"></div>
-          <div class="row"><select class="smode"></select><button class="adv">⚙️ Réglages son</button></div></div>
+          <div class="h" style="margin:4px 0 0"><span>🎚️ Son</span></div><div class="chips snd"></div><div class="chips tog"></div><div class="row scn"><span style="font-size:11px;color:var(--m);margin-right:4px">Scènes</span></div><div class="row"><button class="adv">⚙️ Réglages avancés</button></div></div>
       </div>
       <div class="dock"><button class="rmb"><i>🎛️</i>Télécommande<small>TV · Ampli</small></button><button class="otv"><i>📺</i>Orange TV<small>Live TV</small></button><button class="yt"><i>▶️</i>YouTube<small>Box Orange</small></button><button class="nf"><i>🎬</i>Netflix<small>Box Orange</small></button><button class="spb"><i>🎵</i>Spotify<small>Bibliothèque</small></button><button class="srch"><i>🔍</i>Rechercher<small>Box Orange</small></button><button class="adv2"><i>🎚️</i>Réglages son<small>Ampli ciné</small></button><button class="apw2"><i>⏻</i>Ampli<small class="aps">—</small></button></div>
     </div>`;
@@ -150,10 +150,14 @@ class StreamingCard extends HTMLElement {
     const pills = $('.pills'); this._pills = {};
     Object.entries(MODES).forEach(([k, [ic, n, c]]) => { const b = document.createElement('button'); b.className = 'pill'; b.style.setProperty('--c', c); b.innerHTML = `<i></i>${ic} <span>${n}</span>`; b.onclick = () => this._pick(k); pills.appendChild(b); this._pills[k] = b; });
     // radios
-    const rad = $('.rad'); this._rads = RADIOS.map(([n, id, ab, [c1, c2]]) => { const b = document.createElement('button'); b.className = 'rd'; b.innerHTML = `<div class="lg" style="color:${c1};--rc:${c1}">${ab}</div><span>${n}</span>`; b.onclick = () => this._radio(id); rad.appendChild(b); return [n, b]; });
+    this._rads = []; this._radList = []; this._radKey = '';
     // sources ampli
     const src = $('.src'); this._srcs = SOURCES.map(([v, l]) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => this._call('media_player', 'select_source', { entity_id: E.amp, source: v }); src.appendChild(b); return [v, b]; });
-    $('.smode').onchange = (ev) => this._call('media_player', 'select_sound_mode', { entity_id: E.amp, sound_mode: ev.target.value });
+    const SND = [['straight', null, 'Direct'], ['2ch_stereo', null, '2ch Stéréo'], ['all_ch_stereo', null, 'All-ch Stéréo'], ['surr_decoder', 'auto', 'Surround Auto'], ['surr_decoder', 'dolby_surround', 'Dolby Surround'], ['surr_decoder', 'dts_neural_x', 'DTS Neural:X'], ['surr_decoder', 'auro_3d', 'Auro-3D']];
+    this._snd = SND.map(([m, d, l]) => { const b = document.createElement('button'); b.innerHTML = `<i></i>${l}`; b.onclick = async () => { if (d) await this._call('select', 'select_option', { entity_id: 'select.ampli_cine_surround_decoder_device', option: d }); this._call('media_player', 'select_sound_mode', { entity_id: E.amp, sound_mode: m }); }; $('.snd').appendChild(b); return [m, d, b]; });
+    const TOG = [['ai', 'Surround AI'], ['switch.ampli_cine_enhancer', 'Enhancer'], ['switch.ampli_cine_extra_bass', 'Extra Bass'], ['switch.ampli_cine_party_mode', 'Party'], ['switch.ampli_cine_pure_direct', 'Pure Direct'], ['hdmi1', 'HDMI Out 1'], ['hdmi2', 'HDMI Out 2']];
+    this._tog = TOG.map(([k, l]) => { const b = document.createElement('button'); b.innerHTML = `<i></i>${l}`; b.onclick = () => { const Y = this._yxc(); if (k === 'ai') return this._yx('main/setSurroundAI?enable=' + !Y.surround_ai); if (k.startsWith('hdmi')) { const n = k.slice(4); return this._yx('main/setHdmiOut' + n + '?enable=' + !Y['hdmi_out_' + n]); } this._call('switch', 'toggle', { entity_id: k }); }; $('.tog').appendChild(b); return [k, b]; });
+    for (let n = 1; n <= 8; n++) { const b = document.createElement('button'); b.textContent = n; b.title = 'Scène ' + n; b.onclick = () => this._yx('main/recallScene?num=' + n); $('.scn').appendChild(b); }
     $('.apw').onclick = () => this._call('media_player', this._on(E.amp) ? 'turn_off' : 'turn_on', { entity_id: E.amp });
     $('.adv2').onclick = () => $('.adv').onclick(); $('.apw2').onclick = () => $('.apw').onclick();
     $('.adv').onclick = () => this._popCards('⚙️ Réglages son — Ampli ciné', this.cfg.amp_settings || []);
@@ -200,13 +204,25 @@ class StreamingCard extends HTMLElement {
     if (k === 'spotify' && !this._a(E.sp, 'media_title') && this.cfg.spotify) this._popCards('🎵 Spotify', [this.cfg.spotify]);
     this._upd();
   }
-  _radio(id) { this._focus = 'radio'; this._focusT = Date.now(); this._call('media_player', 'play_media', { entity_id: E.amp, media_content_id: id, media_content_type: 'music' }); }
+  _radio(x) { this._focus = 'radio'; this._focusT = Date.now(); if (typeof x === 'object' && !x.p) return this._call('media_player', 'play_media', { entity_id: E.amp, media_content_id: x.id, media_content_type: 'music' }); this._yx(typeof x === 'object' ? x.p : x); }
+  _yx(path) { return this._call('rest_command', 'ampli_yxc', { path }).then(() => setTimeout(() => this._call('homeassistant', 'update_entity', { entity_id: 'sensor.ampli_yxc_statut' }), 1000)); }
+  _yxc() { const s = this._s('sensor.ampli_yxc_statut'); return s ? s.attributes : {}; }
+  _radRender() {
+    const g = (e) => { const s = this._s(e); return (s && s.attributes.preset_info) || []; };
+    let list = []; g('sensor.ampli_presets_net').forEach((p, i) => { if (p.text && p.input === 'net_radio') list.push({ n: p.text, p: 'netusb/recallPreset?zone=main&num=' + (i + 1) }); });
+    if (!list.length) g('sensor.ampli_presets_dab').forEach((p, i) => { if (p.text) list.push({ n: p.text, p: 'tuner/recallPreset?zone=main&band=dab&num=' + (i + 1) }); });
+    if (!list.length) g('sensor.ampli_presets_fm').forEach((p, i) => { if (p.number) list.push({ n: p.text || ((p.number / 1000).toFixed(1) + ' FM'), p: 'tuner/recallPreset?zone=main&band=fm&num=' + (i + 1) }); });
+    if (!list.length) list = RADIOS.map(([n, id]) => ({ n, id, p: null }));
+    list = list.slice(0, 15); const key = list.map((x) => x.n).join('|'); if (key === this._radKey) return; this._radKey = key; this._radList = list;
+    const rad = this.$('.rad'); rad.innerHTML = ''; const COLS = ['#ff5a5f', '#ff2d87', '#00a3e0', '#8e5cff', '#ffb400', '#1fb6c9', '#7fe0a8', '#ff8a65'];
+    this._rads = list.map((r, i) => { const b = document.createElement('button'); b.className = 'rd'; const c = COLS[i % COLS.length]; const ab = (r.n.replace(/[^A-Za-z0-9À-ÿ ]/g, '').trim().split(/\s+/)[0] || r.n).slice(0, 4).toUpperCase(); b.innerHTML = `<div class="lg" style="color:${c};--rc:${c}">${ab}</div><span>${r.n}</span>`; b.onclick = () => this._radio(r); rad.appendChild(b); return [r, b]; });
+  }
   _tr(a) {
     const m = this._mode;
     if (m === 'tv') return this._call('remote', 'send_command', { entity_id: E.rem, command: a === 'prev' ? 'CHANNEL_DOWN' : a === 'next' ? 'CHANNEL_UP' : 'MEDIA_PLAY_PAUSE' });
     if (m === 'radio') {
       if (a === 'pp') return this._call('media_player', 'media_play_pause', { entity_id: E.amp });
-      const i = this._radIdx >= 0 ? this._radIdx : 0, n = RADIOS.length; return this._radio(RADIOS[(i + (a === 'next' ? 1 : n - 1)) % n][1]);
+      const L = this._radList || []; if (!L.length) return; const i = this._radIdx >= 0 ? this._radIdx : 0, n = L.length; return this._radio(L[(i + (a === 'next' ? 1 : n - 1)) % n]);
     }
     const e = m === 'youtube' ? E.tv : m === 'spotify' ? E.sp : E.amp;
     this._call('media_player', a === 'prev' ? 'media_previous_track' : a === 'next' ? 'media_next_track' : 'media_play_pause', { entity_id: e });
@@ -286,16 +302,16 @@ class StreamingCard extends HTMLElement {
     if (!this._vdrag || Date.now() - this._vdrag > 1500) { $('.vr').value = vol; $('.vv').textContent = ampOn ? vol + '%' : 'off'; }
     $('.vr').disabled = !ampOn; $('.mu').textContent = amp.attributes.is_volume_muted ? '🔇' : '🔊';
     // radios
-    this._radIdx = -1; const isRad = amp.attributes.source === 'NET RADIO' && amp.state === 'playing';
+    this._radRender(); this._radIdx = -1; const isRad = ['NET RADIO', 'TUNER'].includes(amp.attributes.source) && amp.state === 'playing';
     const hay = [amp.attributes.media_title, amp.attributes.media_artist, amp.attributes.media_album_name, amp.attributes.media_channel].filter(Boolean).join(' ').toLowerCase().replace(/\s/g, '');
-    this._rads.forEach(([n, b], i) => { const on = isRad && hay.includes(n.toLowerCase().replace(/\s|belgique/g, '').slice(0, 5)); if (on) this._radIdx = i; b.classList.toggle('on', on); });
-    $('.rnow').textContent = isRad ? (this._radIdx >= 0 ? RADIOS[this._radIdx][0] : (amp.attributes.media_title || 'En écoute')) : '';
+    (this._rads || []).forEach(([r, b], i) => { const k = r.n.toLowerCase().replace(/\s|belgique/g, '').slice(0, 6); const on = isRad && k.length > 2 && hay.includes(k); if (on && this._radIdx < 0) this._radIdx = i; b.classList.toggle('on', on); });
+    $('.rnow').textContent = isRad ? (this._radIdx >= 0 ? this._radList[this._radIdx].n : (amp.attributes.media_title || 'En écoute')) : '';
     // ampli
     $('.apw').classList.toggle('on', ampOn); $('.apw2').classList.toggle('on', ampOn); $('.aps').textContent = ampOn ? 'Allumé · ' + vol + '%' : 'Éteint'; $('.as').textContent = ampOn ? (amp.attributes.source || '') : 'éteint';
     this._srcs.forEach(([v, b]) => { b.classList.toggle('on', ampOn && amp.attributes.source === v); b.disabled = !ampOn; b.style.opacity = ampOn ? 1 : .4; });
-    const sm = $('.smode'), lst = amp.attributes.sound_mode_list || [], key = lst.join('|');
-    if (sm._k !== key) { sm._k = key; sm.innerHTML = lst.map((x) => `<option>${x}</option>`).join(''); }
-    if (sm.value !== amp.attributes.sound_mode && amp.attributes.sound_mode) sm.value = amp.attributes.sound_mode; sm.disabled = !ampOn;
+    const Y = this._yxc(), dec = (this._s('select.ampli_cine_surround_decoder_device') || {}).state;
+    (this._snd || []).forEach(([m, d, b]) => { b.classList.toggle('on', ampOn && amp.attributes.sound_mode === m && (!d || d === dec)); b.disabled = !ampOn; });
+    (this._tog || []).forEach(([k, b]) => { let on, na; if (k === 'ai') { on = !!Y.surround_ai; na = Y.surround_ai == null; } else if (k.startsWith('hdmi')) { const v = Y['hdmi_out_' + k.slice(4)]; on = !!v; na = v == null; } else { on = this._on(k); na = !this._s(k); } b.classList.toggle('on', ampOn && on); b.style.display = na ? 'none' : ''; b.disabled = !ampOn; });
     this._prog();
   }
 

@@ -1,0 +1,259 @@
+# Cave — désarmement par code depuis HA, popup tablette avec décompte, annonces vocales, réarmement auto 10 min après fermeture de la porte
+# Le réarmement lui-même reste fait par l'automation « cave_rearmement_auto » (automations.yaml), déclenchée par la fin du timer.
+timer:
+  cave_rearmement:
+    name: Cave – réarmement automatique
+    icon: mdi:shield-sync
+    duration: "00:10:00"
+    restore: true
+
+input_boolean:
+  cave_session:
+    name: Cave – session de désarmement en cours
+    icon: mdi:door-open
+
+script:
+  cave_desarmer_code:
+    alias: 🔓 Désarmer la cave (code)
+    mode: single
+    fields:
+      code:
+        name: Code
+        selector:
+          text:
+            type: password
+    sequence:
+      - variables:
+          ref: "{{ states('input_text.four_code_reference') }}"
+          okref: "{{ ref | length < 4 or (code | string) == ref }}"
+      - if: "{{ okref }}"
+        then:
+          - action: alarm_control_panel.alarm_disarm
+            continue_on_error: true
+            target:
+              entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+            data:
+              code: "{{ code | string }}"
+          - wait_template: "{{ is_state('alarm_control_panel.buanderie_centrale_alarme_ajax_cave', 'disarmed') }}"
+            timeout: "00:00:10"
+      - variables:
+          ok: "{{ okref and is_state('alarm_control_panel.buanderie_centrale_alarme_ajax_cave', 'disarmed') }}"
+          r: "{{ {'ok': ok} }}"
+      - if: "{{ not ok }}"
+        then:
+          - action: notify.mobile_app_samsung_greg
+            continue_on_error: true
+            data:
+              title: "⚠️ Cave : code refusé"
+              message: "Un code incorrect a été saisi pour désarmer la cave."
+      - stop: fin
+        response_variable: r
+
+  cave_rearmer_maintenant:
+    alias: 🛡️ Réarmer la cave maintenant
+    mode: single
+    sequence:
+      - if: "{{ is_state('binary_sensor.cave_sous_sol_cave_porte', 'off') }}"
+        then:
+          - action: timer.start
+            target:
+              entity_id: timer.cave_rearmement
+            data:
+              duration: "00:00:01"
+        else:
+          - action: notify.salon_sam_tablette_synthese_vocale
+            continue_on_error: true
+            data:
+              message: "Impossible de réarmer : la porte de la cave est ouverte."
+
+  cave_prolonger:
+    alias: ⏱️ Cave – prolonger de 10 minutes
+    mode: single
+    sequence:
+      - action: timer.start
+        target:
+          entity_id: timer.cave_rearmement
+        data:
+          duration: >-
+            {% set f = state_attr('timer.cave_rearmement', 'finishes_at') %}
+            {% set left = ((as_datetime(f) - now()).total_seconds() | int) if f and is_state('timer.cave_rearmement', 'active') else 0 %}
+            {{ (left + 600) | timestamp_custom('%H:%M:%S', false) }}
+
+  cave_popup:
+    alias: Cave – popup décompte (tablette)
+    mode: restart
+    sequence:
+      - action: browser_mod.popup
+        continue_on_error: true
+        data:
+          browser_id:
+            - browser_mod_59a39768_1e3bd7e4
+          dismissable: true
+          size: normal
+          title: "🔓 Cave désactivée"
+          content:
+            type: vertical-stack
+            cards:
+              - type: markdown
+                content: >-
+                  <center><b>La cave se réarme automatiquement</b><br>
+                  10 minutes après la fermeture de la porte.<br>
+                  <small>Ouvrir la porte suspend le décompte.</small></center>
+              - type: entities
+                entities:
+                  - entity: timer.cave_rearmement
+                    name: Réarmement dans
+                    icon: mdi:shield-sync
+              - type: horizontal-stack
+                cards:
+                  - type: button
+                    name: Réarmer maintenant
+                    icon: mdi:shield-lock
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.cave_rearmer_maintenant
+                  - type: button
+                    name: "+10 min"
+                    icon: mdi:timer-plus
+                    tap_action:
+                      action: perform-action
+                      perform_action: script.cave_prolonger
+
+  je_pars_pause:
+    alias: ⏸ Je pars – pause / reprise du décompte
+    mode: single
+    sequence:
+      - if: "{{ is_state('timer.compte_a_rebours_depart', 'paused') }}"
+        then:
+          - action: timer.start
+            target:
+              entity_id: timer.compte_a_rebours_depart
+        else:
+          - action: timer.pause
+            target:
+              entity_id: timer.compte_a_rebours_depart
+
+  je_pars_annuler:
+    alias: ↩️ Je pars – annuler le départ
+    mode: single
+    sequence:
+      - action: timer.cancel
+        target:
+          entity_id: timer.compte_a_rebours_depart
+      - action: script.turn_on
+        target:
+          entity_id: script.annuler_scenario
+
+automation:
+  - id: cave_session_debut
+    alias: Cave – début de session (désarmée)
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+        to: disarmed
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.cave_session
+      - if: "{{ is_state('binary_sensor.cave_sous_sol_cave_porte', 'off') }}"
+        then:
+          - action: timer.start
+            target:
+              entity_id: timer.cave_rearmement
+            data:
+              duration: "00:10:00"
+          - action: script.cave_popup
+          - action: notify.salon_sam_tablette_synthese_vocale
+            continue_on_error: true
+            data:
+              message: "La cave est désactivée. Elle se réarmera automatiquement dans 10 minutes si la porte reste fermée."
+        else:
+          - action: notify.salon_sam_tablette_synthese_vocale
+            continue_on_error: true
+            data:
+              message: "La cave est désactivée. La porte est ouverte."
+
+  - id: cave_session_porte_ouverte
+    alias: Cave – porte ouverte pendant la session
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.cave_sous_sol_cave_porte
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.cave_session
+        state: "on"
+    actions:
+      - action: timer.cancel
+        target:
+          entity_id: timer.cave_rearmement
+      - action: browser_mod.close_popup
+        continue_on_error: true
+        data:
+          browser_id:
+            - browser_mod_59a39768_1e3bd7e4
+      - action: notify.salon_sam_tablette_synthese_vocale
+        continue_on_error: true
+        data:
+          message: "La porte de la cave est ouverte. Le réarmement est suspendu."
+
+  - id: cave_session_porte_fermee
+    alias: Cave – porte refermée pendant la session
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.cave_sous_sol_cave_porte
+        from: "on"
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.cave_session
+        state: "on"
+      - condition: state
+        entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+        state: disarmed
+    actions:
+      - action: timer.start
+        target:
+          entity_id: timer.cave_rearmement
+        data:
+          duration: "00:10:00"
+      - action: script.cave_popup
+      - action: notify.salon_sam_tablette_synthese_vocale
+        continue_on_error: true
+        data:
+          message: "Porte de la cave refermée. Réarmement automatique dans 10 minutes."
+
+  - id: cave_session_fin
+    alias: Cave – fin de session (réarmée)
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: alarm_control_panel.buanderie_centrale_alarme_ajax_cave
+        to:
+          - armed_away
+          - armed_home
+          - armed_night
+          - armed_custom_bypass
+    conditions:
+      - condition: state
+        entity_id: input_boolean.cave_session
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.cave_session
+      - action: timer.cancel
+        target:
+          entity_id: timer.cave_rearmement
+      - action: browser_mod.close_popup
+        continue_on_error: true
+        data:
+          browser_id:
+            - browser_mod_59a39768_1e3bd7e4
+      - action: notify.salon_sam_tablette_synthese_vocale
+        continue_on_error: true
+        data:
+          message: "La cave est désormais protégée."

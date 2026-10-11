@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.4.0 | 08/10/2026 19:32 | bouton Annuler (Je pars / Bonne nuit) qui remet l etat precedent
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
@@ -209,6 +208,11 @@ je_pars:
   sequence:
   - action: script.scenario_memoriser
     alias: Mémoriser l'état avant le scénario (bouton Annuler)
+  - action: timer.start
+    target:
+      entity_id: timer.compte_a_rebours_depart
+    data:
+      duration: 00:01:00
   - action: script.turn_on
     target:
       entity_id: script.1786831774432
@@ -235,11 +239,6 @@ je_pars:
   - action: media_player.turn_off
     target:
       entity_id: media_player.fire_tv_192_168_80_103
-  - action: timer.start
-    target:
-      entity_id: timer.compte_a_rebours_depart
-    data:
-      duration: 00:01:00
   - action: input_select.select_option
     target:
       entity_id:

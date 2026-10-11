@@ -84,7 +84,7 @@ class HomeHubCard extends HTMLElement {
       <div class="col c1">
         <div class="tile hero grow"><div class="clock"></div><div class="date"></div><div class="hello"></div><svg class="sun" viewBox="0 0 200 64"><path d="M10 58 Q100 -18 190 58" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2" stroke-dasharray="3 5"/><path class="arcp" d="M10 58 Q100 -18 190 58" fill="none" stroke="url(#sg)" stroke-width="3" stroke-linecap="round"/><defs><linearGradient id="sg"><stop offset="0" stop-color="#ffb86b"/><stop offset="1" stop-color="#ffd27a"/></linearGradient></defs><circle class="sdot" r="6" fill="#ffd27a"/><text class="sr" x="8" y="63">—</text><text class="ss" x="192" y="63" text-anchor="end">—</text><text class="sel" x="100" y="63" text-anchor="middle">—</text></svg><div class="ppl"></div></div>
         <div class="tile"><div class="h">Météo · Engis</div><div class="wnow"><div class="wico"></div><div class="wt"></div></div><div class="wmeta"></div><div class="fc"></div></div>
-        <div class="tile alarm hide-s"><div class="al-i">🛡️</div><div><div class="al-t"></div><div class="al-s">Alarme Ajax · maison</div></div></div>
+        <div class="tile alarm hide-s"><div class="al-i">🛡️</div><div><div class="al-t"></div><div class="al-s">Alarme Ajax · maison</div></div><button class="cvb" style="margin-left:auto;align-self:center;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#f3eee6;border-radius:12px;padding:8px 10px;font:700 11px system-ui;cursor:pointer;white-space:nowrap">🛡️ Cave</button></div>
         <div class="tile sas hide-s"><div class="h">Porte du SAS · BTicino</div><button class="sasb"><i>🔓</i><b>Ouvrir le SAS</b><small>Touchez puis confirmez</small></button></div>
       </div>
       <div class="mid"><div class="plan"></div><div class="dock"></div></div>
@@ -145,17 +145,20 @@ class HomeHubCard extends HTMLElement {
   }
 
   _cdTick() {
-    const t = this._h && this._h.states['timer.compte_a_rebours_depart']; let o = this.shadowRoot.querySelector('.cdov');
-    if (!t || t.state !== 'active' || !t.attributes.finishes_at) { if (o) o.remove(); return; }
-    const left = Math.max(0, Math.round((new Date(t.attributes.finishes_at) - Date.now()) / 1000));
+    const T = 'timer.compte_a_rebours_depart'; const t = this._h && this._h.states[T]; let o = this.shadowRoot.querySelector('.cdov');
+    if (!t || !['active', 'paused'].includes(t.state)) { if (o) o.remove(); return; }
+    const P = t.state === 'paused'; let left = 0;
+    if (P) { const p = String(t.attributes.remaining || '0:0:0').split(':').map(Number); left = (p[0] || 0) * 3600 + (p[1] || 0) * 60 + (p[2] || 0); } else if (t.attributes.finishes_at) left = Math.max(0, Math.round((new Date(t.attributes.finishes_at) - Date.now()) / 1000));
     if (!o) {
       o = document.createElement('div'); o.className = 'cdov';
       o.style.cssText = 'position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
-      o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:22px 26px;width:300px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="font:700 18px sans-serif">⏳ Armement de l’alarme</div><div class="n" style="font:200 76px/1.1 sans-serif;margin:10px 0;color:#ffd27a"></div><div style="font-size:13px;opacity:.75">L’alarme passe en TOTAL à la fin du décompte</div><button style="margin-top:16px;width:100%;padding:13px;border:none;border-radius:12px;background:#e05555;color:#fff;font:700 15px sans-serif">↩️ Annuler le départ</button></div>';
-      o.querySelector('button').onclick = () => { this._h.callService('script', 'turn_on', { entity_id: 'script.annuler_scenario' }); o.remove(); };
+      o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:22px 26px;width:320px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="font:700 18px sans-serif">⏳ Armement de l’alarme</div><div class="n" style="font:200 76px/1.1 sans-serif;margin:10px 0;color:#ffd27a"></div><div class="st" style="font-size:13px;opacity:.75"></div><div style="display:flex;gap:8px;margin-top:16px"><button class="pz" style="flex:1;padding:13px;border:none;border-radius:12px;background:#3a3550;color:#fff;font:700 15px sans-serif"></button><button class="cx" style="flex:1;padding:13px;border:none;border-radius:12px;background:#e05555;color:#fff;font:700 15px sans-serif">↩️ Annuler</button></div></div>';
+      o.querySelector('.pz').onclick = () => this._h.callService('script', 'turn_on', { entity_id: 'script.je_pars_pause' });
+      o.querySelector('.cx').onclick = () => { this._h.callService('script', 'turn_on', { entity_id: 'script.je_pars_annuler' }); o.remove(); };
       this.shadowRoot.appendChild(o);
     }
-    o.querySelector('.n').textContent = left + ' s';
+    o.querySelector('.n').textContent = left + ' s'; o.querySelector('.pz').textContent = P ? '▶️ Reprendre' : '⏸ Pause';
+    o.querySelector('.st').textContent = P ? 'Décompte en pause — l’alarme ne s’armera pas' : 'L’alarme passe en TOTAL à la fin du décompte';
   }
   async _remote() {
     const old = this.shadowRoot.querySelector('.rmov'); if (old) old.remove();
@@ -243,6 +246,10 @@ class HomeHubCard extends HTMLElement {
     // alarme
     const a = H[ALARM], as = a ? a.state : 'unknown', armed = as.startsWith('armed') || as === 'triggered', AT = { disarmed: 'Désarmée', armed_away: 'Armée · totale', armed_home: 'Armée · maison', armed_night: 'Armée · nuit', armed_custom_bypass: 'Armée · partielle', triggered: 'ALARME !', arming: 'Armement…', pending: 'En attente' };
     const al = $('.alarm'); al.classList.toggle('armed', armed); al.classList.toggle('off', as === 'disarmed'); $('.al-t').textContent = AT[as] || as;
+    { const cb = $('.cvb'), cv = this._h.states['alarm_control_panel.buanderie_centrale_alarme_ajax_cave'], ct = this._h.states['timer.cave_rearmement'], cd = this._h.states['binary_sensor.cave_sous_sol_cave_porte'];
+      if (cb && cv) { if (!cb._b) { cb._b = 1; cb.onclick = (e) => { e.stopPropagation(); const s = this._h.states['alarm_control_panel.buanderie_centrale_alarme_ajax_cave']; if (s && s.state === 'disarmed') this._h.callService('script', 'turn_on', { entity_id: 'script.cave_popup' }); else this._codePad('script.cave_desarmer', '🔓', 'Désarmement cave'); }; }
+        const dis = cv.state === 'disarmed'; cb.textContent = dis ? ('🔓 Cave' + (cd && cd.state === 'on' ? ' · ouverte' : ct && ct.state === 'active' ? ' · réarm. ' + new Date(ct.attributes.finishes_at).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' }) : '')) : '🛡️ Cave';
+        cb.style.borderColor = dis ? 'rgba(255,183,77,.6)' : 'rgba(127,224,168,.45)'; cb.style.color = dis ? '#ffcf8a' : '#f3eee6'; } }
     // climat
     $('.rooms').innerHTML = ROOMS.map(([n, id, cl, k, path]) => { const t = num(`sensor.temp_${id}_temperature`), hu = num(`sensor.temp_${id}_humidity`), c = H[cl], heat = c && c.attributes.hvac_action === 'heating';
       const cons = H['sensor.consigne_' + k] ? H['sensor.consigne_' + k].state : (c ? c.attributes.temperature : null), mode = H['input_select.mode_' + k] ? H['input_select.mode_' + k].state : '';

@@ -1,0 +1,54 @@
+# Yamaha RX-A6A — API locale MusicCast (YXC) : Surround AI, sorties HDMI, scènes, favoris radio (Net / DAB / FM)
+rest:
+  - resource: http://192.168.0.4/YamahaExtendedControl/v1/main/getStatus
+    scan_interval: 15
+    timeout: 5
+    sensor:
+      - name: Ampli YXC statut
+        unique_id: ampli_yxc_statut
+        value_template: "{{ value_json.sound_program | default('inconnu') }}"
+        json_attributes:
+          - power
+          - input
+          - sound_program
+          - surround_ai
+          - pure_direct
+          - enhancer
+          - extra_bass
+          - hdmi_out_1
+          - hdmi_out_2
+          - surr_decoder_type
+          - party_enable
+  - resource: http://192.168.0.4/YamahaExtendedControl/v1/netusb/getPresetInfo
+    scan_interval: 1800
+    timeout: 5
+    sensor:
+      - name: Ampli presets net
+        unique_id: ampli_presets_net
+        value_template: "{{ value_json.preset_info | selectattr('input', 'ne', 'unknown') | list | count }}"
+        json_attributes:
+          - preset_info
+  - resource: http://192.168.0.4/YamahaExtendedControl/v1/tuner/getPresetInfo?band=dab
+    scan_interval: 1800
+    timeout: 5
+    sensor:
+      - name: Ampli presets dab
+        unique_id: ampli_presets_dab
+        value_template: "{{ value_json.preset_info | selectattr('text', 'ne', '') | list | count }}"
+        json_attributes:
+          - preset_info
+  - resource: http://192.168.0.4/YamahaExtendedControl/v1/tuner/getPresetInfo?band=fm
+    scan_interval: 1800
+    timeout: 5
+    sensor:
+      - name: Ampli presets fm
+        unique_id: ampli_presets_fm
+        value_template: "{{ value_json.preset_info | selectattr('number', 'ne', 0) | list | count }}"
+        json_attributes:
+          - preset_info
+
+rest_command:
+  ampli_yxc:
+    url: "http://192.168.0.4/YamahaExtendedControl/v1/{{ path }}"
+    method: get
+    timeout: 5
