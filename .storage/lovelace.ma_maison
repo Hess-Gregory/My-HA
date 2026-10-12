@@ -840,35 +840,6 @@
                   }
                 },
                 {
-                  "type": "custom:button-card",
-                  "template": "cc_push",
-                  "entity": "alarm_control_panel.buanderie_centrale_alarme_ajax_cave",
-                  "name": "[[[ if (entity.state.startsWith('armed')) return 'Désarmer la cave'; const d = states['binary_sensor.cave_sous_sol_cave_porte']; if (d && d.state === 'on') return 'Cave · réarmement suspendu'; const t = states['timer.cave_rearmement']; if (t && t.state === 'active' && t.attributes.finishes_at) { const s = Math.max(0, Math.round((new Date(t.attributes.finishes_at) - Date.now()) / 1000)); return 'Cave réarmement dans ' + Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' sec'; } return 'Cave désarmée'; ]]]",
-                  "label": "[[[ const d = states['binary_sensor.cave_sous_sol_cave_porte']; return d && d.state === 'on' ? '🚪 Porte de la cave ouverte' : '🚪 Porte de la cave fermée'; ]]]",
-                  "icon": "[[[ return entity.state.startsWith('armed') ? 'mdi:shield-lock' : 'mdi:shield-off-outline' ]]]",
-                  "triggers_update": [
-                    "timer.cave_rearmement",
-                    "binary_sensor.cave_sous_sol_cave_porte"
-                  ],
-                  "variables": {
-                    "c1": "[[[ return entity.state.startsWith('armed') ? '#9b78e0' : '#f6d68a' ]]]",
-                    "c2": "[[[ return entity.state.startsWith('armed') ? '#5b3f99' : '#b07a2a' ]]]",
-                    "c3": "[[[ return entity.state.startsWith('armed') ? '#3a2766' : '#6b4514' ]]]"
-                  },
-                  "tap_action": {
-                    "action": "javascript",
-                    "javascript": "[[[ if (window.__caveTap) window.__caveTap(hass); ]]]"
-                  },
-                  "hold_action": {
-                    "action": "none"
-                  },
-                  "grid_options": {
-                    "columns": 12,
-                    "rows": "auto"
-                  },
-                  "update_timer": 1
-                },
-                {
                   "type": "custom:mushroom-alarm-control-panel-card",
                   "entity": "alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax_cave",
                   "name": "Baie réseaux",
@@ -962,29 +933,33 @@
                   }
                 },
                 {
-                  "type": "custom:mushroom-alarm-control-panel-card",
+                  "type": "custom:button-card",
+                  "template": "cc_push",
                   "entity": "alarm_control_panel.buanderie_centrale_alarme_ajax_cave",
-                  "name": "Alarme Cave",
-                  "icon": "mdi:home-import-outline",
-                  "layout": "horizontal",
-                  "states": [
-                    "armed_home",
-                    "disarmed"
+                  "name": "[[[ if (entity.state.startsWith('armed')) return 'Désarmer la cave'; const d = states['binary_sensor.cave_sous_sol_cave_porte']; if (d && d.state === 'on') return 'Cave · réarmement suspendu'; const t = states['timer.cave_rearmement']; if (t && t.state === 'active' && t.attributes.finishes_at) { const s = Math.max(0, Math.round((new Date(t.attributes.finishes_at) - Date.now()) / 1000)); return 'Cave réarmement dans ' + Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' sec'; } return 'Cave désarmée'; ]]]",
+                  "label": "[[[ const d = states['binary_sensor.cave_sous_sol_cave_porte']; return d && d.state === 'on' ? '🚪 Porte de la cave ouverte' : '🚪 Porte de la cave fermée'; ]]]",
+                  "icon": "[[[ return entity.state.startsWith('armed') ? 'mdi:shield-lock' : 'mdi:shield-off-outline' ]]]",
+                  "triggers_update": [
+                    "timer.cave_rearmement",
+                    "binary_sensor.cave_sous_sol_cave_porte"
                   ],
-                  "primary_info": "state",
-                  "secondary_info": "last-changed",
+                  "variables": {
+                    "c1": "[[[ return entity.state.startsWith('armed') ? '#9b78e0' : '#f6d68a' ]]]",
+                    "c2": "[[[ return entity.state.startsWith('armed') ? '#5b3f99' : '#b07a2a' ]]]",
+                    "c3": "[[[ return entity.state.startsWith('armed') ? '#3a2766' : '#6b4514' ]]]"
+                  },
+                  "tap_action": {
+                    "action": "javascript",
+                    "javascript": "[[[ if (window.__caveTap) window.__caveTap(hass); ]]]"
+                  },
+                  "hold_action": {
+                    "action": "none"
+                  },
                   "grid_options": {
                     "columns": 12,
                     "rows": "auto"
                   },
-                  "card_mod": {
-                    "style": {
-                      ".": "ha-card{background:rgba(38,28,58,.55)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px!important;border:1px solid rgba(246,214,138,.22)!important;box-shadow:0 4px 0 rgba(12,8,22,.75)!important;margin-bottom:6px}\nha-card { background: rgba(38, 28, 58, 0.55) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: none !important; box-shadow: none !important; }\n",
-                      "mushroom-state-info": {
-                        "$": ".secondary, .primary { white-space: normal !important; overflow: visible !important; text-overflow: unset !important; }\n"
-                      }
-                    }
-                  }
+                  "update_timer": 1
                 },
                 {
                   "type": "custom:mushroom-template-card",
