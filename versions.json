@@ -75,9 +75,9 @@
     "version": "0.9.4"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
-    "last_update": "2026-10-12T01:53:57.774685+02:00",
-    "version": "0.13.1"
+    "last_change": "entree - bouton cave remplace la carte alarme cave",
+    "last_update": "2026-10-12T02:11:13.853677+02:00",
+    "version": "0.13.2"
   },
   ".storage/lovelace.maison_accueil": {
     "last_change": "cave code, bouton cave dans le plan 3D, popups au design des dashboards",
