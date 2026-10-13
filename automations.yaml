@@ -474,7 +474,7 @@
     - condition: template
       value_template: >-
         {% set today = now().date() %}
-        {% set constructeur = strptime('2025-02-10', '%Y-%m-%d').date() %}
+        {% set constructeur = strptime('2028-10-13', '%Y-%m-%d').date() %}
         {{ today > constructeur }}
   actions:
     - action: persistent_notification.create
@@ -482,23 +482,23 @@
       data:
         title: >-
           {% set today = now().date() %}
-          {% set legal = strptime('2026-02-10', '%Y-%m-%d').date() %}
+          {% set legal = strptime('2029-10-13', '%Y-%m-%d').date() %}
           {{ '🚨 Entretien chaudière — délai légal dépassé' if today > legal else '⚠️ Entretien chaudière en retard' }}
         message: >-
           {% set today = now().date() %}
-          {% set legal = strptime('2026-02-10', '%Y-%m-%d').date() %}
+          {% set legal = strptime('2029-10-13', '%Y-%m-%d').date() %}
           {% if today > legal %}
           Le délai légal wallon (AGW du 29/01/2009, entretien tous les 3 ans
           max pour une chaudière gaz ≤100 kW) est dépassé depuis le
-          10/02/2026 — dernier entretien réalisé le 10/02/2023. Un défaut
+          13/10/2029 — dernier entretien réalisé le 13/10/2026. Un défaut
           d'attestation peut entraîner un refus d'indemnisation ou une
           franchise majorée en cas de sinistre. Contacte Ets. Dubois
           (+32 (0)4 343 25 59) pour planifier l'entretien au plus vite.
           {% else %}
           La recommandation du constructeur (Junkers/Bosch, tous les 1 à 2
-          ans) est dépassée depuis le 10/02/2025 — dernier entretien réalisé
-          le 10/02/2023. Il reste {{ (legal - today).days }} jour(s) avant
-          l'échéance légale du 10/02/2026. Pense à contacter Ets. Dubois
+          ans) est dépassée depuis le 13/10/2028 — dernier entretien réalisé
+          le 13/10/2026. Il reste {{ (legal - today).days }} jour(s) avant
+          l'échéance légale du 13/10/2029. Pense à contacter Ets. Dubois
           (+32 (0)4 343 25 59).
           {% endif %}
         notification_id: chaudiere_entretien
