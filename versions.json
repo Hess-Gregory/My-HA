@@ -145,9 +145,9 @@
     "version": "0.4.2"
   },
   "automations.yaml": {
-    "last_change": "cave desarmement code + popup/annonces, je pars pause/annuler, ampli modes/radios YXC",
-    "last_update": "2026-10-12T00:06:02.043336+02:00",
-    "version": "0.1.0"
+    "last_change": "entretien chaudiere fait le 13/10/2026",
+    "last_update": "2026-10-13T10:22:03.741122+02:00",
+    "version": "0.1.1"
   },
   "configuration.yaml": {
     "last_change": "four bloque si alarme armee sauf code, bannissement IP apres 5 echecs",
