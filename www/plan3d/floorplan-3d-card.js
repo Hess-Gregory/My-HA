@@ -796,7 +796,7 @@ class Floorplan3DCard extends HTMLElement {
       let o = this.$('.camov');
       if (!o) {
         o = document.createElement('div'); o.className = 'camov';
-        o.style.cssText = 'position:absolute;top:10px;right:10px;width:min(62%,600px);aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.6);border:2px solid #ffb347;z-index:30;background:#000;cursor:pointer';
+        o.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(93%,900px);max-height:92%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.6);border:2px solid #ffb347;z-index:30;background:#000;cursor:pointer';
         o.innerHTML = '<img style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;top:6px;left:8px;font:600 12px sans-serif;color:#fff;text-shadow:0 1px 3px #000">🚪 Porte d’entrée ouverte · Couloir</div><div style="position:absolute;top:4px;right:9px;color:#fff;font:700 16px sans-serif;text-shadow:0 1px 3px #000">✕</div>';
         o.onclick = () => { clearTimeout(this._camT); o.remove(); };
         this.$('.wrap').appendChild(o);
