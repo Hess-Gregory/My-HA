@@ -315,9 +315,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "carillon porte - bascule la tablette sur Accueil",
-    "last_update": "2026-10-13T10:56:30.220980+02:00",
-    "version": "0.7.0"
+    "last_change": "bascule Accueil instantanee a l ouverture de la porte (sans rechargement)",
+    "last_update": "2026-10-13T11:04:39.619005+02:00",
+    "version": "0.8.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -363,6 +363,11 @@
     "last_change": "cave sans boutons Reamer/+10 min",
     "last_update": "2026-10-12T01:27:11.255983+02:00",
     "version": "0.1.2"
+  },
+  "www/plan3d/door-home.js": {
+    "last_change": "bascule Accueil instantanee a l ouverture de la porte (sans rechargement)",
+    "last_update": "2026-10-13T11:04:39.619005+02:00",
+    "version": "0.1.0"
   },
   "www/plan3d/eclairage-card.js": {
     "last_change": "plan 2D de la maison dans le design Accueil (dock de scenes conserve)",

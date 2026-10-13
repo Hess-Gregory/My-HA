@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.7.0 | 13/10/2026 10:56 | carillon porte - bascule la tablette sur Accueil
+# [AUTO-VERSION] v0.8.0 | 13/10/2026 11:04 | bascule Accueil instantanee a l ouverture de la porte (sans rechargement)
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
