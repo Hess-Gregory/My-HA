@@ -10,7 +10,7 @@
   };
   const tick = () => {
     const el = document.querySelector('home-assistant'); const h = el && el.hass;
-    if (!h || !h.user || !USERS.includes(String(h.user.name || '').toLowerCase())) return;
+    if (!h || !h.user || !String(h.user.name || '').toLowerCase().startsWith('sam')) return;
     const s = h.states[DOOR]; if (!s || s.state !== 'on') return;
     if (handled === s.last_changed) return;
     handled = s.last_changed;
