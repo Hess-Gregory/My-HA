@@ -30,9 +30,9 @@
     "version": "0.3.2"
   },
   ".storage/lovelace.1_mon_confort": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "0.4.2"
+    "last_change": "mon confort - entretien chaudiere 13/10/2026 fiche 3644",
+    "last_update": "2026-10-13T10:47:14.008592+02:00",
+    "version": "0.4.3"
   },
   ".storage/lovelace.1_pollution": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -135,9 +135,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.mon_confort": {
-    "last_change": "historique chaudiere - fuite radiateur cuisine 07/10/2026, RDV Dubois demande par SMS",
-    "last_update": "2026-10-07T10:53:47.223246+02:00",
-    "version": "0.5.0"
+    "last_change": "mon confort - entretien chaudiere 13/10/2026 fiche 3644",
+    "last_update": "2026-10-13T10:47:14.008592+02:00",
+    "version": "0.5.1"
   },
   ".storage/lovelace.reseau_infra": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
