@@ -315,9 +315,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "retour au fonctionnement avec l app Home Assistant (Fully en lanceur)",
-    "last_update": "2026-10-10T22:26:35.449592+02:00",
-    "version": "0.6.3"
+    "last_change": "carillon porte - bascule la tablette sur Accueil",
+    "last_update": "2026-10-13T10:56:30.220980+02:00",
+    "version": "0.7.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
