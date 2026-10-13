@@ -75,14 +75,14 @@
     "version": "0.9.4"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "popup camera couloir 1.5x au centre",
-    "last_update": "2026-10-13T11:33:19.030012+02:00",
-    "version": "0.14.0"
+    "last_change": "popup camera couloir en bas au milieu",
+    "last_update": "2026-10-13T11:36:18.930442+02:00",
+    "version": "0.15.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "popup camera couloir 1.5x au centre",
-    "last_update": "2026-10-13T11:33:19.030012+02:00",
-    "version": "2.13.0"
+    "last_change": "popup camera couloir en bas au milieu",
+    "last_update": "2026-10-13T11:36:18.930442+02:00",
+    "version": "2.14.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -375,9 +375,9 @@
     "version": "0.1.3"
   },
   "www/plan3d/floorplan-3d-card.js": {
-    "last_change": "popup camera couloir 1.5x au centre",
-    "last_update": "2026-10-13T11:33:19.030012+02:00",
-    "version": "0.5.0"
+    "last_change": "popup camera couloir en bas au milieu",
+    "last_update": "2026-10-13T11:36:18.930442+02:00",
+    "version": "0.6.0"
   },
   "www/plan3d/home-hub-card.js": {
     "last_change": "cave code, bouton cave dans le plan 3D, popups au design des dashboards",
