@@ -53,12 +53,6 @@ automation:
                 data:
                   application: io.homeassistant.companion.android
                   device_id: f1aa9e7a06615d6cd968ef13a161d75c
-          - action: notify.mobile_app_25099rp13g
-            continue_on_error: true
-            data:
-              message: command_webview
-              data:
-                command: /maison-accueil/accueil
 
   - id: tablette_sam_interphone
     alias: "🔔 Tablette Sam : sonnerie interphone BTicino"

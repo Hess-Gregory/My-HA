@@ -238,6 +238,11 @@
         "id": "2bd35fa4c95046d29a3b2fe9b3a31610",
         "url": "/local/plan3d/cave-alarm-card.js?v=1791761378051",
         "type": "module"
+      },
+      {
+        "id": "e83509287952489d8f1f635e837cef08",
+        "url": "/local/plan3d/door-home.js?v=1791882220306",
+        "type": "module"
       }
     ]
   }
