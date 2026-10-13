@@ -365,9 +365,9 @@
     "version": "0.1.2"
   },
   "www/plan3d/door-home.js": {
-    "last_change": "bascule Accueil instantanee a l ouverture de la porte (sans rechargement)",
-    "last_update": "2026-10-13T11:04:39.619005+02:00",
-    "version": "0.1.0"
+    "last_change": "door-home compte Sam AI",
+    "last_update": "2026-10-13T11:10:08.672896+02:00",
+    "version": "0.1.1"
   },
   "www/plan3d/eclairage-card.js": {
     "last_change": "plan 2D de la maison dans le design Accueil (dock de scenes conserve)",
