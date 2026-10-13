@@ -4913,7 +4913,7 @@
                   "name": "Entretien & obligations légales",
                   "icon": "mdi:label-outline",
                   "variables": {
-                    "sub": "🔴 Statut — URGENT / DÉPASSÉ",
+                    "sub": "[[[ const t = new Date(); if (t > new Date('2029-10-13')) return '🔴 Statut — URGENT / DÉPASSÉ'; if (t > new Date('2028-10-13')) return '🟠 Statut — entretien à planifier'; return '🟢 Statut — à jour · prochain entretien avant le 13/10/2028'; ]]]",
                     "lights": []
                   },
                   "grid_options": {
