@@ -136,8 +136,8 @@
   },
   ".storage/lovelace.mon_confort": {
     "last_change": "mon confort - entretien chaudiere 13/10/2026 fiche 3644",
-    "last_update": "2026-10-13T10:47:14.008592+02:00",
-    "version": "0.5.1"
+    "last_update": "2026-10-13T10:49:14.152768+02:00",
+    "version": "0.5.2"
   },
   ".storage/lovelace.reseau_infra": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
