@@ -41,8 +41,8 @@ script:
         data:
           volume_level: >-
             {% if volume is defined and volume not in ['', none] %}{{ volume | float }}
-            {% elif is_state('input_boolean.mode_nuit', 'on') %}0.25
-            {% else %}{{ states('input_number.tablette_volume_memorise') | float(0.8) }}{% endif %}
+            {% elif is_state('input_boolean.mode_nuit', 'on') %}0.6
+            {% else %}{{ states('input_number.tablette_volume_memorise') | float(1) }}{% endif %}
       - action: tts.speak
         continue_on_error: true
         target:
@@ -54,7 +54,7 @@ script:
 
 automation:
   - id: mode_nuit_activation
-    alias: 🌙 Mode nuit – activation (luminosité 20 %, volume 25 %, annonce)
+    alias: 🌙 Mode nuit – activation (luminosité 20 %, volume 60 %, annonce)
     mode: single
     triggers:
       - trigger: state
@@ -88,7 +88,7 @@ automation:
       - action: script.annonce_tablette
         data:
           message: "Le mode nuit est activé. Bonne nuit à tous."
-          volume: 0.25
+          volume: 0.6
 
   - id: mode_nuit_desactivation
     alias: ☀️ Mode nuit – désactivation (restaure volume et luminosité)
@@ -104,7 +104,7 @@ automation:
         target:
           entity_id: media_player.salon_sam_tablette
         data:
-          volume_level: "{{ states('input_number.tablette_volume_memorise') | float(0.8) }}"
+          volume_level: "{{ states('input_number.tablette_volume_memorise') | float(1) }}"
       - action: number.set_value
         continue_on_error: true
         target:
@@ -152,7 +152,7 @@ automation:
         target:
           entity_id: media_player.salon_sam_tablette
         data:
-          volume_level: 0.25
+          volume_level: 0.6
       - action: number.set_value
         continue_on_error: true
         target:

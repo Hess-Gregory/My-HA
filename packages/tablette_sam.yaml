@@ -33,7 +33,7 @@ automation:
                 target:
                   entity_id: media_player.salon_sam_tablette
                 data:
-                  volume_level: "{{ 0.25 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(0.8) }}"
+                  volume_level: "{{ 0.6 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(1) }}"
               - action: media_player.play_media
                 continue_on_error: true
                 target:
@@ -101,4 +101,4 @@ automation:
         target:
           entity_id: media_player.salon_sam_tablette
         data:
-          volume_level: "{{ 0.25 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(0.8) }}"
+          volume_level: "{{ 0.6 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(1) }}"

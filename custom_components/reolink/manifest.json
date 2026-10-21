@@ -28,7 +28,7 @@
   ],
   "quality_scale": "platinum",
   "requirements": [
-    "reolink-aio==0.21.17"
+    "reolink-aio==0.21.18"
   ],
-  "version": "2026.9.4.1"
+  "version": "2026.10.1.1"
 }
