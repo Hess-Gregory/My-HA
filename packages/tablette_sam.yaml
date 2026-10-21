@@ -33,7 +33,7 @@ automation:
                 target:
                   entity_id: media_player.salon_sam_tablette
                 data:
-                  volume_level: 0.9
+                  volume_level: "{{ 0.25 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(0.8) }}"
               - action: media_player.play_media
                 continue_on_error: true
                 target:
@@ -75,7 +75,7 @@ automation:
                 target:
                   entity_id: media_player.salon_sam_tablette
                 data:
-                  volume_level: 1
+                  volume_level: "{{ 0.5 if is_state('input_boolean.mode_nuit', 'on') else 1 }}"
               - action: media_player.play_media
                 continue_on_error: true
                 target:
@@ -96,3 +96,9 @@ automation:
                   application: io.homeassistant.companion.android
                   device_id: f1aa9e7a06615d6cd968ef13a161d75c
       - delay: "00:00:30"
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          volume_level: "{{ 0.25 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(0.8) }}"

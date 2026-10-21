@@ -108,7 +108,7 @@ class HomeHubCard extends HTMLElement {
     for (const [a, ic, n, sub] of [['cine', '🎬', 'Cinéma', 'Ambiance TV'], ['diner', '🍽️', 'Dîner', 'Table + cuisine']]) { const b = document.createElement('button'); b.innerHTML = `<i>${ic}</i>${n}<small>${sub}</small>`; b._sub = sub; b.onclick = () => { if (this.plan && this.plan._ambiance) this.plan._ambiance(a); this._toast(`${ic} ${n}`); }; amb.appendChild(b); }
     { const b = document.createElement('button'); b.className = 'sim'; b.innerHTML = '<i>🎭</i>Simulation<small>présence</small>'; b.onclick = () => this._h.callService('input_boolean', 'toggle', { entity_id: 'input_boolean.simulation_presence' }); amb.appendChild(b); this._sim = b; }
     this.$('.alarm').onclick = () => this._more(ALARM);
-    this.$('.media').onclick = () => this._remote();
+    this.$('.media').onclick = () => this._remote(); this.$('.ppl').onclick = () => this._go('/maison-localisation'); this.$('.wnow').parentNode.onclick = () => this._go('/meteo-belgique'); this.$('.en').parentNode.onclick = () => this._go('/maison-energie'); this.$('.ppl').style.cursor = this.$('.wnow').parentNode.style.cursor = this.$('.en').parentNode.style.cursor = 'pointer';
     this.$('.mp .h').onclick = () => this._go(MP_PATH);
     { const b = this.$('.sasb'), sm = b.querySelector('small'); b.onclick = () => { if (!b.classList.contains('arm')) { b.classList.add('arm'); sm.textContent = 'Retouchez pour ouvrir'; clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('arm'); sm.textContent = 'Touchez puis confirmez'; }, 4000); return; }
       clearTimeout(b._t); b.classList.remove('arm'); const d = SAS.split('.')[0]; this._h.callService(d, d === 'lock' ? 'unlock' : d === 'button' ? 'press' : d === 'script' ? 'turn_on' : 'turn_on', { entity_id: SAS });
@@ -146,13 +146,14 @@ class HomeHubCard extends HTMLElement {
 
   _cdTick() {
     const T = 'timer.compte_a_rebours_depart'; const t = this._h && this._h.states[T]; let o = this.shadowRoot.querySelector('.cdov');
+    if (/^sam/i.test((this._h && this._h.user && this._h.user.name) || '')) { if (o) o.remove(); return; } // tablette : popup browser_mod (jp-countdown-card)
     if (!t || !['active', 'paused'].includes(t.state)) { if (o) o.remove(); return; }
     const P = t.state === 'paused'; let left = 0;
     if (P) { const p = String(t.attributes.remaining || '0:0:0').split(':').map(Number); left = (p[0] || 0) * 3600 + (p[1] || 0) * 60 + (p[2] || 0); } else if (t.attributes.finishes_at) left = Math.max(0, Math.round((new Date(t.attributes.finishes_at) - Date.now()) / 1000));
     if (!o) {
       o = document.createElement('div'); o.className = 'cdov';
       o.style.cssText = 'position:fixed;inset:0;z-index:998;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center';
-      o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:22px 26px;width:320px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="font:700 18px sans-serif">⏳ Armement de l’alarme</div><div class="n" style="font:200 76px/1.1 sans-serif;margin:10px 0;color:#ffd27a"></div><div class="st" style="font-size:13px;opacity:.75"></div><div style="display:flex;gap:8px;margin-top:16px"><button class="pz" style="flex:1;padding:13px;border:none;border-radius:12px;background:#3a3550;color:#fff;font:700 15px sans-serif"></button><button class="cx" style="flex:1;padding:13px;border:none;border-radius:12px;background:#e05555;color:#fff;font:700 15px sans-serif">↩️ Annuler</button></div></div>';
+      o.innerHTML = '<div style="background:#1d1b2a;color:#fff;border-radius:22px;padding:22px 26px;width:320px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="font:700 18px sans-serif">⏳ Armement de l’alarme</div><div class="n" style="font:200 120px/1 sans-serif;margin:8px 0;color:#ffd27a;font-variant-numeric:tabular-nums"></div><div class="st" style="font-size:13px;opacity:.75"></div><div style="display:flex;gap:8px;margin-top:14px;justify-content:center"><button class="pz" style="padding:7px 14px;border:none;border-radius:10px;background:#3a3550;color:#fff;font:600 12px sans-serif"></button><button class="cx" style="padding:7px 14px;border:none;border-radius:10px;background:#e05555;color:#fff;font:600 12px sans-serif">↩️ Annuler</button></div></div>';
       o.querySelector('.pz').onclick = () => this._h.callService('script', 'turn_on', { entity_id: 'script.je_pars_pause' });
       o.querySelector('.cx').onclick = () => { this._h.callService('script', 'turn_on', { entity_id: 'script.je_pars_annuler' }); o.remove(); };
       this.shadowRoot.appendChild(o);

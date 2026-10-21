@@ -1,4 +1,3 @@
-# [AUTO-VERSION] v0.1.3 | 12/10/2026 01:53 | annonces vocales cave (tts), radios net+DAB avec logos
 # Cave — désarmement par code depuis HA, popup tablette avec décompte, annonces vocales, réarmement auto 10 min après fermeture de la porte
 # Le réarmement lui-même reste fait par l'automation « cave_rearmement_auto » (automations.yaml), déclenchée par la fin du timer.
 timer:
@@ -59,19 +58,8 @@ script:
         selector:
           text:
     sequence:
-      - action: media_player.volume_set
-        continue_on_error: true
-        target:
-          entity_id: media_player.salon_sam_tablette
+      - action: script.annonce_tablette
         data:
-          volume_level: 0.9
-      - action: tts.speak
-        continue_on_error: true
-        target:
-          entity_id: tts.home_assistant_cloud
-        data:
-          media_player_entity_id: media_player.salon_sam_tablette
-          language: fr-FR
           message: "{{ message }}"
 
   cave_popup:

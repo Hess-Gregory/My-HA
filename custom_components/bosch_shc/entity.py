@@ -186,10 +186,14 @@ class SHCEntity(Entity):  # type: ignore[misc]
         await super().async_added_to_hass()
 
         def on_state_changed() -> None:
+            if self.hass is None:
+                return
             self._update_attr()
             self.schedule_update_ha_state()
 
         def update_entity_information() -> None:
+            if self.hass is None:
+                return
             if self._device.deleted:
                 # This callback fires on the event loop (SHCSessionAsync's
                 # long-poll is an asyncio.Task, not a background thread), but
@@ -203,15 +207,15 @@ class SHCEntity(Entity):  # type: ignore[misc]
                 self.schedule_update_ha_state()
 
         for service in self._device.device_services:
-            service.subscribe_callback(self.entity_id, on_state_changed)
-        self._device.subscribe_callback(self.entity_id, update_entity_information)
+            service.subscribe_callback(self, on_state_changed)
+        self._device.subscribe_callback(self, update_entity_information)
 
     async def async_will_remove_from_hass(self) -> None:
         """Unsubscribe from SHC events."""
         await super().async_will_remove_from_hass()
         for service in self._device.device_services:
-            service.unsubscribe_callback(self.entity_id)
-        self._device.unsubscribe_callback(self.entity_id)
+            service.unsubscribe_callback(self)
+        self._device.unsubscribe_callback(self)
 
     @property
     def device_name(self) -> str:

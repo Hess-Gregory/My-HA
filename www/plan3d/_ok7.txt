@@ -1,1 +1,1 @@
-cd1a483 chore(version): bump 4 fichier(s) (lovelace.dashboard_test, lovelace.ma_maison, lovelace.maison_accueil, securite_matteo.yaml)
+files mp3:0 bip fp hub auto tab

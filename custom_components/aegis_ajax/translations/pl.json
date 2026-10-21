@@ -337,6 +337,9 @@
             "refresh_hub": {
                 "name": "Odśwież hub"
             },
+            "restore_after_alarm": {
+                "name": "Przywróć po alarmie"
+            },
             "siren_sound_test": {
                 "name": "Test dźwięku"
             }
@@ -544,6 +547,9 @@
             "bypass": {
                 "name": "Pominięcie"
             },
+            "night_mode_arm": {
+                "name": "Uzbrajaj w trybie nocnym"
+            },
             "chime": {
                 "name": "Gong"
             }
@@ -605,6 +611,9 @@
         },
         "command_hub_wrong_state": {
             "message": "Hub nie jest obecnie w stanie umożliwiającym tę czynność."
+        },
+        "night_mode_arm_while_armed": {
+            "message": "Nie można zmienić opcji „Uzbrajaj w trybie nocnym”, gdy czujnik jest uzbrojony. Najpierw rozbrój i spróbuj ponownie."
         },
         "command_alarm_reset_needed": {
             "message": "Aktywny alarm musi zostać zresetowany przed wykonaniem tej czynności."

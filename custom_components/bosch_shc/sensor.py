@@ -1058,7 +1058,6 @@ SENSOR_DESCRIPTIONS: dict[str, SHCSensorEntityDescription[Any]] = {
         native_unit_of_measurement=UnitOfRatio.PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
         suggested_display_precision=0,
         value_fn=lambda device: device.position,
         attributes_fn=_valve_tappet_attributes,
@@ -1480,12 +1479,12 @@ class EmmaPowerSensor(SHCEntity, SensorEntity):  # type: ignore[misc]
         def update_entity_information() -> None:
             self.schedule_update_ha_state()
 
-        self._device.subscribe_callback(self.entity_id, update_entity_information)
+        self._device.subscribe_callback(self, update_entity_information)
 
     async def async_will_remove_from_hass(self) -> None:
         """Unsubscribe from SHC events."""
         await super().async_will_remove_from_hass()
-        self._device.unsubscribe_callback(self.entity_id)
+        self._device.unsubscribe_callback(self)
 
     @property
     def native_value(self) -> Any:

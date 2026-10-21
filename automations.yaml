@@ -265,8 +265,8 @@
 - id: "je_pars_popup_decompte_ouverture"
   alias: "Je pars - popup compte à rebours (ouverture)"
   description: >-
-    Ouvre une popup plein écran sur la tablette avec le compte à rebours
-    avant armement de l'alarme.
+    Ouvre la popup de départ sur la tablette (présentation d'origine) avec un grand
+    compte à rebours lisible et de petits boutons Pause / Annuler (custom:jp-countdown-card).
   triggers:
     - trigger: state
       entity_id: timer.compte_a_rebours_depart
@@ -279,8 +279,8 @@
         browser_id:
           - browser_mod_59a39768_1e3bd7e4
         dismissable: false
-        size: wide
-        title: "🚪 Départ en cours"
+        size: normal
+        title: 🚪 Départ en cours
         content:
           type: vertical-stack
           cards:
@@ -288,25 +288,19 @@
               title: L'alarme va s'armer
               subtitle: Vous avez le temps de sortir tranquillement
               alignment: center
-            - type: entities
-              entities:
-                - entity: timer.compte_a_rebours_depart
-                  name: Temps restant
-                  icon: mdi:timer-alert
-            - type: horizontal-stack
-              cards:
-                - type: button
-                  name: Pause / Reprendre
-                  icon: mdi:pause-circle
-                  tap_action:
-                    action: perform-action
-                    perform_action: script.je_pars_pause
-                - type: button
-                  name: Annuler le départ
-                  icon: mdi:close-circle
-                  tap_action:
-                    action: perform-action
-                    perform_action: script.je_pars_annuler
+              card_mod:
+                style: |
+                  :host {
+                    --primary-text-color: #f6d68a !important;
+                    --secondary-text-color: #d9c4f0 !important;
+                  }
+                  ha-card {
+                    text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important;
+                    background: rgba(25, 18, 38, 0.85) !important;
+                    box-shadow: none !important;
+                  }
+            - type: custom:jp-countdown-card
+  mode: single
 
 - id: "je_pars_popup_decompte_fermeture"
   alias: "Je pars - popup compte à rebours (fermeture)"
@@ -908,7 +902,9 @@
     - platform: state
       entity_id: camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
       to: "streaming"
-  condition: []
+  condition:
+    - condition: template
+      value_template: "{{ not is_state('sensor.browser_mod_59a39768_1e3bd7e4_browser_path', '/maison-accueil/accueil') }}"
   action:
     - action: light.turn_on
       target:

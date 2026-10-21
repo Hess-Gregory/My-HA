@@ -337,6 +337,9 @@
             "refresh_hub": {
                 "name": "Actualiser le hub"
             },
+            "restore_after_alarm": {
+                "name": "Restaurer après alarme"
+            },
             "siren_sound_test": {
                 "name": "Tester le son"
             }
@@ -544,6 +547,9 @@
             "bypass": {
                 "name": "Contournement"
             },
+            "night_mode_arm": {
+                "name": "Armer en mode nuit"
+            },
             "chime": {
                 "name": "Carillon"
             }
@@ -605,6 +611,9 @@
         },
         "command_hub_wrong_state": {
             "message": "Le hub n'est pas dans un état permettant cette action pour le moment."
+        },
+        "night_mode_arm_while_armed": {
+            "message": "« Armer en mode nuit » ne peut pas être modifié tant que le détecteur est armé. Désarmez d'abord, puis réessayez."
         },
         "command_alarm_reset_needed": {
             "message": "Une alarme active doit être réinitialisée avant de pouvoir effectuer cette action."

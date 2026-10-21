@@ -1,0 +1,197 @@
+# Mode nuit (bouton « Bonne nuit ») + annonces vocales de la tablette + annonces de l'alarme Ajax
+# Doc : packages/mode_nuit.md
+input_boolean:
+  mode_nuit:
+    name: Mode nuit
+    icon: mdi:weather-night
+
+input_number:
+  tablette_volume_memorise:
+    name: Tablette – volume mémorisé (jour)
+    icon: mdi:volume-high
+    min: 0.3
+    max: 1
+    step: 0.05
+    mode: box
+
+script:
+  annonce_tablette:
+    alias: 🔊 Annonce vocale sur la tablette
+    mode: queued
+    max: 10
+    fields:
+      message:
+        name: Message
+        required: true
+        selector:
+          text:
+      volume:
+        name: Volume (0-1, optionnel)
+        selector:
+          number:
+            min: 0
+            max: 1
+            step: 0.05
+    sequence:
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          volume_level: >-
+            {% if volume is defined and volume not in ['', none] %}{{ volume | float }}
+            {% elif is_state('input_boolean.mode_nuit', 'on') %}0.25
+            {% else %}{{ states('input_number.tablette_volume_memorise') | float(0.8) }}{% endif %}
+      - action: tts.speak
+        continue_on_error: true
+        target:
+          entity_id: tts.home_assistant_cloud
+        data:
+          media_player_entity_id: media_player.salon_sam_tablette
+          language: fr-FR
+          message: "{{ message }}"
+
+automation:
+  - id: mode_nuit_activation
+    alias: 🌙 Mode nuit – activation (luminosité 20 %, volume 25 %, annonce)
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.mode_nuit
+        from: "off"
+        to: "on"
+    actions:
+      - variables:
+          vol: "{{ state_attr('media_player.salon_sam_tablette', 'volume_level') | float(0) }}"
+      - if: "{{ vol >= 0.3 }}"
+        then:
+          - action: input_number.set_value
+            target:
+              entity_id: input_number.tablette_volume_memorise
+            data:
+              value: "{{ vol | round(2) }}"
+      - action: switch.turn_off
+        continue_on_error: true
+        target:
+          entity_id: switch.salon_sam_tablette_economiseur_d_ecran
+      - action: switch.turn_on
+        continue_on_error: true
+        target:
+          entity_id: switch.salon_sam_tablette_ecran
+      - action: number.set_value
+        continue_on_error: true
+        target:
+          entity_id: number.salon_sam_tablette_luminosite_de_l_ecran
+        data:
+          value: 51
+      - action: script.annonce_tablette
+        data:
+          message: "Le mode nuit est activé. Bonne nuit à tous."
+          volume: 0.25
+
+  - id: mode_nuit_desactivation
+    alias: ☀️ Mode nuit – désactivation (restaure volume et luminosité)
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.mode_nuit
+        from: "on"
+        to: "off"
+    actions:
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          volume_level: "{{ states('input_number.tablette_volume_memorise') | float(0.8) }}"
+      - action: number.set_value
+        continue_on_error: true
+        target:
+          entity_id: number.salon_sam_tablette_luminosite_de_l_ecran
+        data:
+          value: 255
+
+  - id: mode_nuit_fin_6h
+    alias: ☀️ Mode nuit – fin automatique à 6 h (et au redémarrage de HA en journée)
+    mode: single
+    triggers:
+      - trigger: time
+        at: "06:00:00"
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: input_boolean.mode_nuit
+        state: "on"
+      - condition: time
+        after: "05:59:00"
+        before: "20:00:00"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.mode_nuit
+
+  - id: mode_nuit_reapplique_au_demarrage
+    alias: 🌙 Mode nuit – réapplique volume/luminosité au redémarrage (la nuit, sans annonce)
+    mode: single
+    triggers:
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: input_boolean.mode_nuit
+        state: "on"
+      - condition: time
+        after: "20:00:00"
+        before: "05:59:00"
+    actions:
+      - delay: "00:00:30"
+      - action: media_player.volume_set
+        continue_on_error: true
+        target:
+          entity_id: media_player.salon_sam_tablette
+        data:
+          volume_level: 0.25
+      - action: number.set_value
+        continue_on_error: true
+        target:
+          entity_id: number.salon_sam_tablette_luminosite_de_l_ecran
+        data:
+          value: 51
+
+  - id: mode_nuit_annule_par_bouton_annuler
+    alias: ↩️ Mode nuit – désactivé par le bouton « Annuler »
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: script.annuler_scenario
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.mode_nuit
+        state: "on"
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.mode_nuit
+
+  - id: alarme_annonce_vocale_nuit_desactivation
+    alias: 🔊 Alarme Ajax – annonce vocale (nuit activée / désactivée)
+    mode: queued
+    max: 4
+    triggers:
+      - trigger: state
+        entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+        to: armed_night
+        not_from: [unavailable, unknown, armed_night]
+        id: nuit
+      - trigger: state
+        entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+        from: [armed_night, armed_away, armed_home]
+        to: [armed_custom_bypass, disarmed]
+        id: desarme
+    actions:
+      - action: script.annonce_tablette
+        data:
+          message: >-
+            {{ "L'alarme est activée en mode nuit." if trigger.id == 'nuit' else "L'alarme est désactivée." }}
