@@ -275,9 +275,9 @@
     "version": "0.1.0"
   },
   "packages/mode_nuit.yaml": {
-    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
-    "last_update": "2026-10-21T18:01:48.453062+02:00",
-    "version": "0.1.0"
+    "last_change": "Reolink rebase sur HA 2026.10.1 (reolink-aio 0.21.18) + contournement replay NVR ; volumes mode nuit 60 %, jour 100 %",
+    "last_update": "2026-10-21T18:41:17.977585+02:00",
+    "version": "0.1.1"
   },
   "packages/pollution_journal.yaml": {
     "last_change": "journal imprimable genere sur Home Assistant, conseils et risques par polluant et par niveau",
@@ -320,9 +320,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
-    "last_update": "2026-10-21T18:01:48.453062+02:00",
-    "version": "0.9.0"
+    "last_change": "Reolink rebase sur HA 2026.10.1 (reolink-aio 0.21.18) + contournement replay NVR ; volumes mode nuit 60 %, jour 100 %",
+    "last_update": "2026-10-21T18:41:17.977585+02:00",
+    "version": "0.9.1"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
