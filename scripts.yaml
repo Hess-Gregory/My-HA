@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.6.0 | 21/10/2026 18:06 | mode nuit bonne_nuit, raccourcis vues test, sons decompte
 allumer_eteindre_clim_salon:
   sequence:
   - action: remote.send_command
