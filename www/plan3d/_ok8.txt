@@ -1,4 +1,0 @@
-5f56c1e chore(version): bump 2 fichier(s) (configuration.yaml, four_securite.yaml)
-204:http:
-205-  ip_ban_enabled: true
-206-  login_attempts_threshold: 5
