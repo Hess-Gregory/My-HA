@@ -75,14 +75,14 @@
     "version": "0.9.4"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "popup camera couloir en bas au milieu",
-    "last_update": "2026-10-13T11:36:18.930442+02:00",
-    "version": "0.15.0"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.16.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "popup camera couloir en bas au milieu",
-    "last_update": "2026-10-13T11:36:18.930442+02:00",
-    "version": "2.14.0"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "2.15.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -145,9 +145,9 @@
     "version": "0.4.2"
   },
   "automations.yaml": {
-    "last_change": "entretien chaudiere fait le 13/10/2026",
-    "last_update": "2026-10-13T10:22:03.741122+02:00",
-    "version": "0.1.1"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.2.0"
   },
   "configuration.yaml": {
     "last_change": "four bloque si alarme armee sauf code, bannissement IP apres 5 echecs",
@@ -170,9 +170,9 @@
     "version": "0.1.0"
   },
   "packages/cave_alarme.yaml": {
-    "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
-    "last_update": "2026-10-12T01:53:57.774685+02:00",
-    "version": "0.1.3"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.2.0"
   },
   "packages/chambre_enfants.yaml": {
     "last_change": "interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal",
@@ -274,6 +274,11 @@
     "last_update": "2026-10-01T19:17:08.059138+02:00",
     "version": "0.1.0"
   },
+  "packages/mode_nuit.yaml": {
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.1.0"
+  },
   "packages/pollution_journal.yaml": {
     "last_change": "journal imprimable genere sur Home Assistant, conseils et risques par polluant et par niveau",
     "last_update": "2026-10-01T20:31:50.605696+02:00",
@@ -315,9 +320,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "bascule Accueil instantanee a l ouverture de la porte (sans rechargement)",
-    "last_update": "2026-10-13T11:04:39.619005+02:00",
-    "version": "0.8.0"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.9.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -375,14 +380,19 @@
     "version": "0.1.3"
   },
   "www/plan3d/floorplan-3d-card.js": {
-    "last_change": "popup camera couloir en bas au milieu",
-    "last_update": "2026-10-13T11:36:18.930442+02:00",
-    "version": "0.6.0"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.7.0"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "cave code, bouton cave dans le plan 3D, popups au design des dashboards",
-    "last_update": "2026-10-12T01:24:40.527713+02:00",
-    "version": "2.8.1"
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "2.9.0"
+  },
+  "www/plan3d/jp-decompte.js": {
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.1.0"
   },
   "www/plan3d/lj-console-card.js": {
     "last_change": "design harmonise avec Accueil (fond, tuiles, cadre plein ecran) + bouton retour dans la console LJ",
@@ -393,6 +403,11 @@
     "last_change": "Ma Maison v2 mise en page",
     "last_update": "2026-10-11T09:18:33.440193+02:00",
     "version": "0.0.2"
+  },
+  "www/plan3d/raccourcis-card.js": {
+    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
+    "last_update": "2026-10-21T18:01:48.453062+02:00",
+    "version": "0.1.0"
   },
   "www/plan3d/streaming-card.js": {
     "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",

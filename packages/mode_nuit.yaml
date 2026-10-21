@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.1.0 | 21/10/2026 18:01 | mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis
 # Mode nuit (bouton « Bonne nuit ») + annonces vocales de la tablette + annonces de l'alarme Ajax
 # Doc : packages/mode_nuit.md
 input_boolean:

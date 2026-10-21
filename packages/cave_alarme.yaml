@@ -1,3 +1,4 @@
+# [AUTO-VERSION] v0.2.0 | 21/10/2026 18:01 | mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis
 # Cave — désarmement par code depuis HA, popup tablette avec décompte, annonces vocales, réarmement auto 10 min après fermeture de la porte
 # Le réarmement lui-même reste fait par l'automation « cave_rearmement_auto » (automations.yaml), déclenchée par la fin du timer.
 timer:
