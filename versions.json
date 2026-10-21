@@ -80,9 +80,9 @@
     "version": "0.16.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
-    "last_update": "2026-10-21T18:01:48.453062+02:00",
-    "version": "2.15.0"
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "2.15.1"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -364,6 +364,31 @@
     "last_update": "2026-09-17T14:01:47.050330+02:00",
     "version": "0.0.1"
   },
+  "www/ookla_speedtest/ookla-speedtest-card-simple.js": {
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "0.0.1"
+  },
+  "www/ookla_speedtest/ookla-speedtest-card.js": {
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "0.0.1"
+  },
+  "www/ookla_speedtest/ookla-speedtest-compact.js": {
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "0.0.1"
+  },
+  "www/ookla_speedtest/ookla-speedtest-dashboard.js": {
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "0.0.1"
+  },
+  "www/ookla_speedtest/ookla-speedtest-minimal.js": {
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "0.0.1"
+  },
   "www/plan3d/cave-alarm-card.js": {
     "last_change": "cave sans boutons Reamer/+10 min",
     "last_update": "2026-10-12T01:27:11.255983+02:00",
@@ -385,9 +410,9 @@
     "version": "0.7.0"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
-    "last_update": "2026-10-21T18:01:48.453062+02:00",
-    "version": "2.9.0"
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "2.9.1"
   },
   "www/plan3d/jp-decompte.js": {
     "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
@@ -405,9 +430,9 @@
     "version": "0.0.2"
   },
   "www/plan3d/raccourcis-card.js": {
-    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
-    "last_update": "2026-10-21T18:01:48.453062+02:00",
-    "version": "0.1.0"
+    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
+    "last_update": "2026-10-21T20:07:33.412980+02:00",
+    "version": "0.1.1"
   },
   "www/plan3d/streaming-card.js": {
     "last_change": "annonces vocales cave (tts), radios net+DAB avec logos",
