@@ -1,4 +1,0 @@
-2 /tmp/rp.b64
-rp ok
-c5ac1fc chore(version): bump 3 fichier(s) (floorplan-3d-card.js, lovelace.maison_accueil, lovelace.ma_maison)
-FIN

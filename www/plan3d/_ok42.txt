@@ -1,1 +1,0 @@
-fac994e chore(version): bump 2 fichier(s) (lovelace.maison_eclairage, sono_lumieres.yaml)

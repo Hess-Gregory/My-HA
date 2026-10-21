@@ -1,2 +1,0 @@
-ok
-96b1302 chore(version): bump 1 fichier(s) (je_pars_code.yaml)

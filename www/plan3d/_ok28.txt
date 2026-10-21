@@ -1,2 +1,0 @@
-ok h
-f7ca43b chore(version): bump 2 fichier(s) (home-hub-card.js, lovelace.maison_accueil)

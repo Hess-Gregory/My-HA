@@ -1,1 +1,0 @@
-ae18614 chore(version): bump 1 fichier(s) (sono_lumieres.yaml)

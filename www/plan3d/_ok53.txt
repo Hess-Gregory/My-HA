@@ -1,4 +1,0 @@
-235bdda chore(version): bump 3 fichier(s) (sono_lumieres.yaml, sono_strobe.yaml, lj-console-card.js)
-9022992 fix(eclairage): console DMX, envoi vers les bons projecteurs, scene disposee comme le plan 3D, tempo master 65-170 BPM
-min: 65, max: 170
-aa2a1b77d856353ccb72cf816d451ed9  /tmp/r.b64

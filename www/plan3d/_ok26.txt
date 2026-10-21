@@ -1,3 +1,0 @@
-interval ['1000']
-ok
-55fc068 feat(accueil): popup decompte Je pars avec bouton Annuler

@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-python3 "$(git rev-parse --show-toplevel)/scripts/bump_version.py"
----
-11:# - `sensor.versions_config_ha` ("Versions Config HA") : capteur `command_line` qui exécute `cat /config/versions.json`.
-18:# {{ state_attr('sensor.versions_config_ha', '.storage/lovelace.1_streaming').version }}
-38:      unique_id: versions_config_ha
----
-zsh: no matches found: .versions*
-zsh: no matches found: --include=*.json

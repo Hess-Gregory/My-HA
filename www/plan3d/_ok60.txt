@@ -1,1 +1,0 @@
-53905d2 chore(version): bump 1 fichier(s) (lovelace.maison_eclairage)

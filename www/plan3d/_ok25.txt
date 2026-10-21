@@ -1,2 +1,0 @@
-ok
-650850a fix(accueil): heure sans secondes, date plus lisible, compteur lumieres deplace vers Energie

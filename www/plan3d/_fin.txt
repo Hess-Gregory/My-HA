@@ -1,0 +1,2 @@
+10:ERR http://supervisor/core HTTP Error 401: Unauthorized
+10:ERR https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa HTTP Error 404: Not Found

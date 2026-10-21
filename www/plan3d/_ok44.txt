@@ -1,1 +1,0 @@
-9aa459f chore(version): bump 2 fichier(s) (lovelace.maison_eclairage, sono_strobe.yaml)

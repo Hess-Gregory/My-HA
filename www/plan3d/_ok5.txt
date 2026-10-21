@@ -1,2 +1,0 @@
-ok
-db53542 chore(version): bump 1 fichier(s) (tablette_sam.yaml)

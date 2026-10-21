@@ -1,3 +1,0 @@
-ok
-11e4296 chore(version): bump 1 fichier(s) (tablette_sam.yaml)
-f59f3f8 fix(tablette): plus de rechargement de HA a l ouverture de porte, camera affichee meme si HA arrive en retard

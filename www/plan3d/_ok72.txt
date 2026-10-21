@@ -1,3 +1,0 @@
-0
-27dc2e6 chore(version): bump 3 fichier(s) (floorplan-3d-card.js, lovelace.maison_accueil, lovelace.ma_maison)
-FIN

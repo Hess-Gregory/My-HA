@@ -1,4 +1,0 @@
-70a440f chore(version): bump 1 fichier(s) (sono_lumieres.yaml)
-9316fa4 feat(eclairage): lumieres dynamiques sono par style musical
-58c5511 chore(version): bump 1 fichier(s) (scenes_light_jockey.yaml)
-c5e17ba feat(eclairage): 40 ambiances light jockey + menu deroulant ambiance piece de vie

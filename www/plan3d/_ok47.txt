@@ -1,1 +1,0 @@
-cdeb73e chore(version): bump 1 fichier(s) (sono_strobe.yaml)

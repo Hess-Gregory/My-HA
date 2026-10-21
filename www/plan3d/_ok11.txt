@@ -1,1 +1,0 @@
-28b9cd9 chore(version): bump 1 fichier(s) (localisation.yaml)
