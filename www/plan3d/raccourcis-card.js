@@ -24,8 +24,11 @@
         a.on{background:rgba(246,214,138,.16);border-color:rgba(246,214,138,.55);color:#f6d68a}
         @media (max-width:700px){a span{display:none} a i{font-size:22px}}
       </style><nav class="bar">${L.map((l) => `<a data-p="${l.p}"><i>${l.i}</i><span>${l.n}</span></a>`).join('')}</nav>`;
+      if (!this._ro) { this._ro = new ResizeObserver(() => document.documentElement.style.setProperty('--rc', (this.offsetHeight + 16) + 'px')); this._ro.observe(this); }
       r.querySelectorAll('a').forEach((a) => (a.onclick = () => { history.pushState(null, '', a.dataset.p); window.dispatchEvent(new CustomEvent('location-changed')); }));
     }
+    disconnectedCallback() { if (this._ro) { this._ro.disconnect(); this._ro = null; } document.documentElement.style.removeProperty('--rc'); }
+    connectedCallback() { if (this._b && !this._ro) { this._ro = new ResizeObserver(() => document.documentElement.style.setProperty('--rc', (this.offsetHeight + 16) + 'px')); this._ro.observe(this); } }
     _act() { (this.shadowRoot ? this.shadowRoot.querySelectorAll('a') : []).forEach((a) => a.classList.toggle('on', location.pathname.startsWith(a.dataset.p))); }
   }
   if (!customElements.get('raccourcis-card')) customElements.define('raccourcis-card', RaccourcisCard);

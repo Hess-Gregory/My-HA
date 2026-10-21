@@ -101,7 +101,7 @@ from custom_components.aegis_ajax.repairs import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Collection
+    from collections.abc import Callable, Collection, Coroutine
     from pathlib import Path
 
     from homeassistant.core import HomeAssistant
@@ -259,6 +259,11 @@ _HTS_TAMPER_ROUTED_DEVICE_TYPES: frozenset[str] = frozenset(
 # `external_sensor_power_broken` on the MultiTransmitter itself and other
 # things elsewhere (HTS sub-keys are legacy proto field numbers, per family).
 _HTS_CONTACT_STATE_KEY = 0x33
+
+# Families whose `0x33` has been captured as the contact position: the
+# MultiTransmitter's wire inputs (#413) and the Hub Hybrid's own wired
+# inputs, which send the same byte with the same meaning.
+_HTS_CONTACT_STATE_DEVICE_TYPES: frozenset[str] = frozenset({"wire_input_mt", "wire_input_rs"})
 
 # The statuses key the routed value lands on, read by the `opening`
 # binary sensor.
@@ -462,6 +467,10 @@ _STATUS_EXTRA_KEYS: dict[str, tuple[str, ...]] = {
 }
 
 
+# entry_id -> device ids that already caused an automatic reload this run (#608).
+_AUTO_RELOADED_FOR: dict[str, set[str]] = {}
+
+
 class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def __init__(
         self,
@@ -479,6 +488,8 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
         self._poll_interval = poll_interval
         self.entry_id = entry_id
+        # Device ids the platforms saw at setup; None until they ran (#608).
+        self._devices_at_setup: set[str] | None = None
         self._client = client
         self._reauth_required = False
         self._on_session_persist = on_session_persist
@@ -1505,7 +1516,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._async_refresh_per_device_snapshots,
             timedelta(seconds=HUB_DEVICE_TEMP_REFRESH_INTERVAL),
         )
-        self.hass.async_create_task(self._async_refresh_per_device_snapshots())
+        self._async_spawn(self._async_refresh_per_device_snapshots(), "hub device refresh")
 
     async def _async_refresh_per_device_snapshots(self, _now: datetime | None = None) -> None:
         """Timer-driven refresh of values sourced from `StreamHubDevice` (#220, #310).
@@ -1660,7 +1671,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if device_id in self._siren_confirm_pending:
             return
         self._siren_confirm_pending.add(device_id)
-        self.hass.async_create_task(self._async_confirm_siren_settings(device_id))
+        self._async_spawn(self._async_confirm_siren_settings(device_id), "siren settings confirm")
 
     async def _async_confirm_siren_settings(self, device_id: str) -> None:
         try:
@@ -1689,7 +1700,9 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if device_id in self._bypass_confirm_pending:
             return
         self._bypass_confirm_pending.add(device_id)
-        self.hass.async_create_task(self._async_confirm_bypass(device_id, expected=expected))
+        self._async_spawn(
+            self._async_confirm_bypass(device_id, expected=expected), "bypass confirm"
+        )
 
     async def _async_confirm_bypass(self, device_id: str, *, expected: bool) -> None:
         try:
@@ -2546,7 +2559,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.async_set_updated_data({"spaces": self.spaces, "devices": self.devices})
 
     def _maybe_apply_hts_contact_state(self, device_id_hex: str, kv: dict[int, bytes]) -> None:
-        """Route HTS `0x33` onto `external_contact_open` for MT wire inputs (#413).
+        """Route HTS `0x33` onto `external_contact_open` for wired inputs (#413).
 
         `0x33=00` is "left its rest position" — the app's "Alerte" — and maps
         to open; `0x33=01` is at rest ("OK") and maps to closed. The proto
@@ -2578,7 +2591,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         `opening` sensor should say. Guarded by
         `test_the_no_nc_mode_key_is_not_consumed`.
 
-        Family-gated hard to `wire_input_mt`: the same byte means
+        Family-gated hard to `_HTS_CONTACT_STATE_DEVICE_TYPES`: the same byte means
         `external_sensor_power_broken` on the MultiTransmitter itself and
         other things on other families (#406's lesson). Re-reads the device
         from `self.devices` because an earlier applier in the kv chain may
@@ -2588,7 +2601,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         from dataclasses import replace as dc_replace  # noqa: PLC0415
 
         device = self.devices.get(device_id_hex)
-        if device is None or device.device_type != "wire_input_mt":
+        if device is None or device.device_type not in _HTS_CONTACT_STATE_DEVICE_TYPES:
             return
         raw = kv.get(_HTS_CONTACT_STATE_KEY)
         if raw == b"\x00":
@@ -2785,7 +2798,7 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         Runs on the event loop.
         """
         self._force_snapshot_refresh = True
-        self.hass.async_create_task(self._security_refresh_debouncer.async_call())
+        self._async_spawn(self._security_refresh_debouncer.async_call(), "security refresh")
 
     def _on_hts_space_event(self, hub_id: str, payload_hex: str, candidate: int | None) -> None:
         """React to a hub `type=0x08` space event pushed over HTS in real time.
@@ -3574,6 +3587,32 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Debounced — bursts of stream snapshots coalesce into one write.
         if self._devices_cache is not None:
             self._devices_cache.async_schedule_save(self.devices)
+        self._reload_for_new_devices()
+
+    def mark_platforms_set_up(self) -> None:
+        """Remember which devices the platforms created entities for (#608)."""
+        self._devices_at_setup = set(self.devices)
+
+    def _reload_for_new_devices(self) -> None:
+        """Reload once when a device paired after setup shows up (#608).
+
+        Platforms build entities at setup, so a newly paired device would
+        otherwise get none until the next restart. A reload re-runs setup with
+        the device in place. Each new device triggers at most one reload per
+        Home Assistant run, so a device that keeps coming and going can't loop.
+        """
+        if self._devices_at_setup is None:
+            return
+        reloaded = _AUTO_RELOADED_FOR.setdefault(self.entry_id, set())
+        new = set(self.devices) - self._devices_at_setup - reloaded
+        if not new:
+            return
+        reloaded.update(new)
+        _LOGGER.info(
+            "%d new Ajax device(s) found after setup; reloading to add their entities",
+            len(new),
+        )
+        self.hass.config_entries.async_schedule_reload(self.entry_id)
 
     def _dedupe_video_doorbells(self) -> None:
         """Re-apply the video-doorbell dedup across `self.devices` and evict
@@ -3900,7 +3939,23 @@ class AjaxCobrandedCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
         await listener.async_start()
 
+    @callback
+    def _async_spawn(self, coro: Coroutine[Any, Any, Any], name: str) -> None:
+        """Run a follow-up task that the config entry cancels on unload (#611)."""
+        if self.config_entry is None:
+            self.hass.async_create_task(coro, f"aegis_ajax {name}")
+            return
+        self.config_entry.async_create_background_task(self.hass, coro, f"aegis_ajax {name}")
+
     async def async_shutdown(self) -> None:
+        # HA registers this on the entry's unload and async_unload_entry calls it
+        # too: only the first call does the work (#604).
+        if self._shutdown_requested:
+            return
+        # Base class: stop the refresh timer and the request-refresh debouncer,
+        # so a debounced refresh can't fire against the closed client.
+        await super().async_shutdown()
+
         # Stop the siren-temperature refresh timer (#220)
         if self._unsub_hub_device_temp is not None:
             self._unsub_hub_device_temp()

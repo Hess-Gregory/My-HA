@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, cast
 
-from homeassistant.components.light import (  # type: ignore[attr-defined]
+from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ColorMode,
     LightEntity,
@@ -25,6 +25,9 @@ if TYPE_CHECKING:
     from custom_components.aegis_ajax.api.models import Device
 
 _LOGGER = logging.getLogger(__name__)
+
+# One action at a time: never send Ajax more requests than the app would.
+PARALLEL_UPDATES = 1
 
 
 async def async_setup_entry(

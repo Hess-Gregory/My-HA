@@ -12,6 +12,13 @@ DOMAIN = "aegis_ajax"
 # `repairs.py` clears it when the user re-submits the Repair card (#464).
 FCM_STORAGE_VERSION = 1
 FCM_REJECTED_STORAGE_KEY = f"{DOMAIN}_fcm_rejected"
+
+
+def fcm_store_key(base: str, entry_id: str) -> str:
+    """Storage key for one config entry: two accounts must not share FCM state (#605)."""
+    return f"{base}_{entry_id}" if entry_id else base
+
+
 MANUFACTURER = "Ajax Systems"
 
 # Labels for automatic entity categorization
@@ -181,6 +188,7 @@ HUB_DEVICE_TEMPERATURE_DEVICE_TYPES = frozenset(
         "street_siren_double_deck",
         "street_siren_s_double_deck",
         "street_siren_double_deck_fibra",
+        "street_siren_fibra",
         "home_siren",
         "home_siren_g3",
         "home_siren_s",
@@ -578,6 +586,8 @@ VIDEO_EVENT_TAG_MAP: dict[str, str] = {
     "ring_button_pressed": "doorbell_pressed",
     "motion_detected": "motion",
     "human_detected": "motion",
+    "car_detected": "motion",
+    "pet_detected": "motion",
 }
 
 # Map SmartLockEventTag oneof field names to simplified HA event types. Ajax
@@ -628,6 +638,8 @@ TAG_PRIORITY: dict[str, int] = {
     # Tier 80 — sensor / device activity
     "motion_detected": 80,
     "human_detected": 80,
+    "car_detected": 80,
+    "pet_detected": 80,
     "door_opened": 80,
     "ring_button_pressed": 80,
     "doorbell_pressed": 80,

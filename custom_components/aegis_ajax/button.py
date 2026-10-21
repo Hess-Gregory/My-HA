@@ -26,6 +26,9 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 
+# One action at a time: never send Ajax more requests than the app would.
+PARALLEL_UPDATES = 1
+
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -154,6 +157,11 @@ class AjaxCapturePhotoButton(CoordinatorEntity[AjaxCobrandedCoordinator], Button
             self._attr_device_info = build_device_info(
                 device, coordinator.rooms, via_device_id=coordinator.hub_registry_id(device.hub_id)
             )
+
+    @property
+    def available(self) -> bool:
+        device = self.coordinator.devices.get(self._device_id)
+        return super().available and device is not None and device.is_online
 
     async def async_press(self) -> None:
         """Trigger photo capture, retrieve the URL, download and save it.

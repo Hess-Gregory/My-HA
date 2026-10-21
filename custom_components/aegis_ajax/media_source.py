@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from homeassistant.components.media_player import MediaClass  # type: ignore[attr-defined]
+from homeassistant.components.media_player import MediaClass
 from homeassistant.components.media_source import (
     BrowseMediaSource,
     MediaSource,
@@ -47,14 +47,21 @@ class AjaxPhotoMediaSource(MediaSource):
         if not item.identifier:
             raise Unresolvable("No identifier provided")
 
-        file_path = self._base_path / item.identifier
-        try:
-            file_path.resolve().relative_to(self._base_path.resolve())
-        except ValueError as err:
-            raise Unresolvable("Invalid path") from err
+        base_path = self._base_path
+        file_path = base_path / item.identifier
 
-        if not file_path.is_file():
-            raise Unresolvable(f"File not found: {item.identifier}")
+        def _check() -> str | None:
+            """Validate the path on disk; return the error, if any."""
+            try:
+                file_path.resolve().relative_to(base_path.resolve())
+            except ValueError:
+                return "Invalid path"
+            if not file_path.is_file():
+                return f"File not found: {item.identifier}"
+            return None
+
+        if (error := await self.hass.async_add_executor_job(_check)) is not None:
+            raise Unresolvable(error)
 
         return PlayMedia(
             url=f"/media/local/{PHOTOS_BASE_DIR}/{item.identifier}",
