@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.0 | 21/10/2026 18:01 | mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis
+# [AUTO-VERSION] v0.2.1 | 25/10/2026 10:57 | declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D
 - id: "1786571826109"
   alias: Speedtest 30min
   description: ""
