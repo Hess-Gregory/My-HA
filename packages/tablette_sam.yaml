@@ -1,6 +1,34 @@
 # [AUTO-VERSION] v0.9.3 | 25/10/2026 11:21 | carillon et sonnerie via browser_mod si Fully injoignable
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
+  - id: tablette_sam_relance_fully
+    alias: 🔄 Tablette Sam – relance Fully Kiosk s'il est fermé
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: media_player.salon_sam_tablette
+        to: unavailable
+        for: "00:02:00"
+      - trigger: time_pattern
+        minutes: "/10"
+    conditions:
+      - condition: state
+        entity_id: media_player.salon_sam_tablette
+        state: unavailable
+        for: "00:02:00"
+    actions:
+      - action: notify.mobile_app_25099rp13g
+        continue_on_error: true
+        data:
+          message: command_launch_app
+          data:
+            package_name: de.ozerov.fully
+      - delay: "00:00:45"
+      - action: homeassistant.reload_config_entry
+        continue_on_error: true
+        target:
+          device_id: f1aa9e7a06615d6cd968ef13a161d75c
+
   - id: tablette_sam_relance_ha_apres_fotoo
     alias: "📱 Tablette Sam : relancer Home Assistant après Fotoo"
     description: "Quand on quitte le diaporama Fotoo et que la tablette retombe sur le lanceur Fully, rouvre automatiquement l'app Home Assistant."
@@ -41,25 +69,19 @@ automation:
                 data:
                   media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
                   media_content_type: music
-              # secours : Fully injoignable -> son joué par le navigateur (browser_mod) de l'app HA
+              # secours : Fully injoignable -> annonce vocale par l'app Home Assistant de la tablette
               - if:
                   - condition: state
                     entity_id: media_player.salon_sam_tablette
                     state: unavailable
                 then:
-                  - action: media_player.volume_set
+                  - action: notify.mobile_app_25099rp13g
                     continue_on_error: true
-                    target:
-                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
                     data:
-                      volume_level: "{{ 0.6 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(1) }}"
-                  - action: media_player.play_media
-                    continue_on_error: true
-                    target:
-                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
-                    data:
-                      media_content_id: "/local/sons/carillon.wav"
-                      media_content_type: music
+                      message: TTS
+                      data:
+                        tts_text: "Porte d'entrée ouverte."
+                        media_stream: alarm_stream_max
           - if:
               - condition: not
                 conditions:
@@ -110,25 +132,19 @@ automation:
                 data:
                   media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/interphone.wav"
                   media_content_type: music
-              # secours : Fully injoignable -> son joué par le navigateur (browser_mod) de l'app HA
+              # secours : Fully injoignable -> annonce vocale par l'app Home Assistant de la tablette
               - if:
                   - condition: state
                     entity_id: media_player.salon_sam_tablette
                     state: unavailable
                 then:
-                  - action: media_player.volume_set
+                  - action: notify.mobile_app_25099rp13g
                     continue_on_error: true
-                    target:
-                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
                     data:
-                      volume_level: "{{ 0.5 if is_state('input_boolean.mode_nuit', 'on') else 1 }}"
-                  - action: media_player.play_media
-                    continue_on_error: true
-                    target:
-                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
-                    data:
-                      media_content_id: "/local/sons/interphone.wav"
-                      media_content_type: music
+                      message: TTS
+                      data:
+                        tts_text: "On sonne à l'interphone."
+                        media_stream: alarm_stream_max
           - if:
               - condition: not
                 conditions:
