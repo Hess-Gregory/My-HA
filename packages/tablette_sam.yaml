@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.9.2 | 25/10/2026 10:57 | declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D
+# [AUTO-VERSION] v0.9.3 | 25/10/2026 11:21 | carillon et sonnerie via browser_mod si Fully injoignable
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_ha_apres_fotoo
