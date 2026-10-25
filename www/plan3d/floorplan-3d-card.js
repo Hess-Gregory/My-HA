@@ -791,8 +791,22 @@ class Floorplan3DCard extends HTMLElement {
         const bd = o.querySelector('.bd');
         if (customElements.get('bticino-intercom-card')) {
           const c = document.createElement('bticino-intercom-card');
-          c.setConfig({ intercoms: [{ name: 'Platine de Rue', camera: camId, door_entity: LOCK, auto_mic: true }] });
+          c.setConfig({ intercoms: [{ name: 'Platine de Rue', camera: camId, door_entity: LOCK, auto_mic: false }] });
           c.hass = this._h; bd.appendChild(c); this._ringCard = c;
+          // video directe (sans glisser) + 2 gros boutons : parler / ouvrir le SAS
+          const go = () => { try { if (c._startCall && !c._playing && !c._wantPlay) c._startCall(); } catch (e) {} };
+          setTimeout(go, 150); setTimeout(go, 1500);
+          const bar = document.createElement('div');
+          bar.style.cssText = 'display:flex;gap:10px;padding:10px 12px 12px';
+          const bs = 'flex:1;padding:16px 10px;border:none;border-radius:14px;font:700 17px sans-serif;cursor:pointer;color:#fff';
+          bar.innerHTML = '<button class="mic" style="' + bs + ';background:#3f7be0">🎙️ Parler</button><button class="sas" style="' + bs + ';background:#2e9e5b">🔓 Ouvrir le SAS</button>';
+          const mic = bar.querySelector('.mic'), sas = bar.querySelector('.sas');
+          mic.onclick = async () => { try { go(); await c._toggleMic(); } catch (e) {} const on = !!c._micStream || !!c._micActive; mic.textContent = on ? '🔇 Couper le micro' : '🎙️ Parler'; mic.style.background = on ? '#e05555' : '#3f7be0'; };
+          sas.onclick = () => {
+            if (!sas._arm) { sas._arm = true; sas.textContent = '👆 Touchez encore pour ouvrir'; sas.style.background = '#d98b1f'; clearTimeout(sas._t); sas._t = setTimeout(() => { sas._arm = false; sas.textContent = '🔓 Ouvrir le SAS'; sas.style.background = '#2e9e5b'; }, 4000); return; }
+            sas._arm = false; clearTimeout(sas._t); this._h.callService('lock', 'open', { entity_id: LOCK }); sas.textContent = '✅ SAS ouvert'; sas.style.background = '#2e9e5b';
+          };
+          o.insertBefore(bar, bd);
           clearInterval(this._ringIv); this._ringIv = setInterval(() => { if (this._ringCard) this._ringCard.hass = this._h; }, 1000);
         } else {
           const cam = this._h.states[camId];
