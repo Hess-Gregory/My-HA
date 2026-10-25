@@ -589,7 +589,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/couloir-entree"
+                    "navigation_path": "/mon-confort/couloir-entree"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -614,7 +614,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/piece-de-vie"
+                    "navigation_path": "/mon-confort/piece-de-vie"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -639,7 +639,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/chambre-enfants"
+                    "navigation_path": "/mon-confort/chambre-enfants"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -664,7 +664,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/chambre-parents"
+                    "navigation_path": "/mon-confort/chambre-parents"
                   },
                   "hold_action": {
                     "action": "more-info"
@@ -689,7 +689,7 @@
                   "multiline_secondary": true,
                   "tap_action": {
                     "action": "navigate",
-                    "navigation_path": "/1-mon-confort/salle-de-bain"
+                    "navigation_path": "/mon-confort/salle-de-bain"
                   },
                   "hold_action": {
                     "action": "more-info"

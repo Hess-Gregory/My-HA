@@ -32,15 +32,6 @@
         "icon": "mdi:lamps"
       },
       {
-        "id": "1_mon_confort",
-        "show_in_sidebar": false,
-        "title": "Mon Confort (ancien)",
-        "require_admin": false,
-        "mode": "storage",
-        "url_path": "1-mon-confort",
-        "icon": "mdi:home-thermometer"
-      },
-      {
         "id": "1_energie",
         "show_in_sidebar": false,
         "title": "Énergie (ancien)",

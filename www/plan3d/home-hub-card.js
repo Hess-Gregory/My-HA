@@ -251,7 +251,7 @@ class HomeHubCard extends HTMLElement {
     // climat
     $('.rooms').innerHTML = ROOMS.map(([n, id, cl, k, path]) => { const t = num(`sensor.temp_${id}_temperature`), hu = num(`sensor.temp_${id}_humidity`), c = H[cl], heat = c && c.attributes.hvac_action === 'heating';
       const cons = H['sensor.consigne_' + k] ? H['sensor.consigne_' + k].state : (c ? c.attributes.temperature : null), mode = H['input_select.mode_' + k] ? H['input_select.mode_' + k].state : '';
-      return `<div class="rm ${heat ? 'heat' : ''}" data-p="/1-mon-confort/${path}"><span>${n}</span><b>${t != null ? t.toFixed(1).replace('.', ',') + '°' : '—'}</b><em>${hu != null ? `<span>💧 ${Math.round(hu)} %</span>` : ''}<span class="fl">${heat ? '🔥' : '🎯'} ${cons ?? '—'}°${mode ? ' · ' + mode : ''}</span></em></div>`; }).join('');
+      return `<div class="rm ${heat ? 'heat' : ''}" data-p="/mon-confort/${path}"><span>${n}</span><b>${t != null ? t.toFixed(1).replace('.', ',') + '°' : '—'}</b><em>${hu != null ? `<span>💧 ${Math.round(hu)} %</span>` : ''}<span class="fl">${heat ? '🔥' : '🎯'} ${cons ?? '—'}°${mode ? ' · ' + mode : ''}</span></em></div>`; }).join('');
     this.shadowRoot.querySelectorAll('.rm').forEach((el) => (el.onclick = () => this._go(el.dataset.p)));
     if (this._sim) this._sim.classList.toggle('on', H['input_boolean.simulation_presence'] && H['input_boolean.simulation_presence'].state === 'on');
     const nOn = Object.keys(H).filter((k) => k.startsWith('light.') && H[k].state === 'on' && !(H[k].attributes.entity_id)).length; $('.lights').textContent = `💡 ${nOn} allumée${nOn > 1 ? 's' : ''}`;
