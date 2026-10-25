@@ -451,19 +451,27 @@
                           "color": "#2f5fa8"
                         },
                         {
-                          "from": 17,
+                          "from": 10,
                           "color": "#6aa8f0"
                         },
                         {
-                          "from": 18,
-                          "color": "#7fdc9a"
+                          "from": 17,
+                          "color": "#a8e6b4"
                         },
                         {
-                          "from": 24,
-                          "color": "#ffd9a8"
+                          "from": 21.5,
+                          "color": "#3fbf5f"
                         },
                         {
                           "from": 26,
+                          "color": "#a8e6b4"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#ffd9a8"
+                        },
+                        {
+                          "from": 36,
                           "color": "#e8605a"
                         }
                       ],
@@ -781,19 +789,27 @@
                           "color": "#2f5fa8"
                         },
                         {
-                          "from": 18,
+                          "from": 10,
                           "color": "#6aa8f0"
                         },
                         {
-                          "from": 22,
-                          "color": "#7fdc9a"
+                          "from": 17,
+                          "color": "#a8e6b4"
                         },
                         {
-                          "from": 24.5,
-                          "color": "#ffd9a8"
+                          "from": 21.5,
+                          "color": "#3fbf5f"
                         },
                         {
                           "from": 26,
+                          "color": "#a8e6b4"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#ffd9a8"
+                        },
+                        {
+                          "from": 36,
                           "color": "#e8605a"
                         }
                       ],
@@ -1143,19 +1159,27 @@
                           "color": "#2f5fa8"
                         },
                         {
-                          "from": 17,
+                          "from": 10,
                           "color": "#6aa8f0"
                         },
                         {
-                          "from": 20,
-                          "color": "#7fdc9a"
+                          "from": 17,
+                          "color": "#a8e6b4"
                         },
                         {
-                          "from": 24,
-                          "color": "#ffd9a8"
+                          "from": 21.5,
+                          "color": "#3fbf5f"
                         },
                         {
                           "from": 26,
+                          "color": "#a8e6b4"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#ffd9a8"
+                        },
+                        {
+                          "from": 36,
                           "color": "#e8605a"
                         }
                       ],
@@ -1533,19 +1557,27 @@
                           "color": "#2f5fa8"
                         },
                         {
-                          "from": 17,
+                          "from": 10,
                           "color": "#6aa8f0"
                         },
                         {
-                          "from": 19,
-                          "color": "#7fdc9a"
+                          "from": 17,
+                          "color": "#a8e6b4"
                         },
                         {
-                          "from": 24,
-                          "color": "#ffd9a8"
+                          "from": 21.5,
+                          "color": "#3fbf5f"
                         },
                         {
                           "from": 26,
+                          "color": "#a8e6b4"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#ffd9a8"
+                        },
+                        {
+                          "from": 36,
                           "color": "#e8605a"
                         }
                       ],
@@ -1912,19 +1944,27 @@
                           "color": "#2f5fa8"
                         },
                         {
-                          "from": 19,
+                          "from": 10,
                           "color": "#6aa8f0"
                         },
                         {
-                          "from": 22,
-                          "color": "#7fdc9a"
+                          "from": 17,
+                          "color": "#a8e6b4"
                         },
                         {
-                          "from": 25,
-                          "color": "#ffd9a8"
+                          "from": 21.5,
+                          "color": "#3fbf5f"
                         },
                         {
                           "from": 26,
+                          "color": "#a8e6b4"
+                        },
+                        {
+                          "from": 30,
+                          "color": "#ffd9a8"
+                        },
+                        {
+                          "from": 36,
                           "color": "#e8605a"
                         }
                       ],
