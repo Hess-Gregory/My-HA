@@ -825,7 +825,7 @@ class Floorplan3DCard extends HTMLElement {
       clearTimeout(this._ringT); this._ringT = setTimeout(() => this._ringClose(), 120000);
     } catch (e) { console.warn('ringAlert', e); }
   }
-  _ringClose() { clearTimeout(this._ringT); clearInterval(this._ringIv); this._ringIv = null; this._ringCard = null; const o = this.$('.ringov'); if (o) o.remove(); }
+  _ringClose() { clearTimeout(this._ringT); try { if (this._ringCard) { this._ringCard._hangUp && this._ringCard._hangUp(); this._ringCard._cleanup && this._ringCard._cleanup(); } } catch (e) {} clearInterval(this._ringIv); this._ringIv = null; this._ringCard = null; const o = this.$('.ringov'); if (o) o.remove(); }
 
   _doorClear() { const o = this.$('.camov'); if (o) { clearTimeout(this._camT); o.remove(); this._goTo('Vue générale'); } }
 
