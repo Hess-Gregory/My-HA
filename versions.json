@@ -320,9 +320,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "carillon et sonnerie via browser_mod si Fully injoignable",
-    "last_update": "2026-10-25T11:21:32.656085+01:00",
-    "version": "0.9.3"
+    "last_change": "relance auto de Fully Kiosk + annonce vocale de secours si Fully injoignable",
+    "last_update": "2026-10-25T12:14:08.214787+01:00",
+    "version": "0.10.0"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",

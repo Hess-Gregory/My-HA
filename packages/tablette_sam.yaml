@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.9.3 | 25/10/2026 11:21 | carillon et sonnerie via browser_mod si Fully injoignable
+# [AUTO-VERSION] v0.10.0 | 25/10/2026 12:14 | relance auto de Fully Kiosk + annonce vocale de secours si Fully injoignable
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_fully
