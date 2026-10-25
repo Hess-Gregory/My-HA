@@ -1,0 +1,92 @@
+# Réglage manuel du chauffage en deux temps (brouillon + validation). Doc : packages/chauffage.md (mise à jour 25/10/2026)
+input_number:
+  temp_reglage_chambre_adulte:
+    name: Réglage manuel (brouillon) - Chambre adulte
+    icon: mdi:thermometer-lines
+    min: 10
+    max: 30
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+  temp_reglage_chambre_enfants:
+    name: Réglage manuel (brouillon) - Chambre enfants
+    icon: mdi:thermometer-lines
+    min: 10
+    max: 30
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+  temp_reglage_couloir:
+    name: Réglage manuel (brouillon) - Couloir
+    icon: mdi:thermometer-lines
+    min: 10
+    max: 30
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+  temp_reglage_piece_de_vie:
+    name: Réglage manuel (brouillon) - Pièce de vie
+    icon: mdi:thermometer-lines
+    min: 10
+    max: 30
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+  temp_reglage_salle_de_bain:
+    name: Réglage manuel (brouillon) - Salle de bain
+    icon: mdi:thermometer-lines
+    min: 10
+    max: 30
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+
+automation:
+  - id: chauffage_manuel_depart_temperature_actuelle
+    alias: 🌡️ Chauffage – passage en Manuel, départ à la température actuelle de la pièce
+    mode: parallel
+    triggers:
+      - trigger: state
+        entity_id: input_select.mode_chambre_adulte
+        to: Manuel
+        id: chambre_adulte
+      - trigger: state
+        entity_id: input_select.mode_chambre_enfants
+        to: Manuel
+        id: chambre_enfants
+      - trigger: state
+        entity_id: input_select.mode_couloir
+        to: Manuel
+        id: couloir
+      - trigger: state
+        entity_id: input_select.mode_piece_de_vie
+        to: Manuel
+        id: piece_de_vie
+      - trigger: state
+        entity_id: input_select.mode_salle_de_bain
+        to: Manuel
+        id: salle_de_bain
+    variables:
+      sondes:
+        chambre_adulte: sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature
+        chambre_enfants: sensor.temp_chambre_enfants_sonoff_a480146b58_temperature
+        couloir: sensor.temp_couloir_sonoff_a480146b60_temperature
+        piece_de_vie: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature
+        salle_de_bain: sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature
+      t: >-
+        {% set v = states(sondes[trigger.id]) | float(none) %}
+        {{ ([[v, 10] | max, 30] | min) | round(1) if v is not none else none }}
+    conditions:
+      - condition: template
+        value_template: "{{ t is not none }}"
+    actions:
+      - action: input_number.set_value
+        target:
+          entity_id: "input_number.temp_reglage_{{ trigger.id }}"
+        data:
+          value: "{{ t }}"
+      - action: input_number.set_value
+        target:
+          entity_id: "input_number.temp_manuel_{{ trigger.id }}"
+        data:
+          value: "{{ t }}"

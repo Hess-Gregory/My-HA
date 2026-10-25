@@ -515,8 +515,8 @@
                         {
                           "type": "custom:gauge-card-pro",
                           "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
-                          "min": 14,
-                          "max": 28,
+                          "min": 0,
+                          "max": 45,
                           "needle": true,
                           "needle_color": "#ffffff",
                           "gradient": true,
@@ -524,7 +524,7 @@
                           "round": "full",
                           "segments": [
                             {
-                              "from": 14,
+                              "from": 0,
                               "color": "#2f5fa8"
                             },
                             {
@@ -532,20 +532,16 @@
                               "color": "#6aa8f0"
                             },
                             {
-                              "from": 19,
-                              "color": "#7fdc9a"
-                            },
-                            {
-                              "from": 22.5,
+                              "from": 18,
                               "color": "#7fdc9a"
                             },
                             {
                               "from": 24,
-                              "color": "#f3c156"
+                              "color": "#ffd9a8"
                             },
                             {
                               "from": 26,
-                              "color": "#f07a7a"
+                              "color": "#e8605a"
                             }
                           ],
                           "titles": {
@@ -880,7 +876,7 @@
                     "action": "call-service",
                     "service": "input_number.decrement",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_couloir"
+                      "entity_id": "input_number.temp_reglage_couloir"
                     },
                     "haptic": "light"
                   },
@@ -919,14 +915,22 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_card",
-                  "entity": "input_number.temp_manuel_couloir",
+                  "entity": "input_number.temp_reglage_couloir",
                   "show_icon": false,
                   "show_name": true,
                   "show_label": true,
                   "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                  "label": "Température manuelle",
+                  "label": "[[[ const a=Number(states['input_number.temp_manuel_couloir'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
                   "tap_action": {
-                    "action": "none"
+                    "action": "call-service",
+                    "service": "input_number.set_value",
+                    "target": {
+                      "entity_id": "input_number.temp_manuel_couloir"
+                    },
+                    "data": {
+                      "value": "[[[ return Number(entity.state) ]]]"
+                    },
+                    "haptic": "success"
                   },
                   "styles": {
                     "card": [
@@ -975,7 +979,7 @@
                     "action": "call-service",
                     "service": "input_number.increment",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_couloir"
+                      "entity_id": "input_number.temp_reglage_couloir"
                     },
                     "haptic": "light"
                   },
@@ -1225,8 +1229,8 @@
                         {
                           "type": "custom:gauge-card-pro",
                           "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
-                          "min": 14,
-                          "max": 28,
+                          "min": 0,
+                          "max": 45,
                           "needle": true,
                           "needle_color": "#ffffff",
                           "gradient": true,
@@ -1234,28 +1238,24 @@
                           "round": "full",
                           "segments": [
                             {
-                              "from": 14,
+                              "from": 0,
                               "color": "#2f5fa8"
                             },
                             {
-                              "from": 17,
+                              "from": 18,
                               "color": "#6aa8f0"
                             },
                             {
-                              "from": 19,
+                              "from": 22,
                               "color": "#7fdc9a"
                             },
                             {
-                              "from": 22.5,
-                              "color": "#7fdc9a"
-                            },
-                            {
-                              "from": 24,
-                              "color": "#f3c156"
+                              "from": 24.5,
+                              "color": "#ffd9a8"
                             },
                             {
                               "from": 26,
-                              "color": "#f07a7a"
+                              "color": "#e8605a"
                             }
                           ],
                           "titles": {
@@ -1610,7 +1610,7 @@
                     "action": "call-service",
                     "service": "input_number.decrement",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_piece_de_vie"
+                      "entity_id": "input_number.temp_reglage_piece_de_vie"
                     },
                     "haptic": "light"
                   },
@@ -1649,14 +1649,22 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_card",
-                  "entity": "input_number.temp_manuel_piece_de_vie",
+                  "entity": "input_number.temp_reglage_piece_de_vie",
                   "show_icon": false,
                   "show_name": true,
                   "show_label": true,
                   "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                  "label": "Température manuelle",
+                  "label": "[[[ const a=Number(states['input_number.temp_manuel_piece_de_vie'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
                   "tap_action": {
-                    "action": "none"
+                    "action": "call-service",
+                    "service": "input_number.set_value",
+                    "target": {
+                      "entity_id": "input_number.temp_manuel_piece_de_vie"
+                    },
+                    "data": {
+                      "value": "[[[ return Number(entity.state) ]]]"
+                    },
+                    "haptic": "success"
                   },
                   "styles": {
                     "card": [
@@ -1705,7 +1713,7 @@
                     "action": "call-service",
                     "service": "input_number.increment",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_piece_de_vie"
+                      "entity_id": "input_number.temp_reglage_piece_de_vie"
                     },
                     "haptic": "light"
                   },
@@ -2100,8 +2108,8 @@
                         {
                           "type": "custom:gauge-card-pro",
                           "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
-                          "min": 14,
-                          "max": 28,
+                          "min": 0,
+                          "max": 45,
                           "needle": true,
                           "needle_color": "#ffffff",
                           "gradient": true,
@@ -2109,7 +2117,7 @@
                           "round": "full",
                           "segments": [
                             {
-                              "from": 14,
+                              "from": 0,
                               "color": "#2f5fa8"
                             },
                             {
@@ -2117,20 +2125,16 @@
                               "color": "#6aa8f0"
                             },
                             {
-                              "from": 19,
-                              "color": "#7fdc9a"
-                            },
-                            {
-                              "from": 22.5,
+                              "from": 20,
                               "color": "#7fdc9a"
                             },
                             {
                               "from": 24,
-                              "color": "#f3c156"
+                              "color": "#ffd9a8"
                             },
                             {
                               "from": 26,
-                              "color": "#f07a7a"
+                              "color": "#e8605a"
                             }
                           ],
                           "titles": {
@@ -2454,7 +2458,7 @@
                     "action": "call-service",
                     "service": "input_number.decrement",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_chambre_enfants"
+                      "entity_id": "input_number.temp_reglage_chambre_enfants"
                     },
                     "haptic": "light"
                   },
@@ -2493,14 +2497,22 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_card",
-                  "entity": "input_number.temp_manuel_chambre_enfants",
+                  "entity": "input_number.temp_reglage_chambre_enfants",
                   "show_icon": false,
                   "show_name": true,
                   "show_label": true,
                   "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                  "label": "Température manuelle",
+                  "label": "[[[ const a=Number(states['input_number.temp_manuel_chambre_enfants'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
                   "tap_action": {
-                    "action": "none"
+                    "action": "call-service",
+                    "service": "input_number.set_value",
+                    "target": {
+                      "entity_id": "input_number.temp_manuel_chambre_enfants"
+                    },
+                    "data": {
+                      "value": "[[[ return Number(entity.state) ]]]"
+                    },
+                    "haptic": "success"
                   },
                   "styles": {
                     "card": [
@@ -2549,7 +2561,7 @@
                     "action": "call-service",
                     "service": "input_number.increment",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_chambre_enfants"
+                      "entity_id": "input_number.temp_reglage_chambre_enfants"
                     },
                     "haptic": "light"
                   },
@@ -2892,8 +2904,8 @@
                         {
                           "type": "custom:gauge-card-pro",
                           "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
-                          "min": 14,
-                          "max": 28,
+                          "min": 0,
+                          "max": 45,
                           "needle": true,
                           "needle_color": "#ffffff",
                           "gradient": true,
@@ -2901,7 +2913,7 @@
                           "round": "full",
                           "segments": [
                             {
-                              "from": 14,
+                              "from": 0,
                               "color": "#2f5fa8"
                             },
                             {
@@ -2913,16 +2925,12 @@
                               "color": "#7fdc9a"
                             },
                             {
-                              "from": 22.5,
-                              "color": "#7fdc9a"
-                            },
-                            {
                               "from": 24,
-                              "color": "#f3c156"
+                              "color": "#ffd9a8"
                             },
                             {
                               "from": 26,
-                              "color": "#f07a7a"
+                              "color": "#e8605a"
                             }
                           ],
                           "titles": {
@@ -3246,7 +3254,7 @@
                     "action": "call-service",
                     "service": "input_number.decrement",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_chambre_adulte"
+                      "entity_id": "input_number.temp_reglage_chambre_adulte"
                     },
                     "haptic": "light"
                   },
@@ -3285,14 +3293,22 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_card",
-                  "entity": "input_number.temp_manuel_chambre_adulte",
+                  "entity": "input_number.temp_reglage_chambre_adulte",
                   "show_icon": false,
                   "show_name": true,
                   "show_label": true,
                   "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                  "label": "Température manuelle",
+                  "label": "[[[ const a=Number(states['input_number.temp_manuel_chambre_adulte'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
                   "tap_action": {
-                    "action": "none"
+                    "action": "call-service",
+                    "service": "input_number.set_value",
+                    "target": {
+                      "entity_id": "input_number.temp_manuel_chambre_adulte"
+                    },
+                    "data": {
+                      "value": "[[[ return Number(entity.state) ]]]"
+                    },
+                    "haptic": "success"
                   },
                   "styles": {
                     "card": [
@@ -3341,7 +3357,7 @@
                     "action": "call-service",
                     "service": "input_number.increment",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_chambre_adulte"
+                      "entity_id": "input_number.temp_reglage_chambre_adulte"
                     },
                     "haptic": "light"
                   },
@@ -3801,8 +3817,8 @@
                         {
                           "type": "custom:gauge-card-pro",
                           "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
-                          "min": 14,
-                          "max": 28,
+                          "min": 0,
+                          "max": 45,
                           "needle": true,
                           "needle_color": "#ffffff",
                           "gradient": true,
@@ -3810,28 +3826,24 @@
                           "round": "full",
                           "segments": [
                             {
-                              "from": 14,
+                              "from": 0,
                               "color": "#2f5fa8"
                             },
                             {
-                              "from": 17,
+                              "from": 19,
                               "color": "#6aa8f0"
                             },
                             {
-                              "from": 19,
+                              "from": 22,
                               "color": "#7fdc9a"
                             },
                             {
-                              "from": 22.5,
-                              "color": "#7fdc9a"
-                            },
-                            {
-                              "from": 24,
-                              "color": "#f3c156"
+                              "from": 25,
+                              "color": "#ffd9a8"
                             },
                             {
                               "from": 26,
-                              "color": "#f07a7a"
+                              "color": "#e8605a"
                             }
                           ],
                           "titles": {
@@ -4166,7 +4178,7 @@
                     "action": "call-service",
                     "service": "input_number.decrement",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_salle_de_bain"
+                      "entity_id": "input_number.temp_reglage_salle_de_bain"
                     },
                     "haptic": "light"
                   },
@@ -4205,14 +4217,22 @@
                 {
                   "type": "custom:button-card",
                   "template": "cc_card",
-                  "entity": "input_number.temp_manuel_salle_de_bain",
+                  "entity": "input_number.temp_reglage_salle_de_bain",
                   "show_icon": false,
                   "show_name": true,
                   "show_label": true,
                   "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                  "label": "Température manuelle",
+                  "label": "[[[ const a=Number(states['input_number.temp_manuel_salle_de_bain'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
                   "tap_action": {
-                    "action": "none"
+                    "action": "call-service",
+                    "service": "input_number.set_value",
+                    "target": {
+                      "entity_id": "input_number.temp_manuel_salle_de_bain"
+                    },
+                    "data": {
+                      "value": "[[[ return Number(entity.state) ]]]"
+                    },
+                    "haptic": "success"
                   },
                   "styles": {
                     "card": [
@@ -4261,7 +4281,7 @@
                     "action": "call-service",
                     "service": "input_number.increment",
                     "target": {
-                      "entity_id": "input_number.temp_manuel_salle_de_bain"
+                      "entity_id": "input_number.temp_reglage_salle_de_bain"
                     },
                     "haptic": "light"
                   },

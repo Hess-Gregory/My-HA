@@ -45,8 +45,8 @@ Valeurs actuelles par pièce (Confort / Éco / Nuit / Hors-gel) :
 | Chambre adulte | 19 | 17 | 17 | 10 |
 | Chambre enfants | 20 | 17 | 20 (proche de Confort, pas de couverture la nuit) | 12 |
 | Couloir | 18 | 17 | 16 | 10 |
-| Pièce de vie | 20 | 17 | 17 | 10 |
-| Salle de bain | 21 | 18 | 18 | 12 |
+| Pièce de vie | 22 | 18 | 17 | 10 |
+| Salle de bain | 22 | 19 | 18 | 12 |
 
 `Été` = `none` → chauffage coupé pour cette pièce (`off`). `Manuel` et `Boost` ignorent ce dictionnaire et prennent directement l'`input_number` correspondant.
 
@@ -166,3 +166,10 @@ Conséquence principale : `chauffage_appliquer_consignes_vannes` n'existait que 
 Correction : intégration Workday ajoutée (Belgique, lundi→vendredi, exclusions samedi/dimanche/fériés, langue française), puis entité renommée de `binary_sensor.workday_sensor_be` vers `binary_sensor.workday_sensor`, puis rechargement des templates. Vérifié après coup : les 6 automatisations sont `on` sans erreur de condition, et `prochain_changement_*` produit des phrases cohérentes.
 
 **3. Plage du mode Manuel élargie** de 24 à 30 °C sur les 5 `input_number.temp_manuel_*` (lignes 150, 160, 170, 180, 202), pour correspondre au plafond réel des vannes Bosch. Chaîne vérifiée : aucun replafonnement entre l'`input_number`, le template de consigne et l'automatisation qui écrit sur la vanne.
+
+## Mise à jour 25/10/2026
+- Pièce de vie : Confort 22, Éco 18, **Boost = cible Boost + 0,5** (23,5 °C avec la cible à 23).
+- Salle de bain : Confort 22, Éco 19, **Boost = cible Boost + 1** (24 °C). Chambres et couloir inchangés.
+- Mode Manuel : réglage au **dixième de degré** (`temp_manuel_xxx` pas de 0,1). Les vannes Bosch n'acceptent que le demi-degré : la consigne envoyée aux vannes est arrondie au 0,5 le plus proche (section 9).
+- Réglage manuel en deux temps (voir `packages/chauffage_manuel.yaml`) : les boutons − / + règlent un brouillon (`temp_reglage_xxx`), on **touche la valeur pour valider**. En passant en Manuel, le brouillon et la consigne partent de la température actuelle de la pièce.
+- Jauges de température (tous les dashboards) : 0 → 45 °C, couleurs selon les modes de la pièce (bleu < Éco, bleu clair Éco, vert à partir du Confort, orange très clair à partir de Boost + 1 °C, rouge à partir de 26 °C).

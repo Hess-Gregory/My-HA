@@ -330,44 +330,32 @@
                     {
                       "type": "custom:gauge-card-pro",
                       "entity": "sensor.temp_couloir_sonoff_a480146b60_temperature",
-                      "min": 10,
-                      "max": 30,
+                      "min": 0,
+                      "max": 45,
                       "needle": true,
                       "needle_color": "#FFFFFF",
                       "gradient": true,
                       "gradient_resolution": "auto",
                       "segments": [
                         {
-                          "from": 10,
-                          "color": "#1565C0"
+                          "from": 0,
+                          "color": "#2f5fa8"
                         },
                         {
-                          "from": 16,
-                          "color": "#42A5F5"
+                          "from": 17,
+                          "color": "#6aa8f0"
                         },
                         {
                           "from": 18,
-                          "color": "#66BB6A"
-                        },
-                        {
-                          "from": 20,
-                          "color": "#43A047"
-                        },
-                        {
-                          "from": 22,
-                          "color": "#8BC34A"
+                          "color": "#7fdc9a"
                         },
                         {
                           "from": 24,
-                          "color": "#FFB300"
+                          "color": "#ffd9a8"
                         },
                         {
-                          "from": 27,
-                          "color": "#F4511E"
-                        },
-                        {
-                          "from": 30,
-                          "color": "#D32F2F"
+                          "from": 26,
+                          "color": "#e8605a"
                         }
                       ],
                       "round": "full",
@@ -1805,44 +1793,32 @@
                     {
                       "type": "custom:gauge-card-pro",
                       "entity": "sensor.temp_piece_de_vie_sonoff_a480146b56_temperature",
-                      "min": 16,
-                      "max": 28,
+                      "min": 0,
+                      "max": 45,
                       "needle": true,
                       "needle_color": "#FFFFFF",
                       "gradient": true,
                       "gradient_resolution": "auto",
                       "segments": [
                         {
-                          "from": 16,
-                          "color": "#1565C0"
+                          "from": 0,
+                          "color": "#2f5fa8"
                         },
                         {
                           "from": 18,
-                          "color": "#42A5F5"
-                        },
-                        {
-                          "from": 19,
-                          "color": "#66BB6A"
-                        },
-                        {
-                          "from": 20,
-                          "color": "#43A047"
+                          "color": "#6aa8f0"
                         },
                         {
                           "from": 22,
-                          "color": "#8BC34A"
+                          "color": "#7fdc9a"
                         },
                         {
-                          "from": 23,
-                          "color": "#FFB300"
+                          "from": 24.5,
+                          "color": "#ffd9a8"
                         },
                         {
-                          "from": 25,
-                          "color": "#F4511E"
-                        },
-                        {
-                          "from": 28,
-                          "color": "#D32F2F"
+                          "from": 26,
+                          "color": "#e8605a"
                         }
                       ],
                       "round": "full",
@@ -2904,44 +2880,32 @@
                     {
                       "type": "custom:gauge-card-pro",
                       "entity": "sensor.temp_chambre_enfants_sonoff_a480146b58_temperature",
-                      "min": 15,
-                      "max": 27,
+                      "min": 0,
+                      "max": 45,
                       "needle": true,
                       "needle_color": "#FFFFFF",
                       "gradient": true,
                       "gradient_resolution": "auto",
                       "segments": [
                         {
-                          "from": 15,
-                          "color": "#1565C0"
+                          "from": 0,
+                          "color": "#2f5fa8"
                         },
                         {
                           "from": 17,
-                          "color": "#42A5F5"
-                        },
-                        {
-                          "from": 18,
-                          "color": "#66BB6A"
+                          "color": "#6aa8f0"
                         },
                         {
                           "from": 20,
-                          "color": "#43A047"
+                          "color": "#7fdc9a"
                         },
                         {
-                          "from": 22,
-                          "color": "#66BB6A"
+                          "from": 24,
+                          "color": "#ffd9a8"
                         },
                         {
-                          "from": 23,
-                          "color": "#FFB300"
-                        },
-                        {
-                          "from": 25,
-                          "color": "#F4511E"
-                        },
-                        {
-                          "from": 27,
-                          "color": "#D32F2F"
+                          "from": 26,
+                          "color": "#e8605a"
                         }
                       ],
                       "round": "full",
@@ -3939,44 +3903,32 @@
                     {
                       "type": "custom:gauge-card-pro",
                       "entity": "sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature",
-                      "min": 15,
-                      "max": 27,
+                      "min": 0,
+                      "max": 45,
                       "needle": true,
                       "needle_color": "#FFFFFF",
                       "gradient": true,
                       "gradient_resolution": "auto",
                       "segments": [
                         {
-                          "from": 15,
-                          "color": "#1565C0"
+                          "from": 0,
+                          "color": "#2f5fa8"
                         },
                         {
                           "from": 17,
-                          "color": "#42A5F5"
-                        },
-                        {
-                          "from": 18,
-                          "color": "#66BB6A"
+                          "color": "#6aa8f0"
                         },
                         {
                           "from": 19,
-                          "color": "#43A047"
-                        },
-                        {
-                          "from": 21,
-                          "color": "#66BB6A"
-                        },
-                        {
-                          "from": 22,
-                          "color": "#FFB300"
+                          "color": "#7fdc9a"
                         },
                         {
                           "from": 24,
-                          "color": "#F4511E"
+                          "color": "#ffd9a8"
                         },
                         {
-                          "from": 27,
-                          "color": "#D32F2F"
+                          "from": 26,
+                          "color": "#e8605a"
                         }
                       ],
                       "round": "full",
@@ -4534,44 +4486,32 @@
                     {
                       "type": "custom:gauge-card-pro",
                       "entity": "sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature",
-                      "min": 15,
-                      "max": 32,
+                      "min": 0,
+                      "max": 45,
                       "needle": true,
                       "needle_color": "#FFFFFF",
                       "gradient": true,
                       "gradient_resolution": "auto",
                       "segments": [
                         {
-                          "from": 15,
-                          "color": "#1565C0"
+                          "from": 0,
+                          "color": "#2f5fa8"
                         },
                         {
-                          "from": 18,
-                          "color": "#42A5F5"
-                        },
-                        {
-                          "from": 20,
-                          "color": "#66BB6A"
+                          "from": 19,
+                          "color": "#6aa8f0"
                         },
                         {
                           "from": 22,
-                          "color": "#43A047"
+                          "color": "#7fdc9a"
                         },
                         {
-                          "from": 24,
-                          "color": "#66BB6A"
+                          "from": 25,
+                          "color": "#ffd9a8"
                         },
                         {
                           "from": 26,
-                          "color": "#FFB300"
-                        },
-                        {
-                          "from": 29,
-                          "color": "#F4511E"
-                        },
-                        {
-                          "from": 32,
-                          "color": "#D32F2F"
+                          "color": "#e8605a"
                         }
                       ],
                       "round": "full",
