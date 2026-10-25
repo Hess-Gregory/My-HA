@@ -41,6 +41,25 @@ automation:
                 data:
                   media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/carillon.wav"
                   media_content_type: music
+              # secours : Fully injoignable -> son joué par le navigateur (browser_mod) de l'app HA
+              - if:
+                  - condition: state
+                    entity_id: media_player.salon_sam_tablette
+                    state: unavailable
+                then:
+                  - action: media_player.volume_set
+                    continue_on_error: true
+                    target:
+                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
+                    data:
+                      volume_level: "{{ 0.6 if is_state('input_boolean.mode_nuit', 'on') else states('input_number.tablette_volume_memorise') | float(1) }}"
+                  - action: media_player.play_media
+                    continue_on_error: true
+                    target:
+                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
+                    data:
+                      media_content_id: "/local/sons/carillon.wav"
+                      media_content_type: music
           - if:
               - condition: not
                 conditions:
@@ -91,6 +110,25 @@ automation:
                 data:
                   media_content_id: "https://eimgtny2hzy1plxerp5llx00jf5ht2x9.ui.nabu.casa/local/sons/interphone.wav"
                   media_content_type: music
+              # secours : Fully injoignable -> son joué par le navigateur (browser_mod) de l'app HA
+              - if:
+                  - condition: state
+                    entity_id: media_player.salon_sam_tablette
+                    state: unavailable
+                then:
+                  - action: media_player.volume_set
+                    continue_on_error: true
+                    target:
+                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
+                    data:
+                      volume_level: "{{ 0.5 if is_state('input_boolean.mode_nuit', 'on') else 1 }}"
+                  - action: media_player.play_media
+                    continue_on_error: true
+                    target:
+                      entity_id: media_player.browser_mod_59a39768_1e3bd7e4
+                    data:
+                      media_content_id: "/local/sons/interphone.wav"
+                      media_content_type: music
           - if:
               - condition: not
                 conditions:

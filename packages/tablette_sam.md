@@ -21,6 +21,7 @@ Voir `packages/mode_nuit.md` : `input_number.tablette_volume_memorise` (100 % pa
 La tablette a probablement reçu un nouvel identifiant browser_mod (cache de l'app vidé). Remettre `browser_mod_59a39768_1e3bd7e4` via le service `browser_mod.change_browser_id` (après enregistrement automatique) ou depuis le panneau Browser Mod connecté en admin ; activer « Sync Browser ID to login session ».
 
 ## Historique
+- 25/10/2026 : si Fully Kiosk est injoignable, le carillon et la sonnerie interphone sont joués par le lecteur browser_mod de l'app HA (secours).
 - 25/10/2026 : l'appel BTicino est détecté via `sensor.bticino_intercom_greg_et_sandrine_last_event_type` = `incoming_call` (l'entité event et le binary_sensor de la platine ne changent plus d'état) — sonnerie, popup browser_mod et popup du plan 3D.
 - 21/10/2026 : volumes selon le mode nuit, popup interphone sur l'Accueil, retour au volume normal après la sonnerie.
 - 13/10/2026 : bascule Accueil instantanée à l'ouverture de la porte.
