@@ -20,9 +20,9 @@
     "version": "0.3.2"
   },
   ".storage/lovelace.1_ma_maison": {
-    "last_change": "la redirection Matteo ne se declenche plus en mode edition",
-    "last_update": "2026-10-03T14:08:27.900104+02:00",
-    "version": "0.5.2"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.1_meteo_belgique": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -30,9 +30,9 @@
     "version": "0.3.2"
   },
   ".storage/lovelace.1_mon_confort": {
-    "last_change": "statut entretien chaudiere dynamique (mon confort ancien)",
-    "last_update": "2026-10-13T11:01:13.908823+02:00",
-    "version": "0.4.4"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "0.5.0"
   },
   ".storage/lovelace.1_pollution": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -70,19 +70,19 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "mode nuit bonne_nuit, raccourcis vues test, sons decompte",
-    "last_update": "2026-10-21T18:06:38.918351+02:00",
-    "version": "0.10.0"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "0.11.0"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
-    "last_update": "2026-10-21T18:01:48.453062+02:00",
-    "version": "0.16.0"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "0.17.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
-    "last_update": "2026-10-21T20:07:33.412980+02:00",
-    "version": "2.15.1"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "2.16.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -135,9 +135,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.mon_confort": {
-    "last_change": "mon confort - entretien chaudiere 13/10/2026 fiche 3644",
-    "last_update": "2026-10-13T10:49:14.152768+02:00",
-    "version": "0.5.2"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.reseau_infra": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -185,8 +185,13 @@
     "version": "0.1.0"
   },
   "packages/chauffage.yaml": {
-    "last_change": "plage mode Manuel 24->30C (plafond reel des vannes Bosch)",
-    "last_update": "2026-09-19T22:17:32.080787+02:00",
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "0.2.0"
+  },
+  "packages/chauffage_manuel.yaml": {
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
     "version": "0.1.0"
   },
   "packages/coin_dj.yaml": {
@@ -410,9 +415,9 @@
     "version": "0.7.0"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "presences dans leur carte (bonsoir retire, arc solaire masque si manque de place)",
-    "last_update": "2026-10-21T20:07:33.412980+02:00",
-    "version": "2.9.1"
+    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
+    "last_update": "2026-10-25T08:15:43.531598+01:00",
+    "version": "2.10.0"
   },
   "www/plan3d/jp-decompte.js": {
     "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
