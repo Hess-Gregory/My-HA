@@ -526,15 +526,19 @@
                                       "color": "#3fbf5f"
                                     },
                                     {
-                                      "from": 26,
+                                      "from": 23.5,
                                       "color": "#a8e6b4"
                                     },
                                     {
-                                      "from": 30,
+                                      "from": 24.5,
                                       "color": "#ffd9a8"
                                     },
                                     {
-                                      "from": 36,
+                                      "from": 26,
+                                      "color": "#f4a07a"
+                                    },
+                                    {
+                                      "from": 32,
                                       "color": "#e8605a"
                                     }
                                   ],
@@ -1125,15 +1129,19 @@
                                       "color": "#3fbf5f"
                                     },
                                     {
-                                      "from": 26,
+                                      "from": 23.5,
                                       "color": "#a8e6b4"
                                     },
                                     {
-                                      "from": 30,
+                                      "from": 24.5,
                                       "color": "#ffd9a8"
                                     },
                                     {
-                                      "from": 36,
+                                      "from": 26,
+                                      "color": "#f4a07a"
+                                    },
+                                    {
+                                      "from": 32,
                                       "color": "#e8605a"
                                     }
                                   ],
@@ -1907,15 +1915,19 @@
                                       "color": "#3fbf5f"
                                     },
                                     {
-                                      "from": 26,
+                                      "from": 23.5,
                                       "color": "#a8e6b4"
                                     },
                                     {
-                                      "from": 30,
+                                      "from": 24.5,
                                       "color": "#ffd9a8"
                                     },
                                     {
-                                      "from": 36,
+                                      "from": 26,
+                                      "color": "#f4a07a"
+                                    },
+                                    {
+                                      "from": 32,
                                       "color": "#e8605a"
                                     }
                                   ],
@@ -2588,15 +2600,19 @@
                                       "color": "#3fbf5f"
                                     },
                                     {
-                                      "from": 26,
+                                      "from": 23.5,
                                       "color": "#a8e6b4"
                                     },
                                     {
-                                      "from": 30,
+                                      "from": 24.5,
                                       "color": "#ffd9a8"
                                     },
                                     {
-                                      "from": 36,
+                                      "from": 26,
+                                      "color": "#f4a07a"
+                                    },
+                                    {
+                                      "from": 32,
                                       "color": "#e8605a"
                                     }
                                   ],
@@ -3386,15 +3402,19 @@
                                       "color": "#3fbf5f"
                                     },
                                     {
-                                      "from": 26,
+                                      "from": 23.5,
                                       "color": "#a8e6b4"
                                     },
                                     {
-                                      "from": 30,
+                                      "from": 24.5,
                                       "color": "#ffd9a8"
                                     },
                                     {
-                                      "from": 36,
+                                      "from": 26,
+                                      "color": "#f4a07a"
+                                    },
+                                    {
+                                      "from": 32,
                                       "color": "#e8605a"
                                     }
                                   ],
