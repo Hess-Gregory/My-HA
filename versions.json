@@ -70,14 +70,14 @@
     "version": "0.11.3"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D",
-    "last_update": "2026-10-25T10:57:06.727303+01:00",
-    "version": "0.17.4"
+    "last_change": "popup Accueil avec video directe (sans glisser) et gros boutons Parler / Ouvrir le SAS",
+    "last_update": "2026-10-25T11:10:49.212751+01:00",
+    "version": "0.18.0"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D",
-    "last_update": "2026-10-25T10:57:06.727303+01:00",
-    "version": "2.16.2"
+    "last_change": "popup Accueil avec video directe (sans glisser) et gros boutons Parler / Ouvrir le SAS",
+    "last_update": "2026-10-25T11:10:49.212751+01:00",
+    "version": "2.17.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -405,9 +405,9 @@
     "version": "0.1.3"
   },
   "www/plan3d/floorplan-3d-card.js": {
-    "last_change": "declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D",
-    "last_update": "2026-10-25T10:57:06.727303+01:00",
-    "version": "0.7.1"
+    "last_change": "popup Accueil avec video directe (sans glisser) et gros boutons Parler / Ouvrir le SAS",
+    "last_update": "2026-10-25T11:10:49.212751+01:00",
+    "version": "0.8.0"
   },
   "www/plan3d/home-hub-card.js": {
     "last_change": "liens /1-mon-confort -> /mon-confort (Accueil, ancien accueil) ; suppression dashboard 1-mon-confort",
