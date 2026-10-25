@@ -20,9 +20,9 @@
     "version": "0.3.2"
   },
   ".storage/lovelace.1_ma_maison": {
-    "last_change": "chaud des 24 degres (orange clair 24.5, rouge progressif 26-32)",
-    "last_update": "2026-10-25T08:21:37.136192+01:00",
-    "version": "0.6.2"
+    "last_change": "degrade propre (palette d origine, sans tons pales)",
+    "last_update": "2026-10-25T08:27:42.944014+01:00",
+    "version": "0.6.3"
   },
   ".storage/lovelace.1_meteo_belgique": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -30,9 +30,9 @@
     "version": "0.3.2"
   },
   ".storage/lovelace.1_mon_confort": {
-    "last_change": "chaud des 24 degres (orange clair 24.5, rouge progressif 26-32)",
-    "last_update": "2026-10-25T08:21:37.136192+01:00",
-    "version": "0.5.2"
+    "last_change": "degrade propre (palette d origine, sans tons pales)",
+    "last_update": "2026-10-25T08:27:42.944014+01:00",
+    "version": "0.5.3"
   },
   ".storage/lovelace.1_pollution": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -70,14 +70,14 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "chaud des 24 degres (orange clair 24.5, rouge progressif 26-32)",
-    "last_update": "2026-10-25T08:21:37.136192+01:00",
-    "version": "0.11.2"
+    "last_change": "degrade propre (palette d origine, sans tons pales)",
+    "last_update": "2026-10-25T08:27:42.944014+01:00",
+    "version": "0.11.3"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "chaud des 24 degres (orange clair 24.5, rouge progressif 26-32)",
-    "last_update": "2026-10-25T08:21:37.136192+01:00",
-    "version": "0.17.2"
+    "last_change": "degrade propre (palette d origine, sans tons pales)",
+    "last_update": "2026-10-25T08:27:42.944014+01:00",
+    "version": "0.17.3"
   },
   ".storage/lovelace.maison_accueil": {
     "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
@@ -135,9 +135,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.mon_confort": {
-    "last_change": "chaud des 24 degres (orange clair 24.5, rouge progressif 26-32)",
-    "last_update": "2026-10-25T08:21:37.136192+01:00",
-    "version": "0.6.2"
+    "last_change": "degrade propre (palette d origine, sans tons pales)",
+    "last_update": "2026-10-25T08:27:42.944014+01:00",
+    "version": "0.6.3"
   },
   ".storage/lovelace.reseau_infra": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
