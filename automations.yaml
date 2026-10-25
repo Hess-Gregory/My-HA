@@ -902,6 +902,13 @@
     - platform: state
       entity_id: camera.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
       to: "streaming"
+    - platform: state
+      entity_id: sensor.bticino_intercom_greg_et_sandrine_last_event_type
+      to: incoming_call
+    - platform: state
+      entity_id: sensor.bticino_intercom_greg_et_sandrine_calls
+      not_from: [unavailable, unknown]
+      not_to: [unavailable, unknown]
   condition:
     - condition: template
       value_template: "{{ not is_state('sensor.browser_mod_59a39768_1e3bd7e4_browser_path', '/maison-accueil/accueil') }}"

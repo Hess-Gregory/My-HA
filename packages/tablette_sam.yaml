@@ -67,6 +67,14 @@ automation:
         entity_id: binary_sensor.hall_dentree_bticino_intercom_greg_et_sandrine_platine_de_rue
         from: "off"
         to: "on"
+      # l'entité event/binary_sensor ne bouge plus : l'appel arrive par ce capteur (25/10/2026)
+      - trigger: state
+        entity_id: sensor.bticino_intercom_greg_et_sandrine_last_event_type
+        to: incoming_call
+      - trigger: state
+        entity_id: sensor.bticino_intercom_greg_et_sandrine_calls
+        not_from: [unavailable, unknown]
+        not_to: [unavailable, unknown]
     actions:
       - parallel:
           - sequence:
