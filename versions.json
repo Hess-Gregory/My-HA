@@ -65,14 +65,14 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "degrade propre (palette d origine, sans tons pales)",
-    "last_update": "2026-10-25T08:27:42.944014+01:00",
-    "version": "0.11.3"
+    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
+    "last_update": "2026-10-27T08:08:32.343209+01:00",
+    "version": "0.11.4"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "raccrocher le flux BTicino a la fermeture du popup (evite bridge occupe)",
-    "last_update": "2026-10-25T11:15:40.539622+01:00",
-    "version": "0.18.1"
+    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
+    "last_update": "2026-10-27T08:08:32.343209+01:00",
+    "version": "0.18.2"
   },
   ".storage/lovelace.maison_accueil": {
     "last_change": "raccrocher le flux BTicino a la fermeture du popup (evite bridge occupe)",
@@ -130,9 +130,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.mon_confort": {
-    "last_change": "degrade propre (palette d origine, sans tons pales)",
-    "last_update": "2026-10-25T08:27:42.944014+01:00",
-    "version": "0.6.3"
+    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
+    "last_update": "2026-10-27T08:08:32.343209+01:00",
+    "version": "0.6.4"
   },
   ".storage/lovelace.reseau_infra": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -180,14 +180,14 @@
     "version": "0.1.0"
   },
   "packages/chauffage.yaml": {
-    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
-    "last_update": "2026-10-25T08:15:43.531598+01:00",
-    "version": "0.2.0"
+    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
+    "last_update": "2026-10-27T08:08:32.343209+01:00",
+    "version": "0.2.1"
   },
   "packages/chauffage_manuel.yaml": {
-    "last_change": "temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit",
-    "last_update": "2026-10-25T08:15:43.531598+01:00",
-    "version": "0.1.0"
+    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
+    "last_update": "2026-10-27T08:08:32.343209+01:00",
+    "version": "0.1.1"
   },
   "packages/coin_dj.yaml": {
     "last_change": "interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal",

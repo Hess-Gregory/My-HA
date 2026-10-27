@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.0 | 25/10/2026 08:15 | temperatures PDV/SdB, boost par piece, manuel 0.1 avec validation, jauges 0-45 selon modes ; accueil: confirmation Bonne nuit
+# [AUTO-VERSION] v0.1.1 | 27/10/2026 08:08 | manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel
 # Réglage manuel du chauffage en deux temps (brouillon + validation). Doc : packages/chauffage.md (mise à jour 25/10/2026)
 input_number:
   temp_reglage_chambre_adulte:
