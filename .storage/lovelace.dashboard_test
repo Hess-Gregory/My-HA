@@ -905,7 +905,7 @@
                           "show_name": true,
                           "show_label": true,
                           "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                          "label": "[[[ const a=Number(states['input_number.temp_manuel_couloir'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
+                          "label": "[[[ const a=Number(states['input_number.temp_manuel_couloir'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '⏳ S’applique dans 5 s (touchez pour tout de suite)'; ]]]",
                           "tap_action": {
                             "action": "call-service",
                             "service": "input_number.set_value",
@@ -1528,7 +1528,7 @@
                           "show_name": true,
                           "show_label": true,
                           "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                          "label": "[[[ const a=Number(states['input_number.temp_manuel_piece_de_vie'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
+                          "label": "[[[ const a=Number(states['input_number.temp_manuel_piece_de_vie'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '⏳ S’applique dans 5 s (touchez pour tout de suite)'; ]]]",
                           "tap_action": {
                             "action": "call-service",
                             "service": "input_number.set_value",
@@ -2283,7 +2283,7 @@
                           "show_name": true,
                           "show_label": true,
                           "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                          "label": "[[[ const a=Number(states['input_number.temp_manuel_chambre_enfants'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
+                          "label": "[[[ const a=Number(states['input_number.temp_manuel_chambre_enfants'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '⏳ S’applique dans 5 s (touchez pour tout de suite)'; ]]]",
                           "tap_action": {
                             "action": "call-service",
                             "service": "input_number.set_value",
@@ -2968,7 +2968,7 @@
                           "show_name": true,
                           "show_label": true,
                           "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                          "label": "[[[ const a=Number(states['input_number.temp_manuel_chambre_adulte'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
+                          "label": "[[[ const a=Number(states['input_number.temp_manuel_chambre_adulte'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '⏳ S’applique dans 5 s (touchez pour tout de suite)'; ]]]",
                           "tap_action": {
                             "action": "call-service",
                             "service": "input_number.set_value",
@@ -3781,7 +3781,7 @@
                           "show_name": true,
                           "show_label": true,
                           "name": "[[[ return Number(entity.state).toFixed(1)+\" °C\" ]]]",
-                          "label": "[[[ const a=Number(states['input_number.temp_manuel_salle_de_bain'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '👆 Touchez pour valider ('+a.toFixed(1)+' °C en cours)'; ]]]",
+                          "label": "[[[ const a=Number(states['input_number.temp_manuel_salle_de_bain'].state), d=Number(entity.state); return Math.abs(a-d)<0.05 ? '✓ Appliquée' : '⏳ S’applique dans 5 s (touchez pour tout de suite)'; ]]]",
                           "tap_action": {
                             "action": "call-service",
                             "service": "input_number.set_value",

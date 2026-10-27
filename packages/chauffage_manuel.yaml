@@ -91,3 +91,40 @@ automation:
           entity_id: "input_number.temp_manuel_{{ trigger.id }}"
         data:
           value: "{{ t }}"
+
+  - id: chauffage_manuel_validation_auto
+    alias: 🌡️ Chauffage – réglage manuel appliqué 5 s après le dernier appui
+    mode: parallel
+    triggers:
+      - trigger: state
+        entity_id: input_number.temp_reglage_chambre_adulte
+        for: "00:00:05"
+        id: chambre_adulte
+      - trigger: state
+        entity_id: input_number.temp_reglage_chambre_enfants
+        for: "00:00:05"
+        id: chambre_enfants
+      - trigger: state
+        entity_id: input_number.temp_reglage_couloir
+        for: "00:00:05"
+        id: couloir
+      - trigger: state
+        entity_id: input_number.temp_reglage_piece_de_vie
+        for: "00:00:05"
+        id: piece_de_vie
+      - trigger: state
+        entity_id: input_number.temp_reglage_salle_de_bain
+        for: "00:00:05"
+        id: salle_de_bain
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ is_state('input_select.mode_' ~ trigger.id, 'Manuel')
+             and (states('input_number.temp_reglage_' ~ trigger.id) | float(0)
+                  - states('input_number.temp_manuel_' ~ trigger.id) | float(0)) | abs > 0.05 }}
+    actions:
+      - action: input_number.set_value
+        target:
+          entity_id: "input_number.temp_manuel_{{ trigger.id }}"
+        data:
+          value: "{{ states('input_number.temp_reglage_' ~ trigger.id) | float }}"

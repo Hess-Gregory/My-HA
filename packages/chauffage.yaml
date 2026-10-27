@@ -1140,6 +1140,10 @@ automation:
       - condition: state
         entity_id: input_boolean.routine_activee
         state: "on"
+      # ne remonte le salon que s'il est en mode bas (ne touche pas Manuel / Boost / Confort)
+      - condition: state
+        entity_id: input_select.mode_piece_de_vie
+        state: ["Éco", "Nuit", "Hors-gel"]
     action:
       - service: input_select.select_option
         target: { entity_id: input_select.mode_piece_de_vie }

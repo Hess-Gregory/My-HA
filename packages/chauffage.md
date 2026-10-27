@@ -167,9 +167,13 @@ Correction : intégration Workday ajoutée (Belgique, lundi→vendredi, exclusio
 
 **3. Plage du mode Manuel élargie** de 24 à 30 °C sur les 5 `input_number.temp_manuel_*` (lignes 150, 160, 170, 180, 202), pour correspondre au plafond réel des vannes Bosch. Chaîne vérifiée : aucun replafonnement entre l'`input_number`, le template de consigne et l'automatisation qui écrit sur la vanne.
 
+## Mise à jour 27/10/2026
+- « Retour imminent » ne remonte plus le salon en Confort que s'il est en Éco, Nuit ou Hors-gel : il n'écrase plus un réglage Manuel ou Boost.
+- Mode Manuel : la valeur choisie s'applique toute seule 5 s après le dernier appui.
+
 ## Mise à jour 25/10/2026
 - Pièce de vie : Confort 22, Éco 18, **Boost = cible Boost + 0,5** (23,5 °C avec la cible à 23).
 - Salle de bain : Confort 22, Éco 19, **Boost = cible Boost + 1** (24 °C). Chambres et couloir inchangés.
 - Mode Manuel : réglage au **dixième de degré** (`temp_manuel_xxx` pas de 0,1). Les vannes Bosch n'acceptent que le demi-degré : la consigne envoyée aux vannes est arrondie au 0,5 le plus proche (section 9).
-- Réglage manuel en deux temps (voir `packages/chauffage_manuel.yaml`) : les boutons − / + règlent un brouillon (`temp_reglage_xxx`), on **touche la valeur pour valider**. En passant en Manuel, le brouillon et la consigne partent de la température actuelle de la pièce.
+- Réglage manuel en deux temps (voir `packages/chauffage_manuel.yaml`) : les boutons − / + règlent un brouillon (`temp_reglage_xxx`), la valeur s'applique **toute seule 5 s après le dernier appui** (toucher la valeur l'applique tout de suite). En passant en Manuel, le brouillon et la consigne partent de la température actuelle de la pièce.
 - Jauges de température (tous les dashboards) : 0 → 45 °C, couleurs selon les modes de la pièce (bleu < Éco, bleu clair Éco, vert à partir du Confort, orange très clair à partir de Boost + 1 °C, rouge à partir de 26 °C).
