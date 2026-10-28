@@ -65,9 +65,9 @@
     "version": "1.12.0"
   },
   ".storage/lovelace.dashboard_test": {
-    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
-    "last_update": "2026-10-27T08:08:32.343209+01:00",
-    "version": "0.11.4"
+    "last_change": "dashboard maison-localisation remplacé par la v2.1.0, vue test retirée",
+    "last_update": "2026-10-28T11:12:22.459956+01:00",
+    "version": "0.12.0"
   },
   ".storage/lovelace.ma_maison": {
     "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
@@ -95,9 +95,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_localisation": {
-    "last_change": "itineraires et arrets par personne (arret = 5 min en zone, 10 min hors zone) ; zones magasins",
-    "last_update": "2026-10-28T09:52:17.988744+01:00",
-    "version": "0.5.0"
+    "last_change": "dashboard maison-localisation remplacé par la v2.1.0, vue test retirée",
+    "last_update": "2026-10-28T11:12:22.459956+01:00",
+    "version": "0.6.0"
   },
   ".storage/lovelace.maison_pollution": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
