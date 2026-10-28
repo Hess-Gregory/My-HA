@@ -709,6 +709,16 @@
                   "default_zoom": 16,
                   "theme_mode": "auto",
                   "aspect_ratio": "1:1"
+                },
+                {
+                  "type": "custom:loc-itin-card",
+                  "persons": [
+                    {
+                      "id": "person.sandrine",
+                      "n": "Sandrine",
+                      "c": "#f472b6"
+                    }
+                  ]
                 }
               ]
             }
@@ -874,6 +884,16 @@
                   "default_zoom": 16,
                   "theme_mode": "auto",
                   "aspect_ratio": "1:1"
+                },
+                {
+                  "type": "custom:loc-itin-card",
+                  "persons": [
+                    {
+                      "id": "person.greg",
+                      "n": "Greg",
+                      "c": "#38bdf8"
+                    }
+                  ]
                 }
               ]
             }
@@ -1039,6 +1059,16 @@
                   "default_zoom": 16,
                   "theme_mode": "auto",
                   "aspect_ratio": "1:1"
+                },
+                {
+                  "type": "custom:loc-itin-card",
+                  "persons": [
+                    {
+                      "id": "person.matteo",
+                      "n": "Matteo",
+                      "c": "#4ade80"
+                    }
+                  ]
                 }
               ]
             }

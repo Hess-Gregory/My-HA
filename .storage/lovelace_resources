@@ -201,7 +201,7 @@
       },
       {
         "id": "08acb56b62a74ea88bbc7f63e1f234ed",
-        "url": "/local/plan3d/floorplan-3d-card.js?v=1792923327502",
+        "url": "/local/plan3d/floorplan-3d-card.js?v=1793176032700",
         "type": "module"
       },
       {
@@ -252,6 +252,11 @@
       {
         "id": "212db735afda4ef981f42179ea0e34de",
         "url": "/local/plan3d/raccourcis-card.js?v=1792605973669",
+        "type": "module"
+      },
+      {
+        "id": "d2d6ec47b1d14585a3a5366523be8ad2",
+        "url": "/local/plan3d/loc-itin-card.js?v=1793177503058",
         "type": "module"
       }
     ]
