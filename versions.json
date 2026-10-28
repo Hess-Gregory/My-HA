@@ -75,9 +75,9 @@
     "version": "0.18.3"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
-    "last_update": "2026-10-28T09:27:31.740871+01:00",
-    "version": "2.17.2"
+    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
+    "last_update": "2026-10-28T11:12:09.172082+01:00",
+    "version": "2.18.0"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -180,9 +180,9 @@
     "version": "0.1.0"
   },
   "packages/chauffage.yaml": {
-    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
-    "last_update": "2026-10-27T08:08:32.343209+01:00",
-    "version": "0.2.1"
+    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
+    "last_update": "2026-10-28T11:12:09.172082+01:00",
+    "version": "0.3.0"
   },
   "packages/chauffage_manuel.yaml": {
     "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
@@ -233,6 +233,11 @@
     "last_change": "restauration du package localisation ecrase, ajouts dans localisation_suivi",
     "last_update": "2026-10-08T18:04:46.238190+02:00",
     "version": "0.3.1"
+  },
+  "packages/localisation_alertes.yaml": {
+    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
+    "last_update": "2026-10-28T11:12:09.172082+01:00",
+    "version": "0.1.0"
   },
   "packages/localisation_suivi.yaml": {
     "last_change": "duree de presence reelle (pas remise a zero au redemarrage)",
@@ -410,9 +415,9 @@
     "version": "0.8.2"
   },
   "www/plan3d/home-hub-card.js": {
-    "last_change": "liens /1-mon-confort -> /mon-confort (Accueil, ancien accueil) ; suppression dashboard 1-mon-confort",
-    "last_update": "2026-10-25T10:39:08.916522+01:00",
-    "version": "2.10.1"
+    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
+    "last_update": "2026-10-28T11:12:09.172082+01:00",
+    "version": "2.11.0"
   },
   "www/plan3d/jp-decompte.js": {
     "last_change": "mode nuit + annonces alarme, je pars popup et decompte vocal, cameras plan 3D, popup interphone Accueil, liens Accueil, raccourcis",
@@ -423,6 +428,11 @@
     "last_change": "design harmonise avec Accueil (fond, tuiles, cadre plein ecran) + bouton retour dans la console LJ",
     "last_update": "2026-10-09T08:09:11.392737+02:00",
     "version": "0.2.2"
+  },
+  "www/plan3d/loc-hub-card.js": {
+    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
+    "last_update": "2026-10-28T11:12:09.172082+01:00",
+    "version": "0.1.0"
   },
   "www/plan3d/loc-itin-card.js": {
     "last_change": "itineraires et arrets par personne (arret = 5 min en zone, 10 min hors zone) ; zones magasins",
