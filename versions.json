@@ -95,9 +95,9 @@
     "version": "0.4.2"
   },
   ".storage/lovelace.maison_localisation": {
-    "last_change": "carte avec lieux, actualisation a l ouverture, apercu securise, suivi reel",
-    "last_update": "2026-10-08T18:46:34.708322+02:00",
-    "version": "0.4.0"
+    "last_change": "itineraires et arrets par personne (arret = 5 min en zone, 10 min hors zone) ; zones magasins",
+    "last_update": "2026-10-28T09:52:17.988744+01:00",
+    "version": "0.5.0"
   },
   ".storage/lovelace.maison_pollution": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -423,6 +423,11 @@
     "last_change": "design harmonise avec Accueil (fond, tuiles, cadre plein ecran) + bouton retour dans la console LJ",
     "last_update": "2026-10-09T08:09:11.392737+02:00",
     "version": "0.2.2"
+  },
+  "www/plan3d/loc-itin-card.js": {
+    "last_change": "itineraires et arrets par personne (arret = 5 min en zone, 10 min hors zone) ; zones magasins",
+    "last_update": "2026-10-28T09:52:17.988744+01:00",
+    "version": "0.1.0"
   },
   "www/plan3d/maison-card.js": {
     "last_change": "Ma Maison v2 mise en page",
