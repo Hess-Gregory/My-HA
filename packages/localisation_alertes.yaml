@@ -1,0 +1,195 @@
+# =====================================================================
+#  Localisation – alertes (v2.1.0 – 28/10/2026)
+#  Arrivées / départs, rappel alarme au retour, école Matteo,
+#  batterie faible hors maison, position figée.
+#  Doc : localisation_alertes.md
+# =====================================================================
+input_boolean:
+  loc_alertes_sandrine:
+    name: "Annonces arrivées/départs – Sandrine"
+    icon: mdi:account-voice
+  loc_alertes_greg:
+    name: "Annonces arrivées/départs – Greg"
+    icon: mdi:account-voice
+  loc_alertes_matteo:
+    name: "Annonces arrivées/départs – Matteo"
+    icon: mdi:account-voice
+  loc_alerte_ecole_matteo:
+    name: "Alerte si Matteo n'est pas à l'école"
+    icon: mdi:school
+
+automation:
+  - id: loc_arrivee_depart
+    alias: "📍 Localisation – annonce arrivée / départ"
+    mode: queued
+    max: 10
+    trigger:
+      - trigger: state
+        entity_id: [person.sandrine, person.greg, person.matteo]
+        not_from: [unknown, unavailable]
+        not_to: [unknown, unavailable]
+        for: "00:01:00"
+    variables:
+      k: "{{ trigger.entity_id.split('.')[1] }}"
+      nom: "{{ state_attr(trigger.entity_id, 'friendly_name') }}"
+      e: "{{ '' if k == 'greg' else 'e' }}"
+      de: "{{ trigger.from_state.state }}"
+      vers: "{{ trigger.to_state.state }}"
+      waze: >
+        {% set w = {'greg':'sensor.trajet_greg_waze_trajet_greg_vers_maison','sandrine':'sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison'} %}
+        {{ states(w[k]) if k in w else '' }}
+      msg: >
+        {% if vers == 'home' %}{{ nom }} est rentré{{ e }} à la maison.
+        {% elif vers != 'not_home' %}{{ nom }} est arrivé{{ e }} : {{ vers }}.
+        {% elif de == 'home' %}{{ nom }} a quitté la maison.
+        {% else %}{{ nom }} a quitté {{ de }}.{% if waze | is_number and waze | float(0) > 0 %} Retour estimé vers {{ (now() + timedelta(minutes=waze|float)).strftime('%H:%M') }}.{% endif %}
+        {% endif %}
+    condition:
+      - condition: template
+        value_template: "{{ is_state('input_boolean.loc_alertes_' ~ k, 'on') and de != vers }}"
+    action:
+      - variables:
+          cibles: >
+            {% set t = {'greg':'notify.mobile_app_samsung_greg','sandrine':'notify.mobile_app_sandrine_smartphone'} %}
+            {{ t.items() | rejectattr(0,'eq',k) | map(attribute=1) | list }}
+      - repeat:
+          for_each: "{{ cibles }}"
+          sequence:
+            - action: "{{ repeat.item }}"
+              continue_on_error: true
+              data:
+                title: "📍 {{ nom }}"
+                message: "{{ msg | trim }}"
+                data:
+                  tag: "loc_{{ k }}"
+                  clickAction: /maison-localisation/{{ k }}
+                  url: /maison-localisation/{{ k }}
+      - if:
+          - condition: time
+            after: "07:00:00"
+            before: "22:00:00"
+          - condition: state
+            entity_id: input_boolean.mode_nuit
+            state: "off"
+        then:
+          - action: script.annonce_tablette
+            data:
+              message: "{{ msg | trim }}"
+
+  - id: loc_rappel_alarme_retour
+    alias: "📍 Localisation – rappel alarme armée au retour"
+    mode: parallel
+    trigger:
+      - trigger: numeric_state
+        entity_id: sensor.trajet_greg_waze_trajet_greg_vers_maison
+        below: 8
+        variables: {k: greg, svc: notify.mobile_app_samsung_greg}
+      - trigger: numeric_state
+        entity_id: sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison
+        below: 8
+        variables: {k: sandrine, svc: notify.mobile_app_sandrine_smartphone}
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('person.' ~ k, 'home') }}"
+      - condition: state
+        entity_id: alarm_control_panel.buanderie_local_tech_centrale_alarme_ajax
+        state: armed_away
+    action:
+      - action: "{{ svc }}"
+        data:
+          title: "🔐 Alarme armée"
+          message: "Tu arrives dans {{ states(trigger.entity_id) | round(0) }} min : pense à désarmer l'alarme."
+          data:
+            tag: loc_alarme_{{ k }}
+            ttl: 0
+            priority: high
+
+  - id: loc_ecole_matteo
+    alias: "📍 Localisation – Matteo pas à l'école"
+    trigger:
+      - trigger: time
+        at: "08:45:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.loc_alerte_ecole_matteo
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: template
+        value_template: "{{ not is_state('person.matteo', 'ICPP École Matteo') and states('zone.icpp_ecole_matteo') | int(0) == 0 }}"
+    action:
+      - repeat:
+          for_each: [notify.mobile_app_samsung_greg, notify.mobile_app_sandrine_smartphone]
+          sequence:
+            - action: "{{ repeat.item }}"
+              continue_on_error: true
+              data:
+                title: "🏫 Matteo n'est pas à l'école"
+                message: >
+                  Position : {{ states('person.matteo') | replace('not_home','hors zone') | replace('home','maison') }}
+                  (mise à jour {{ relative_time(states.person.matteo.last_updated) }}).
+                data:
+                  tag: loc_ecole_matteo
+                  clickAction: /maison-localisation/matteo
+                  url: /maison-localisation/matteo
+
+  - id: loc_batterie_faible
+    alias: "📍 Localisation – batterie faible hors maison"
+    mode: parallel
+    trigger:
+      - trigger: numeric_state
+        entity_id: sensor.sandrine_smartphone_battery_level
+        below: 15
+        variables: {k: sandrine, nom: Sandrine}
+      - trigger: numeric_state
+        entity_id: sensor.samsung_greg_battery_level
+        below: 15
+        variables: {k: greg, nom: Greg}
+      - trigger: numeric_state
+        entity_id: sensor.iphone_battery_level
+        below: 15
+        variables: {k: matteo, nom: Matteo}
+    condition:
+      - condition: template
+        value_template: "{{ not is_state('person.' ~ k, 'home') }}"
+    action:
+      - repeat:
+          for_each: [notify.mobile_app_samsung_greg, notify.mobile_app_sandrine_smartphone]
+          sequence:
+            - action: "{{ repeat.item }}"
+              continue_on_error: true
+              data:
+                title: "🪫 Batterie faible – {{ nom }}"
+                message: "{{ states(trigger.entity_id) }} % hors de la maison ({{ states('person.' ~ k) | replace('not_home','hors zone') }}). La localisation risque de s'arrêter."
+                data:
+                  tag: loc_bat_{{ k }}
+
+  - id: loc_position_figee
+    alias: "📍 Localisation – position figée"
+    trigger:
+      - trigger: time
+        at: ["10:00:00", "17:00:00"]
+    action:
+      - variables:
+          figes: >
+            {% set ns = namespace(l=[]) %}
+            {% for p in ['person.sandrine','person.greg','person.matteo'] %}
+              {% set s = states[p] %}
+              {% if s and s.state not in ['home','unknown','unavailable'] and (now() - s.last_updated).total_seconds() > 7200 %}
+                {% set ns.l = ns.l + [s.name ~ ' (' ~ relative_time(s.last_updated) ~ ')'] %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.l }}
+      - condition: template
+        value_template: "{{ figes | count > 0 }}"
+      - repeat:
+          for_each: [notify.mobile_app_samsung_greg, notify.mobile_app_sandrine_smartphone]
+          sequence:
+            - action: "{{ repeat.item }}"
+              continue_on_error: true
+              data:
+                title: "📡 Position figée"
+                message: "Pas de mise à jour depuis plus de 2 h : {{ figes | join(', ') }}. Téléphone éteint ou localisation coupée ?"
+                data:
+                  tag: loc_fige

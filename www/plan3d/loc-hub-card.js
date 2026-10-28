@@ -8,7 +8,7 @@
     { k: 'greg', id: 'person.greg', n: 'Greg', c: '#38bdf8', svc: 'mobile_app_samsung_greg', bat: 'sensor.samsung_greg_battery_level', bst: 'sensor.samsung_greg_battery_state', dt: 'device_tracker.gsm_greg', waze: 'sensor.trajet_greg_waze_trajet_greg_vers_maison', find: ['🤖', 'https://www.google.com/android/find'] },
     { k: 'matteo', id: 'person.matteo', n: 'Matteo', c: '#4ade80', svc: 'mobile_app_iphone', bat: '', bst: '', dt: 'device_tracker.iphone', waze: '', find: ['🍏', 'https://www.icloud.com/find'] },
   ];
-  const MODES = [['famille', 'Tout le monde'], ['arrets', 'Arrêts'], ['dernier', 'Dernier trajet'], ['2h', '2 dernières h'], ['jour', 'Journée']];
+  const MODES = [['famille', 'Tout le monde'], ['arrets', 'Arrêts'], ['dernier', 'Dernier trajet'], ['2h', '2 dernières h'], ['jour', 'Journée'], ['semaine', 'Semaine'], ['zones', 'Zones']];
   const MIN_ZONE = 5, MIN_HORS = 10, R_HORS = 100, ACC_MAX = 200;
   const rad = (x) => (x * Math.PI) / 180;
   const dist = (a, b, c, d) => { const q = Math.sin(rad(c - a) / 2) ** 2 + Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(rad(d - b) / 2) ** 2; return 12742000 * Math.asin(Math.sqrt(q)); };
@@ -95,6 +95,18 @@
   .fam b{font-size:14px}
   .fam small{display:block;color:var(--m);font-size:12px}
   .rule{font-size:11.5px;color:var(--m);line-height:1.5}
+  .dp{background:none;border:0;color:var(--m);font:600 13px system-ui;padding:6px 8px;border-radius:11px;color-scheme:dark;max-width:140px}
+  .rps{align-items:center}.rp{color:var(--a)!important}.rpt{font:300 15px system-ui;color:var(--t);padding:0 10px 0 4px;min-width:44px}
+  .mz{margin-left:6px;border:1px solid rgba(255,210,122,.45);background:rgba(255,210,122,.1);color:var(--a);border-radius:9px;font:600 11px system-ui;padding:2px 8px;cursor:pointer}
+  .mkf{display:flex;gap:8px;width:100%;padding:4px 0}.mkn{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid var(--b);border-radius:10px;color:var(--t);font:500 14px system-ui;padding:8px 10px}
+  .mzok{border:0;border-radius:10px;background:var(--a);color:#15101f;font:700 13px system-ui;padding:0 14px;cursor:pointer}
+  .wk{grid-column:1/-1;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;background:var(--g);border:1px solid var(--b);border-radius:16px;padding:12px}
+  .wb{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
+  .bt2{height:80px;width:100%;max-width:34px;display:flex;align-items:flex-end;background:rgba(255,255,255,.04);border-radius:8px;overflow:hidden}
+  .bt2 i{display:block;width:100%;background:linear-gradient(180deg,var(--pc),color-mix(in srgb,var(--pc) 35%,transparent));border-radius:8px 8px 0 0}
+  .wb b{font:300 13px system-ui}.wb span{font-size:11px;color:var(--m);text-transform:capitalize}.wb small{font-size:10.5px;color:var(--m)}
+  .zb{display:flex;gap:4px;align-self:center}.zb button{width:30px;height:30px;border-radius:9px;border:1px solid var(--b);background:rgba(255,255,255,.05);color:var(--t);font:700 16px system-ui;cursor:pointer}
+  .leg{margin:-2px 0 4px 26px;padding:3px 0 3px 14px;border-left:2px dashed color-mix(in srgb,var(--pc) 55%,transparent);font:500 11.5px system-ui;color:var(--m)}
   .foot{grid-column:1/-1;text-align:center;font-size:12px;color:var(--m);padding:0 0 2px}
   .foot b{color:var(--t);font-weight:600}
   @media (max-width:1100px){.hub{grid-template-columns:minmax(250px,32%) 1fr;grid-template-rows:auto auto 1fr auto}.right{grid-column:1/-1}}
@@ -102,7 +114,7 @@
   `;
 
   class LocHubCard extends HTMLElement {
-    setConfig(c) { this.cfg = c || {}; this.sel = 'sandrine'; this.mode = 'famille'; this.day = 0; this._b = false; this._hist = {}; }
+    setConfig(c) { this.cfg = c || {}; this.sel = this.cfg.person || 'sandrine'; this.mode = this.cfg.person ? (this.cfg.mode || 'arrets') : 'famille'; this.day = 0; this._b = false; this._hist = {}; }
     getCardSize() { return 14; }
     set hass(h) {
       this._h = h;
@@ -120,13 +132,13 @@
 
     _build() {
       const r = this.shadowRoot || this.attachShadow({ mode: 'open' });
-      const v = this.cfg.version || '2.0.0';
+      const v = this.cfg.version || '2.1.0';
       r.innerHTML = `<style>${CSS}</style><div class="hub">
         <div class="top"><div class="ttl"><b>📍 Localisation</b><span>Où est tout le monde, et par où sont-ils passés</span></div><div class="sumr"></div></div>
         <div class="col left"><div class="h">La famille <i>👆 itinéraire</i></div><div class="people"></div></div>
         <div class="mid">
           <div class="bar"><div class="seg modes">${MODES.map(([k, l]) => `<button data-act="mode" data-v="${k}">${l}</button>`).join('')}</div>
-          <div class="seg days"><button data-act="day" data-v="0">Aujourd’hui</button><button data-act="day" data-v="1">Hier</button></div><div class="who"></div></div>
+          <div class="seg days"><button data-act="day" data-v="0">Aujourd’hui</button><button data-act="day" data-v="1">Hier</button><input type="date" class="dp" title="Choisir un jour"></div><div class="seg rps"><button class="rp" data-act="replay">▶ Rejouer</button><span class="rpt"></span></div><div class="who"></div></div>
           <div class="map"><div class="ld">Chargement de la carte…</div></div>
           <div class="stats"></div>
         </div>
@@ -136,15 +148,29 @@
         <div class="foot">✎ <b>maison_localisation</b> · v${esc(v)} · ${esc(this.cfg.date || new Date().toLocaleDateString('fr-BE'))} · Conçu et maintenu par Gregory via Claude AI</div>
       </div>`;
       r.querySelector('.hub').addEventListener('click', (e) => this._click(e));
+      r.querySelector('.dp').addEventListener('change', (e) => { const v = e.target.value; if (!v) return; const d = new Date(v + 'T00:00:00'), t = new Date(); t.setHours(0, 0, 0, 0); this.day = Math.max(0, Math.round((t - d) / 86400e3)); if (this.mode !== 'arrets' && this.mode !== 'jour' && this.mode !== 'famille') this.mode = 'jour'; this._load(); });
     }
 
     _click(e) {
+      if (e.target.tagName === 'INPUT') return;
       const b = e.target.closest('[data-act]'); if (!b) return;
       const a = b.dataset.act, k = b.dataset.k, p = k && this._p(k), hs = this._h;
       if (a !== 'maps' && a !== 'find') { e.preventDefault(); e.stopPropagation(); }
       if (a === 'sel') { this.sel = k; if (this.mode === 'famille') this.mode = 'arrets'; this._people(); this._load(); }
       else if (a === 'mode') { this.mode = b.dataset.v; this._load(); }
       else if (a === 'day') { this.day = +b.dataset.v; this._load(); }
+      else if (a === 'replay') { if (this._rpOn) { clearInterval(this._rpT); this._rpOn = false; this._load(); } else this._replay(b); }
+      else if (a === 'mkzone') { const row = b.closest('.ev'); const i = b.dataset.i; row.innerHTML = `<div class="mkf"><input class="mkn" placeholder="Nom de la zone (ex. Chez Laura)" maxlength="40"><button class="mzok" data-act="mkok" data-i="${i}">Créer</button></div>`; setTimeout(() => { const x = row.querySelector('.mkn'); if (x) x.focus(); }, 50); }
+      else if (a === 'mkok') {
+        const s = (this._shown || [])[+b.dataset.i], inp = b.parentNode.querySelector('.mkn'), name = inp && inp.value.trim();
+        if (!s || !name) { if (inp) inp.focus(); return; }
+        b.textContent = '⏳';
+        hs.callWS({ type: 'zone/create', name, icon: 'mdi:map-marker', latitude: +s.lat.toFixed(6), longitude: +s.lon.toFixed(6), radius: 80, passive: false }).then(() => { this._hist = {}; setTimeout(() => this._load(), 1500); }).catch((er) => { b.textContent = '❌ ' + (er.message || 'erreur'); });
+      } else if (a === 'zr') {
+        const z = (this._zl || []).find((x) => x.id === b.dataset.z); if (!z) return;
+        const r2 = Math.max(20, Math.min(1000, (z.radius || 100) + (+b.dataset.d)));
+        hs.callWS({ type: 'zone/update', zone_id: z.id, name: z.name, icon: z.icon, latitude: z.latitude, longitude: z.longitude, radius: r2, passive: !!z.passive }).then(() => setTimeout(() => this._load(), 600));
+      }
       else if (a === 'ping') { hs.callService('notify', p.svc, { message: 'request_location_update' }); this._flash(b, '✅', 'Demandé'); }
       else if (a === 'ring') {
         const f = 'input_boolean.loc_sonne_' + k;
@@ -174,7 +200,8 @@
         const chips = [
           bv != null && bv !== '' && !isNaN(bv) ? `<span class="chip ${+bv < 20 && !chg ? 'low' : ''}">${chg ? '⚡' : +bv < 20 ? '🪫' : '🔋'} ${Math.round(bv)} %</span>` : '',
           a.gps_accuracy ? `<span class="chip">🎯 ± ${Math.round(a.gps_accuracy)} m</span>` : '',
-          `<span class="chip">🕒 ${ago(tr.last_updated || s.last_updated)}</span>`,
+          (Date.now() - new Date(tr.last_updated || s.last_updated) > 3600e3 && s.state !== 'home') ? `<span class="chip low">⚠️ position ${ago(tr.last_updated || s.last_updated)}</span>` : `<span class="chip">🕒 ${ago(tr.last_updated || s.last_updated)}</span>`,
+          p.k === 'matteo' && S['calendar.matteo'] && S['calendar.matteo'].state === 'on' ? `<span class="chip">📅 ${esc(S['calendar.matteo'].attributes.message)}</span>` : '',
         ].join('');
         const ringing = (S['input_boolean.loc_sonne_' + p.k] || {}).state === 'on';
         const maps = a.latitude != null ? `https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}` : p.find[1];
@@ -232,6 +259,18 @@
       return m;
     }
     _nom(s) { return s.z ? s.z.n : 'Arrêt hors zone'; }
+    _replay(btn) {
+      const seg = this._seg, m = this._map; if (!seg || seg.length < 2 || !m) return;
+      clearInterval(this._rpT); this._rpOn = true; btn.textContent = '⏹ Stop';
+      const N = seg.length, step = Math.max(1, Math.ceil(N / 160)), base = this._locs || [], lab = this.shadowRoot.querySelector('.rpt'); let i = 1;
+      this._rpT = setInterval(() => {
+        i = Math.min(N, i + step); const sl = seg.slice(0, i), c = sl[sl.length - 1];
+        m.paths = [{ points: sl.map((q) => ({ point: [q.lat, q.lon], timestamp: new Date(q.t) })), color: this._pc, gradualOpacity: 0.85, fullDatetime: true }];
+        m.editableLocations = base.concat([{ id: 'cur', latitude: c.lat, longitude: c.lon, radius: 30, radius_color: '#ffd27a', icon: 'mdi:car', name: hm(c.t), location_editable: false, radius_editable: false }]);
+        lab.textContent = hm(c.t);
+        if (i >= N) { clearInterval(this._rpT); this._rpOn = false; btn.textContent = '▶ Rejouer'; }
+      }, 120);
+    }
     _len(seg) { let t = 0; for (let k = 1; k < seg.length; k++) t += dist(seg[k - 1].lat, seg[k - 1].lon, seg[k].lat, seg[k].lon); return t; }
 
     async _ensureMap() {
@@ -245,8 +284,11 @@
       const r = this.shadowRoot, tok = (this._tok = Math.random()), p = this._p(this.sel), fam = this.mode === 'famille';
       r.querySelectorAll('.modes button').forEach((b) => b.classList.toggle('on', b.dataset.v === this.mode));
       r.querySelector('.days').style.display = this.mode === 'arrets' || this.mode === 'jour' || fam ? '' : 'none';
+      r.querySelector('.rps').style.display = ['arrets', 'jour', 'dernier', '2h'].includes(this.mode) ? '' : 'none';
+      clearInterval(this._rpT); this._rpOn = false; r.querySelector('.rp').textContent = '▶ Rejouer'; r.querySelector('.rpt').textContent = '';
+      { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - this.day); r.querySelector('.dp').value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); r.querySelector('.dp').max = new Date().toISOString().slice(0, 10); }
       r.querySelectorAll('.days button').forEach((b) => b.classList.toggle('on', +b.dataset.v === this.day));
-      r.querySelector('.who').innerHTML = fam ? 'Vue <b>famille</b>' : `Itinéraire de <b style="color:${p.c}">${esc(p.n)}</b>`;
+      r.querySelector('.who').innerHTML = fam ? 'Vue <b>famille</b>' : this.mode === 'zones' ? 'Les <b>zones</b> connues' : `Itinéraire de <b style="color:${p.c}">${esc(p.n)}</b>`;
       this._people();
       const mapBox = r.querySelector('.map'), tl = r.querySelector('.tl'), stats = r.querySelector('.stats'), jh = r.querySelector('.jh');
       tl.innerHTML = '<div class="vide">Chargement…</div>';
@@ -254,9 +296,10 @@
       let t0, t1, endsNow = true;
       if (this.mode === '2h') { t0 = now - 2 * 3600e3; t1 = now; }
       else if (this.mode === 'dernier') { t0 = now - 36 * 3600e3; t1 = now; }
-      else if (this.day === 1) { t0 = d0.getTime() - 86400e3; t1 = d0.getTime(); endsNow = false; }
+      else if (this.day > 0) { t0 = d0.getTime() - this.day * 86400e3; t1 = t0 + 86400e3; endsNow = false; }
       else { t0 = d0.getTime(); t1 = now; }
-      const dayLbl = this.day === 1 ? 'hier' : 'aujourd’hui';
+      const dayLbl = this.day === 0 ? 'aujourd’hui' : this.day === 1 ? 'hier' : 'le ' + new Date(t0).toLocaleDateString('fr-BE', { weekday: 'long', day: 'numeric', month: 'long' });
+      const admin = !!(this._h.user && this._h.user.is_admin);
       let paths = [], locs = [], shown = [], fit = [];
       try {
         if (fam) {
@@ -272,6 +315,35 @@
           const H = (this._h.states['zone.home'] || {}).attributes; if (H) fit.push([H.latitude, H.longitude]);
           stats.innerHTML = '';
           stats.style.display = 'none';
+        } else if (this.mode === 'semaine') {
+          stats.style.display = '';
+          const T0 = d0.getTime() - 6 * 86400e3, pts = await this._points(p.id, T0, now); if (tok !== this._tok) return;
+          const stops = this._stops(pts, now, true), days = [];
+          for (let k = 0; k < 7; k++) { const a = T0 + k * 86400e3, b2 = a + 86400e3; days.push({ a, km: this._len(pts.filter((q) => q.t >= a && q.t < b2)), n: stops.filter((x) => x.t0 >= a && x.t0 < b2 && !(x.z && x.z.home)).length }); }
+          const mx = Math.max(1, ...days.map((d) => d.km));
+          stats.innerHTML = `<div class="wk">${days.map((d) => `<div class="wb" style="--pc:${p.c}"><div class="bt2"><i style="height:${Math.max(4, Math.round((d.km / mx) * 100))}%"></i></div><b>${km(d.km)}</b><span>${new Date(d.a).toLocaleDateString('fr-BE', { weekday: 'short', day: 'numeric' })}</span><small>${d.n} arrêt${d.n > 1 ? 's' : ''}</small></div>`).join('')}</div>`;
+          const agg = {};
+          for (const x of stops) { if (x.z && x.z.home) continue; const key = x.z ? x.z.n : x.lat.toFixed(3) + ',' + x.lon.toFixed(3); agg[key] = agg[key] || { n: key, z: x.z, d: 0, c: 0, lat: x.lat, lon: x.lon }; agg[key].d += x.d; agg[key].c++; }
+          const top = Object.values(agg).sort((x, y) => y.d - x.d).slice(0, 8);
+          const rets = days.map((d) => { const hh = stops.filter((x) => x.z && x.z.home && x.t0 >= d.a + 12 * 3600e3 && x.t0 < d.a + 86400e3); return hh.length ? hh[0].t0 - d.a : null; }).filter((x) => x != null);
+          const avg = rets.length ? Math.round(rets.reduce((x, y) => x + y, 0) / rets.length / 60000) : null;
+          jh.innerHTML = `Semaine · ${esc(p.n)} <i>${km(days.reduce((x, d) => x + d.km, 0))} · ${days.reduce((x, d) => x + d.n, 0)} arrêts</i>`;
+          tl.innerHTML = (avg != null ? `<div class="fam" style="--pc:${p.c}"><span class="dot"></span><div><b>Retour habituel à la maison</b><small>vers ${String(Math.floor(avg / 60)).padStart(2, '0')}h${String(avg % 60).padStart(2, '0')} l’après-midi (moyenne de la semaine)</small></div></div>` : '')
+            + (top.length ? top.map((t, k) => `<div class="ev" data-act="ev" data-i="${k}" style="--pc:${p.c}"><div class="n"><b>${k + 1}</b></div><div class="x"><b>${t.z ? '🏬 ' + esc(t.n) : '<span class="hz">📌 Lieu sans zone</span>'}</b><small>${t.c} visite${t.c > 1 ? 's' : ''}${!t.z && t.c >= 2 ? ' · <em>revient souvent</em>' : ''}${!t.z && admin ? ` <button class="mz" data-act="mkzone" data-i="${k}">➕ Créer une zone</button>` : ''}</small></div><div class="d">${dur(t.d)}</div></div>`).join('') : '<div class="vide">Aucun arrêt cette semaine.</div>');
+          shown = top;
+          locs = top.map((t, k) => ({ id: 'lieu' + k, latitude: t.lat, longitude: t.lon, radius: t.z ? Math.min(t.z.r, 60) : 40, radius_color: p.c, icon: k < 9 ? 'mdi:numeric-' + (k + 1) + '-circle' : 'mdi:map-marker', name: `${k + 1}. ${t.z ? t.n : 'Lieu sans zone'} · ${t.c} visite(s) · ${dur(t.d)}`, location_editable: false, radius_editable: false }));
+          fit = top.map((t) => [t.lat, t.lon]);
+        } else if (this.mode === 'zones') {
+          stats.style.display = 'none';
+          try { this._zl = await this._h.callWS({ type: 'zone/list' }); } catch (er) { this._zl = []; }
+          if (tok !== this._tok) return;
+          const H = (this._h.states['zone.home'] || {}).attributes || {};
+          const zl = this._zl.map((z) => ({ ...z, dh: H.latitude != null ? dist(H.latitude, H.longitude, z.latitude, z.longitude) : 0 })).sort((x, y) => x.dh - y.dh);
+          jh.innerHTML = `Zones connues <i>${zl.length} zones</i>`;
+          tl.innerHTML = zl.map((z, k) => `<div class="ev zr" data-act="ev" data-i="${k}" style="--pc:#ffd27a"><div class="n"><b>${k + 1}</b></div><div class="x"><b>${esc(z.name)}</b><small>rayon ${Math.round(z.radius)} m · ${km(z.dh)} de la maison</small></div>${admin ? `<div class="zb"><button data-act="zr" data-z="${esc(z.id)}" data-d="-10">−</button><button data-act="zr" data-z="${esc(z.id)}" data-d="10">+</button></div>` : ''}</div>`).join('') + '<div class="rule" style="margin-top:8px">Les rayons se règlent par 10 m. Pour en créer une : bouton « ➕ Créer une zone » sur un arrêt hors zone (Arrêts, Journée ou Semaine).</div>';
+          shown = zl.map((z) => ({ lat: z.latitude, lon: z.longitude }));
+          locs = zl.map((z, k) => ({ id: 'zone' + k, latitude: z.latitude, longitude: z.longitude, radius: z.radius, radius_color: '#ffd27a', icon: z.icon || 'mdi:map-marker', name: `${z.name} · ${Math.round(z.radius)} m`, location_editable: false, radius_editable: false }));
+          fit = zl.map((z) => [z.latitude, z.longitude]); if (H.latitude != null) fit.push([H.latitude, H.longitude]);
         } else {
           stats.style.display = '';
           const pts = await this._points(p.id, t0, t1); if (tok !== this._tok) return;
@@ -287,17 +359,19 @@
           const span = seg.length ? (endsNow ? now : t1) - seg[0].t : 0;
           stats.innerHTML = `<div class="st"><b>${km(this._len(seg))}</b><span>Distance</span></div><div class="st"><b>${outStops.length}</b><span>Arrêts hors maison</span></div><div class="st"><b>${seg.length ? dur(Math.max(0, span - away)) : '—'}</b><span>Hors de la maison</span></div>`;
           jh.innerHTML = `Journal · ${esc(p.n)} <i>${esc(sub || (this.mode === '2h' ? '2 dernières heures' : this.mode === 'dernier' ? 'dernier trajet' : dayLbl))}</i>`;
-          tl.innerHTML = ss.length ? ss.map((s, k) => `<div class="ev ${s.now ? 'now' : ''}" data-act="ev" data-i="${k}" style="--pc:${p.c}"><div class="n"><b>${k + 1}</b></div><div class="x"><b>${s.z ? (s.z.home ? '🏠 ' : '🏬 ') + esc(s.z.n) : '<span class="hz">📌 Arrêt hors zone</span>'}</b><small>${hm(s.t0)} → ${s.now ? '<em>en cours</em>' : hm(s.t1)}</small></div><div class="d">${dur(s.d)}</div></div>`).join('') : '<div class="vide">Aucun arrêt sur cette période.</div>';
+          const leg = (s) => { const j = stops.indexOf(s), pv = j > 0 ? stops[j - 1] : null, a = pv ? pv.i1 : 0; if (s.i0 == null || s.i0 <= a) return ''; const L2 = this._len(pts.slice(a, s.i0 + 1)), T = s.t0 - (pv ? pv.t1 : pts[a].t); return L2 < 100 ? '' : `<div class="leg" style="--pc:${p.c}">🚗 ${km(L2)} · ${dur(T)} de route${pv ? ' depuis ' + esc(this._nom(pv)) : ''}</div>`; };
+          tl.innerHTML = ss.length ? ss.map((s, k) => leg(s) + `<div class="ev ${s.now ? 'now' : ''}" data-act="ev" data-i="${k}" style="--pc:${p.c}"><div class="n"><b>${k + 1}</b></div><div class="x"><b>${s.z ? (s.z.home ? '🏠 ' : '🏬 ') + esc(s.z.n) : '<span class="hz">📌 Arrêt hors zone</span>'}</b><small>${hm(s.t0)} → ${s.now ? '<em>en cours</em>' : hm(s.t1)}${!s.z && admin ? ` <button class="mz" data-act="mkzone" data-i="${k}">➕ Créer une zone</button>` : ''}</small></div><div class="d">${dur(s.d)}</div></div>`).join('') : '<div class="vide">Aucun arrêt sur cette période.</div>';
           if (seg.length > 1) paths = [{ points: seg.map((q) => ({ point: [q.lat, q.lon], timestamp: new Date(q.t) })), color: p.c, gradualOpacity: 0.85, fullDatetime: true }];
           locs = ss.map((s, k) => ({ id: 'arret' + k, latitude: s.lat, longitude: s.lon, radius: s.z ? Math.min(s.z.r, 60) : 40, radius_color: p.c, icon: k < 9 ? 'mdi:numeric-' + (k + 1) + '-circle' : 'mdi:map-marker', name: `${k + 1}. ${this._nom(s)} · ${hm(s.t0)} · ${dur(s.d)}`, location_editable: false, radius_editable: false }));
           fit = seg.map((q) => [q.lat, q.lon]).concat(ss.map((s) => [s.lat, s.lon]));
+          this._seg = seg; this._pc = p.c;
         }
       } catch (e) { tl.innerHTML = '<div class="vide">❌ Historique indisponible</div>'; }
-      this._shown = shown;
+      this._shown = shown; this._locs = locs; if (fam || this.mode === 'semaine' || this.mode === 'zones') this._seg = null;
       if (!(await this._ensureMap()) || tok !== this._tok) { mapBox.innerHTML = '<div class="ld">Carte indisponible</div>'; return; }
       const m = document.createElement('ha-map');
       m.hass = this._h; m.autoFit = true; m.zoom = 15; m.themeMode = 'dark'; m.paths = paths; m.editableLocations = locs;
-      m.entities = fam ? PEOPLE.map((q) => ({ entity_id: q.id, color: q.c })) : endsNow ? [{ entity_id: p.id, color: p.c }] : [];
+      m.entities = this.mode === 'zones' || this.mode === 'semaine' ? [] : fam ? PEOPLE.map((q) => ({ entity_id: q.id, color: q.c })) : endsNow ? [{ entity_id: p.id, color: p.c }] : [];
       m.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block'; mapBox.innerHTML = ''; mapBox.appendChild(m); this._map = m;
       if (fit.length) {
         const la = fit.map((x) => x[0]), lo = fit.map((x) => x[1]);

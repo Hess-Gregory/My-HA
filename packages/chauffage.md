@@ -177,3 +177,5 @@ Correction : intégration Workday ajoutée (Belgique, lundi→vendredi, exclusio
 - Mode Manuel : réglage au **dixième de degré** (`temp_manuel_xxx` pas de 0,1). Les vannes Bosch n'acceptent que le demi-degré : la consigne envoyée aux vannes est arrondie au 0,5 le plus proche (section 9).
 - Réglage manuel en deux temps (voir `packages/chauffage_manuel.yaml`) : les boutons − / + règlent un brouillon (`temp_reglage_xxx`), la valeur s'applique **toute seule 5 s après le dernier appui** (toucher la valeur l'applique tout de suite). En passant en Manuel, le brouillon et la consigne partent de la température actuelle de la pièce.
 - Jauges de température (tous les dashboards) : 0 → 45 °C, couleurs selon les modes de la pièce (bleu < Éco, bleu clair Éco, vert à partir du Confort, orange très clair à partir de Boost + 1 °C, rouge à partir de 26 °C).
+
+- 28/10/2026 : « Retour imminent » ne se déclenche plus si la personne est déjà à la maison.

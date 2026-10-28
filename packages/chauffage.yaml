@@ -1137,6 +1137,8 @@ automation:
         entity_id: sensor.trajet_sandrine_waze_trajet_sandrine_vers_maison
         below: 10
     condition:
+      - condition: template
+        value_template: "{{ not is_state('person.' ~ trigger.entity_id.split('_')[1], 'home') }}"
       - condition: state
         entity_id: input_boolean.routine_activee
         state: "on"
