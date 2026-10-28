@@ -206,7 +206,7 @@
       },
       {
         "id": "d0f09a1642dd483d905fb918b6026903",
-        "url": "/local/plan3d/home-hub-card.js?v=1792921107996",
+        "url": "/local/plan3d/home-hub-card.js?v=2.1.0-mvrye3p3",
         "type": "module"
       },
       {
@@ -261,7 +261,7 @@
       },
       {
         "id": "9133a9f97c4b4b2f8126777425f2ad96",
-        "url": "/local/plan3d/loc-hub-card.js?v=1793178705085",
+        "url": "/local/plan3d/loc-hub-card.js?v=2.1.0-mvrye3q6",
         "type": "module"
       }
     ]

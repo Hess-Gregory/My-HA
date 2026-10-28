@@ -6,9 +6,9 @@
     "config": {
       "views": [
         {
-          "title": "Famille",
+          "title": "Localisation",
           "path": "famille",
-          "icon": "mdi:map-marker-multiple",
+          "icon": "mdi:map-marker-radius",
           "type": "panel",
           "visible": [
             {
@@ -30,9 +30,6 @@
           "cards": [
             {
               "type": "vertical-stack",
-              "card_mod": {
-                "style": ":host{display:block;max-width:980px;margin:10px auto 56px;padding:0 12px;box-sizing:border-box}"
-              },
               "cards": [
                 {
                   "type": "conditional",
@@ -70,480 +67,9 @@
                   "_mtk": 1
                 },
                 {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "custom_fields": {
-                    "x": "[[[ try{ if(!window.__locRefresh||Date.now()-window.__locRefresh>120000){ window.__locRefresh=Date.now(); hass.callService('script','turn_on',{entity_id:'script.localisation_actualiser'}); } }catch(e){} return ''; ]]]"
-                  },
-                  "styles": {
-                    "card": [
-                      "display:none"
-                    ]
-                  }
-                },
-                {
-                  "type": "vertical-stack",
-                  "cards": [
-                    {
-                      "type": "markdown",
-                      "content": "### 📍 Où est tout le monde ?\n{%- set ph = {'home':'est à la maison 🏠','Catherine et Gino':'est chez Catherine et Gino 📍','Travail Sandrine Gemeppe':'est au travail (Gemeppe) 💼','Travail Sandrine Tilleur':'est au travail (Tilleur) 💼','ICPP Ecole Matteo':\"est à l'école (ICPP) 🏫\",'Matteo Maurage':'est à Maurage 📍','Creche Hugo':'est à la crèche de Hugo 🧸','Ecole Hugo':\"est à l'école de Hugo 🏫\"} %}\n{%- set nom = {'home':'la maison','Maison':'la maison','Travail Sandrine Gemeppe':'le travail (Gemeppe)','Travail Sandrine Tilleur':'le travail (Tilleur)','ICPP Ecole Matteo':\"l'école (ICPP)\",'Creche Hugo':'la crèche','Ecole Hugo':\"l'école de Hugo\",'Catherine et Gino':'chez Catherine et Gino','Matteo Maurage':'Maurage'} %}\n{%- set geo = {'person.matteo':'sensor.iphone_geocoded_location','person.greg':'sensor.samsung_greg_geocoded_location','person.sandrine':'sensor.sandrine_smartphone_geocoded_location'} %}\n{%- set zones = states.zone | map(attribute='entity_id') | list %}\n{%- macro ago(t) -%}{%- set m = ((now() - t).total_seconds() / 60) | int -%}{%- if m < 1 -%}à l'instant{%- elif m < 60 -%}{{ m }} min{%- elif m < 1440 -%}{{ m // 60 }} h {{ '%02d' % (m % 60) }}{%- else -%}le {{ t.strftime('%d/%m %H:%M') }}{%- endif -%}{%- endmacro %}\n{%- macro km(d) -%}{{ (d | round(1) | string).replace('.', ',') if d < 10 else d | round(0) | int }} km{%- endmacro %}\n{% for e, n, k in [('person.greg','Gregory','greg'),('person.sandrine','Sandrine','sandrine'),('person.matteo','Matteo','matteo')] -%}\n{%- set s = states[e] -%}{%- if s %}\n{%- set src = state_attr(e,'source') -%}{%- set upd = states[src].last_updated if src and states[src] else s.last_updated -%}\n{%- set lat = state_attr(e,'latitude') -%}{%- set lon = state_attr(e,'longitude') -%}\n{%- set dmaison = distance(e) if s.state != 'home' and lat else none -%}\n{%- set su = state_attr('sensor.localisation_derniers_lieux', k) or {} -%}\n{%- set arr = as_datetime(su.arrivee) if su is mapping and su.get('arrivee') else s.last_changed -%}\n{%- if s.state == 'not_home' -%}\n{%- set dep = su.get('lieu', '') if su is mapping else '' -%}{%- set hdep = su.get('depart', '') if su is mapping else '' -%}\n{%- set g = states(geo[e]) -%}{%- set lignes = g.split('\\n') if g not in ['unknown','unavailable',''] else [] -%}\n{%- set ville = (lignes[-2] if lignes | count >= 2 else (lignes[0] if lignes else '')) | regex_replace('^[0-9]+ ', '') -%}\n{%- set ns = namespace(best='', gain=0.3, dist=0) -%}\n{%- if su is mapping and su.get('plat') and lat -%}{%- for z in zones -%}{%- set zl = state_attr(z,'latitude') -%}{%- set zo = state_attr(z,'longitude') -%}{%- if zl and state_attr(z,'friendly_name') != dep and z != 'zone.' ~ dep -%}{%- set d0 = distance(su.plat, su.plon, zl, zo) -%}{%- set d1 = distance(lat, lon, zl, zo) -%}{%- if d0 - d1 > ns.gain -%}{%- set ns.best = state_attr(z,'friendly_name') -%}{%- set ns.gain = d0 - d1 -%}{%- set ns.dist = d1 -%}{%- endif -%}{%- endif -%}{%- endfor -%}{%- endif -%}\n{%- set p1 = (\"a quitté \" ~ (dep if dep == 'Catherine et Gino' else nom.get(dep, dep)) ~ (\" à \" ~ as_datetime(hdep) | as_local | as_timestamp | timestamp_custom('%Hh%M') if hdep else '') ~ \", \") if dep else '' -%}\n{%- set phrase = p1 ~ 'est en déplacement' ~ ((' à ' ~ ville) if ville else '') ~ (' et semble se diriger vers ' ~ nom.get(ns.best, ns.best) ~ ' (encore ' ~ km(ns.dist) ~ ')' if ns.best else '') ~ ' 🚗' -%}\n{%- else -%}{%- set phrase = ph.get(s.state, 'est à ' ~ s.state ~ ' 📍') -%}{%- endif %}\n**{{ n }}** {{ phrase }}\n<font size=\"2\" color=\"#9aa0b4\">depuis {{ ago(arr) }}{% if dmaison is not none %} · à {{ km(dmaison) }} de la maison{% endif %} · position reçue il y a {{ ago(upd) }}</font>\n{% endif %}\n{%- endfor %}",
-                      "card_mod": {
-                        "style": "ha-card{border-radius:18px;background:rgba(20,22,34,.82);padding:4px 6px}"
-                      }
-                    },
-                    {
-                      "type": "horizontal-stack",
-                      "cards": [
-                        {
-                          "type": "custom:button-card",
-                          "name": "🔄 Actualiser",
-                          "show_icon": false,
-                          "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "script.localisation_actualiser"
-                          },
-                          "styles": {
-                            "card": [
-                              "padding:9px 4px",
-                              "border-radius:12px",
-                              "font-size:13px",
-                              "font-weight:600",
-                              "background:#2e7d32",
-                              "color:#fff"
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "name": "5 min",
-                          "entity": "input_select.localisation_periode",
-                          "show_icon": false,
-                          "show_state": false,
-                          "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "input_select.select_option",
-                            "target": {
-                              "entity_id": "input_select.localisation_periode"
-                            },
-                            "data": {
-                              "option": "5 min"
-                            }
-                          },
-                          "state": [
-                            {
-                              "value": "5 min",
-                              "styles": {
-                                "card": [
-                                  "background:#ff9d2e",
-                                  "color:#1c1206"
-                                ]
-                              }
-                            }
-                          ],
-                          "styles": {
-                            "card": [
-                              "padding:9px 4px",
-                              "border-radius:12px",
-                              "font-size:13px",
-                              "font-weight:600"
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "name": "1 h",
-                          "entity": "input_select.localisation_periode",
-                          "show_icon": false,
-                          "show_state": false,
-                          "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "input_select.select_option",
-                            "target": {
-                              "entity_id": "input_select.localisation_periode"
-                            },
-                            "data": {
-                              "option": "1 h"
-                            }
-                          },
-                          "state": [
-                            {
-                              "value": "1 h",
-                              "styles": {
-                                "card": [
-                                  "background:#ff9d2e",
-                                  "color:#1c1206"
-                                ]
-                              }
-                            }
-                          ],
-                          "styles": {
-                            "card": [
-                              "padding:9px 4px",
-                              "border-radius:12px",
-                              "font-size:13px",
-                              "font-weight:600"
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "name": "6 h",
-                          "entity": "input_select.localisation_periode",
-                          "show_icon": false,
-                          "show_state": false,
-                          "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "input_select.select_option",
-                            "target": {
-                              "entity_id": "input_select.localisation_periode"
-                            },
-                            "data": {
-                              "option": "6 h"
-                            }
-                          },
-                          "state": [
-                            {
-                              "value": "6 h",
-                              "styles": {
-                                "card": [
-                                  "background:#ff9d2e",
-                                  "color:#1c1206"
-                                ]
-                              }
-                            }
-                          ],
-                          "styles": {
-                            "card": [
-                              "padding:9px 4px",
-                              "border-radius:12px",
-                              "font-size:13px",
-                              "font-weight:600"
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "name": "24 h",
-                          "entity": "input_select.localisation_periode",
-                          "show_icon": false,
-                          "show_state": false,
-                          "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "input_select.select_option",
-                            "target": {
-                              "entity_id": "input_select.localisation_periode"
-                            },
-                            "data": {
-                              "option": "24 h"
-                            }
-                          },
-                          "state": [
-                            {
-                              "value": "24 h",
-                              "styles": {
-                                "card": [
-                                  "background:#ff9d2e",
-                                  "color:#1c1206"
-                                ]
-                              }
-                            }
-                          ],
-                          "styles": {
-                            "card": [
-                              "padding:9px 4px",
-                              "border-radius:12px",
-                              "font-size:13px",
-                              "font-weight:600"
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "name": "7 jours",
-                          "entity": "input_select.localisation_periode",
-                          "show_icon": false,
-                          "show_state": false,
-                          "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "input_select.select_option",
-                            "target": {
-                              "entity_id": "input_select.localisation_periode"
-                            },
-                            "data": {
-                              "option": "7 jours"
-                            }
-                          },
-                          "state": [
-                            {
-                              "value": "7 jours",
-                              "styles": {
-                                "card": [
-                                  "background:#ff9d2e",
-                                  "color:#1c1206"
-                                ]
-                              }
-                            }
-                          ],
-                          "styles": {
-                            "card": [
-                              "padding:9px 4px",
-                              "border-radius:12px",
-                              "font-size:13px",
-                              "font-weight:600"
-                            ]
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "type": "entities",
-                      "entities": [
-                        {
-                          "entity": "input_select.localisation_auto",
-                          "name": "Actualisation automatique"
-                        }
-                      ],
-                      "card_mod": {
-                        "style": "ha-card{border-radius:14px}"
-                      }
-                    },
-                    {
-                      "type": "conditional",
-                      "conditions": [
-                        {
-                          "condition": "state",
-                          "entity": "input_select.localisation_periode",
-                          "state": "5 min"
-                        }
-                      ],
-                      "card": {
-                        "type": "map",
-                        "title": "Trajets : 5 min",
-                        "entities": [
-                          "person.greg",
-                          "person.sandrine",
-                          "person.matteo",
-                          "zone.icpp_ecole_matteo",
-                          "zone.catherine_et_gino",
-                          "zone.matteo_maurage",
-                          "zone.travail_sandrine_gemeppe",
-                          "zone.travail_sandrine_tilleur",
-                          "zone.creche_hugo",
-                          "zone.ecole_hugo",
-                          "zone.home"
-                        ],
-                        "hours_to_show": 0.0834,
-                        "aspect_ratio": "16:10"
-                      }
-                    },
-                    {
-                      "type": "conditional",
-                      "conditions": [
-                        {
-                          "condition": "state",
-                          "entity": "input_select.localisation_periode",
-                          "state": "1 h"
-                        }
-                      ],
-                      "card": {
-                        "type": "map",
-                        "title": "Trajets : 1 h",
-                        "entities": [
-                          "person.greg",
-                          "person.sandrine",
-                          "person.matteo",
-                          "zone.icpp_ecole_matteo",
-                          "zone.catherine_et_gino",
-                          "zone.matteo_maurage",
-                          "zone.travail_sandrine_gemeppe",
-                          "zone.travail_sandrine_tilleur",
-                          "zone.creche_hugo",
-                          "zone.ecole_hugo",
-                          "zone.home"
-                        ],
-                        "hours_to_show": 1,
-                        "aspect_ratio": "16:10"
-                      }
-                    },
-                    {
-                      "type": "conditional",
-                      "conditions": [
-                        {
-                          "condition": "state",
-                          "entity": "input_select.localisation_periode",
-                          "state": "6 h"
-                        }
-                      ],
-                      "card": {
-                        "type": "map",
-                        "title": "Trajets : 6 h",
-                        "entities": [
-                          "person.greg",
-                          "person.sandrine",
-                          "person.matteo",
-                          "zone.icpp_ecole_matteo",
-                          "zone.catherine_et_gino",
-                          "zone.matteo_maurage",
-                          "zone.travail_sandrine_gemeppe",
-                          "zone.travail_sandrine_tilleur",
-                          "zone.creche_hugo",
-                          "zone.ecole_hugo",
-                          "zone.home"
-                        ],
-                        "hours_to_show": 6,
-                        "aspect_ratio": "16:10"
-                      }
-                    },
-                    {
-                      "type": "conditional",
-                      "conditions": [
-                        {
-                          "condition": "state",
-                          "entity": "input_select.localisation_periode",
-                          "state": "24 h"
-                        }
-                      ],
-                      "card": {
-                        "type": "map",
-                        "title": "Trajets : 24 h",
-                        "entities": [
-                          "person.greg",
-                          "person.sandrine",
-                          "person.matteo",
-                          "zone.icpp_ecole_matteo",
-                          "zone.catherine_et_gino",
-                          "zone.matteo_maurage",
-                          "zone.travail_sandrine_gemeppe",
-                          "zone.travail_sandrine_tilleur",
-                          "zone.creche_hugo",
-                          "zone.ecole_hugo",
-                          "zone.home"
-                        ],
-                        "hours_to_show": 24,
-                        "aspect_ratio": "16:10"
-                      }
-                    },
-                    {
-                      "type": "conditional",
-                      "conditions": [
-                        {
-                          "condition": "state",
-                          "entity": "input_select.localisation_periode",
-                          "state": "7 jours"
-                        }
-                      ],
-                      "card": {
-                        "type": "map",
-                        "title": "Trajets : 7 jours",
-                        "entities": [
-                          "person.greg",
-                          "person.sandrine",
-                          "person.matteo",
-                          "zone.icpp_ecole_matteo",
-                          "zone.catherine_et_gino",
-                          "zone.matteo_maurage",
-                          "zone.travail_sandrine_gemeppe",
-                          "zone.travail_sandrine_tilleur",
-                          "zone.creche_hugo",
-                          "zone.ecole_hugo",
-                          "zone.home"
-                        ],
-                        "hours_to_show": 168,
-                        "aspect_ratio": "16:10"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "triggers_update": [
-                    "person.sandrine",
-                    "person.greg",
-                    "person.matteo",
-                    "device_tracker.sandrine_smartphone",
-                    "device_tracker.gsm_greg",
-                    "device_tracker.iphone",
-                    "sensor.sandrine_smartphone_battery_level",
-                    "sensor.samsung_greg_battery_level",
-                    "input_boolean.loc_sonne_sandrine",
-                    "input_boolean.loc_sonne_greg",
-                    "input_boolean.loc_sonne_matteo"
-                  ],
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "hold_action": {
-                    "action": "none"
-                  },
-                  "styles": {
-                    "card": [
-                      {
-                        "background": "transparent"
-                      },
-                      {
-                        "box-shadow": "none"
-                      },
-                      {
-                        "border": "none"
-                      },
-                      {
-                        "padding": "4px 2px"
-                      },
-                      {
-                        "pointer-events": "auto"
-                      },
-                      {
-                        "cursor": "default"
-                      }
-                    ],
-                    "grid": [
-                      {
-                        "grid-template-areas": "\"x\""
-                      },
-                      {
-                        "grid-template-columns": "1fr"
-                      }
-                    ],
-                    "custom_fields": {
-                      "x": [
-                        {
-                          "justify-self": "stretch"
-                        },
-                        {
-                          "pointer-events": "auto"
-                        }
-                      ]
-                    }
-                  },
-                  "custom_fields": {
-                    "x": "[[[ return (function(card,hass,states,ONLY){\n const P=[['person.sandrine','Sandrine','#f472b6','mobile_app_sandrine_smartphone','sensor.sandrine_smartphone_battery_level','sensor.sandrine_smartphone_battery_state','device_tracker.sandrine_smartphone','sandrine'],\n  ['person.greg','Greg','#38bdf8','mobile_app_samsung_greg','sensor.samsung_greg_battery_level','sensor.samsung_greg_battery_state','device_tracker.gsm_greg','greg'],\n  ['person.matteo','Matteo','#4ade80','mobile_app_iphone','','','device_tracker.iphone','matteo']].filter(p=>!ONLY||p[7]===ONLY);\n window.__loc=window.__loc7=window.__loc7||{ring:(k,b)=>{const hs=document.querySelector('home-assistant').hass;const L=window.__loc7;L.arm=L.arm||{};const f='input_boolean.loc_sonne_'+k;if((hs.states[f]||{}).state==='on'){hs.callService('input_boolean','turn_off',{entity_id:f});b.textContent='⏳ Arrêt…';return;}hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});b.textContent='🔔 Ça sonne…';},alert:(k,m,b)=>{const hs=document.querySelector('home-assistant').hass;const n=String((hs.user||{}).name||'').toLowerCase();const app=n.includes('sandrine')?'Sandrine':((n.includes('greg')||n.includes('admin'))?'Gregory':'Quelqu’un de la famille');hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k,mode:m,appelant:app}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});const t0=b.textContent;b.textContent='✅ Envoyé !';setTimeout(()=>{if(b.isConnected)b.textContent=t0;},4000);},ping:(s,b)=>{const hs=document.querySelector('home-assistant').hass;hs.callService('notify',s,{message:'request_location_update'});b.textContent='✅ Demandé !';setTimeout(()=>{b.textContent='📍 Localiser';},5000);},go:p=>{history.pushState(null,'',p);window.dispatchEvent(new CustomEvent('location-changed'));}};\n const H=(states['zone.home']||{}).attributes||{};\n const dist=(a,b,c,d)=>{const r=x=>x*Math.PI/180;const q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q));};\n const ago=t=>{const m=Math.round((Date.now()-new Date(t))/60000);return m<1?\"à l’instant\":m<60?'il y a '+m+' min':m<1440?'il y a '+Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):'il y a '+Math.floor(m/1440)+' j';};\n const tap=js=>`onclick=\"event.stopPropagation();${js}\" ontouchstart=\"event.stopPropagation()\" ontouchend=\"event.stopPropagation();event.preventDefault();${js}\"`;\n const tiles=P.map(([pe,name,col,svc,bat,batst,dt,key])=>{const s=states[pe];if(!s)return '';const a=s.attributes,tr=states[dt]||{},ta=tr.attributes||{};\n  const zone=s.state==='home'?'🏠 À la maison':s.state==='not_home'?'🚶 En déplacement':s.state==='unknown'?'❔ Position inconnue':'📍 '+((states['zone.'+s.state]||{attributes:{}}).attributes.friendly_name||s.state);\n  const d=(a.latitude&&H.latitude)?dist(H.latitude,H.longitude,a.latitude,a.longitude):null;\n  const dtxt=(d==null||s.state==='home')?'Pile à la maison':(d<1?Math.round(d*1000)+' m':String(d.toFixed(d<10?1:0)).replace('.',',')+' km')+' de la maison';\n  const bv=bat&&states[bat]?states[bat].state:ta.battery_level;const bs=batst&&states[batst]?states[batst].state:(ta.battery_state||'');const chg=/charg|full/i.test(bs)&&!/dis/i.test(bs);\n  const chips=[(bv!=null&&bv!==''&&!isNaN(bv))?`<span class=\"c ${+bv<20&&!chg?'low':''}\">${chg?'⚡':(+bv<20?'🪫':'🔋')} ${Math.round(bv)} %</span>`:'',a.gps_accuracy?`<span class=\"c\">🎯 ± ${Math.round(a.gps_accuracy)} m</span>`:'',`<span class=\"c\">🕒 ${ago(tr.last_updated||s.last_updated)}</span>`].join('');\n  const maps=a.latitude?`https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`:'';\n  const pic=a.entity_picture?`<img src=\"${a.entity_picture}\">`:`<span>${name[0]}</span>`;\n  return `<div class=\"t\" style=\"--pc:${col}\"><div class=\"top\"><div class=\"av\">${pic}<i class=\"${s.state==='home'?'h':'o'}\"></i></div><div><div class=\"n\">${name}</div><div class=\"z\">${zone}</div><div class=\"d\">${dtxt}</div></div></div><div class=\"cs\">${chips}</div><div class=\"bt\"><button class=\"b p\" ${tap(`__loc.ping('${svc}',this)`)}>📍 Localiser</button>${(states['input_boolean.loc_sonne_'+key]||{}).state==='on'?`<button class=\"b stop\" ${tap(`__loc.ring('${key}',this)`)}>⏹️ Stopper la sonnerie</button>`:`<button class=\"b r\" ${tap(`__loc.ring('${key}',this)`)}>🔔 Faire sonner</button>`}<button class=\"b u\" ${tap(`__loc.alert('${key}','urgence',this)`)}>🚨 Appel urgent</button><button class=\"b m2\" ${tap(`__loc.alert('${key}','rappel',this)`)}>📵 Appel manqué</button>${ONLY?'':`<button class=\"b\" ${tap(`__loc.go('/maison-localisation/${key}')`)}>🗺️ Suivre</button>`}${maps?`<a class=\"b\" href=\"${maps}\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🧭 Google Maps</a>`:''}${key==='matteo'?'<a class=\"b\" href=\"https://www.icloud.com/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🍏 Localiser l’iPhone</a>':'<a class=\"b\" href=\"https://www.google.com/android/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🤖 Localiser l’appareil</a>'}</div></div>`;}).join('');\n const css=`<style>.w{font-family:inherit;color:var(--primary-text-color);text-align:left}.hd{margin:4px 2px 14px}.hd b{display:block;font-size:clamp(22px,5vw,30px);font-weight:800}.hd span{font-size:13.5px;opacity:.7}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.t{padding:14px;border-radius:20px;background:var(--ha-card-background,var(--card-background-color));border:1px solid rgba(127,127,127,.2);border-top:4px solid var(--pc);box-shadow:var(--ha-card-box-shadow,0 4px 14px rgba(0,0,0,.18))}.top{display:flex;gap:12px;align-items:center}.av{position:relative;flex:0 0 56px;height:56px;border-radius:50%;border:3px solid var(--pc);display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--pc) 25%,transparent);font-size:24px;font-weight:800}.av img{width:100%;height:100%;border-radius:50%;object-fit:cover}.av i{position:absolute;right:-2px;bottom:-2px;width:15px;height:15px;border-radius:50%;border:2px solid var(--card-background-color,#222)}.av i.h{background:#22c55e}.av i.o{background:#f59e0b}.n{font-size:18px;font-weight:800}.z{font-size:14.5px;font-weight:600;margin-top:2px}.d{font-size:12.5px;opacity:.7;margin-top:1px}.cs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.c{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(127,127,127,.14)}.c.low{background:rgba(239,68,68,.2);color:#ef4444}.bt{display:flex;gap:8px;flex-wrap:wrap}.b{flex:1 1 auto;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:rgba(127,127,127,.1);color:var(--primary-text-color);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}.b.p{background:var(--pc);border-color:var(--pc);color:#0b1020}.b:active{transform:scale(.97)}.b.r{background:#f59e0b;border-color:#f59e0b;color:#0b1020}.b.stop{background:#ef4444;border-color:#ef4444;color:#fff;animation:lpl 1s ease-in-out infinite}@keyframes lpl{50%{filter:brightness(1.35)}}.b.u{background:#dc2626;border-color:#dc2626;color:#fff}.b.m2{background:#6366f1;border-color:#6366f1;color:#fff}</style>`;\n return `${css}<div class=\"w\">${ONLY?'':`<div class=\"hd\"><b>📍 Où est tout le monde ?</b><span>Position en direct des smartphones — « Localiser » demande une position fraîche au téléphone</span></div>`}<div class=\"g\">${tiles}</div></div>`;\n})(this,hass,states,\"\"); ]]]"
-                  }
-                },
-                {
-                  "type": "map",
-                  "entities": [
-                    {
-                      "entity": "person.sandrine"
-                    },
-                    {
-                      "entity": "person.greg"
-                    },
-                    {
-                      "entity": "person.matteo"
-                    }
-                  ],
-                  "hours_to_show": 6,
-                  "default_zoom": 13,
-                  "theme_mode": "auto",
-                  "aspect_ratio": "16:10"
+                  "type": "custom:loc-hub-card",
+                  "version": "2.1.0",
+                  "date": "28/10/2026"
                 }
               ]
             }
@@ -552,7 +78,7 @@
         {
           "title": "Sandrine",
           "path": "sandrine",
-          "icon": "mdi:face-woman",
+          "icon": "mdi:account",
           "type": "panel",
           "visible": [
             {
@@ -571,12 +97,11 @@
               "user": "72011b7b659b4d9497908e4fbb4539ce"
             }
           ],
+          "subview": true,
+          "back_path": "/maison-localisation/famille",
           "cards": [
             {
               "type": "vertical-stack",
-              "card_mod": {
-                "style": ":host{display:block;max-width:980px;margin:10px auto 56px;padding:0 12px;box-sizing:border-box}"
-              },
               "cards": [
                 {
                   "type": "conditional",
@@ -614,111 +139,10 @@
                   "_mtk": 1
                 },
                 {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "custom_fields": {
-                    "x": "[[[ try{ if(!window.__locRefresh||Date.now()-window.__locRefresh>120000){ window.__locRefresh=Date.now(); hass.callService('script','turn_on',{entity_id:'script.localisation_actualiser'}); } }catch(e){} return ''; ]]]"
-                  },
-                  "styles": {
-                    "card": [
-                      "display:none"
-                    ]
-                  }
-                },
-                {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "triggers_update": [
-                    "person.sandrine",
-                    "person.greg",
-                    "person.matteo",
-                    "device_tracker.sandrine_smartphone",
-                    "device_tracker.gsm_greg",
-                    "device_tracker.iphone",
-                    "sensor.sandrine_smartphone_battery_level",
-                    "sensor.samsung_greg_battery_level",
-                    "input_boolean.loc_sonne_sandrine",
-                    "input_boolean.loc_sonne_greg",
-                    "input_boolean.loc_sonne_matteo"
-                  ],
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "hold_action": {
-                    "action": "none"
-                  },
-                  "styles": {
-                    "card": [
-                      {
-                        "background": "transparent"
-                      },
-                      {
-                        "box-shadow": "none"
-                      },
-                      {
-                        "border": "none"
-                      },
-                      {
-                        "padding": "4px 2px"
-                      },
-                      {
-                        "pointer-events": "auto"
-                      },
-                      {
-                        "cursor": "default"
-                      }
-                    ],
-                    "grid": [
-                      {
-                        "grid-template-areas": "\"x\""
-                      },
-                      {
-                        "grid-template-columns": "1fr"
-                      }
-                    ],
-                    "custom_fields": {
-                      "x": [
-                        {
-                          "justify-self": "stretch"
-                        },
-                        {
-                          "pointer-events": "auto"
-                        }
-                      ]
-                    }
-                  },
-                  "custom_fields": {
-                    "x": "[[[ return (function(card,hass,states,ONLY){\n const P=[['person.sandrine','Sandrine','#f472b6','mobile_app_sandrine_smartphone','sensor.sandrine_smartphone_battery_level','sensor.sandrine_smartphone_battery_state','device_tracker.sandrine_smartphone','sandrine'],\n  ['person.greg','Greg','#38bdf8','mobile_app_samsung_greg','sensor.samsung_greg_battery_level','sensor.samsung_greg_battery_state','device_tracker.gsm_greg','greg'],\n  ['person.matteo','Matteo','#4ade80','mobile_app_iphone','','','device_tracker.iphone','matteo']].filter(p=>!ONLY||p[7]===ONLY);\n window.__loc=window.__loc7=window.__loc7||{ring:(k,b)=>{const hs=document.querySelector('home-assistant').hass;const L=window.__loc7;L.arm=L.arm||{};const f='input_boolean.loc_sonne_'+k;if((hs.states[f]||{}).state==='on'){hs.callService('input_boolean','turn_off',{entity_id:f});b.textContent='⏳ Arrêt…';return;}hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});b.textContent='🔔 Ça sonne…';},alert:(k,m,b)=>{const hs=document.querySelector('home-assistant').hass;const n=String((hs.user||{}).name||'').toLowerCase();const app=n.includes('sandrine')?'Sandrine':((n.includes('greg')||n.includes('admin'))?'Gregory':'Quelqu’un de la famille');hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k,mode:m,appelant:app}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});const t0=b.textContent;b.textContent='✅ Envoyé !';setTimeout(()=>{if(b.isConnected)b.textContent=t0;},4000);},ping:(s,b)=>{const hs=document.querySelector('home-assistant').hass;hs.callService('notify',s,{message:'request_location_update'});b.textContent='✅ Demandé !';setTimeout(()=>{b.textContent='📍 Localiser';},5000);},go:p=>{history.pushState(null,'',p);window.dispatchEvent(new CustomEvent('location-changed'));}};\n const H=(states['zone.home']||{}).attributes||{};\n const dist=(a,b,c,d)=>{const r=x=>x*Math.PI/180;const q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q));};\n const ago=t=>{const m=Math.round((Date.now()-new Date(t))/60000);return m<1?\"à l’instant\":m<60?'il y a '+m+' min':m<1440?'il y a '+Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):'il y a '+Math.floor(m/1440)+' j';};\n const tap=js=>`onclick=\"event.stopPropagation();${js}\" ontouchstart=\"event.stopPropagation()\" ontouchend=\"event.stopPropagation();event.preventDefault();${js}\"`;\n const tiles=P.map(([pe,name,col,svc,bat,batst,dt,key])=>{const s=states[pe];if(!s)return '';const a=s.attributes,tr=states[dt]||{},ta=tr.attributes||{};\n  const zone=s.state==='home'?'🏠 À la maison':s.state==='not_home'?'🚶 En déplacement':s.state==='unknown'?'❔ Position inconnue':'📍 '+((states['zone.'+s.state]||{attributes:{}}).attributes.friendly_name||s.state);\n  const d=(a.latitude&&H.latitude)?dist(H.latitude,H.longitude,a.latitude,a.longitude):null;\n  const dtxt=(d==null||s.state==='home')?'Pile à la maison':(d<1?Math.round(d*1000)+' m':String(d.toFixed(d<10?1:0)).replace('.',',')+' km')+' de la maison';\n  const bv=bat&&states[bat]?states[bat].state:ta.battery_level;const bs=batst&&states[batst]?states[batst].state:(ta.battery_state||'');const chg=/charg|full/i.test(bs)&&!/dis/i.test(bs);\n  const chips=[(bv!=null&&bv!==''&&!isNaN(bv))?`<span class=\"c ${+bv<20&&!chg?'low':''}\">${chg?'⚡':(+bv<20?'🪫':'🔋')} ${Math.round(bv)} %</span>`:'',a.gps_accuracy?`<span class=\"c\">🎯 ± ${Math.round(a.gps_accuracy)} m</span>`:'',`<span class=\"c\">🕒 ${ago(tr.last_updated||s.last_updated)}</span>`].join('');\n  const maps=a.latitude?`https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`:'';\n  const pic=a.entity_picture?`<img src=\"${a.entity_picture}\">`:`<span>${name[0]}</span>`;\n  return `<div class=\"t\" style=\"--pc:${col}\"><div class=\"top\"><div class=\"av\">${pic}<i class=\"${s.state==='home'?'h':'o'}\"></i></div><div><div class=\"n\">${name}</div><div class=\"z\">${zone}</div><div class=\"d\">${dtxt}</div></div></div><div class=\"cs\">${chips}</div><div class=\"bt\"><button class=\"b p\" ${tap(`__loc.ping('${svc}',this)`)}>📍 Localiser</button>${(states['input_boolean.loc_sonne_'+key]||{}).state==='on'?`<button class=\"b stop\" ${tap(`__loc.ring('${key}',this)`)}>⏹️ Stopper la sonnerie</button>`:`<button class=\"b r\" ${tap(`__loc.ring('${key}',this)`)}>🔔 Faire sonner</button>`}<button class=\"b u\" ${tap(`__loc.alert('${key}','urgence',this)`)}>🚨 Appel urgent</button><button class=\"b m2\" ${tap(`__loc.alert('${key}','rappel',this)`)}>📵 Appel manqué</button>${ONLY?'':`<button class=\"b\" ${tap(`__loc.go('/maison-localisation/${key}')`)}>🗺️ Suivre</button>`}${maps?`<a class=\"b\" href=\"${maps}\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🧭 Google Maps</a>`:''}${key==='matteo'?'<a class=\"b\" href=\"https://www.icloud.com/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🍏 Localiser l’iPhone</a>':'<a class=\"b\" href=\"https://www.google.com/android/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🤖 Localiser l’appareil</a>'}</div></div>`;}).join('');\n const css=`<style>.w{font-family:inherit;color:var(--primary-text-color);text-align:left}.hd{margin:4px 2px 14px}.hd b{display:block;font-size:clamp(22px,5vw,30px);font-weight:800}.hd span{font-size:13.5px;opacity:.7}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.t{padding:14px;border-radius:20px;background:var(--ha-card-background,var(--card-background-color));border:1px solid rgba(127,127,127,.2);border-top:4px solid var(--pc);box-shadow:var(--ha-card-box-shadow,0 4px 14px rgba(0,0,0,.18))}.top{display:flex;gap:12px;align-items:center}.av{position:relative;flex:0 0 56px;height:56px;border-radius:50%;border:3px solid var(--pc);display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--pc) 25%,transparent);font-size:24px;font-weight:800}.av img{width:100%;height:100%;border-radius:50%;object-fit:cover}.av i{position:absolute;right:-2px;bottom:-2px;width:15px;height:15px;border-radius:50%;border:2px solid var(--card-background-color,#222)}.av i.h{background:#22c55e}.av i.o{background:#f59e0b}.n{font-size:18px;font-weight:800}.z{font-size:14.5px;font-weight:600;margin-top:2px}.d{font-size:12.5px;opacity:.7;margin-top:1px}.cs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.c{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(127,127,127,.14)}.c.low{background:rgba(239,68,68,.2);color:#ef4444}.bt{display:flex;gap:8px;flex-wrap:wrap}.b{flex:1 1 auto;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:rgba(127,127,127,.1);color:var(--primary-text-color);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}.b.p{background:var(--pc);border-color:var(--pc);color:#0b1020}.b:active{transform:scale(.97)}.b.r{background:#f59e0b;border-color:#f59e0b;color:#0b1020}.b.stop{background:#ef4444;border-color:#ef4444;color:#fff;animation:lpl 1s ease-in-out infinite}@keyframes lpl{50%{filter:brightness(1.35)}}.b.u{background:#dc2626;border-color:#dc2626;color:#fff}.b.m2{background:#6366f1;border-color:#6366f1;color:#fff}</style>`;\n return `${css}<div class=\"w\">${ONLY?'':`<div class=\"hd\"><b>📍 Où est tout le monde ?</b><span>Position en direct des smartphones — « Localiser » demande une position fraîche au téléphone</span></div>`}<div class=\"g\">${tiles}</div></div>`;\n})(this,hass,states,\"sandrine\"); ]]]"
-                  }
-                },
-                {
-                  "type": "map",
-                  "entities": [
-                    {
-                      "entity": "person.sandrine"
-                    }
-                  ],
-                  "hours_to_show": 12,
-                  "default_zoom": 16,
-                  "theme_mode": "auto",
-                  "aspect_ratio": "1:1"
-                },
-                {
-                  "type": "custom:loc-itin-card",
-                  "persons": [
-                    {
-                      "id": "person.sandrine",
-                      "n": "Sandrine",
-                      "c": "#f472b6"
-                    }
-                  ]
+                  "type": "custom:loc-hub-card",
+                  "version": "2.1.0",
+                  "date": "28/10/2026",
+                  "person": "sandrine"
                 }
               ]
             }
@@ -727,7 +151,7 @@
         {
           "title": "Greg",
           "path": "greg",
-          "icon": "mdi:face-man",
+          "icon": "mdi:account",
           "type": "panel",
           "visible": [
             {
@@ -746,12 +170,11 @@
               "user": "72011b7b659b4d9497908e4fbb4539ce"
             }
           ],
+          "subview": true,
+          "back_path": "/maison-localisation/famille",
           "cards": [
             {
               "type": "vertical-stack",
-              "card_mod": {
-                "style": ":host{display:block;max-width:980px;margin:10px auto 56px;padding:0 12px;box-sizing:border-box}"
-              },
               "cards": [
                 {
                   "type": "conditional",
@@ -789,111 +212,10 @@
                   "_mtk": 1
                 },
                 {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "custom_fields": {
-                    "x": "[[[ try{ if(!window.__locRefresh||Date.now()-window.__locRefresh>120000){ window.__locRefresh=Date.now(); hass.callService('script','turn_on',{entity_id:'script.localisation_actualiser'}); } }catch(e){} return ''; ]]]"
-                  },
-                  "styles": {
-                    "card": [
-                      "display:none"
-                    ]
-                  }
-                },
-                {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "triggers_update": [
-                    "person.sandrine",
-                    "person.greg",
-                    "person.matteo",
-                    "device_tracker.sandrine_smartphone",
-                    "device_tracker.gsm_greg",
-                    "device_tracker.iphone",
-                    "sensor.sandrine_smartphone_battery_level",
-                    "sensor.samsung_greg_battery_level",
-                    "input_boolean.loc_sonne_sandrine",
-                    "input_boolean.loc_sonne_greg",
-                    "input_boolean.loc_sonne_matteo"
-                  ],
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "hold_action": {
-                    "action": "none"
-                  },
-                  "styles": {
-                    "card": [
-                      {
-                        "background": "transparent"
-                      },
-                      {
-                        "box-shadow": "none"
-                      },
-                      {
-                        "border": "none"
-                      },
-                      {
-                        "padding": "4px 2px"
-                      },
-                      {
-                        "pointer-events": "auto"
-                      },
-                      {
-                        "cursor": "default"
-                      }
-                    ],
-                    "grid": [
-                      {
-                        "grid-template-areas": "\"x\""
-                      },
-                      {
-                        "grid-template-columns": "1fr"
-                      }
-                    ],
-                    "custom_fields": {
-                      "x": [
-                        {
-                          "justify-self": "stretch"
-                        },
-                        {
-                          "pointer-events": "auto"
-                        }
-                      ]
-                    }
-                  },
-                  "custom_fields": {
-                    "x": "[[[ return (function(card,hass,states,ONLY){\n const P=[['person.sandrine','Sandrine','#f472b6','mobile_app_sandrine_smartphone','sensor.sandrine_smartphone_battery_level','sensor.sandrine_smartphone_battery_state','device_tracker.sandrine_smartphone','sandrine'],\n  ['person.greg','Greg','#38bdf8','mobile_app_samsung_greg','sensor.samsung_greg_battery_level','sensor.samsung_greg_battery_state','device_tracker.gsm_greg','greg'],\n  ['person.matteo','Matteo','#4ade80','mobile_app_iphone','','','device_tracker.iphone','matteo']].filter(p=>!ONLY||p[7]===ONLY);\n window.__loc=window.__loc7=window.__loc7||{ring:(k,b)=>{const hs=document.querySelector('home-assistant').hass;const L=window.__loc7;L.arm=L.arm||{};const f='input_boolean.loc_sonne_'+k;if((hs.states[f]||{}).state==='on'){hs.callService('input_boolean','turn_off',{entity_id:f});b.textContent='⏳ Arrêt…';return;}hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});b.textContent='🔔 Ça sonne…';},alert:(k,m,b)=>{const hs=document.querySelector('home-assistant').hass;const n=String((hs.user||{}).name||'').toLowerCase();const app=n.includes('sandrine')?'Sandrine':((n.includes('greg')||n.includes('admin'))?'Gregory':'Quelqu’un de la famille');hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k,mode:m,appelant:app}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});const t0=b.textContent;b.textContent='✅ Envoyé !';setTimeout(()=>{if(b.isConnected)b.textContent=t0;},4000);},ping:(s,b)=>{const hs=document.querySelector('home-assistant').hass;hs.callService('notify',s,{message:'request_location_update'});b.textContent='✅ Demandé !';setTimeout(()=>{b.textContent='📍 Localiser';},5000);},go:p=>{history.pushState(null,'',p);window.dispatchEvent(new CustomEvent('location-changed'));}};\n const H=(states['zone.home']||{}).attributes||{};\n const dist=(a,b,c,d)=>{const r=x=>x*Math.PI/180;const q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q));};\n const ago=t=>{const m=Math.round((Date.now()-new Date(t))/60000);return m<1?\"à l’instant\":m<60?'il y a '+m+' min':m<1440?'il y a '+Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):'il y a '+Math.floor(m/1440)+' j';};\n const tap=js=>`onclick=\"event.stopPropagation();${js}\" ontouchstart=\"event.stopPropagation()\" ontouchend=\"event.stopPropagation();event.preventDefault();${js}\"`;\n const tiles=P.map(([pe,name,col,svc,bat,batst,dt,key])=>{const s=states[pe];if(!s)return '';const a=s.attributes,tr=states[dt]||{},ta=tr.attributes||{};\n  const zone=s.state==='home'?'🏠 À la maison':s.state==='not_home'?'🚶 En déplacement':s.state==='unknown'?'❔ Position inconnue':'📍 '+((states['zone.'+s.state]||{attributes:{}}).attributes.friendly_name||s.state);\n  const d=(a.latitude&&H.latitude)?dist(H.latitude,H.longitude,a.latitude,a.longitude):null;\n  const dtxt=(d==null||s.state==='home')?'Pile à la maison':(d<1?Math.round(d*1000)+' m':String(d.toFixed(d<10?1:0)).replace('.',',')+' km')+' de la maison';\n  const bv=bat&&states[bat]?states[bat].state:ta.battery_level;const bs=batst&&states[batst]?states[batst].state:(ta.battery_state||'');const chg=/charg|full/i.test(bs)&&!/dis/i.test(bs);\n  const chips=[(bv!=null&&bv!==''&&!isNaN(bv))?`<span class=\"c ${+bv<20&&!chg?'low':''}\">${chg?'⚡':(+bv<20?'🪫':'🔋')} ${Math.round(bv)} %</span>`:'',a.gps_accuracy?`<span class=\"c\">🎯 ± ${Math.round(a.gps_accuracy)} m</span>`:'',`<span class=\"c\">🕒 ${ago(tr.last_updated||s.last_updated)}</span>`].join('');\n  const maps=a.latitude?`https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`:'';\n  const pic=a.entity_picture?`<img src=\"${a.entity_picture}\">`:`<span>${name[0]}</span>`;\n  return `<div class=\"t\" style=\"--pc:${col}\"><div class=\"top\"><div class=\"av\">${pic}<i class=\"${s.state==='home'?'h':'o'}\"></i></div><div><div class=\"n\">${name}</div><div class=\"z\">${zone}</div><div class=\"d\">${dtxt}</div></div></div><div class=\"cs\">${chips}</div><div class=\"bt\"><button class=\"b p\" ${tap(`__loc.ping('${svc}',this)`)}>📍 Localiser</button>${(states['input_boolean.loc_sonne_'+key]||{}).state==='on'?`<button class=\"b stop\" ${tap(`__loc.ring('${key}',this)`)}>⏹️ Stopper la sonnerie</button>`:`<button class=\"b r\" ${tap(`__loc.ring('${key}',this)`)}>🔔 Faire sonner</button>`}<button class=\"b u\" ${tap(`__loc.alert('${key}','urgence',this)`)}>🚨 Appel urgent</button><button class=\"b m2\" ${tap(`__loc.alert('${key}','rappel',this)`)}>📵 Appel manqué</button>${ONLY?'':`<button class=\"b\" ${tap(`__loc.go('/maison-localisation/${key}')`)}>🗺️ Suivre</button>`}${maps?`<a class=\"b\" href=\"${maps}\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🧭 Google Maps</a>`:''}${key==='matteo'?'<a class=\"b\" href=\"https://www.icloud.com/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🍏 Localiser l’iPhone</a>':'<a class=\"b\" href=\"https://www.google.com/android/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🤖 Localiser l’appareil</a>'}</div></div>`;}).join('');\n const css=`<style>.w{font-family:inherit;color:var(--primary-text-color);text-align:left}.hd{margin:4px 2px 14px}.hd b{display:block;font-size:clamp(22px,5vw,30px);font-weight:800}.hd span{font-size:13.5px;opacity:.7}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.t{padding:14px;border-radius:20px;background:var(--ha-card-background,var(--card-background-color));border:1px solid rgba(127,127,127,.2);border-top:4px solid var(--pc);box-shadow:var(--ha-card-box-shadow,0 4px 14px rgba(0,0,0,.18))}.top{display:flex;gap:12px;align-items:center}.av{position:relative;flex:0 0 56px;height:56px;border-radius:50%;border:3px solid var(--pc);display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--pc) 25%,transparent);font-size:24px;font-weight:800}.av img{width:100%;height:100%;border-radius:50%;object-fit:cover}.av i{position:absolute;right:-2px;bottom:-2px;width:15px;height:15px;border-radius:50%;border:2px solid var(--card-background-color,#222)}.av i.h{background:#22c55e}.av i.o{background:#f59e0b}.n{font-size:18px;font-weight:800}.z{font-size:14.5px;font-weight:600;margin-top:2px}.d{font-size:12.5px;opacity:.7;margin-top:1px}.cs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.c{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(127,127,127,.14)}.c.low{background:rgba(239,68,68,.2);color:#ef4444}.bt{display:flex;gap:8px;flex-wrap:wrap}.b{flex:1 1 auto;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:rgba(127,127,127,.1);color:var(--primary-text-color);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}.b.p{background:var(--pc);border-color:var(--pc);color:#0b1020}.b:active{transform:scale(.97)}.b.r{background:#f59e0b;border-color:#f59e0b;color:#0b1020}.b.stop{background:#ef4444;border-color:#ef4444;color:#fff;animation:lpl 1s ease-in-out infinite}@keyframes lpl{50%{filter:brightness(1.35)}}.b.u{background:#dc2626;border-color:#dc2626;color:#fff}.b.m2{background:#6366f1;border-color:#6366f1;color:#fff}</style>`;\n return `${css}<div class=\"w\">${ONLY?'':`<div class=\"hd\"><b>📍 Où est tout le monde ?</b><span>Position en direct des smartphones — « Localiser » demande une position fraîche au téléphone</span></div>`}<div class=\"g\">${tiles}</div></div>`;\n})(this,hass,states,\"greg\"); ]]]"
-                  }
-                },
-                {
-                  "type": "map",
-                  "entities": [
-                    {
-                      "entity": "person.greg"
-                    }
-                  ],
-                  "hours_to_show": 12,
-                  "default_zoom": 16,
-                  "theme_mode": "auto",
-                  "aspect_ratio": "1:1"
-                },
-                {
-                  "type": "custom:loc-itin-card",
-                  "persons": [
-                    {
-                      "id": "person.greg",
-                      "n": "Greg",
-                      "c": "#38bdf8"
-                    }
-                  ]
+                  "type": "custom:loc-hub-card",
+                  "version": "2.1.0",
+                  "date": "28/10/2026",
+                  "person": "greg"
                 }
               ]
             }
@@ -902,7 +224,7 @@
         {
           "title": "Matteo",
           "path": "matteo",
-          "icon": "mdi:human-child",
+          "icon": "mdi:account",
           "type": "panel",
           "visible": [
             {
@@ -921,12 +243,11 @@
               "user": "72011b7b659b4d9497908e4fbb4539ce"
             }
           ],
+          "subview": true,
+          "back_path": "/maison-localisation/famille",
           "cards": [
             {
               "type": "vertical-stack",
-              "card_mod": {
-                "style": ":host{display:block;max-width:980px;margin:10px auto 56px;padding:0 12px;box-sizing:border-box}"
-              },
               "cards": [
                 {
                   "type": "conditional",
@@ -964,111 +285,10 @@
                   "_mtk": 1
                 },
                 {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "custom_fields": {
-                    "x": "[[[ try{ if(!window.__locRefresh||Date.now()-window.__locRefresh>120000){ window.__locRefresh=Date.now(); hass.callService('script','turn_on',{entity_id:'script.localisation_actualiser'}); } }catch(e){} return ''; ]]]"
-                  },
-                  "styles": {
-                    "card": [
-                      "display:none"
-                    ]
-                  }
-                },
-                {
-                  "type": "custom:button-card",
-                  "show_name": false,
-                  "show_icon": false,
-                  "show_state": false,
-                  "triggers_update": [
-                    "person.sandrine",
-                    "person.greg",
-                    "person.matteo",
-                    "device_tracker.sandrine_smartphone",
-                    "device_tracker.gsm_greg",
-                    "device_tracker.iphone",
-                    "sensor.sandrine_smartphone_battery_level",
-                    "sensor.samsung_greg_battery_level",
-                    "input_boolean.loc_sonne_sandrine",
-                    "input_boolean.loc_sonne_greg",
-                    "input_boolean.loc_sonne_matteo"
-                  ],
-                  "tap_action": {
-                    "action": "none"
-                  },
-                  "hold_action": {
-                    "action": "none"
-                  },
-                  "styles": {
-                    "card": [
-                      {
-                        "background": "transparent"
-                      },
-                      {
-                        "box-shadow": "none"
-                      },
-                      {
-                        "border": "none"
-                      },
-                      {
-                        "padding": "4px 2px"
-                      },
-                      {
-                        "pointer-events": "auto"
-                      },
-                      {
-                        "cursor": "default"
-                      }
-                    ],
-                    "grid": [
-                      {
-                        "grid-template-areas": "\"x\""
-                      },
-                      {
-                        "grid-template-columns": "1fr"
-                      }
-                    ],
-                    "custom_fields": {
-                      "x": [
-                        {
-                          "justify-self": "stretch"
-                        },
-                        {
-                          "pointer-events": "auto"
-                        }
-                      ]
-                    }
-                  },
-                  "custom_fields": {
-                    "x": "[[[ return (function(card,hass,states,ONLY){\n const P=[['person.sandrine','Sandrine','#f472b6','mobile_app_sandrine_smartphone','sensor.sandrine_smartphone_battery_level','sensor.sandrine_smartphone_battery_state','device_tracker.sandrine_smartphone','sandrine'],\n  ['person.greg','Greg','#38bdf8','mobile_app_samsung_greg','sensor.samsung_greg_battery_level','sensor.samsung_greg_battery_state','device_tracker.gsm_greg','greg'],\n  ['person.matteo','Matteo','#4ade80','mobile_app_iphone','','','device_tracker.iphone','matteo']].filter(p=>!ONLY||p[7]===ONLY);\n window.__loc=window.__loc7=window.__loc7||{ring:(k,b)=>{const hs=document.querySelector('home-assistant').hass;const L=window.__loc7;L.arm=L.arm||{};const f='input_boolean.loc_sonne_'+k;if((hs.states[f]||{}).state==='on'){hs.callService('input_boolean','turn_off',{entity_id:f});b.textContent='⏳ Arrêt…';return;}hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});b.textContent='🔔 Ça sonne…';},alert:(k,m,b)=>{const hs=document.querySelector('home-assistant').hass;const n=String((hs.user||{}).name||'').toLowerCase();const app=n.includes('sandrine')?'Sandrine':((n.includes('greg')||n.includes('admin'))?'Gregory':'Quelqu’un de la famille');hs.callService('script','turn_on',{entity_id:'script.localisation_sonner',variables:{qui:k,mode:m,appelant:app}}).catch(e=>{b.textContent='❌ '+(e.message||'erreur');});const t0=b.textContent;b.textContent='✅ Envoyé !';setTimeout(()=>{if(b.isConnected)b.textContent=t0;},4000);},ping:(s,b)=>{const hs=document.querySelector('home-assistant').hass;hs.callService('notify',s,{message:'request_location_update'});b.textContent='✅ Demandé !';setTimeout(()=>{b.textContent='📍 Localiser';},5000);},go:p=>{history.pushState(null,'',p);window.dispatchEvent(new CustomEvent('location-changed'));}};\n const H=(states['zone.home']||{}).attributes||{};\n const dist=(a,b,c,d)=>{const r=x=>x*Math.PI/180;const q=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(q));};\n const ago=t=>{const m=Math.round((Date.now()-new Date(t))/60000);return m<1?\"à l’instant\":m<60?'il y a '+m+' min':m<1440?'il y a '+Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):'il y a '+Math.floor(m/1440)+' j';};\n const tap=js=>`onclick=\"event.stopPropagation();${js}\" ontouchstart=\"event.stopPropagation()\" ontouchend=\"event.stopPropagation();event.preventDefault();${js}\"`;\n const tiles=P.map(([pe,name,col,svc,bat,batst,dt,key])=>{const s=states[pe];if(!s)return '';const a=s.attributes,tr=states[dt]||{},ta=tr.attributes||{};\n  const zone=s.state==='home'?'🏠 À la maison':s.state==='not_home'?'🚶 En déplacement':s.state==='unknown'?'❔ Position inconnue':'📍 '+((states['zone.'+s.state]||{attributes:{}}).attributes.friendly_name||s.state);\n  const d=(a.latitude&&H.latitude)?dist(H.latitude,H.longitude,a.latitude,a.longitude):null;\n  const dtxt=(d==null||s.state==='home')?'Pile à la maison':(d<1?Math.round(d*1000)+' m':String(d.toFixed(d<10?1:0)).replace('.',',')+' km')+' de la maison';\n  const bv=bat&&states[bat]?states[bat].state:ta.battery_level;const bs=batst&&states[batst]?states[batst].state:(ta.battery_state||'');const chg=/charg|full/i.test(bs)&&!/dis/i.test(bs);\n  const chips=[(bv!=null&&bv!==''&&!isNaN(bv))?`<span class=\"c ${+bv<20&&!chg?'low':''}\">${chg?'⚡':(+bv<20?'🪫':'🔋')} ${Math.round(bv)} %</span>`:'',a.gps_accuracy?`<span class=\"c\">🎯 ± ${Math.round(a.gps_accuracy)} m</span>`:'',`<span class=\"c\">🕒 ${ago(tr.last_updated||s.last_updated)}</span>`].join('');\n  const maps=a.latitude?`https://www.google.com/maps/search/?api=1&query=${a.latitude},${a.longitude}`:'';\n  const pic=a.entity_picture?`<img src=\"${a.entity_picture}\">`:`<span>${name[0]}</span>`;\n  return `<div class=\"t\" style=\"--pc:${col}\"><div class=\"top\"><div class=\"av\">${pic}<i class=\"${s.state==='home'?'h':'o'}\"></i></div><div><div class=\"n\">${name}</div><div class=\"z\">${zone}</div><div class=\"d\">${dtxt}</div></div></div><div class=\"cs\">${chips}</div><div class=\"bt\"><button class=\"b p\" ${tap(`__loc.ping('${svc}',this)`)}>📍 Localiser</button>${(states['input_boolean.loc_sonne_'+key]||{}).state==='on'?`<button class=\"b stop\" ${tap(`__loc.ring('${key}',this)`)}>⏹️ Stopper la sonnerie</button>`:`<button class=\"b r\" ${tap(`__loc.ring('${key}',this)`)}>🔔 Faire sonner</button>`}<button class=\"b u\" ${tap(`__loc.alert('${key}','urgence',this)`)}>🚨 Appel urgent</button><button class=\"b m2\" ${tap(`__loc.alert('${key}','rappel',this)`)}>📵 Appel manqué</button>${ONLY?'':`<button class=\"b\" ${tap(`__loc.go('/maison-localisation/${key}')`)}>🗺️ Suivre</button>`}${maps?`<a class=\"b\" href=\"${maps}\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🧭 Google Maps</a>`:''}${key==='matteo'?'<a class=\"b\" href=\"https://www.icloud.com/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🍏 Localiser l’iPhone</a>':'<a class=\"b\" href=\"https://www.google.com/android/find\" target=\"_blank\" rel=\"noopener\" ontouchstart=\"event.stopPropagation()\" onclick=\"event.stopPropagation()\">🤖 Localiser l’appareil</a>'}</div></div>`;}).join('');\n const css=`<style>.w{font-family:inherit;color:var(--primary-text-color);text-align:left}.hd{margin:4px 2px 14px}.hd b{display:block;font-size:clamp(22px,5vw,30px);font-weight:800}.hd span{font-size:13.5px;opacity:.7}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.t{padding:14px;border-radius:20px;background:var(--ha-card-background,var(--card-background-color));border:1px solid rgba(127,127,127,.2);border-top:4px solid var(--pc);box-shadow:var(--ha-card-box-shadow,0 4px 14px rgba(0,0,0,.18))}.top{display:flex;gap:12px;align-items:center}.av{position:relative;flex:0 0 56px;height:56px;border-radius:50%;border:3px solid var(--pc);display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--pc) 25%,transparent);font-size:24px;font-weight:800}.av img{width:100%;height:100%;border-radius:50%;object-fit:cover}.av i{position:absolute;right:-2px;bottom:-2px;width:15px;height:15px;border-radius:50%;border:2px solid var(--card-background-color,#222)}.av i.h{background:#22c55e}.av i.o{background:#f59e0b}.n{font-size:18px;font-weight:800}.z{font-size:14.5px;font-weight:600;margin-top:2px}.d{font-size:12.5px;opacity:.7;margin-top:1px}.cs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.c{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(127,127,127,.14)}.c.low{background:rgba(239,68,68,.2);color:#ef4444}.bt{display:flex;gap:8px;flex-wrap:wrap}.b{flex:1 1 auto;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:rgba(127,127,127,.1);color:var(--primary-text-color);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}.b.p{background:var(--pc);border-color:var(--pc);color:#0b1020}.b:active{transform:scale(.97)}.b.r{background:#f59e0b;border-color:#f59e0b;color:#0b1020}.b.stop{background:#ef4444;border-color:#ef4444;color:#fff;animation:lpl 1s ease-in-out infinite}@keyframes lpl{50%{filter:brightness(1.35)}}.b.u{background:#dc2626;border-color:#dc2626;color:#fff}.b.m2{background:#6366f1;border-color:#6366f1;color:#fff}</style>`;\n return `${css}<div class=\"w\">${ONLY?'':`<div class=\"hd\"><b>📍 Où est tout le monde ?</b><span>Position en direct des smartphones — « Localiser » demande une position fraîche au téléphone</span></div>`}<div class=\"g\">${tiles}</div></div>`;\n})(this,hass,states,\"matteo\"); ]]]"
-                  }
-                },
-                {
-                  "type": "map",
-                  "entities": [
-                    {
-                      "entity": "person.matteo"
-                    }
-                  ],
-                  "hours_to_show": 12,
-                  "default_zoom": 16,
-                  "theme_mode": "auto",
-                  "aspect_ratio": "1:1"
-                },
-                {
-                  "type": "custom:loc-itin-card",
-                  "persons": [
-                    {
-                      "id": "person.matteo",
-                      "n": "Matteo",
-                      "c": "#4ade80"
-                    }
-                  ]
+                  "type": "custom:loc-hub-card",
+                  "version": "2.1.0",
+                  "date": "28/10/2026",
+                  "person": "matteo"
                 }
               ]
             }
