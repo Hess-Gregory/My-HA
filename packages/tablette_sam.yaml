@@ -112,10 +112,7 @@ automation:
       - trigger: state
         entity_id: sensor.bticino_intercom_greg_et_sandrine_last_event_type
         to: incoming_call
-      - trigger: state
-        entity_id: sensor.bticino_intercom_greg_et_sandrine_calls
         not_from: [unavailable, unknown]
-        not_to: [unavailable, unknown]
     actions:
       - parallel:
           - sequence:
