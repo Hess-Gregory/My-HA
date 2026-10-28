@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.1 | 25/10/2026 10:57 | declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D
+# [AUTO-VERSION] v0.2.2 | 28/10/2026 09:27 | plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)
 - id: "1786571826109"
   alias: Speedtest 30min
   description: ""

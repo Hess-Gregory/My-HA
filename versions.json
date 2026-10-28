@@ -70,14 +70,14 @@
     "version": "0.11.4"
   },
   ".storage/lovelace.ma_maison": {
-    "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
-    "last_update": "2026-10-27T08:08:32.343209+01:00",
-    "version": "0.18.2"
+    "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
+    "last_update": "2026-10-28T09:27:31.740871+01:00",
+    "version": "0.18.3"
   },
   ".storage/lovelace.maison_accueil": {
-    "last_change": "raccrocher le flux BTicino a la fermeture du popup (evite bridge occupe)",
-    "last_update": "2026-10-25T11:15:40.539622+01:00",
-    "version": "2.17.1"
+    "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
+    "last_update": "2026-10-28T09:27:31.740871+01:00",
+    "version": "2.17.2"
   },
   ".storage/lovelace.maison_courses": {
     "last_change": "la redirection Matteo ne se declenche plus en mode edition",
@@ -140,9 +140,9 @@
     "version": "0.4.2"
   },
   "automations.yaml": {
-    "last_change": "declenchement sur last_event_type / calls (event et binary_sensor platine ne bougent plus) : sonnerie tablette, popup browser_mod et popup plan 3D",
-    "last_update": "2026-10-25T10:57:06.727303+01:00",
-    "version": "0.2.1"
+    "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
+    "last_update": "2026-10-28T09:27:31.740871+01:00",
+    "version": "0.2.2"
   },
   "configuration.yaml": {
     "last_change": "four bloque si alarme armee sauf code, bannissement IP apres 5 echecs",
@@ -320,9 +320,9 @@
     "version": "0.5.1"
   },
   "packages/tablette_sam.yaml": {
-    "last_change": "relance auto de Fully Kiosk + annonce vocale de secours si Fully injoignable",
-    "last_update": "2026-10-25T12:14:08.214787+01:00",
-    "version": "0.10.0"
+    "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
+    "last_update": "2026-10-28T09:27:31.740871+01:00",
+    "version": "0.10.1"
   },
   "packages/taches_counters.yaml": {
     "last_change": "initialisation du versionning par fichier",
@@ -405,9 +405,9 @@
     "version": "0.1.3"
   },
   "www/plan3d/floorplan-3d-card.js": {
-    "last_change": "raccrocher le flux BTicino a la fermeture du popup (evite bridge occupe)",
-    "last_update": "2026-10-25T11:15:40.539622+01:00",
-    "version": "0.8.1"
+    "last_change": "plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)",
+    "last_update": "2026-10-28T09:27:31.740871+01:00",
+    "version": "0.8.2"
   },
   "www/plan3d/home-hub-card.js": {
     "last_change": "liens /1-mon-confort -> /mon-confort (Accueil, ancien accueil) ; suppression dashboard 1-mon-confort",

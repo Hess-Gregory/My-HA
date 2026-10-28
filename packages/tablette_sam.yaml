@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.10.0 | 25/10/2026 12:14 | relance auto de Fully Kiosk + annonce vocale de secours si Fully injoignable
+# [AUTO-VERSION] v0.10.1 | 28/10/2026 09:27 | plus de fausses sonneries (compteur d appels ignore, incoming_call reel uniquement)
 # Tablette Sam (Fully Kiosk + Fotoo)
 automation:
   - id: tablette_sam_relance_fully
