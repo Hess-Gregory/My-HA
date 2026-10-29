@@ -1,48 +1,53 @@
-# [AUTO-VERSION] v0.1.0 | 29/10/2026 22:14 | vannes du living régulées sur la sonde Zigbee de la pièce (décalage dynamique)
 # =====================================================================
-#  Chauffage – pièce de vie régulée sur la sonde Zigbee (Sonoff)
-#  v1.0.0 – 29/10/2026 – doc : chauffage_sonde_zigbee.md
+#  Chauffage – toutes les pièces régulées sur leur sonde Zigbee (Sonoff)
+#  v1.1.0 – 29/10/2026 – doc : chauffage_sonde_zigbee.md
 #  Les vannes Bosch régulent sur leur propre capteur (bas, près des
 #  fenêtres). On ajuste en continu leur « décalage » pour que la
 #  température qu'elles voient = celle de la sonde Zigbee de la pièce.
 # =====================================================================
 automation:
   - id: chauffage_living_sonde_zigbee
-    alias: "Chauffage - Pièce de vie régulée sur la sonde Zigbee"
+    alias: "Chauffage - Vannes régulées sur la sonde Zigbee de chaque pièce"
     mode: single
     trigger:
       - trigger: time_pattern
         minutes: "/5"
       - trigger: state
-        entity_id: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature
-    variables:
-      sonde: "{{ states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature') }}"
-    condition:
-      - condition: template
-        value_template: >
-          {% set s = states.sensor.temp_piece_de_vie_sonoff_a480146b56_temperature %}
-          {{ sonde | is_number and s is not none and (now() - s.last_reported).total_seconds() < 10800 }}
+        entity_id:
+          - sensor.temp_piece_de_vie_sonoff_a480146b56_temperature
+          - sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature
+          - sensor.temp_chambre_enfants_sonoff_a480146b58_temperature
+          - sensor.temp_couloir_sonoff_a480146b60_temperature
+          - sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature
     action:
       - repeat:
-          for_each: [salon, cuisine, salle_a_manger]
+          for_each:
+            - {o: number.piece_de_vie_vanne_living_salon_decalage, t: sensor.vanne_living_salon_temperature, s: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature}
+            - {o: number.piece_de_vie_vanne_living_cuisine_decalage, t: sensor.vanne_living_cuisine_temperature, s: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature}
+            - {o: number.piece_de_vie_vanne_living_salle_a_manger_decalage, t: sensor.vanne_living_salle_a_manger_temperature, s: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature}
+            - {o: number.chambre_vanne_chambre_adulte_decalage, t: sensor.vanne_chambre_adulte_temperature, s: sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature}
+            - {o: number.chambre_enfant_vanne_chambre_enfants_decalage, t: sensor.vanne_chambre_enfants_temperature, s: sensor.temp_chambre_enfants_sonoff_a480146b58_temperature}
+            - {o: number.hall_dentree_vanne_couloir_decalage, t: sensor.vanne_couloir_temperature, s: sensor.temp_couloir_sonoff_a480146b60_temperature}
+            - {o: number.salle_de_bain_vanne_salle_de_bain_decalage, t: sensor.vanne_salle_de_bain_temperature, s: sensor.temp_salle_de_bain_sonoff_a480146b5d_temperature}
           sequence:
             - variables:
-                off_e: "number.piece_de_vie_vanne_living_{{ repeat.item }}_decalage"
-                t_e: "sensor.vanne_living_{{ repeat.item }}_temperature"
-                decal: "{{ states(off_e) | float(0) }}"
-                brut: "{{ states(t_e) | float(-99) - decal }}"
-                cible: "{{ ([-5, [5, ((sonde | float - brut) * 10) | round(0) / 10] | min] | max) }}"
+                sonde: "{{ states(repeat.item.s) }}"
+                decal: "{{ states(repeat.item.o) | float(0) }}"
+                brut: "{{ states(repeat.item.t) | float(-99) - decal }}"
+                cible: "{{ ([-5, [5, ((sonde | float(0) - brut) * 10) | round(0) / 10] | min] | max) }}"
             - if:
                 - condition: template
                   value_template: >
-                    {% set so = states[off_e] %}{% set st = states[t_e] %}
-                    {{ brut > -50 and (cible - decal) | abs >= 0.3
+                    {% set so = states[repeat.item.o] %}{% set st = states[repeat.item.t] %}{% set ss = states[repeat.item.s] %}
+                    {{ sonde | is_number and ss is not none and (now() - ss.last_reported).total_seconds() < 10800
+                       and so is not none and st is not none and brut > -50
+                       and (cible - decal) | abs >= 0.3
                        and (now() - so.last_changed).total_seconds() > 900
                        and st.last_updated > so.last_changed }}
               then:
                 - action: number.set_value
                   continue_on_error: true
                   target:
-                    entity_id: "{{ off_e }}"
+                    entity_id: "{{ repeat.item.o }}"
                   data:
                     value: "{{ cible }}"
