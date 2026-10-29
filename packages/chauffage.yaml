@@ -331,9 +331,9 @@ template:
           {% if states('input_select.mode_piece_de_vie') == 'Manuel' %}
             {{ states('input_number.temp_manuel_piece_de_vie') }}
           {% elif states('input_select.mode_piece_de_vie') == 'Boost' %}
-            {{ (states('input_number.temp_boost_cible') | float(23) + 0.5) | round(1) }}
+            22.5
           {% else %}
-            {% set consignes = {'Confort': 22, 'Éco': 18, 'Nuit': 17, 'Hors-gel': 10, 'Été': none} %}
+            {% set consignes = {'Confort': 21, 'Éco': 19.5, 'Nuit': 17, 'Hors-gel': 10, 'Été': none} %}
             {% set c = consignes.get(states('input_select.mode_piece_de_vie')) %}
             {{ c if c is not none else 'off' }}
           {% endif %}

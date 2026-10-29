@@ -181,3 +181,4 @@ Correction : intégration Workday ajoutée (Belgique, lundi→vendredi, exclusio
 - 28/10/2026 : « Retour imminent » ne se déclenche plus si la personne est déjà à la maison.
 
 - 29/10/2026 : surchauffe de la pièce de vie (23 °C en Éco). Causes : départ chaudière fixe à 75–85 °C (courbe météo jamais activée) et vannes du living qui mesurent environ 1 °C de moins que la pièce (placées bas, près des fenêtres). Correctifs : `input_boolean.chauffage_courbe_active` activé (départ ≈ 37 °C par 9 °C dehors) et décalage de +1,0 °C sur les 3 vannes du living (`number.piece_de_vie_vanne_living_*_decalage`).
+- 29/10/2026 : nouvelles consignes de la pièce de vie : Boost 22,5 · Confort 21 · Éco 19,5 · Nuit 17 (Hors-gel 10 inchangé). Le Boost de la pièce de vie est fixe et ne suit plus `temp_boost_cible`.
