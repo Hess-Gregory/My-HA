@@ -28,7 +28,7 @@ La liste des 7 options est déclarée **une seule fois** via une ancre YAML (`&m
 - **`chauffage_courbe_active`** : ⚠️ actuellement **en pause** dans la logique (voir section courbe de chauffe plus bas) suite à un constat matériel sur la chaudière — le commentaire du fichier explique pourquoi.
 - Le **couloir** n'a volontairement AUCUN planning horaire : reste toujours en `Éco`, sauf Hors-gel en vacances. Changez-le uniquement à la main sur le dashboard si besoin.
 - **Chambre enfants, chambre adulte et salle de bain** ne sont PLUS chauffées automatiquement en journée quand inoccupées : elles restent en Éco/Nuit sauf activation manuelle (sieste, douche — boutons section 10). La prochaine transition programmée reprend toujours la main normalement.
-- La **chambre adulte** est pré-chauffée à 22h30 TOUS LES JOURS (semaine + week-end), pour ne jamais se coucher dans des draps froids.
+- La **chambre adulte** est pré-chauffée pour 23h00 TOUS LES JOURS (semaine + week-end), pour ne jamais se coucher dans des draps froids.
 
 ## 2. Consignes par pièce (section 2, template sensors)
 
@@ -70,12 +70,12 @@ Actif seulement si `routine_activee = on` ET `binary_sensor.workday_sensor = on`
 
 | Heure | Automatisation | Effet |
 |---|---|---|
-| 06:00 | Pré-chauffe parents + salon | Chambre adulte + pièce de vie → Confort |
+| 06:15 | Objectif parents + salon (préchauffage intelligent en amont) | Chambre adulte + pièce de vie → Confort |
 | 06:15 | Chambre enfant | Chambre enfants → Confort |
 | 07:05 | Tout le monde parti | Chambre adulte, enfants, pièce de vie, SdB → Éco (sauf si `presence_exceptionnelle`) |
 | — | Présence exceptionnelle (déclenché par le bouton) | Toutes les pièces → Confort immédiatement |
 | 16:40 | Retour Sandrine + enfant | Pièce de vie + chambre enfants → Confort |
-| 22:30 | Pré-chauffe chambre adulte | Chambre adulte → Confort (tous les jours, semaine ET week-end) |
+| 23:00 | Objectif chambre adulte (préchauffage intelligent en amont) | Chambre adulte → Confort (tous les jours, semaine ET week-end) |
 
 ## 6. Planning automatique — tous les jours (section 5)
 
@@ -182,3 +182,5 @@ Correction : intégration Workday ajoutée (Belgique, lundi→vendredi, exclusio
 
 - 29/10/2026 : surchauffe de la pièce de vie (23 °C en Éco). Causes : départ chaudière fixe à 75–85 °C (courbe météo jamais activée) et vannes du living qui mesurent environ 1 °C de moins que la pièce (placées bas, près des fenêtres). Correctifs : `input_boolean.chauffage_courbe_active` activé (départ ≈ 37 °C par 9 °C dehors) et décalage de +1,0 °C sur les 3 vannes du living (`number.piece_de_vie_vanne_living_*_decalage`).
 - 29/10/2026 : nouvelles consignes de la pièce de vie : Boost 22,5 · Confort 21 · Éco 19,5 · Nuit 17 (Hors-gel 10 inchangé). Le Boost de la pièce de vie est fixe et ne suit plus `temp_boost_cible`.
+- 29/10/2026 : préchauffage intelligent (voir `chauffage_prechauffage.md`). Les heures du planning deviennent des heures où la pièce doit être prête : chambre adulte et pièce de vie 06:00 → 06:15, chambre adulte le soir 22:30 → 23:00.
+- 29/10/2026 : la courbe météo est activée, avec une relance selon la demande : si une pièce est sous sa consigne, l'eau de la chaudière monte de 12 °C par °C manquant (au-delà de 0,3 °C), +25 °C au maximum, plafond 70 °C. Exemple : 9 °C dehors → 37 °C ; une pièce à 18 °C pour une consigne de 22 → 62 °C jusqu'à ce qu'elle rattrape.

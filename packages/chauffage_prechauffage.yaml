@@ -1,0 +1,163 @@
+# =====================================================================
+#  Chauffage – préchauffage intelligent (v1.0.0 – 29/10/2026)
+#  Doc : chauffage_prechauffage.md
+#  Chaque pièce doit ÊTRE à sa température Confort à l'heure prévue.
+#  HA mesure la vitesse de chauffe de chaque pièce (°C/heure, sonde
+#  Zigbee) et démarre le Confort juste assez tôt.
+# =====================================================================
+input_boolean:
+  chauffage_prechauffage_actif:
+    name: "Préchauffage intelligent"
+    icon: mdi:clock-fast
+
+input_number:
+  chauffe_vitesse_piece_de_vie:
+    name: "Vitesse de chauffe pièce de vie"
+    min: 0.2
+    max: 5
+    step: 0.01
+    unit_of_measurement: "°C/h"
+    icon: mdi:speedometer
+    mode: box
+  chauffe_vitesse_chambre_adulte:
+    name: "Vitesse de chauffe chambre adulte"
+    min: 0.2
+    max: 5
+    step: 0.01
+    unit_of_measurement: "°C/h"
+    icon: mdi:speedometer
+    mode: box
+  chauffe_vitesse_chambre_enfants:
+    name: "Vitesse de chauffe chambre enfants"
+    min: 0.2
+    max: 5
+    step: 0.01
+    unit_of_measurement: "°C/h"
+    icon: mdi:speedometer
+    mode: box
+
+automation:
+  # ---------------------------------------------------------------
+  # 1. Démarrage anticipé : toutes les 5 min, pour chaque objectif
+  #    du jour (pièce prête en Confort à l'heure X), calcule l'avance
+  #    nécessaire = écart à rattraper / vitesse mesurée (+10 min de marge,
+  #    max 3 h) et passe la pièce en Confort quand il est temps.
+  #    Les automatisations horaires de chauffage.yaml restent en place
+  #    à l'heure de l'objectif : elles servent de filet de sécurité.
+  # ---------------------------------------------------------------
+  - id: chauffage_prechauffage_demarrage
+    alias: "Chauffage - Préchauffage intelligent (démarrage anticipé)"
+    mode: single
+    trigger:
+      - trigger: time_pattern
+        minutes: "/5"
+    condition:
+      - condition: state
+        entity_id: input_boolean.chauffage_prechauffage_actif
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.routine_activee
+        state: "on"
+    action:
+      - variables:
+          ouvre: "{{ is_state('binary_sensor.workday_sensor', 'on') }}"
+          objectifs: >
+            {% set l = [] %}
+            {% if ouvre %}
+              {% set l = l + [
+                {'p': 'piece_de_vie', 's': 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature', 'h': '06:15', 'c': 21},
+                {'p': 'chambre_adulte', 's': 'sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature', 'h': '06:15', 'c': 19},
+                {'p': 'chambre_enfants', 's': 'sensor.temp_chambre_enfants_sonoff_a480146b58_temperature', 'h': '06:15', 'c': 20},
+                {'p': 'piece_de_vie', 's': 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature', 'h': '16:40', 'c': 21},
+                {'p': 'chambre_enfants', 's': 'sensor.temp_chambre_enfants_sonoff_a480146b58_temperature', 'h': '16:40', 'c': 20},
+              ] %}
+            {% else %}
+              {% set l = l + [
+                {'p': 'piece_de_vie', 's': 'sensor.temp_piece_de_vie_sonoff_a480146b56_temperature', 'h': '08:00', 'c': 21},
+              ] %}
+            {% endif %}
+            {% set l = l + [
+              {'p': 'chambre_adulte', 's': 'sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature', 'h': '23:00', 'c': 19},
+            ] %}
+            {{ l }}
+      - repeat:
+          for_each: "{{ objectifs }}"
+          sequence:
+            - variables:
+                sel: "input_select.mode_{{ repeat.item.p }}"
+                t_obj: "{{ today_at(repeat.item.h) }}"
+                temp: "{{ states(repeat.item.s) | float(none) }}"
+                vit: "{{ states('input_number.chauffe_vitesse_' ~ repeat.item.p) | float(0.8) }}"
+                ecart: "{{ (repeat.item.c - temp) if temp is not none else 0 }}"
+                avance: "{{ ([180, (ecart / vit * 60 + 10) | round(0)] | min) if ecart > 0.2 else 0 }}"
+            - if:
+                - condition: template
+                  value_template: >
+                    {{ avance > 0
+                       and now() >= t_obj - timedelta(minutes=avance | int)
+                       and now() < t_obj
+                       and states(sel) in ['Éco', 'Nuit', 'Hors-gel'] }}
+              then:
+                - action: input_select.select_option
+                  target:
+                    entity_id: "{{ sel }}"
+                  data:
+                    option: Confort
+                - action: logbook.log
+                  data:
+                    name: "Préchauffage"
+                    message: >
+                      {{ repeat.item.p | replace('_', ' ') }} : Confort démarré {{ avance }} min avant {{ repeat.item.h }}
+                      ({{ temp }} °C → {{ repeat.item.c }} °C à {{ vit }} °C/h)
+                    entity_id: "{{ sel }}"
+
+  # ---------------------------------------------------------------
+  # 2. Apprentissage : quand une pièce passe en Confort avec au moins
+  #    0,5 °C à rattraper, on chronomètre la montée jusqu'à l'objectif
+  #    (max 4 h) et on met à jour sa vitesse (moyenne glissante 60/40).
+  # ---------------------------------------------------------------
+  - id: chauffage_prechauffage_apprentissage
+    alias: "Chauffage - Préchauffage intelligent (apprentissage vitesse)"
+    mode: parallel
+    max: 5
+    trigger:
+      - trigger: state
+        entity_id: input_select.mode_piece_de_vie
+        to: Confort
+        variables: {p: piece_de_vie, s: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature, c: sensor.consigne_piece_de_vie}
+      - trigger: state
+        entity_id: input_select.mode_chambre_adulte
+        to: Confort
+        variables: {p: chambre_adulte, s: sensor.temp_chambre_adulte_sonoff_a480146b5b_temperature, c: sensor.consigne_chambre_adulte}
+      - trigger: state
+        entity_id: input_select.mode_chambre_enfants
+        to: Confort
+        variables: {p: chambre_enfants, s: sensor.temp_chambre_enfants_sonoff_a480146b58_temperature, c: sensor.consigne_chambre_enfants}
+    action:
+      - delay: "00:00:30"
+      - variables:
+          t0: "{{ now().timestamp() }}"
+          temp0: "{{ states(s) | float(none) }}"
+          cible: "{{ states(c) | float(none) }}"
+      - condition: template
+        value_template: "{{ temp0 is not none and cible is not none and cible - temp0 >= 0.5 }}"
+      - wait_template: "{{ states(s) | float(0) >= cible or not is_state('input_select.mode_' ~ p, 'Confort') }}"
+        timeout: "04:00:00"
+        continue_on_timeout: false
+      - condition: template
+        value_template: "{{ is_state('input_select.mode_' ~ p, 'Confort') and states(s) | float(0) >= cible }}"
+      - variables:
+          heures: "{{ (now().timestamp() - t0) / 3600 }}"
+          mesure: "{{ (states(s) | float - temp0) / ([heures, 0.1] | max) }}"
+          ancienne: "{{ states('input_number.chauffe_vitesse_' ~ p) | float(0.8) }}"
+          nouvelle: "{{ ([0.2, [5, (ancienne * 0.6 + mesure * 0.4)] | min] | max) | round(2) }}"
+      - action: input_number.set_value
+        target:
+          entity_id: "input_number.chauffe_vitesse_{{ p }}"
+        data:
+          value: "{{ nouvelle }}"
+      - action: logbook.log
+        data:
+          name: "Préchauffage"
+          message: "{{ p | replace('_', ' ') }} : +{{ (states(s) | float - temp0) | round(1) }} °C en {{ (heures * 60) | round(0) }} min → vitesse {{ ancienne }} → {{ nouvelle }} °C/h"
+          entity_id: "input_number.chauffe_vitesse_{{ p }}"

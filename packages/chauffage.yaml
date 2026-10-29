@@ -33,7 +33,7 @@
 #     avait un mode unique pour tout l'appart) car vos horaires réels font
 #     que les pièces ne sont pas toutes dans le même état en même temps
 #     (ex. 16h40 : salon/SdB/chambre enfant repassent en Confort, mais la
-#     chambre adulte reste en Éco jusqu'à 22h30 puisqu'elle n'est pas
+#     chambre adulte reste en Éco jusqu'à 23h00 puisqu'elle n'est pas
 #     utilisée avant le coucher).
 #   - input_boolean.routine_activee est l'interrupteur maître : coupe-le
 #     pendant les vacances ou en cas de maladie pour désactiver tout le
@@ -51,7 +51,7 @@
 #     (retour du soir, coucher...) reprend la main normalement, donc pas
 #     besoin de désactiver quoi que ce soit après une sieste ou une douche :
 #     au pire ça reste chaud jusqu'au prochain horaire programmé.
-#   - La chambre adulte est pré-chauffée à 22h30 TOUS LES JOURS (pas
+#   - La chambre adulte est pré-chauffée à 23h00 TOUS LES JOURS (pas
 #     seulement en semaine) pour ne jamais se coucher dans des draps froids.
 # ============================================================================
 
@@ -471,22 +471,22 @@ template:
             {% set events = [] %}
             {% if is_wd_today %}
               {% set events = events + [
-                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00'), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00'), 'mode': 'Éco'},
               ] %}
             {% endif %}
             {% set events = events + [
-              {'dt': today_at('22:30:00'), 'mode': 'Confort'},
+              {'dt': today_at('23:00:00'), 'mode': 'Confort'},
               {'dt': today_at('23:15:00'), 'mode': 'Nuit'},
             ] %}
             {% if is_wd_tomorrow %}
               {% set events = events + [
-                {'dt': today_at('06:00:00') + timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00') + timedelta(days=1), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00') + timedelta(days=1), 'mode': 'Éco'},
               ] %}
             {% endif %}
             {% set events = events + [
-              {'dt': today_at('22:30:00') + timedelta(days=1), 'mode': 'Confort'},
+              {'dt': today_at('23:00:00') + timedelta(days=1), 'mode': 'Confort'},
               {'dt': today_at('23:15:00') + timedelta(days=1), 'mode': 'Nuit'},
             ] %}
             {% set nxt = (events | selectattr('dt', 'gt', now()) | sort(attribute='dt') | list)[0] %}
@@ -543,7 +543,7 @@ template:
             {% set events = [] %}
             {% if is_wd_today %}
               {% set events = events + [
-                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00'), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00'), 'mode': 'Éco'},
                 {'dt': today_at('16:40:00'), 'mode': 'Confort'},
               ] %}
@@ -557,7 +557,7 @@ template:
             ] %}
             {% if is_wd_tomorrow %}
               {% set events = events + [
-                {'dt': today_at('06:00:00') + timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00') + timedelta(days=1), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00') + timedelta(days=1), 'mode': 'Éco'},
                 {'dt': today_at('16:40:00') + timedelta(days=1), 'mode': 'Confort'},
               ] %}
@@ -626,22 +626,22 @@ template:
             {% set events = [] %}
             {% if is_wd_hier %}
               {% set events = events + [
-                {'dt': today_at('06:00:00') - timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00') - timedelta(days=1), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00') - timedelta(days=1), 'mode': 'Éco'},
               ] %}
             {% endif %}
             {% set events = events + [
-              {'dt': today_at('22:30:00') - timedelta(days=1), 'mode': 'Confort'},
+              {'dt': today_at('23:00:00') - timedelta(days=1), 'mode': 'Confort'},
               {'dt': today_at('23:15:00') - timedelta(days=1), 'mode': 'Nuit'},
             ] %}
             {% if is_wd_today %}
               {% set events = events + [
-                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00'), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00'), 'mode': 'Éco'},
               ] %}
             {% endif %}
             {% set events = events + [
-              {'dt': today_at('22:30:00'), 'mode': 'Confort'},
+              {'dt': today_at('23:00:00'), 'mode': 'Confort'},
               {'dt': today_at('23:15:00'), 'mode': 'Nuit'},
             ] %}
             {% set passes = events | selectattr('dt', 'le', now()) | sort(attribute='dt') | list %}
@@ -694,7 +694,7 @@ template:
             {% set events = [] %}
             {% if is_wd_hier %}
               {% set events = events + [
-                {'dt': today_at('06:00:00') - timedelta(days=1), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00') - timedelta(days=1), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00') - timedelta(days=1), 'mode': 'Éco'},
                 {'dt': today_at('16:40:00') - timedelta(days=1), 'mode': 'Confort'},
               ] %}
@@ -708,7 +708,7 @@ template:
             ] %}
             {% if is_wd_today %}
               {% set events = events + [
-                {'dt': today_at('06:00:00'), 'mode': 'Confort'},
+                {'dt': today_at('06:15:00'), 'mode': 'Confort'},
                 {'dt': today_at('07:05:00'), 'mode': 'Éco'},
                 {'dt': today_at('16:40:00'), 'mode': 'Confort'},
               ] %}
@@ -778,14 +778,16 @@ template:
             {% set y1 = states('input_number.chauffage_courbe_depart_froid') | float(55) %}
             {% set x2 = states('input_number.chauffage_courbe_temp_ext_doux') | float(15) %}
             {% set y2 = states('input_number.chauffage_courbe_depart_doux') | float(32) %}
-            {% if t_ext <= x1 %}
-              {{ y1 }}
-            {% elif t_ext >= x2 %}
-              {{ y2 }}
-            {% else %}
-              {% set pente = (y2 - y1) / (x2 - x1) %}
-              {{ (y1 + pente * (t_ext - x1)) | round(1) }}
+            {% if t_ext <= x1 %}{% set base = y1 %}
+            {% elif t_ext >= x2 %}{% set base = y2 %}
+            {% else %}{% set base = y1 + (y2 - y1) / (x2 - x1) * (t_ext - x1) %}
             {% endif %}
+            {# Relance selon la demande (29/10/2026) : si une pièce est sous sa
+               consigne (sensor.ecart_minimum_demande_chauffage négatif), l'eau monte de
+               12 °C par °C manquant au-delà de 0,3 °C, +25 °C max, plafond 70 °C. #}
+            {% set manque = 0 - (states('sensor.ecart_minimum_demande_chauffage') | float(0)) %}
+            {% set relance = ([25, (manque - 0.3) * 12] | min) if manque > 0.3 else 0 %}
+            {{ ([70, base + relance] | min) | round(1) }}
           {% endif %}
 
 # ----------------------------------------------------------------------------
@@ -793,7 +795,7 @@ template:
 #    (actif seulement si routine_activee = ON et binary_sensor.workday_sensor
 #    = "on", donc automatiquement ignoré le week-end ET les jours fériés
 #    belges - pas besoin d'y toucher pour ça)
-#    Exception : "chauffage_soir_prechauffe_chambre_adulte" (22h30) tourne
+#    Exception : "chauffage_soir_prechauffe_chambre_adulte" (23h00) tourne
 #    TOUS LES jours, semaine ET week-end (cf. section 5 pour la logique
 #    "tous les jours" - elle est juste rangée ici avec les autres horaires
 #    du soir pour rester lisible).
@@ -801,10 +803,10 @@ template:
 automation:
   - id: chauffage_matin_prechauffe_parents_salon
     alias: "Chauffage - Pré-chauffe chambre adulte + salon (matin semaine)"
-    description: "Avant réveil Sandrine 6h15 / Grégory 6h30."
+    description: "Heure objectif 6h15 (réveil Sandrine) : le préchauffage intelligent démarre plus tôt si besoin."
     trigger:
       - platform: time
-        at: "06:00:00"
+        at: "06:15:00"
     condition: &cond_jour_travaille
       - condition: state
         entity_id: input_boolean.routine_activee
@@ -915,11 +917,11 @@ automation:
   - id: chauffage_soir_prechauffe_chambre_adulte
     alias: "Chauffage - Pré-chauffe chambre adulte (avant coucher, tous les jours)"
     description: >
-      45 min avant le coucher à 23h15 - tous les jours (semaine ET week-end)
+      Objectif atteint à 23h00 (préchauffage intelligent), avant le coucher à 23h15 - tous les jours (semaine ET week-end)
       pour ne jamais retrouver des draps froids.
     trigger:
       - platform: time
-        at: "22:30:00"
+        at: "23:00:00"
     condition:
       - condition: state
         entity_id: input_boolean.routine_activee
