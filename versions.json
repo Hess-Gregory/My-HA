@@ -190,9 +190,9 @@
     "version": "0.1.1"
   },
   "packages/chauffage_sonde_zigbee.yaml": {
-    "last_change": "vannes du living régulées sur la sonde Zigbee de la pièce (décalage dynamique)",
-    "last_update": "2026-10-29T22:14:02.768477+01:00",
-    "version": "0.1.0"
+    "last_change": "toutes les vannes régulées sur la sonde Zigbee de leur pièce (v1.1.0)",
+    "last_update": "2026-10-29T22:17:18.400611+01:00",
+    "version": "0.2.0"
   },
   "packages/coin_dj.yaml": {
     "last_change": "interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal",
