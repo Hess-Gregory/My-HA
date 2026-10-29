@@ -1,0 +1,47 @@
+# =====================================================================
+#  Chauffage – pièce de vie régulée sur la sonde Zigbee (Sonoff)
+#  v1.0.0 – 29/10/2026 – doc : chauffage_sonde_zigbee.md
+#  Les vannes Bosch régulent sur leur propre capteur (bas, près des
+#  fenêtres). On ajuste en continu leur « décalage » pour que la
+#  température qu'elles voient = celle de la sonde Zigbee de la pièce.
+# =====================================================================
+automation:
+  - id: chauffage_living_sonde_zigbee
+    alias: "Chauffage - Pièce de vie régulée sur la sonde Zigbee"
+    mode: single
+    trigger:
+      - trigger: time_pattern
+        minutes: "/5"
+      - trigger: state
+        entity_id: sensor.temp_piece_de_vie_sonoff_a480146b56_temperature
+    variables:
+      sonde: "{{ states('sensor.temp_piece_de_vie_sonoff_a480146b56_temperature') }}"
+    condition:
+      - condition: template
+        value_template: >
+          {% set s = states.sensor.temp_piece_de_vie_sonoff_a480146b56_temperature %}
+          {{ sonde | is_number and s is not none and (now() - s.last_reported).total_seconds() < 10800 }}
+    action:
+      - repeat:
+          for_each: [salon, cuisine, salle_a_manger]
+          sequence:
+            - variables:
+                off_e: "number.piece_de_vie_vanne_living_{{ repeat.item }}_decalage"
+                t_e: "sensor.vanne_living_{{ repeat.item }}_temperature"
+                decal: "{{ states(off_e) | float(0) }}"
+                brut: "{{ states(t_e) | float(-99) - decal }}"
+                cible: "{{ ([-5, [5, ((sonde | float - brut) * 10) | round(0) / 10] | min] | max) }}"
+            - if:
+                - condition: template
+                  value_template: >
+                    {% set so = states[off_e] %}{% set st = states[t_e] %}
+                    {{ brut > -50 and (cible - decal) | abs >= 0.3
+                       and (now() - so.last_changed).total_seconds() > 900
+                       and st.last_updated > so.last_changed }}
+              then:
+                - action: number.set_value
+                  continue_on_error: true
+                  target:
+                    entity_id: "{{ off_e }}"
+                  data:
+                    value: "{{ cible }}"
