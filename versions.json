@@ -180,9 +180,9 @@
     "version": "0.1.0"
   },
   "packages/chauffage.yaml": {
-    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
-    "last_update": "2026-10-28T11:12:09.172082+01:00",
-    "version": "0.3.0"
+    "last_change": "pièce de vie Boost 22,5 / Confort 21 / Éco 19,5 / Nuit 17",
+    "last_update": "2026-10-29T22:10:01.833293+01:00",
+    "version": "0.4.0"
   },
   "packages/chauffage_manuel.yaml": {
     "last_change": "manuel valide auto apres 5 s ; retour imminent ne remonte le salon que depuis Eco/Nuit/Hors-gel",
