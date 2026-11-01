@@ -245,9 +245,9 @@
     "version": "0.3.1"
   },
   "packages/localisation_alertes.yaml": {
-    "last_change": "dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée",
-    "last_update": "2026-10-28T11:12:09.172082+01:00",
-    "version": "0.1.0"
+    "last_change": "ignorer les positions imprécises (>100 m) et stabilité 3 min pour les annonces arrivée/départ",
+    "last_update": "2026-11-01T15:39:01.828087+01:00",
+    "version": "0.1.1"
   },
   "packages/localisation_suivi.yaml": {
     "last_change": "duree de presence reelle (pas remise a zero au redemarrage)",
