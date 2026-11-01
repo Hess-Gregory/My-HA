@@ -1,6 +1,6 @@
 # [AUTO-VERSION] v0.1.0 | 28/10/2026 11:12 | dashboard v2.1.0 en prod — semaine, zones, calendrier, replay, km/temps de route par arrêt, alertes arrivée/départ, batterie, école, position figée
 # =====================================================================
-#  Localisation – alertes (v2.1.0 – 28/10/2026)
+#  Localisation – alertes (v2.1.1 – 01/11/2026)
 #  Arrivées / départs, rappel alarme au retour, école Matteo,
 #  batterie faible hors maison, position figée.
 #  Doc : localisation_alertes.md
@@ -29,7 +29,7 @@ automation:
         entity_id: [person.sandrine, person.greg, person.matteo]
         not_from: [unknown, unavailable]
         not_to: [unknown, unavailable]
-        for: "00:01:00"
+        for: "00:03:00"
     variables:
       k: "{{ trigger.entity_id.split('.')[1] }}"
       nom: "{{ state_attr(trigger.entity_id, 'friendly_name') }}"
@@ -48,6 +48,11 @@ automation:
     condition:
       - condition: template
         value_template: "{{ is_state('input_boolean.loc_alertes_' ~ k, 'on') and de != vers }}"
+      # Position imprécise (localisation réseau ±200 m) = faux changement de zone
+      - condition: template
+        value_template: >
+          {% set src = state_attr(trigger.entity_id, 'source') %}
+          {{ src is none or (state_attr(src, 'gps_accuracy') | int(0)) <= 100 }}
     action:
       - variables:
           cibles: >
