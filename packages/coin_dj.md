@@ -11,3 +11,6 @@
 - Les deux scripts sont en mode `single` : un appui pendant une séquence est ignoré.
 - `script.sono_dj_basculer` fait la même chose (bascule selon l'état) ; « Bonne nuit », « Tout éteindre », « Je pars » et « Sieste / Calme » appellent le script d'arrêt.
 - Les barres seules : `light.lumieres_sono` (« Barres (toutes) ») ; ne jamais utiliser `light.coin_dj_coin_dj` (pièce Hue qui contient aussi les prises de la sono).
+
+## Historique
+- 01/11/2026 : Marche et Arrêt annulent d'abord la séquence inverse en cours. Deux appuis rapprochés lançaient les deux scripts en même temps, et les prises s'allumaient et s'éteignaient dans le désordre (vu le 01/11 à 11h36).

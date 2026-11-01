@@ -706,7 +706,7 @@
           {% set today = now().strftime('%Y-%m-%d') %}
           {% set ns = namespace(texte='') %}
           {% for entity_id, data in items_par_personne.items() %}
-            {% set items = data.items %}
+            {% set items = data['items'] %}
             {% if items | count > 0 %}
               {% set retard = namespace(n=0) %}
               {% set du_jour = namespace(n=0) %}

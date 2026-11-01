@@ -14,7 +14,14 @@ template:
         unique_id: sono_dj_interrupteur
         icon: mdi:speaker
         state: "{{ is_state('light.sono', 'on') }}"
+        # 01/11/2026 : chaque commande annule d'abord la séquence inverse en cours,
+        # sinon 2 appuis rapprochés mélangeaient marche et arrêt (prises qui
+        # s'allument/s'éteignent dans le désordre, enceintes Adam seules).
         turn_on:
+          - action: script.turn_off
+            target: { entity_id: script.1786831774432 }
           - action: script.demarrage_mixer
         turn_off:
+          - action: script.turn_off
+            target: { entity_id: script.demarrage_mixer }
           - action: script.1786831774432

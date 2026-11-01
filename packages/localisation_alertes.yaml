@@ -1,6 +1,6 @@
 # [AUTO-VERSION] v0.1.1 | 01/11/2026 15:39 | ignorer les positions imprécises (>100 m) et stabilité 3 min pour les annonces arrivée/départ
 # =====================================================================
-#  Localisation – alertes (v2.1.1 – 01/11/2026)
+#  Localisation – alertes (v2.1.2 – 01/11/2026)
 #  Arrivées / départs, rappel alarme au retour, école Matteo,
 #  batterie faible hors maison, position figée.
 #  Doc : localisation_alertes.md
@@ -48,11 +48,13 @@ automation:
     condition:
       - condition: template
         value_template: "{{ is_state('input_boolean.loc_alertes_' ~ k, 'on') and de != vers }}"
-      # Position imprécise (localisation réseau ±200 m) = faux changement de zone
+      # Position imprécise (localisation réseau ±200 m) = faux changement de zone.
+      # On vérifie l'ancienne ET la nouvelle position : sinon le retour d'une
+      # fausse visite (« Delhaize » à ±247 m puis « maison ») est annoncé.
       - condition: template
         value_template: >
-          {% set src = state_attr(trigger.entity_id, 'source') %}
-          {{ src is none or (state_attr(src, 'gps_accuracy') | int(0)) <= 100 }}
+          {{ (trigger.from_state.attributes.gps_accuracy | int(0)) < 100
+             and (trigger.to_state.attributes.gps_accuracy | int(0)) < 100 }}
     action:
       - variables:
           cibles: >

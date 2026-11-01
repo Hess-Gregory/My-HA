@@ -13,7 +13,7 @@ L'automatisation `chauffage_living_sonde_zigbee` tourne toutes les 5 min et à c
 La vanne « voit » donc la température de la sonde Zigbee et régule dessus.
 
 ## Sécurité
-Rien n'est modifié si la sonde est indisponible ou muette depuis plus de 3 h : les vannes gardent leur dernier décalage.
+Rien n'est modifié si la sonde est indisponible ou muette depuis plus de 6 h : les vannes gardent leur dernier décalage.
 
 ## Revenir en arrière
 Désactiver l'automatisation et remettre `number.piece_de_vie_vanne_living_*_decalage` à 0.

@@ -40,7 +40,7 @@ automation:
                 - condition: template
                   value_template: >
                     {% set so = states[repeat.item.o] %}{% set st = states[repeat.item.t] %}{% set ss = states[repeat.item.s] %}
-                    {{ sonde | is_number and ss is not none and (now() - ss.last_reported).total_seconds() < 10800
+                    {{ sonde | is_number and ss is not none and (now() - ss.last_reported).total_seconds() < 21600
                        and so is not none and st is not none and brut > -50
                        and (cible - decal) | abs >= 0.3
                        and (now() - so.last_changed).total_seconds() > 900
