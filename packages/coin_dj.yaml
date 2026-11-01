@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.0 | 26/09/2026 23:02 | interrupteurs on/off visibles, sono DJ sans clacs, suppression du dashboard Transversal
+# [AUTO-VERSION] v0.1.1 | 01/11/2026 17:17 | révision HA — rappel tâches (data.items), sono DJ (séquences exclusives), localisation (précision ancienne+nouvelle position), sondes Zigbee tolérance 6 h
 # =====================================================================
 # Coin DJ — interrupteur « Sono DJ » (barres + table de mixage + lecteurs + enceintes Adam)
 # Allume / éteint dans le bon ordre pour éviter les clacs dans les enceintes :

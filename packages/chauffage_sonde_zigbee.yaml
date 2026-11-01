@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.2.0 | 29/10/2026 22:17 | toutes les vannes régulées sur la sonde Zigbee de leur pièce (v1.1.0)
+# [AUTO-VERSION] v0.2.1 | 01/11/2026 17:17 | révision HA — rappel tâches (data.items), sono DJ (séquences exclusives), localisation (précision ancienne+nouvelle position), sondes Zigbee tolérance 6 h
 # =====================================================================
 #  Chauffage – toutes les pièces régulées sur leur sonde Zigbee (Sonoff)
 #  v1.1.0 – 29/10/2026 – doc : chauffage_sonde_zigbee.md

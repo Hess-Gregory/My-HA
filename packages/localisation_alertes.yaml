@@ -1,4 +1,4 @@
-# [AUTO-VERSION] v0.1.1 | 01/11/2026 15:39 | ignorer les positions imprécises (>100 m) et stabilité 3 min pour les annonces arrivée/départ
+# [AUTO-VERSION] v0.1.2 | 01/11/2026 17:17 | révision HA — rappel tâches (data.items), sono DJ (séquences exclusives), localisation (précision ancienne+nouvelle position), sondes Zigbee tolérance 6 h
 # =====================================================================
 #  Localisation – alertes (v2.1.2 – 01/11/2026)
 #  Arrivées / départs, rappel alarme au retour, école Matteo,
